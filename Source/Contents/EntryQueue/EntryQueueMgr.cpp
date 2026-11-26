@@ -285,7 +285,7 @@ void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
 // FUNCTION: fn_19674
 void CEntryQueueMgr::OnNotify(const EntryQueueNotice* notice) {
   switch (notice->result) {
-  case 1:
+  case ENTRYQUEUE_LOBBY_ADMISSION_ACCEPTED:
     g_soundMgr->PlayWave("se_btg_forward.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }

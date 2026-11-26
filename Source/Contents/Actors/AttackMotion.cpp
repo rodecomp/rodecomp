@@ -1,13 +1,21 @@
 #include "Contents/Actors/AttackMotion.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Session/Session.h"
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Jobs/JobId.h"
+
+namespace {
+  enum AttackMotionMode : int {
+    ATTACK_MOTION_PRIMARY = 0,
+    ATTACK_MOTION_SECONDARY = 1,
+  };
+}
 
 // OFFSET: 0x00DDFB50
 // FUNCTION: fn_23444
 float CSession::AttackMotionLength(int job, int appearance, int equipment, int attackMode) const {
   switch (attackMode) {
-  case 0:
+  case ATTACK_MOTION_PRIMARY:
     switch (job) {
     case JT_MERCHANT:
       return 5.85f;
@@ -15,7 +23,7 @@ float CSession::AttackMotionLength(int job, int appearance, int equipment, int a
       return 5.75f;
     }
     break;
-  case 1:
+  case ATTACK_MOTION_SECONDARY:
     switch (job) {
     case JT_NOVICE:
     case JT_SUPERNOVICE:
@@ -23,7 +31,7 @@ float CSession::AttackMotionLength(int job, int appearance, int equipment, int a
     case JT_SUPERNOVICE2:
     case JT_SUPERNOVICE2_B:
       switch (appearance) {
-      case 1:
+      case SEX_MALE:
         return 5.85f;
       }
       break;

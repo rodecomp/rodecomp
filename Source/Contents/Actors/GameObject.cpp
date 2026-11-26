@@ -207,7 +207,7 @@ int CGameObject::Get8Dir2(float rot, int flag) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
 
   if (!gameMode) {
-    return 0;
+    return SPRITE_DIR_DOWN;
   }
 
   float relative = -gameMode->camera->camera.yaw - rot;
@@ -222,7 +222,7 @@ int CGameObject::Get8Dir2(float rot, int flag) {
 
   if (flag != 0) {
     if (relative < 22.5f || relative > 337.5f) {
-      return 0;
+      return SPRITE_DIR_DOWN;
     }
 
     return static_cast<int>((static_cast<double>(relative) + 22.5) / 45.0);
@@ -237,7 +237,7 @@ int CGameActor::Get8Dir(float angle) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
 
   if (!gameMode) {
-    return 0;
+    return SPRITE_DIR_DOWN;
   }
 
   float relative = -gameMode->camera->camera.yaw - angle;
@@ -255,7 +255,7 @@ int CGameActor::Get8Dir(float angle) {
       (g_session.IsHirelingJob(this->GetEffectiveJob(-1)) &&
        (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16))) {
     if (relative < 22.5f || relative > 337.5f) {
-      return 0;
+      return SPRITE_DIR_DOWN;
     }
 
     return static_cast<int>((static_cast<double>(relative) + 22.5) / 45.0);
@@ -283,7 +283,7 @@ int CGameObject::Get8Dir(float angle) {
     return static_cast<int>(relative / 45.0f);
   }
 
-  return 0;
+  return SPRITE_DIR_DOWN;
 }
 
 // OFFSET: 0x00CB20B0

@@ -48,7 +48,7 @@ void UIListBoxEx::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(thickness, height);
   vertical->Move((width - 13), 0);
   vertical->OnCreate(thickness, height);
@@ -58,7 +58,7 @@ void UIListBoxEx::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize((width - 13), horizontalHeight);
   horizontal->Move(0, (height - 13));
   horizontal->OnCreate((width - 13), horizontalHeight);

@@ -4818,7 +4818,8 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       if (this->messengerGroupWndInfo.visible) {
         this->EnsureWindow(WID_MESSENGERWND);
       }
-      if (g_session.lowMemory == 1 && g_session.performanceWarningEnabled == 1 && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
+      if (g_session.lowMemory == 1 && g_session.performanceWarningEnabled == 1 &&
+          g_effectDetailLevel == SPRITE_QUALITY_HIGH && g_textureDetailLevel == TEXTURE_QUALITY_HIGH) {
         this->EnsureWindow(WID_GAMESETTINGSUI);
       }
       if (g_session.HasTrackedAchievements() == true) {

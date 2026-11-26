@@ -873,7 +873,7 @@ void CEffectPrim::PrimBottom() {
             this->state.slots[i].vecBNow = this->state.slots[i - 1].vecBNow;
             this->state.slots[i].fullDisplayAngle = this->state.slots[i - 1].fullDisplayAngle;
             this->state.slots[i].flag1[0] = this->state.slots[i - 1].flag1[0];
-            this->state.slots[i].flag1[2] = 2;
+            this->state.slots[i].flag1[2] = FIELD_PANEL_REVERSED_BLUE;
             this->state.slots[i].height[7] = 0;
           }
         }
@@ -896,7 +896,7 @@ void CEffectPrim::PrimBottom() {
       this->state.slots[ec].vecBPre.y = this->render.position.y - 6.0f;
       this->state.slots[ec].vecBNow.y = this->state.slots[ec].vecBPre.y + 3.0f * g_sinTable[this->state.slots[ec].rotStart];
 
-      if (this->state.slots[ec].flag1[2] == 7) {
+      if (this->state.slots[ec].flag1[2] == FIELD_PANEL_REVERSED_WHITE) {
         this->state.slots[ec].fullDisplayAngle += 10;
 
         if (this->state.slots[ec].fullDisplayAngle >= 360) {
@@ -6031,7 +6031,7 @@ bool CEffectPrim::PrimFieldFireflies() {
     const float mode = slot.height[7];
     if (mode < 99.0f) {
       ++slot.process;
-      if (slot.flag1[2] == 23 && slot.process % 14 == 0) {
+      if (slot.flag1[2] == FIELD_PANEL_ANIMATED_WHITE && slot.process % 14 == 0) {
         ++slot.flag1[0];
         if (slot.flag1[0] > 5) {
           slot.flag1[0] = 0;
@@ -7473,7 +7473,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
       if (this->state.slots[ec].flag1[0] != 0 && this->state.slots[ec].flag1[0] < 20) {
         if (this->state.slots[ec].flag1[0] >= 10) {
           switch (this->state.isChangeProcessed) {
-          case 0:
+          case DRIFTING_ORB_IDLE:
             if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
               this->state.slots[ec].height[6] += 1.0f;
 
@@ -7485,7 +7485,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
             this->state.slots[ec].distance = 6.0f;
             this->state.slots[ec].height[7] = -15.0f;
             break;
-          case 1:
+          case DRIFTING_ORB_DISPERSING:
             if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
               this->state.slots[ec].height[6] += 15.0f;
 

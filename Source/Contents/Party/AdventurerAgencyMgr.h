@@ -19,6 +19,17 @@ enum AgencyServiceOperation : int {
   AGENCY_SERVICE_INFO = 7,
 };
 
+enum AgencyResponseType : int {
+  AGENCY_RESPONSE_SUCCESS = 1,
+  AGENCY_RESPONSE_UNKNOWN_2 = 2,
+  AGENCY_RESPONSE_UNKNOWN_3 = 3,
+};
+
+enum AgencyListMode : int {
+  AGENCY_LIST_BROWSE = 0,
+  AGENCY_LIST_SEARCH = 1,
+};
+
 class CAdventurerAgencyMgr {
 public:
   CAdventurerAgencyMgr();

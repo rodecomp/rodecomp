@@ -10,6 +10,11 @@
 struct CWorld;
 class CSkyBox;
 
+enum CameraShakeDuration : unsigned {
+  CAMERA_SHAKE_DEFAULT = 0,
+  CAMERA_SHAKE_SHORT = 1,
+};
+
 extern float g_cameraDistance;
 extern float g_cameraMinDistance;
 extern float g_cameraBaseDistance;

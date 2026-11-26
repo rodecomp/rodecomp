@@ -1916,7 +1916,8 @@ void CUIRenewQuestUI::OnSearchButton() {
 // OFFSET: 0x00A65AF0
 // FUNCTION: fn_16599
 CUIRenewQuestUI::CUIRenewQuestUI()
-    : tab(nullptr), checkBox(nullptr), filterLabel(nullptr), closeButton(nullptr), questLists(), searchBackground(nullptr), filterPanel(nullptr), searchEdit(nullptr), searchButton(nullptr), filter(0), searchText(),
+    : tab(nullptr), checkBox(nullptr), filterLabel(nullptr), closeButton(nullptr), questLists(), searchBackground(nullptr), filterPanel(nullptr),
+      searchEdit(nullptr), searchButton(nullptr), filter(QUEST_FILTER_ALL), searchText(),
       titleBar(nullptr), background(nullptr) {
 }
 

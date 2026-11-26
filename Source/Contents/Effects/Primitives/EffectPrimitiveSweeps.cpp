@@ -280,16 +280,16 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     vec4.z = distance * g_sinTable[angle4] + baseZ;
 
     switch (slot.flag1[2]) {
-    case 0:
+    case BLADE_QUAD_CYAN_AND_RED:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 1:
+    case BLADE_QUAD_WHITE_AND_YELLOW:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 2:
+    case BLADE_QUAD_RED_AND_PINK:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 3:
+    case BLADE_QUAD_PALE_BLUE_AND_BLUE:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
     }
@@ -321,16 +321,16 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     vec4.z = distanceB * g_sinTable[angleB4] + baseZB;
 
     switch (slot.flag1[2]) {
-    case 0:
+    case BLADE_QUAD_CYAN_AND_RED:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 1:
+    case BLADE_QUAD_WHITE_AND_YELLOW:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 2:
+    case BLADE_QUAD_RED_AND_PINK:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 166, 210, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 3:
+    case BLADE_QUAD_PALE_BLUE_AND_BLUE:
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
     }

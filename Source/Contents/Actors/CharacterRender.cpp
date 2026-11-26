@@ -184,7 +184,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     int cellIndex;
     if (g_session.IsSpecialMonsterJob(this->layerViews[type])) {
-      cellIndex = GetSlotLayer(1);
+      cellIndex = GetSlotLayer(SPRITE_LAYER_HEAD);
     } else {
       cellIndex = GetSlotLayer(type);
     }

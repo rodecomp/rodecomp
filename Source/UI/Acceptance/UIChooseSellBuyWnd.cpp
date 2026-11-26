@@ -147,6 +147,7 @@
 #include "Render/Text/TextContext.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Contents/Map/TownInfoMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -195,6 +196,28 @@ namespace {
 }
 
 std::string CartTypeName(int type);
+
+enum CartType : int {
+  CART_TYPE_NONE = 0,
+  CART_TYPE_HANDCART = 1,
+  CART_TYPE_HANDCART_1 = 2,
+  CART_TYPE_HANDCART_2 = 3,
+  CART_TYPE_HANDCART_3 = 4,
+  CART_TYPE_HANDCART_4 = 5,
+  CART_TYPE_HANDCART_5 = 6,
+  CART_TYPE_HANDCART_6 = 7,
+  CART_TYPE_HANDCART_7 = 8,
+  CART_TYPE_HANDCART_8 = 9,
+  CART_TYPE_GIFT_BOX = 10,
+  CART_TYPE_PORING_CARGO = 11,
+  CART_TYPE_PORING = 12,
+  CART_TYPE_MAGIC = 13,
+};
+
+enum ChatRoomListKind : int {
+  CHAT_ROOM_LIST_MEMBER_LIMIT = 0,
+  CHAT_ROOM_LIST_TYPE = 1,
+};
 
 // STRING: st_16833
 static const char menuSeparatorText[] = "-";
@@ -1856,33 +1879,33 @@ void UISelectCartWnd::AddCart(int index, int type) {
   int x = (index % 5) * 70;
   int y = (index / 5) * 82 + 28;
   switch (type) {
-  case 1:
-  case 2:
-  case 10:
+  case CART_TYPE_HANDCART:
+  case CART_TYPE_HANDCART_1:
+  case CART_TYPE_GIFT_BOX:
     y -= 13;
     break;
-  case 4:
+  case CART_TYPE_HANDCART_3:
     x += 18;
     y -= 10;
     break;
-  case 5:
+  case CART_TYPE_HANDCART_4:
     x += 15;
     y -= 5;
     break;
-  case 6:
-  case 7:
-  case 8:
-  case 9:
+  case CART_TYPE_HANDCART_5:
+  case CART_TYPE_HANDCART_6:
+  case CART_TYPE_HANDCART_7:
+  case CART_TYPE_HANDCART_8:
     x += 13;
     break;
-  case 11:
+  case CART_TYPE_PORING_CARGO:
     x += 16;
     y -= 13;
     break;
-  case 12:
+  case CART_TYPE_PORING:
     y -= 23;
     break;
-  case 13:
+  case CART_TYPE_MAGIC:
     x += 4;
     y -= 10;
     break;
@@ -6000,14 +6023,14 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       int count = 1;
       switch (a) {
       case ID_NUMCOMBO:
-        this->m_listKind = 0;
+        this->m_listKind = CHAT_ROOM_LIST_MEMBER_LIMIT;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
         break;
       case ID_CLASSCOMBO:
-        this->m_listKind = 1;
+        this->m_listKind = CHAT_ROOM_LIST_TYPE;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
@@ -6029,11 +6052,11 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_COMBOBOX_SELECTED:
     switch (this->m_listKind) {
-    case 0:
+    case CHAT_ROOM_LIST_MEMBER_LIMIT:
       this->m_limitText->SetText(this->m_limitLabels[a].c_str(), 0);
       this->m_limit = this->m_limits[a];
       break;
-    case 1:
+    case CHAT_ROOM_LIST_TYPE:
       this->m_typeText->SetText(this->m_typeLabels[a].c_str(), 0);
       this->m_type = this->m_types[a];
       break;
@@ -6093,14 +6116,14 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       int count = 1;
       switch (a) {
       case ID_NUMCOMBO:
-        this->m_listKind = 0;
+        this->m_listKind = CHAT_ROOM_LIST_MEMBER_LIMIT;
         count = static_cast<int>(this->m_limitLabels.size());
         for (unsigned int i = 0; i < this->m_limitLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_limitLabels[i].c_str()), 0, 0, 0);
         }
         break;
       case ID_CLASSCOMBO:
-        this->m_listKind = 1;
+        this->m_listKind = CHAT_ROOM_LIST_TYPE;
         count = static_cast<int>(this->m_typeLabels.size());
         for (unsigned int i = 0; i < this->m_typeLabels.size(); ++i) {
           list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_typeLabels[i].c_str()), 0, 0, 0);
@@ -7662,8 +7685,8 @@ __declspec(noinline) UIPartyInvitationToWnd::~UIPartyInvitationToWnd() {
 void UIPartySettingWnd::OnCreate(int width, int height) {
   this->m_expShare = g_session.partyExpShare == 2 ? 0 : g_session.partyExpShare;
   this->m_itemShare = g_session.partyItemCollect;
-  this->m_itemDistribute = 0;
-  g_session.partyItemDistribute = 0;
+  this->m_itemDistribute = PARTY_ITEM_SHARE_INDIVIDUAL;
+  g_session.partyItemDistribute = PARTY_ITEM_SHARE_INDIVIDUAL;
 
   if (height == 245) {
     this->m_mode = 70;
@@ -9291,10 +9314,10 @@ void UISelectCartWnd::OnCreate(int, int) {
     if (level <= levels[i]) {
       break;
     }
-    this->cartTypes.push_back(i + 1);
+    this->cartTypes.push_back(i + CART_TYPE_HANDCART);
   }
   if (level > 100) {
-    this->cartTypes.push_back(13);
+    this->cartTypes.push_back(CART_TYPE_MAGIC);
   }
 
   int index = 0;

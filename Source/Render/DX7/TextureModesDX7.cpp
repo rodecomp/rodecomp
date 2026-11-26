@@ -5,7 +5,7 @@
 // FUNCTION: fn_02116
 void CRendererDX7::SetTextureMode(int mode) {
   switch (mode) {
-    case 0:
+    case TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -16,8 +16,8 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
       break;
-    case 1:
-    case 2:
+    case TEXTURE_MODE_MODULATE:
+    case TEXTURE_MODE_UNKNOWN_2:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -27,7 +27,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
       break;
-    case 3:
+    case TEXTURE_MODE_ADD:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
@@ -37,7 +37,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
       break;
-    case 4:
+    case TEXTURE_MODE_DECAL_ALPHA:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_BLENDTEXTUREALPHA);
@@ -47,7 +47,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
       break;
-    case 5:
+    case TEXTURE_MODE_COLORED_LIGHTMAP:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -61,7 +61,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 6:
+    case TEXTURE_MODE_INVERSE_COLORED_LIGHTMAP:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -75,7 +75,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 7:
+    case TEXTURE_MODE_SINGLE_CHANNEL_LIGHTMAP:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
@@ -88,7 +88,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 8:
+    case TEXTURE_MODE_MODULATE_AND_LATE_ADD:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -102,7 +102,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 9:
+    case TEXTURE_MODE_BLEND_TEXTURE_ALPHA:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -116,7 +116,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 10:
+    case TEXTURE_MODE_BLEND_DIFFUSE_ALPHA:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -130,7 +130,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 11:
+    case TEXTURE_MODE_MULTITEXTURE_ADD:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -144,7 +144,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 12:
+    case TEXTURE_MODE_MULTITEXTURE_SUBTRACT:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -158,7 +158,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 13:
+    case TEXTURE_MODE_ADD_THEN_MODULATE:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
@@ -172,7 +172,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 14:
+    case TEXTURE_MODE_DETAIL_MODULATE:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -186,7 +186,7 @@ void CRendererDX7::SetTextureMode(int mode) {
       this->device->SetTextureStageState(1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
       break;
-    case 15:
+    case TEXTURE_MODE_DETAIL_ADD:
       this->device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
       this->device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
       this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);

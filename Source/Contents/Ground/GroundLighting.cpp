@@ -101,7 +101,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
 
     primitive->texture = quad.texture;
     primitive->lightmap = quad.lightmapTexture;
-    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 0);
+    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, LIGHTMAPPED_QUEUE_FIRST);
 
     return;
   }

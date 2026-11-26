@@ -7,6 +7,11 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 
+enum StaticBitmapState : unsigned int {
+  STATIC_BITMAP_DRAW_IMAGE = 0,
+  STATIC_BITMAP_CLEAR_SURFACE = 1,
+};
+
 // OFFSET: 0x00850430
 // FUNCTION: fn_10676
 UIStaticBitmap::UIStaticBitmap() : UIWindow(0) {
@@ -51,12 +56,12 @@ void UIStaticBitmap::Paint() {
   }
 
   switch (this->geometry.state) {
-  case 0: {
+  case STATIC_BITMAP_DRAW_IMAGE: {
     CBitmapRes* resource = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->bitmap.c_str())));
     this->DrawBitmap(0, 0, resource, false);
     break;
   }
-  case 1:
+  case STATIC_BITMAP_CLEAR_SURFACE:
     this->ClearSurface(0xFFFF00FFu);
     break;
   }

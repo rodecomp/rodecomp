@@ -1,4 +1,5 @@
 #include "Contents/Sprites/SpriteLayerOrder.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Resource/Sprites/ImfResource.h"
 
 // OFFSET: 0x00DAAB00
@@ -6,10 +7,10 @@
 int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, int motion) {
   const int order = 8 - layer;
   switch (action - baseAction) {
-  case 0:
-  case 1:
-  case 6:
-  case 7:
+  case SPRITE_DIR_DOWN:
+  case SPRITE_DIR_DOWN_LEFT:
+  case SPRITE_DIR_RIGHT:
+  case SPRITE_DIR_DOWN_RIGHT:
     switch (order) {
     case 0:
       return imfRes->GetLayer(1, action, motion);
@@ -31,10 +32,10 @@ int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, 
       return SPRITE_LAYER_SHIELD;
     }
     break;
-  case 2:
-  case 3:
-  case 4:
-  case 5:
+  case SPRITE_DIR_LEFT:
+  case SPRITE_DIR_UP_LEFT:
+  case SPRITE_DIR_UP:
+  case SPRITE_DIR_UP_RIGHT:
     switch (order) {
     case 0:
       return SPRITE_LAYER_SHIELD;

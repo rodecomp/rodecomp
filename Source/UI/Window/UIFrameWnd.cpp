@@ -889,17 +889,17 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       break;
     }
     const int rank = this->memberRoles[self];
-    if (rank == -1) {
+    if (rank == CHAT_ROOM_ROLE_UNKNOWN_MINUS_1) {
       break;
     }
 
     if (this->memberList->selected != -1) {
       const std::string target = this->memberList->lines[this->memberList->selected];
-      if (this->memberRoles.end() == this->memberRoles.find(target) || this->memberRoles[target] == -1) {
+      if (this->memberRoles.end() == this->memberRoles.find(target) || this->memberRoles[target] == CHAT_ROOM_ROLE_UNKNOWN_MINUS_1) {
         break;
       }
       switch (rank) {
-      case 0:
+      case CHAT_ROOM_ROLE_OWNER:
         if (!(target == self)) {
           this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_BAN)).c_str(), 0));
           this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)).c_str(), 1));
@@ -910,7 +910,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
         this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
         break;
-      case 1:
+      case CHAT_ROOM_ROLE_MEMBER:
         this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
         if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
           this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
@@ -918,7 +918,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         break;
       }
     } else {
-      if (rank == 0) {
+      if (rank == CHAT_ROOM_ROLE_OWNER) {
         this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
       }
       this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)).c_str(), 11));
@@ -978,7 +978,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->memberList->Clear();
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-      const int color = it->second != 0 ? 0 : 0x808000;
+      const int color = it->second != CHAT_ROOM_ROLE_OWNER ? 0 : 0x808000;
       this->memberList->AddText(it->first.c_str(), color, nullptr);
     }
     break;
@@ -991,7 +991,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->memberRoles.erase(found);
     this->memberList->Clear();
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-      const int color = it->second != 0 ? 0 : 0x808000;
+      const int color = it->second != CHAT_ROOM_ROLE_OWNER ? 0 : 0x808000;
       this->memberList->AddText(it->first.c_str(), color, nullptr);
     }
     break;
@@ -1003,7 +1003,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_ADDMEMBER: {
     this->memberRoles[reinterpret_cast<const char*>(a)] = static_cast<int>(b);
     int color = 0;
-    if (b == 0) {
+    if (b == CHAT_ROOM_ROLE_OWNER) {
       color = 0x808000;
     } else {
       if (g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF) && g_soundMgr->tingOnly != 0) {
@@ -1179,7 +1179,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::memcpy(value, data + offset, header.size);
         offset += header.size;
         this->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
-        this->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(value), 0, 0, 0);
+        this->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(value), CHAT_ROOM_ROLE_OWNER, 0, 0);
         break;
       }
       case REPLAY_CHUNK_CHAT_ROOM_MEMBER: {
@@ -1187,7 +1187,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::memset(value, 0, sizeof(value));
         std::memcpy(value, data + offset, header.size);
         offset += header.size;
-        this->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(value), 1, 0, 0);
+        this->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(value), CHAT_ROOM_ROLE_MEMBER, 0, 0);
         break;
       }
       default:

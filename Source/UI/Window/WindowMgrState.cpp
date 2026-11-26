@@ -17,6 +17,7 @@ __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Configuration/ServiceEnums.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/MessengerMember.h"
 #include "Contents/Messenger/MessengerWindows.h"
@@ -696,7 +697,8 @@ void UIWindowMgr::SaveVisibleWindowIds() {
       this->savedWindowIds.push_back(id);
     } else if (id == WID_MACROREPORTERWND && this->macroReporterVisible == true) {
       this->savedWindowIds.push_back(id);
-    } else if (id == WID_GAMESETTINGSUI && g_session.lowMemory && g_session.performanceWarningEnabled && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
+    } else if (id == WID_GAMESETTINGSUI && g_session.lowMemory && g_session.performanceWarningEnabled &&
+               g_effectDetailLevel == SPRITE_QUALITY_HIGH && g_textureDetailLevel == TEXTURE_QUALITY_HIGH) {
       this->savedWindowIds.push_back(id);
     } else if (id == WID_MINIPARTYWND) {
       for (auto entry = this->savedWindowIds.begin(); entry != this->savedWindowIds.end(); ++entry) {

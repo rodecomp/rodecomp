@@ -259,7 +259,7 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_TROUBADOUR:
   case JT_TROUVERE:
   case JT_HYPER_NOVICE:
-    if (shield == 1) {
+    if (shield == SHIELD_GUARD) {
       return true;
     }
     return false;
@@ -283,10 +283,10 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_DRAGON_KNIGHT_CHICKEN:
   case JT_IMPERIAL_GUARD_CHICKEN:
     switch (shield) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case SHIELD_GUARD:
+    case SHIELD_BUCKLER:
+    case SHIELD_SHIELD:
+    case SHIELD_MIRRORSHIELD:
       return true;
     }
     return false;
@@ -335,8 +335,8 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_BIOLO:
   case JT_ABYSS_CHASER:
     switch (shield) {
-    case 1:
-    case 2:
+    case SHIELD_GUARD:
+    case SHIELD_BUCKLER:
       return true;
     }
     return false;
@@ -373,10 +373,10 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_DO_SUMMONER_B:
   case JT_SPIRIT_HANDLER:
     switch (shield) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
+    case SHIELD_GUARD:
+    case SHIELD_BUCKLER:
+    case SHIELD_SHIELD:
+    case SHIELD_MIRRORSHIELD:
       return true;
     }
     return false;
@@ -386,9 +386,9 @@ bool CSession::HasJobShieldSprite(int job, int shield) const {
   case JT_KARNOS_B:
   case JT_ALITEA:
     switch (shield) {
-    case 1:
-    case 2:
-    case 4:
+    case SHIELD_GUARD:
+    case SHIELD_BUCKLER:
+    case SHIELD_MIRRORSHIELD:
       return true;
     }
     return false;
@@ -880,9 +880,9 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
   case JT_SOUL_REAPER_B:
   case JT_ARCH_MAGE:
   case JT_SOUL_ASCETIC:
-    if (view == W_DAGGER && slot == 1) {
+    if (view == W_DAGGER && slot == SEX_MALE) {
       result = true;
-    } else if ((view == W_STAFF || view == W_2HSTAFF) && slot == 0) {
+    } else if ((view == W_STAFF || view == W_2HSTAFF) && slot == SEX_FEMALE) {
       result = true;
     }
     break;
@@ -902,12 +902,12 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
   case JT_SUPERNOVICE2_B:
   case JT_HYPER_NOVICE:
     switch (slot) {
-    case 0:
+    case SEX_FEMALE:
       if (view == W_DAGGER) {
         result = true;
       }
       break;
-    case 1:
+    case SEX_MALE:
       switch (view) {
       case W_1HSWORD:
       case W_2HSWORD:

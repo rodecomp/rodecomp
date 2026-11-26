@@ -300,7 +300,7 @@ void UIComboBoxEx2::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar_Navi();
   this->verticalBar = vertical;
   const int thickness = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(thickness, height);
   vertical->Move((width - 7), 0);
   vertical->OnCreate(thickness, height);
@@ -310,7 +310,7 @@ void UIComboBoxEx2::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize((width - 7), horizontalHeight);
   horizontal->Move(0, (height - 7));
   horizontal->OnCreate((width - 7), horizontalHeight);

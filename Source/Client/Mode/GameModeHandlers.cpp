@@ -747,8 +747,8 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
   case PARTY_BOOKING_DELETE_NOT_EXIST:
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_NOT_EXIST_AD), 0, true, false, 0, "메시지", 280, 120, 0);
     [[fallthrough]];
-  case 0:
-  case 1:
+  case PARTY_BOOKING_DELETE_SUCCESS:
+  case PARTY_BOOKING_DELETE_EXPIRED:
     g_windowMgr.CloseWindow(WID_SEEKPARTYWND);
     break;
   }
@@ -1394,28 +1394,28 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
     const __time32_t* expireTime = &value->expireTime;
     const tm* expire = _localtime32(expireTime);
     const int type = value->type;
-    if (type >= 0x8000 && type <= 0x80FF) {
-      if (type & 0x20) {
+    if (type >= BILLING_PLAN_PACKAGE_MIN && type <= BILLING_PLAN_PACKAGE_MAX) {
+      if (type & BILLING_PACKAGE_PC_BANG_SILVER) {
         std::strcat(text, "(PC방-실버) ");
       }
-      if (type & 0x40) {
+      if (type & BILLING_PACKAGE_PC_BANG_GOLD) {
         std::strcat(text, "(PC방-골드) ");
       }
-      if (type & 0x80) {
+      if (type & BILLING_PACKAGE_PC_BANG_SPECIAL) {
         std::strcat(text, "(PC방-스페셜) ");
       }
-      if (type & 0x01) {
+      if (type & BILLING_PACKAGE_PREMIUM) {
         std::strcat(text, "프리미엄 정액 요금제");
-        if (type & 0x10) {
+        if (type & BILLING_PACKAGE_ADVANCED) {
           std::strcat(text, " + Advanced Package");
         } else {
-          if (type & 0x02) {
+          if (type & BILLING_PACKAGE_EXP_UP) {
             std::strcat(text, " + Exp UP");
           }
-          if (type & 0x04) {
+          if (type & BILLING_PACKAGE_ITEM_UP) {
             std::strcat(text, " + Item UP");
           }
-          if (type & 0x08) {
+          if (type & BILLING_PACKAGE_DEATH_DOWN) {
             std::strcat(text, " + Death Down");
           }
 
@@ -1439,7 +1439,7 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
       }
     } else {
       switch (type) {
-      case 100: {
+      case BILLING_PLAN_PAID: {
         const int remaining = value->remainingTime;
         if (*expireTime > now) {
           if (remaining > 0) {
@@ -1460,10 +1460,10 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
         }
         break;
       }
-      case 1000:
+      case BILLING_PLAN_PC_BANG_UNAVAILABLE:
         std::sprintf(text, "PC방의 요금제 정보는 요청할 수 없습니다.");
         break;
-      case 10000:
+      case BILLING_PLAN_SAKRAY_TWO_HOUR_FREE:
         std::sprintf(text, "귀하는 사크라이 2시간 무료요금제 사용자 입니다.");
         break;
       default:
@@ -1515,10 +1515,10 @@ void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
   }
 
   switch (g_session.partyItemCollect) {
-  case 0:
+  case PARTY_ITEM_PICKUP_INDIVIDUAL:
     std::sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWITEMCOLLECT), LookupMessage(MSI_EXPDIV1));
     break;
-  case 1:
+  case PARTY_ITEM_PICKUP_SHARED:
     std::sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWITEMCOLLECT), LookupMessage(MSI_ITEMCOLLECT2));
     break;
   }
@@ -1527,10 +1527,10 @@ void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
   }
 
   switch (g_session.partyItemDistribute) {
-  case 0:
+  case PARTY_ITEM_SHARE_INDIVIDUAL:
     std::sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWITEMDIV), LookupMessage(MSI_EXPDIV1));
     break;
-  case 1:
+  case PARTY_ITEM_SHARE_EVEN:
     std::sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWITEMDIV), LookupMessage(MSI_EXPDIV2));
     break;
   }
@@ -1953,7 +1953,7 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
 void CGameMode::ReceiveGameOptions(int count, const GameOptionEntry* entries) {
   for (int i = 0; i < count; ++i) {
     switch (entries[i].id) {
-    case 1:
+    case USER_CONFIG_RODEX_SPAM_FILTER:
       g_session.m_gameOptionFlag = entries[i].value != 0;
       break;
     }
@@ -2329,8 +2329,8 @@ void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSet
 // FUNCTION: fn_22033
 void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
   switch (result) {
-  case 1:
-    if (command == 1) {
+  case USER_CONFIG_RODEX_SPAM_FILTER:
+    if (command == USER_CONFIG_UPDATE_FAILED) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_FAIL)), 0x64FFFF, 0, 0, 0);
     }
 

@@ -6,6 +6,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Tables/MessageTable.h"
@@ -120,7 +121,7 @@ void UIRoulletteWnd::OnCreate(int, int) {
   this->m_startButton->SetId(ID_ROULETTE_GENERATE);
   this->AddChild(this->m_startButton);
 
-  if (g_effectDetailLevel == 2) {
+  if (g_effectDetailLevel == SPRITE_QUALITY_HIGH) {
     this->m_startSprite = new UISpriteButton();
     this->m_startSprite->SetSprite("roullette\\Start.spr");
     this->m_startSprite->SetActName("roullette\\Start.act");
@@ -263,7 +264,7 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
 // OFFSET: 0x0080C730
 // FUNCTION: fn_10090
 void UIRoulletteWnd::OnProcess() {
-  if (g_effectDetailLevel != 2) {
+  if (g_effectDetailLevel != SPRITE_QUALITY_HIGH) {
     if (this->m_startButton->geometry.state == 1 && this->m_enabled == 1) {
       if (g_rouletteMgr->m_spinning == 0) {
         this->DrawBitmap(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40,
@@ -396,7 +397,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x0080CCE0
 // FUNCTION: fn_10093
 void UIRoulletteWnd::UpdateButtons() {
-  if (g_effectDetailLevel != 2) {
+  if (g_effectDetailLevel != SPRITE_QUALITY_HIGH) {
     if (g_rouletteMgr->m_stage != 6 &&
         (g_rouletteMgr->m_bronzePoint > 0 || g_rouletteMgr->m_silverPoint >= 10 || g_rouletteMgr->m_goldPoint >= 10)) {
       this->m_startButton->Move(339, 398);

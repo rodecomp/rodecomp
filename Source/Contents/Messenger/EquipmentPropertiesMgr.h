@@ -24,6 +24,11 @@ enum EquipmentPropertyAccumulation : int {
   EQUIP_PROPERTY_NONNEGATIVE_MAX = 4,
 };
 
+enum EquipmentExpansionKind : int {
+  EQUIP_EXPANSION_PET = 0,
+  EQUIP_EXPANSION_RUNE = 1,
+};
+
 struct EquipmentValueC {
   /* 0000 */ int value;
 };

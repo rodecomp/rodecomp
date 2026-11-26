@@ -60,6 +60,7 @@
 #include "Network/Packets/NoticeEnums.h"
 #include "Render/Renderer.h"
 #include "Resource/World/TerrainResource.h"
+#include "UI/Dialogs/AccountLimitedOperation.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Dialogs/UISayDialogWnd.h"
@@ -830,8 +831,8 @@ void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) 
 void CGameMode::ReceiveBasicInfoResult(unsigned char result) {
   auto* volatile& equipWnd = g_windowMgr.equipWnd;
   switch (result) {
-  case 1:
-  case 2:
+  case TAKEOFF_EQUIP_ALL_FAILED:
+  case TAKEOFF_EQUIP_ALL_UNKNOWN_2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_BUSY)), 0xFF, 0, 0, 0);
     if (auto* window = equipWnd) {
       window->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
@@ -880,28 +881,28 @@ void CGameMode::ReceiveRodexComposeResult(const unsigned char* data) {
 // FUNCTION: fn_22077
 void CGameMode::ReceiveWindow154Result(std::int16_t value) {
   switch (value) {
-  case 0: {
+  case ACCOUNT_LIMITED_APPLY_SUCCESS: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_ACCOUNTLIMITEDTOOLWND);
     if (window) {
-      window->SendMsg(nullptr, UM_PARAM, 1, 0, 0, 0);
+      window->SendMsg(nullptr, UM_PARAM, ACCOUNT_LIMITED_APPLY, ACCOUNT_LIMITED_APPLY_SUCCESS, 0, 0);
     }
     break;
   }
-  case 1: {
+  case ACCOUNT_LIMITED_APPLY_UNKNOWN_1: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_ACCOUNTLIMITEDTOOLWND);
     if (window) {
-      window->SendMsg(nullptr, UM_PARAM, 1, 1, 0, 0);
+      window->SendMsg(nullptr, UM_PARAM, ACCOUNT_LIMITED_APPLY, ACCOUNT_LIMITED_APPLY_UNKNOWN_1, 0, 0);
     }
     break;
   }
-  case 3: {
+  case ACCOUNT_LIMITED_APPLY_UNKNOWN_3: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_ACCOUNTLIMITEDTOOLWND);
     if (window) {
-      window->SendMsg(nullptr, UM_PARAM, 1, 3, 0, 0);
+      window->SendMsg(nullptr, UM_PARAM, ACCOUNT_LIMITED_APPLY, ACCOUNT_LIMITED_APPLY_UNKNOWN_3, 0, 0);
     }
     break;
   }
-  case 2:
+  case ACCOUNT_LIMITED_APPLY_ALREADY_REGISTERED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_ALREADY_REGISTERED_MSG)), 0xFF, 0, 0, 0);
     break;
   }
@@ -1638,7 +1639,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
 // FUNCTION: fn_22045
 void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
   switch (reinterpret_cast<const ByteValuePacket*>(packet)->value) {
-  case 0: {
+  case STYLING_SHOP_BUY_SUCCESS: {
     PacketIdOnly request;
     request.id = ID_CZ_CLOSE_UI_STYLINGSHOP;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
@@ -1646,8 +1647,8 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
     g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
     break;
   }
-  case 1:
-  case 2:
+  case STYLING_SHOP_BUY_FAILED:
+  case STYLING_SHOP_BUY_UNKNOWN_2:
     g_windowMgr.Confirm(LookupMessage(MSI_SKILL_FAIL), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }
@@ -4964,7 +4965,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const StovePurchaseResultPacket*>(data);
   std::string message;
   switch (packet->result) {
-  case 0: {
+  case STOVE_PURCHASE_SUCCESS: {
     char name[256];
     std::memset(name, 0, sizeof(name));
     int capacity = sizeof(name);
@@ -4973,7 +4974,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     item.GetIdDisplayName(name, capacity, 0);
     message = static_cast<const std::string&>(FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count));
   }
-  case 2:
+  case STOVE_PURCHASE_RESUME_PENDING_OPERATION:
     switch (g_stoveMgr->m_pendingOperation) {
     case STOVE_OPERATION_TERMS_AGREEMENT:
       g_stoveMgr->FetchStoveTermsAgreement();
@@ -4986,16 +4987,16 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     }
     }
     break;
-  case 1:
+  case STOVE_PURCHASE_NOT_STOVE_USER:
     message = static_cast<const std::string&>(FormatOwnedString("Stove 유저가 아닙니다."));
     break;
-  case 5:
-  case 6:
-  case 7:
+  case STOVE_PURCHASE_UNKNOWN_5:
+  case STOVE_PURCHASE_UNKNOWN_6:
+  case STOVE_PURCHASE_UNKNOWN_7:
     message = static_cast<const std::string&>(FormatOwnedString("아이템 수령 실패"));
     break;
-  case 3:
-  case 4:
+  case STOVE_PURCHASE_UNKNOWN_3:
+  case STOVE_PURCHASE_UNKNOWN_4:
     message = LookupMessage(MSI_PICKUP_FAILED_ITEMCREATE);
     break;
   default:
@@ -5483,6 +5484,20 @@ void CRenewQuestMgr::SetOngoingQuest(unsigned int id, const RenewQuestOngoingInf
   this->m_ongoingQuests[id] = info;
 }
 
+namespace {
+  enum StarSkillNoticeType : unsigned char {
+    STAR_SKILL_PLACE_REGISTERED = 0,
+    STAR_SKILL_PLACE_ALREADY_REGISTERED = 1,
+    STAR_SKILL_MONSTER_REGISTERED = 10,
+    STAR_SKILL_MONSTER_ALREADY_REGISTERED = 11,
+    STAR_SKILL_TAEKWON_MISSION = 20,
+    STAR_SKILL_TAMING_MISSION = 21,
+    STAR_SKILL_COLLECTOR_MISSION = 22,
+    STAR_SKILL_FEEL_HATE_RESET = 30,
+    STAR_SKILL_TARGET_HP = 40,
+  };
+}
+
 #pragma pack(push, 1)
 struct SpecialBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
@@ -5505,13 +5520,13 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
 
   std::string text;
   switch (packet->type) {
-  case 0:
+  case STAR_SKILL_PLACE_REGISTERED:
     {
       const int messageId = packet->index + 837;
       text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), packet->name));
     }
     break;
-  case 1:
+  case STAR_SKILL_PLACE_ALREADY_REGISTERED:
     {
       const int messageId = packet->index + 840;
       text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), packet->name));
@@ -5519,13 +5534,13 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 10:
+  case STAR_SKILL_MONSTER_REGISTERED:
     {
       const int messageId = packet->index + 843;
       text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
     }
     break;
-  case 11:
+  case STAR_SKILL_MONSTER_ALREADY_REGISTERED:
     {
       const int messageId = packet->index + 846;
       text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
@@ -5533,15 +5548,15 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case 20:
+  case STAR_SKILL_TAEKWON_MISSION:
     text.assign(FormatOwnedString(LookupMessage(MSI_TAEKWON_MISSION), packet->name, packet->index));
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 21:
+  case STAR_SKILL_TAMING_MISSION:
     text.assign(FormatOwnedString(LookupMessage(MSI_GANGSI_MISSION), packet->name));
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 22: {
+  case STAR_SKILL_COLLECTOR_MISSION: {
     ITEM_INFO item;
     item.SetItemId(packet->value);
     char itemName[256];
@@ -5551,11 +5566,11 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
-  case 30:
+  case STAR_SKILL_FEEL_HATE_RESET:
     text = LookupMessage(MSI_STAR_ANGEL);
     player->LaunchEffect(EF_ELECTRIC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 40:
+  case STAR_SKILL_TARGET_HP:
     text = std::format("Target HP : {}", packet->value);
     break;
   }
@@ -7850,47 +7865,47 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
 // OFFSET: 0x00D69530
 // FUNCTION: fn_22050
 void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
-  if (kind == 100) {
+  if (kind == STORE_ASSISTANT_VENDING) {
     switch (result) {
-      case 0:
+      case STORE_ASSISTANT_SUCCESS:
         g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         g_session.ClearMerchantPurchaseSavedItems();
         break;
-      case 1:
-      case 2:
-      case 3: {
+      case STORE_ASSISTANT_UNKNOWN_1:
+      case STORE_ASSISTANT_INVALID_POSITION:
+      case STORE_ASSISTANT_NPC_AROUND: {
         UIWindow* window = g_windowMgr.LookupWindow(WID_MERCHANTSHOPMAKEWND);
         if (window) {
           static_cast<UIMerchantShopMakeWnd*>(window)->SetSuspended(0);
         }
         break;
       }
-      case 4:
-      case 6:
-      case 7:
+      case STORE_ASSISTANT_UNKNOWN_4:
+      case STORE_ASSISTANT_UNKNOWN_6:
+      case STORE_ASSISTANT_UNKNOWN_7:
         g_session.ClearMerchantPurchaseSavedItems();
         g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         break;
     }
-  } else if (kind == 101) {
+  } else if (kind == STORE_ASSISTANT_BUYING) {
     switch (result) {
-      case 0:
+      case STORE_ASSISTANT_SUCCESS:
         g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
         g_session.ClearMerchantPurchaseSavedItems();
         break;
-      case 1:
-      case 2:
-      case 3: {
+      case STORE_ASSISTANT_UNKNOWN_1:
+      case STORE_ASSISTANT_INVALID_POSITION:
+      case STORE_ASSISTANT_NPC_AROUND: {
         UIWindow* window = g_windowMgr.LookupWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
         if (window) {
           static_cast<UIMerchantShopMakeWnd*>(window)->SetSuspended(0);
         }
         break;
       }
-      case 4:
-      case 6:
-      case 7:
-      case 8:
+      case STORE_ASSISTANT_UNKNOWN_4:
+      case STORE_ASSISTANT_UNKNOWN_6:
+      case STORE_ASSISTANT_UNKNOWN_7:
+      case STORE_ASSISTANT_OVERWEIGHT:
         g_session.ClearMerchantPurchaseSavedItems();
         g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
         g_windowMgr.CloseWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);

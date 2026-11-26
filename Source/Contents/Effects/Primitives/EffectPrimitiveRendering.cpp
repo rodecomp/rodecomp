@@ -1006,226 +1006,226 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   float textureV = g_projectionDepthNumerator;
 
   switch (static_cast<int>(this->state.size)) {
-  case 0:
+  case TEI_RECT_WHITE_ALPHA_BLEND:
     blend = 6;
     break;
-  case 1:
+  case TEI_RECT_PALE_RED:
     red = 255;
     green = 175;
     blue = 175;
     break;
-  case 2:
+  case TEI_RECT_PALE_BLUE_ALPHA_BLEND:
     red = 195;
     green = 195;
     blue = 255;
     blend = 6;
     break;
-  case 3:
+  case TEI_RECT_FAINT_WHITE_ALPHA_BLEND:
     alphaB = 80;
     blend = 6;
     break;
-  case 4:
+  case TEI_RECT_SOFT_BLUE:
     red = 100;
     green = 100;
     blue = 255;
     break;
-  case 6:
+  case TEI_RECT_SOFT_RED:
     red = 255;
     green = 100;
     blue = 100;
     break;
-  case 7:
+  case TEI_RECT_SOFT_GREEN:
     red = 100;
     green = 255;
     blue = 100;
     break;
-  case 8:
+  case TEI_RECT_PALE_YELLOW:
     red = 255;
     green = 255;
     blue = 170;
     break;
-  case 9:
+  case TEI_RECT_MUTED_GREEN:
     red = 140;
     green = 210;
     blue = 140;
     break;
-  case 10:
+  case TEI_RECT_ROSE_PINK:
     red = 255;
     green = 89;
     blue = 182;
     break;
-  case 11:
+  case TEI_RECT_LAVENDER_BLUE:
     red = 170;
     green = 170;
     blue = 255;
     break;
-  case 12:
+  case TEI_RECT_DARK_GRAY_ALPHA_BLEND:
     red = 50;
     green = 50;
     blue = 50;
     blend = 6;
     break;
-  case 13:
+  case TEI_RECT_MAGENTA_ALPHA_BLEND:
     red = 255;
     green = 50;
     blue = 255;
     blend = 6;
     break;
-  case 14:
+  case TEI_RECT_BLUE_ALPHA_BLEND:
     red = 120;
     green = 120;
     blue = 255;
     blend = 6;
     break;
-  case 15:
+  case TEI_RECT_BRIGHT_GREEN:
     red = 10;
     green = 255;
     blue = 10;
     break;
-  case 16:
+  case TEI_RECT_LIME_GREEN:
     red = 20;
     green = 255;
     blue = 20;
     break;
-  case 17:
+  case TEI_RECT_BLUE:
     red = 0;
     green = 0;
     blue = 255;
     break;
-  case 18:
+  case TEI_RECT_RED:
     red = 255;
     green = 0;
     blue = 0;
     break;
-  case 19:
+  case TEI_RECT_GREEN:
     red = 0;
     green = 255;
     blue = 0;
     break;
-  case 20:
+  case TEI_RECT_YELLOW:
     red = 255;
     green = 255;
     blue = 0;
     break;
-  case 21:
+  case TEI_RECT_MAGENTA:
     red = 255;
     green = 0;
     blue = 255;
     break;
-  case 22:
+  case TEI_RECT_CYAN:
     red = 0;
     green = 255;
     blue = 255;
     break;
-  case 23:
+  case TEI_RECT_STEEL_BLUE_ALPHA_BLEND:
     red = 41;
     green = 94;
     blue = 188;
     blend = 6;
     break;
-  case 24:
+  case TEI_RECT_DARK_BLUE:
     red = 10;
     green = 66;
     blue = 114;
     break;
-  case 25:
+  case TEI_RECT_CERULEAN:
     red = 35;
     green = 146;
     blue = 185;
     break;
-  case 26:
+  case TEI_RECT_LIGHT_BLUE:
     red = 164;
     green = 205;
     blue = 254;
     break;
-  case 27:
+  case TEI_RECT_SKY_BLUE:
     red = 84;
     green = 169;
     blue = 205;
     break;
-  case 28:
+  case TEI_RECT_BLUE_VIOLET:
     red = 108;
     green = 26;
     blue = 255;
     break;
-  case 29:
+  case TEI_RECT_YELLOW_GREEN:
     red = 177;
     green = 255;
     blue = 58;
     break;
-  case 30:
+  case TEI_RECT_DEEP_VIOLET:
     red = 85;
     green = 30;
     blue = 185;
     break;
-  case 31:
+  case TEI_RECT_PEACH:
     red = 244;
     green = 187;
     blue = 124;
     break;
-  case 32:
+  case TEI_RECT_BLACK_ALPHA_BLEND:
     red = green = blue = 0;
     blend = 6;
     break;
-  case 40:
+  case TEI_RECT_VIVID_BLUE:
     red = 70;
     green = 70;
     blue = 255;
     break;
-  case 41:
+  case TEI_RECT_DEEP_BLUE:
     red = 30;
     green = 30;
     blue = 255;
     break;
-  case 42:
+  case TEI_RECT_CHARCOAL_ALPHA_BLEND:
     red = 43;
     green = 40;
     blue = 46;
     blend = 6;
     break;
-  case 43:
+  case TEI_RECT_SEA_GREEN_ALPHA_BLEND:
     red = 125;
     green = 182;
     blue = 160;
     blend = 6;
     break;
-  case 44:
+  case TEI_RECT_BRICK_RED_ALPHA_BLEND:
     red = 180;
     green = 55;
     blue = 30;
     blend = 6;
     break;
-  case 45:
+  case TEI_RECT_AZURE:
     red = 65;
     green = 141;
     blue = 231;
     break;
-  case 46:
+  case TEI_RECT_RUST_RED:
     red = 164;
     green = 47;
     blue = 29;
     break;
-  case 47:
+  case TEI_RECT_DARK_GOLD:
     red = 172;
     green = 154;
     blue = 56;
     break;
-  case 48:
+  case TEI_RECT_MAROON:
     red = 80;
     green = 20;
     blue = 20;
     break;
-  case 49:
+  case TEI_RECT_COPPER:
     red = 200;
     green = 130;
     blue = 84;
     break;
-  case 50:
+  case TEI_RECT_AMBER:
     red = 255;
     green = 198;
     blue = 91;
     break;
-  case 100:
+  case TEI_RECT_ICE_WHITE_CROPPED:
     red = 250;
     green = 250;
     blue = 255;
@@ -3307,11 +3307,11 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       const vector3d p4 = Sum(base, vec4);
 
       switch (this->state.slots[0].flag1[2]) {
-      case 0:
-      case 3:
+      case SPIRAL_BLADE_UNKNOWN_0:
+      case SPIRAL_BLADE_UNKNOWN_3:
         this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p2, p3, p4, wtm, 1, static_cast<unsigned char>(slot.flag1[0]), 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 4:
+      case SPIRAL_BLADE_TORCH_RED:
         this->RenderTeiRect(
           &rpCnt, slot.alphaB, p2, p1, p4, p3, wtm, 0, static_cast<short>(i + slot.flag1[0]) % static_cast<int>(this->state.totalTexture), 1, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0
         );
@@ -3466,83 +3466,83 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
 
     const unsigned char texture = static_cast<unsigned char>(this->state.slots[ec].flag1[0]);
     switch (this->state.slots[0].flag1[2]) {
-      case 0:
+      case FIELD_PANEL_WHITE_ALPHA_BLEND:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 1:
+      case FIELD_PANEL_PALE_BLUE:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 150, 150, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 2:
+      case FIELD_PANEL_REVERSED_BLUE:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 130, 130, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 3:
+      case FIELD_PANEL_MUTED_YELLOW:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 200, 200, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 4:
+      case FIELD_PANEL_REVERSED_WHITE_ALPHA_BLEND:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 7:
-      case 23:
+      case FIELD_PANEL_REVERSED_WHITE:
+      case FIELD_PANEL_ANIMATED_WHITE:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 8:
+      case FIELD_PANEL_PALE_GREEN:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 135, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 10:
+      case FIELD_PANEL_PALE_YELLOW:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 250, 250, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 11:
+      case FIELD_PANEL_PALE_MINT:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 220, 250, 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 12:
+      case FIELD_PANEL_PEACH:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 252, 171, 143, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 13:
+      case FIELD_PANEL_SOFT_RED:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 14:
+      case FIELD_PANEL_DARK_RED:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 94, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 15:
+      case FIELD_PANEL_PALE_MAGENTA:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 16:
+      case FIELD_PANEL_BLACK:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 17:
+      case FIELD_PANEL_PALE_RED:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 18:
+      case FIELD_PANEL_HALF_ALPHA_WHITE:
         this->RenderTeiRect(&rpCnt, static_cast<short>(this->state.slots[ec].alphaB / 2), vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 24:
+      case FIELD_PANEL_INDIGO:
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 63, 72, 204, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 9:
+      case FIELD_PANEL_SELECTED_TINT:
         switch (this->state.slots[0].flag1[3]) {
-        case 1:
+        case FIELD_PANEL_TINT_RED:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 135, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
-        case 2:
+        case FIELD_PANEL_TINT_ORANGE:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 205, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
-        case 3:
+        case FIELD_PANEL_TINT_YELLOW:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
-        case 4:
+        case FIELD_PANEL_TINT_WHITE_ALPHA_BLEND:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
-        case 5:
+        case FIELD_PANEL_TINT_BLUE:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 135, 135, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
-        case 6:
+        case FIELD_PANEL_TINT_WHITE_ADDITIVE:
           this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         default:
           break;
         }
         break;
-      case 25:
+      case FIELD_PANEL_LOWERED_WHITE:
         vec1.y -= 110.0f;
         vec2.y -= 110.0f;
         vec3.y -= 110.0f;
@@ -3811,37 +3811,37 @@ void CEffectPrim::RenderStackedRings(matrix& wtm) {
       vec4.Set(radius * g_cosTable[angle], y, radius * g_sinTable[angle]);
 
       switch (slot.flag1[4]) {
-      case 0:
+      case STACKED_RING_BLUE_ADDITIVE:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 1:
+      case STACKED_RING_GOLD:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 164, 136, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 2:
+      case STACKED_RING_GREEN:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 3:
+      case STACKED_RING_BLUE_ALPHA_BLEND:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 130, 130, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 4:
+      case STACKED_RING_RED:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 5:
+      case STACKED_RING_NEAR_BLACK:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 5, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 6:
+      case STACKED_RING_WHITE:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 7:
+      case STACKED_RING_MAGENTA:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 8:
+      case STACKED_RING_FAINT_PALE_BLUE:
         this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 10), vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 225, 225, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 10:
+      case STACKED_RING_PALE_BLUE_ADDITIVE:
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 125, 125, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 11:
+      case STACKED_RING_RED_WITH_WHITE_GLOW:
         this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 3), vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 55, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
@@ -8166,7 +8166,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     vec4 = {dist * g_cosTable[angle], 0.0f, dist * g_sinTable[angle]};
 
     const char kind = this->state.slots[ec].flag1[2];
-    if (kind == 3) {
+    if (kind == TEI_FACING_OFFSET_WHITE_ALPHA_BLEND) {
       vec1.x += 3.1f;
       vec2.x += 3.1f;
       vec3.x += 3.1f;
@@ -8175,7 +8175,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
       vec3.z += 6.0f;
       vec2.z += 6.0f;
       vec1.z += 6.0f;
-    } else if (kind >= 17 && kind <= 31) {
+    } else if (kind >= TEI_FACING_RAISED_WHITE && kind <= TEI_FACING_UNKNOWN_31) {
       vec4.z += 6.0f;
       vec3.z += 6.0f;
       vec2.z += 6.0f;
@@ -8191,42 +8191,42 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     vec4 += base;
 
     switch (kind) {
-    case 0:
-    case 3:
+    case TEI_FACING_WHITE_ALPHA_BLEND:
+    case TEI_FACING_OFFSET_WHITE_ALPHA_BLEND:
       this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 2:
+    case TEI_FACING_PALE_BLUE:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 130, 130, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    case 4:
+    case TEI_FACING_WHITE_ADDITIVE:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    case 5:
+    case TEI_FACING_SOFT_GREEN:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 125, 255, 125, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    case 10:
+    case TEI_FACING_GRAY:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 150, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    case 12:
+    case TEI_FACING_DARK_GRAY:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    case 15:
+    case TEI_FACING_TEAL:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 51, 153, 153, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 16:
+    case TEI_FACING_OVERHEAD_WHITE:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 1, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 3);
       break;
-    case 17:
+    case TEI_FACING_RAISED_WHITE:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 18:
+    case TEI_FACING_RAISED_BLUE_GLOW:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 155, 155, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 19:
+    case TEI_FACING_RAISED_GREEN_GLOW:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 5, 255, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 20:
+    case TEI_FACING_RAISED_RED_GLOW:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 32:
+    case TEI_FACING_RED_ADDITIVE:
       this->RenderTeiRect(&rpCnt, alpha, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
     }

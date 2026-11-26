@@ -25,6 +25,11 @@
 #include <cstring>
 #include <windows.h>
 
+enum AgitMenuAction : std::intptr_t {
+  AGIT_MENU_MOVE = 0,
+  AGIT_MENU_INVEST = 1,
+};
+
 // OFFSET: 0x009537B0
 // FUNCTION: fn_12992
 UIAgitMessageBox::UIAgitMessageBox()
@@ -162,7 +167,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 
   switch (a) {
-  case 0: {
+  case AGIT_MENU_MOVE: {
     if (g_session.GetSiegeMode() == 1) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_AGIT_MOVE_FAIL_MAP)), 0xFF, 0, 0, 0);
       return 0;
@@ -189,7 +194,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     break;
   }
-  case 1: {
+  case AGIT_MENU_INVEST: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     uint16_t agitId = static_cast<uint16_t>((&g_guildInfo)->GetAgitId(this->m_agitIndex));
     mode->SendMsg(MM_REQ_AGIT_INVESTMENT, agitId, 0, 0, 0);

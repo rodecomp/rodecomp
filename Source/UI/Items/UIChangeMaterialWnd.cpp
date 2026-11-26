@@ -618,7 +618,7 @@ void UIChangeMaterialWnd_ScrollBar::Paint() {
   }
 
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     CBitmapRes* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_up_br.bmp")));
     CBitmapRes* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_arrow_down_br.bmp")));
     CBitmapRes* track = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\ChangeMaterial\\scroll_bg_br.bmp")));

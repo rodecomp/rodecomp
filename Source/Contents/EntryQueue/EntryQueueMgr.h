@@ -47,6 +47,11 @@ enum EntryQueueNoticeResult : std::uint8_t {
   ENTRYQUEUE_NOTICE_FAIL_CHOICE = 14,
 };
 
+enum EntryQueueLobbyAdmissionResult : std::uint8_t {
+  ENTRYQUEUE_LOBBY_ADMISSION_DECLINED = 0,
+  ENTRYQUEUE_LOBBY_ADMISSION_ACCEPTED = 1,
+};
+
 struct EntryQueueNotice {
   /* 0000 */ std::uint16_t id;
   /* 0002 */ std::uint8_t result;

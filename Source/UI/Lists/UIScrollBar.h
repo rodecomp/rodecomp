@@ -3,6 +3,11 @@
 
 #include "UI/Window/UIWindow.h"
 
+enum ScrollBarOrientation : int {
+  SCROLLBAR_HORIZONTAL = 0,
+  SCROLLBAR_VERTICAL = 1,
+};
+
 class UIScrollBar : public UIWindow {
 public:
   UIScrollBar();

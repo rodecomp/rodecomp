@@ -2141,7 +2141,7 @@ void CRagEffect::AttackEnergy2(const char* name) {
   this->state.lastPrim->state.totalTexture = 1;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   int index;
   for (index = 0; index < 4; ++index) {
@@ -3050,7 +3050,7 @@ void CRagEffect::TexturedPulse(const char* name) {
   this->state.lastPrim->state.totalTexture = 1;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
   this->state.lastPrim->state.slots[3].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[1].life = 0;
@@ -3103,7 +3103,7 @@ void CRagEffect::TexturedBurst(const char* name) {
   this->state.lastPrim->state.totalTexture = 1;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 100.0f;
+  this->state.lastPrim->state.size = TEI_RECT_ICE_WHITE_CROPPED;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -4404,7 +4404,7 @@ void CRagEffect::FeatherBurst(const char* name, std::int16_t angle, char) {
   this->state.lastPrim->state.totalTexture = 1;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 10.0f;
+  this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
 
   int slot;
   for (slot = 0; slot < 4; ++slot) {
@@ -4441,9 +4441,9 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   if (large == 1) {
-    this->state.lastPrim->state.size = 10.0f;
+    this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
   } else {
-    this->state.lastPrim->state.size = 4.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
   }
 
   int index;
@@ -4782,15 +4782,15 @@ void CRagEffect::TexturedColumn(const char* name, char kind) {
   if (kind == 30) {
     this->state.lastPrim->state.slots[0].distance = 36.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 19;
+    this->state.lastPrim->state.slots[0].flag1[2] = POLYGON_FRAME_GREEN;
   } else if (kind == 31) {
     this->state.lastPrim->state.slots[0].distance = 36.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 21;
+    this->state.lastPrim->state.slots[0].flag1[2] = POLYGON_FRAME_PALE_GREEN;
   } else {
     this->state.lastPrim->state.slots[0].distance = 5.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 2;
+    this->state.lastPrim->state.slots[0].flag1[2] = POLYGON_FRAME_UNKNOWN_2;
   }
 
   this->state.lastPrim->state.slots[0].height[10] = 0.0f;
@@ -5210,7 +5210,7 @@ void CRagEffect::TexturedCross(const char* name, char kind) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 5.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
 
   if (kind != 0) {
     return;
@@ -5358,7 +5358,7 @@ void CRagEffect::FirstAid() {
   this->state.lastPrim->state.slots[0].height[6] = 0.02f;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 1;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_PALE_BLUE;
   this->state.lastPrim->state.slots[0].height[8] = static_cast<float>(ClampedRandom(360));
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[1].alphaB = 0;
@@ -5429,7 +5429,7 @@ void CRagEffect::Magnum2(const char* name) {
       this->state.lastPrim->state.totalTexture = 1;
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-      this->state.lastPrim->state.size = 5.0f;
+      this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
 
       int i;
       for (i = 0; i < 4; ++i) {
@@ -5465,7 +5465,7 @@ void CRagEffect::TexturedCrossLevel(const char* name, char level) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
   this->state.lastPrim->state.accel = 99.0f;
 
   for (int index = 0; index < 4; ++index) {
@@ -5502,7 +5502,7 @@ void CRagEffect::TexturedCrossFade(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -5565,17 +5565,17 @@ void CRagEffect::TexturedRain(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].height[1] = 3.0f;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 7;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_REVERSED_WHITE;
 
   if (kind == 1) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
-    this->state.lastPrim->state.slots[0].flag1[3] = 1;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
+    this->state.lastPrim->state.slots[0].flag1[3] = FIELD_PANEL_TINT_RED;
   } else if (kind == 2) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
-    this->state.lastPrim->state.slots[0].flag1[3] = 3;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
+    this->state.lastPrim->state.slots[0].flag1[3] = FIELD_PANEL_TINT_YELLOW;
   } else if (kind == 3) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
-    this->state.lastPrim->state.slots[0].flag1[3] = 4;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
+    this->state.lastPrim->state.slots[0].flag1[3] = FIELD_PANEL_TINT_WHITE_ALPHA_BLEND;
   }
 
   this->state.lastPrim->state.slots[0].flag1[4] = kind;
@@ -5669,7 +5669,7 @@ void CRagEffect::ThunderSparks() {
     this->state.lastPrim->state.slots[index].fullDisplayAngle = 0;
     this->state.lastPrim->state.slots[index].flag1[0] = 0;
     this->state.lastPrim->state.slots[index].flag1[1] = 0;
-    this->state.lastPrim->state.slots[index].flag1[2] = 10;
+    this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_YELLOW;
     this->state.lastPrim->state.slots[index].height[7] = 0.0f;
   }
 }
@@ -5689,10 +5689,10 @@ void CRagEffect::TexturedCrossKind(const char* name, char level) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
 
   if (level == 3) {
-    this->state.lastPrim->state.size = 17.0f;
+    this->state.lastPrim->state.size = TEI_RECT_BLUE;
   }
 
   for (int index = 0; index < 4; ++index) {
@@ -5931,7 +5931,7 @@ void CRagEffect::TexturedShieldThrow(const char* name) {
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
   this->state.lastPrim->state.slots[0].flag1[1] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 0;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_WHITE_ALPHA_BLEND;
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[1].alphaB = 0;
   this->state.lastPrim->state.slots[2].life = 1;
@@ -5955,11 +5955,11 @@ void CRagEffect::TexturedCrossStaged(const char* name, char level) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   if (level <= 1) {
-    this->state.lastPrim->state.size = 4.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
   } else if (level == 2) {
-    this->state.lastPrim->state.size = 7.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_GREEN;
   } else if (level == 3) {
-    this->state.lastPrim->state.size = 6.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_RED;
   }
 
   for (int index = 0; index < 4; ++index) {
@@ -6176,11 +6176,11 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
     this->state.lastPrim->state.slots[index].flag1[1] = 1;
 
     if (kind == 0) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 11;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_MINT;
     } else if (kind == 1) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 1;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_BLUE;
     } else if (kind == 2) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 7;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_REVERSED_WHITE;
     }
 
     this->state.lastPrim->state.slots[index].height[7] = 0.0f;
@@ -6868,13 +6868,13 @@ void CRagEffect::SnowFall(const char*, char kind) {
     this->state.lastPrim->state.slots[index].flag1[1] = 1;
 
     if (kind == 0) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 11;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_MINT;
     } else if (kind == 1) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 1;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_BLUE;
     } else if (kind == 2) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 1;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_BLUE;
     } else if (kind == 3) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 13;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_SOFT_RED;
     }
 
     this->state.lastPrim->state.slots[index].height[7] = 0.0f;
@@ -7065,11 +7065,11 @@ void CRagEffect::WhiteRingRipple(char size) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_white.tga", 0, false, true, false);
 
   if (size == 1) {
-    this->state.lastPrim->state.size = 8.0f;
+    this->state.lastPrim->state.size = TEI_RECT_PALE_YELLOW;
   } else if (size == 2) {
-    this->state.lastPrim->state.size = 6.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_RED;
   } else {
-    this->state.lastPrim->state.size = 4.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
   }
 
   this->state.lastPrim->state.slots[0].life = 1;
@@ -7349,7 +7349,7 @@ void CRagEffect::TexturedTripleOrbit(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 16.0f;
+  this->state.lastPrim->state.size = TEI_RECT_LIME_GREEN;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -7467,12 +7467,12 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
     this->state.lastPrim->state.slots[i].flag1[0] = 0;
     this->state.lastPrim->state.slots[i].flag1[1] = 1;
     if (kind == 0 || kind == 2) {
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
     } else {
       if (kind == 3) {
-        this->state.lastPrim->state.slots[i].flag1[2] = 18;
+        this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_HALF_ALPHA_WHITE;
       } else {
-        this->state.lastPrim->state.slots[i].flag1[2] = 1;
+        this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_BLUE;
       }
     }
 
@@ -7894,7 +7894,7 @@ void CRagEffect::TexturedQuadSpiral(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
 
   for (long long i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
@@ -8423,7 +8423,7 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -8613,23 +8613,23 @@ void CRagEffect::TetraVortexPillar(char kind) {
   if (kind == 4) {
     switch (this->state.type) {
     case EF_TETRA_WIND:
-      this->state.lastPrim->state.slots[0].flag1[2] = 17;
+      this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_WHITE;
       break;
     case EF_TETRA_WATER:
-      this->state.lastPrim->state.slots[0].flag1[2] = 18;
+      this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_BLUE_GLOW;
       break;
     case EF_TETRA_GROUND:
-      this->state.lastPrim->state.slots[0].flag1[2] = 19;
+      this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_GREEN_GLOW;
       break;
     case EF_TETRA_FIRE:
-      this->state.lastPrim->state.slots[0].flag1[2] = 20;
+      this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_RED_GLOW;
       break;
     }
 
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 120;
     this->state.lastPrim->state.slots[0].height[10] = 1.0f;
   } else {
-    this->state.lastPrim->state.slots[0].flag1[2] = 17;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_WHITE;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
   }
@@ -8737,7 +8737,7 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -8950,7 +8950,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
     this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(11)) * 0.1f + 3.0f;
     this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].flag1[2] = 7;
+    this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_REVERSED_WHITE;
   }
 }
 
@@ -9085,7 +9085,7 @@ void CRagEffect::HealCloudRings() {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -9382,7 +9382,7 @@ static __forceinline void LaunchRippleRings(CRagEffect& effect, const char* name
   if (kind == 0) {
     effect.state.lastPrim->state.size = smallSize;
   } else if (kind == 1) {
-    effect.state.lastPrim->state.size = 18.0f;
+    effect.state.lastPrim->state.size = TEI_RECT_RED;
   }
 
   SetupRippleSlot(effect, 0, static_cast<std::int16_t>(270 + turn), 2.5f + growth, static_cast<std::int16_t>(53 - turn));
@@ -10820,27 +10820,27 @@ void CRagEffect::SkyCloud(char kind) {
     this->state.lastPrim->state.slots[index].height[8] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 12;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PEACH;
     } else if (kind == 5) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 14;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_DARK_RED;
     } else if (kind == 7) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 16;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_BLACK;
     } else if (kind == 8) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 17;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_RED;
     } else if (kind == 9) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 23;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_ANIMATED_WHITE;
     } else if (kind == 15) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 25;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_LOWERED_WHITE;
     } else if (kind == 11) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 14;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_DARK_RED;
     } else if (kind == 12) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 16;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_BLACK;
     } else if (kind == 13) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 17;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_PALE_RED;
     } else if (kind == 14) {
-      this->state.lastPrim->state.slots[index].flag1[2] = 24;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_INDIGO;
     } else {
-      this->state.lastPrim->state.slots[index].flag1[2] = 0;
+      this->state.lastPrim->state.slots[index].flag1[2] = FIELD_PANEL_WHITE_ALPHA_BLEND;
     }
   }
 }
@@ -12072,7 +12072,7 @@ void CRagEffect::Bubble_Drop() {
   this->state.lastPrim->state.slots[0].height[1] = 1.0f;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<short>(ClampedRandom(360));
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 2;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_REVERSED_BLUE;
   this->state.lastPrim->state.slots[0].flag1[4] = static_cast<char>(static_cast<int>(count));
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -12182,7 +12182,7 @@ void CRagEffect::Bottom_Out(const char* name, char kind) {
 
     this->state.lastPrim->state.slots[i].fullDisplayAngle = 45;
     this->state.lastPrim->state.slots[i].flag1[0] = 0;
-    this->state.lastPrim->state.slots[i].flag1[2] = 2;
+    this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_REVERSED_BLUE;
     this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     this->state.lastPrim->state.slots[i].flag1[1] = kind;
   }
@@ -12227,7 +12227,7 @@ void CRagEffect::TANJI2() {
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
   this->state.lastPrim->state.slots[0].flag1[1] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 1;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_PALE_BLUE;
   this->state.lastPrim->state.slots[0].height[7] = 0.0f;
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -12271,7 +12271,7 @@ void CRagEffect::TEIHIT2() {
     this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
     this->state.lastPrim->state.slots[i].flag1[0] = 0;
     this->state.lastPrim->state.slots[i].flag1[1] = 0;
-    this->state.lastPrim->state.slots[i].flag1[2] = 2;
+    this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_REVERSED_BLUE;
     this->state.lastPrim->state.slots[i].height[7] = 0.0f;
   }
 }
@@ -12309,7 +12309,7 @@ void CRagEffect::ShieldBoomerang3(const char* name) {
   this->state.lastPrim->state.slots[0].vecBNow.z -= this->state.lastPrim->state.slots[0].height[1] * 15.0f * g_sinTable[this->state.lastPrim->state.slots[0].rotStart];
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 0;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_WHITE_ALPHA_BLEND;
 
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[1].alphaB = 0;
@@ -12366,13 +12366,13 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
     this->state.lastPrim->state.slots[i].flag1[1] = 1;
 
     if (kind == 0) {
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
     } else if (kind == 1) {
-      this->state.lastPrim->state.slots[i].flag1[2] = 1;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_BLUE;
     } else if (kind == 2) {
-      this->state.lastPrim->state.slots[i].flag1[2] = 1;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_BLUE;
     } else if (kind == 3) {
-      this->state.lastPrim->state.slots[i].flag1[2] = 13;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_SOFT_RED;
     }
 
     this->state.lastPrim->state.slots[i].height[7] = 0.0f;
@@ -12450,17 +12450,17 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].height[7] = 0.0f;
 
   if (kind == 0) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 8;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_PALE_GREEN;
   } else if (kind == 1) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
     this->state.lastPrim->state.slots[0].flag1[3] = static_cast<char>(this->state.count);
   } else if (kind >= 10) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
-    this->state.lastPrim->state.slots[0].flag1[3] = 4;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
+    this->state.lastPrim->state.slots[0].flag1[3] = FIELD_PANEL_TINT_WHITE_ALPHA_BLEND;
   } else if (kind == 2) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_WHITE_ALPHA_BLEND;
   } else if (kind == 3) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 15;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_PALE_MAGENTA;
   }
 
   for (int stepIdx = 0; stepIdx < 100; ++stepIdx) {
@@ -12559,7 +12559,7 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].rotStart = ClampedRandom(360);
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 45;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
-  this->state.lastPrim->state.slots[0].flag1[2] = 2;
+  this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_REVERSED_BLUE;
   this->state.lastPrim->state.slots[0].height[7] = 0.0f;
 
   if (kind == 4) {
@@ -12578,17 +12578,17 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
   }
 
   if (kind == 3) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 3;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_MUTED_YELLOW;
     return;
   }
 
   if (kind == 5 || kind == 6) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 4;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_REVERSED_WHITE_ALPHA_BLEND;
   } else if (kind == 7) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 7;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_REVERSED_WHITE;
   } else if (kind == 9) {
-    this->state.lastPrim->state.slots[0].flag1[2] = 9;
-    this->state.lastPrim->state.slots[0].flag1[3] = 6;
+    this->state.lastPrim->state.slots[0].flag1[2] = FIELD_PANEL_SELECTED_TINT;
+    this->state.lastPrim->state.slots[0].flag1[3] = FIELD_PANEL_TINT_WHITE_ADDITIVE;
   }
 }
 
@@ -13846,7 +13846,7 @@ void CRagEffect::WhiteRingWave() {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_white.tga", 0, false, true, false);
-  this->state.lastPrim->state.size = 16.0f;
+  this->state.lastPrim->state.size = TEI_RECT_LIME_GREEN;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
@@ -13924,9 +13924,9 @@ void CRagEffect::TripleRingStack(const char* name, char large) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   if (large == 1) {
-    this->state.lastPrim->state.size = 7.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_GREEN;
   } else {
-    this->state.lastPrim->state.size = 4.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
   }
 
   this->state.lastPrim->state.slots[0].life = 1;
@@ -14029,7 +14029,7 @@ void CRagEffect::WideTripleRingStack(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -14254,7 +14254,7 @@ void CRagEffect::BlueRingWave() {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-  this->state.lastPrim->state.size = 5.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -14322,7 +14322,7 @@ void CRagEffect::QuadRingStack(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 0.0f;
+  this->state.lastPrim->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
 
   int slot0 = 0;
   this->state.lastPrim->state.slots[slot0].life = 1;
@@ -15322,8 +15322,8 @@ void CRagEffect::StatusIconColumn() {
     g_session.m_statusIconIds[index] = -1;
   }
 
-  int type = -1;
-  while (type < 5) {
+  int type = STATUS_ICON_PRIORITY_GOLD - 1;
+  while (type < STATUS_ICON_PRIORITY_UNKNOWN_5) {
     ++type;
     for (auto it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
       int id = it->id;
@@ -15643,10 +15643,10 @@ void CRagEffect::VioletRingCloud(char type) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     if (type == 3) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
-      this->state.lastPrim->state.size = 10.0f;
+      this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
     } else {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-      this->state.lastPrim->state.size = 4.0f;
+      this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -15706,9 +15706,9 @@ void CRagEffect::VioletRingCloud(char type) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     if (type == 3) {
-      this->state.lastPrim->state.size = 10.0f;
+      this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
     } else {
-      this->state.lastPrim->state.size = 4.0f;
+      this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -15782,10 +15782,10 @@ void CRagEffect::TexturedMagicRing(char type) {
 
     if (type == 3) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
-      this->state.lastPrim->state.size = 10.0f;
+      this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
     } else {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_violet.tga", 0, false, true, false);
-      this->state.lastPrim->state.size = 4.0f;
+      this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -15855,9 +15855,9 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     if (type == 3) {
-      this->state.lastPrim->state.size = 10.0f;
+      this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
     } else {
-      this->state.lastPrim->state.size = 4.0f;
+      this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -15932,7 +15932,7 @@ void CRagEffect::TexturedRisingRing(const char* name) {
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    this->state.lastPrim->state.size = 12.0f;
+    this->state.lastPrim->state.size = TEI_RECT_DARK_GRAY_ALPHA_BLEND;
 
     this->state.lastPrim->state.slots[0].life = 1;
     this->state.lastPrim->state.slots[0].process = 0;
@@ -15997,7 +15997,7 @@ void CRagEffect::TexturedRisingRing(const char* name) {
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    this->state.lastPrim->state.size = 12.0f;
+    this->state.lastPrim->state.size = TEI_RECT_DARK_GRAY_ALPHA_BLEND;
 
     this->state.lastPrim->state.slots[0].life = 1;
     this->state.lastPrim->state.slots[0].process = 0;
@@ -16069,7 +16069,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
     stored()->state.duration = this->state.duration;
     stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    stored()->state.size = 16.0f;
+    stored()->state.size = TEI_RECT_LIME_GREEN;
 
     stored()->state.slots[0].life = 1;
     stored()->state.slots[0].process = 0;
@@ -16127,7 +16127,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-      stored()->state.size = 16.0f;
+      stored()->state.size = TEI_RECT_LIME_GREEN;
 
       stored()->state.slots[0].life = 1;
       stored()->state.slots[0].process = 0;
@@ -16184,7 +16184,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-      stored()->state.size = 16.0f;
+      stored()->state.size = TEI_RECT_LIME_GREEN;
 
       stored()->state.slots[0].life = 1;
       stored()->state.slots[0].process = 0;
@@ -16240,7 +16240,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-      stored()->state.size = 16.0f;
+      stored()->state.size = TEI_RECT_LIME_GREEN;
 
       stored()->state.slots[0].life = 1;
       stored()->state.slots[0].process = 0;
@@ -16309,9 +16309,9 @@ void CRagEffect::Cloud11Burst(char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
   if (kind == 1) {
-    this->state.lastPrim->state.size = 8.0f;
+    this->state.lastPrim->state.size = TEI_RECT_PALE_YELLOW;
   } else {
-    this->state.lastPrim->state.size = 5.0f;
+    this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
   }
 
   for (int i = 0; i < 4; ++i) {
@@ -17059,7 +17059,7 @@ void CRagEffect::TorchRedRing(char kind) {
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].distance = 12.0f;
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 12.0f;
-  this->state.lastPrim->state.slots[0].flag1[2] = 4;
+  this->state.lastPrim->state.slots[0].flag1[2] = SPIRAL_BLADE_TORCH_RED;
   this->state.lastPrim->state.slots[0].height[10] = 0.0f;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   this->state.lastPrim->state.slots[0].height[8] = 0.0f;
@@ -17372,7 +17372,7 @@ void CRagEffect::PortalRings() {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -17576,7 +17576,7 @@ bool CRagEffect::GlassWallRising(const char* name) {
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    this->state.lastPrim->state.size = 10.0f;
+    this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
 
     this->state.lastPrim->state.slots[0].life = 1;
     this->state.lastPrim->state.slots[0].process = 0;
@@ -17664,51 +17664,51 @@ void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name,
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   if (kind == 1) {
-    this->state.lastPrim->state.size = 8.0f;
+    this->state.lastPrim->state.size = TEI_RECT_PALE_YELLOW;
   } else if (kind == 2) {
-    this->state.lastPrim->state.size = 5.0f;
+    this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
   } else if (kind == 3) {
-    this->state.lastPrim->state.size = 10.0f;
+    this->state.lastPrim->state.size = TEI_RECT_ROSE_PINK;
   } else if (kind == 4) {
-    this->state.lastPrim->state.size = 11.0f;
+    this->state.lastPrim->state.size = TEI_RECT_LAVENDER_BLUE;
   } else if (kind == 5) {
-    this->state.lastPrim->state.size = 4.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
   } else if (kind == 6) {
-    this->state.lastPrim->state.size = 12.0f;
+    this->state.lastPrim->state.size = TEI_RECT_DARK_GRAY_ALPHA_BLEND;
   } else if (kind == 15) {
-    this->state.lastPrim->state.size = 7.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SOFT_GREEN;
   } else if (kind == 20) {
-    this->state.lastPrim->state.size = 24.0f;
+    this->state.lastPrim->state.size = TEI_RECT_DARK_BLUE;
   } else if (kind == 21) {
-    this->state.lastPrim->state.size = 25.0f;
+    this->state.lastPrim->state.size = TEI_RECT_CERULEAN;
   } else if (kind == 22) {
-    this->state.lastPrim->state.size = 26.0f;
+    this->state.lastPrim->state.size = TEI_RECT_LIGHT_BLUE;
   } else if (kind == 23) {
-    this->state.lastPrim->state.size = 27.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SKY_BLUE;
   } else if (kind == 31) {
-    this->state.lastPrim->state.size = 31.0f;
+    this->state.lastPrim->state.size = TEI_RECT_PEACH;
   } else if (kind == 42) {
-    this->state.lastPrim->state.size = 42.0f;
+    this->state.lastPrim->state.size = TEI_RECT_CHARCOAL_ALPHA_BLEND;
   } else if (kind == 43) {
-    this->state.lastPrim->state.size = 43.0f;
+    this->state.lastPrim->state.size = TEI_RECT_SEA_GREEN_ALPHA_BLEND;
   } else if (kind == 44) {
-    this->state.lastPrim->state.size = 44.0f;
+    this->state.lastPrim->state.size = TEI_RECT_BRICK_RED_ALPHA_BLEND;
   } else if (kind == 45) {
-    this->state.lastPrim->state.size = 45.0f;
+    this->state.lastPrim->state.size = TEI_RECT_AZURE;
   } else if (kind == 46) {
-    this->state.lastPrim->state.size = 46.0f;
+    this->state.lastPrim->state.size = TEI_RECT_RUST_RED;
   } else if (kind == 47) {
-    this->state.lastPrim->state.size = 47.0f;
+    this->state.lastPrim->state.size = TEI_RECT_DARK_GOLD;
   } else if (kind == 49) {
-    this->state.lastPrim->state.size = 49.0f;
+    this->state.lastPrim->state.size = TEI_RECT_COPPER;
   } else if (kind == 50) {
-    this->state.lastPrim->state.size = 50.0f;
+    this->state.lastPrim->state.size = TEI_RECT_AMBER;
   } else {
-    this->state.lastPrim->state.size = 5.0f;
+    this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
   }
 
   if (kind == 48) {
-    this->state.lastPrim->state.size = 48.0f;
+    this->state.lastPrim->state.size = TEI_RECT_MAROON;
   }
 
   this->state.lastPrim->state.slots[0].life = 1;
@@ -17818,7 +17818,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 13.0f;
+  this->state.lastPrim->state.size = TEI_RECT_MAGENTA_ALPHA_BLEND;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -17901,7 +17901,7 @@ void CRagEffect::TeleportSpiral(const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = 4.0f;
+  this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
 
   this->state.lastPrim->state.slots[3].life = 1;
   this->state.lastPrim->state.slots[3].process = 0;
@@ -17995,25 +17995,25 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
   if (kind == 1) {
     this->state.lastPrim->state.slots[0].distance = 8.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ALPHA_BLEND;
     this->state.lastPrim->state.slots[0].height[10] = 1.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 120;
   } else if (kind == 2) {
     this->state.lastPrim->state.slots[0].distance = 10.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 2;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_PALE_BLUE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 3) {
     this->state.lastPrim->state.slots[0].distance = 8.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 3;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_OFFSET_WHITE_ALPHA_BLEND;
     this->state.lastPrim->state.slots[0].height[10] = 2.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 155;
   } else if (kind == 4) {
     this->state.lastPrim->state.slots[0].distance = 6.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ALPHA_BLEND;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind >= 10 && kind <= 11) {
@@ -18026,7 +18026,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 10;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_GRAY;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 12) {
@@ -18039,7 +18039,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 12;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_DARK_GRAY;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 13) {
@@ -18052,7 +18052,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 12;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_DARK_GRAY;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 14) {
@@ -18063,7 +18063,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 4;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ADDITIVE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 15) {
@@ -18074,7 +18074,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 15;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_TEAL;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind >= 16 && kind <= 17) {
@@ -18091,7 +18091,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
 
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 5;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_SOFT_GREEN;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 18) {
@@ -18104,25 +18104,25 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
     slot.distance = distance;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
-    this->state.lastPrim->state.slots[0].flag1[2] = 5;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_SOFT_GREEN;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 19) {
     this->state.lastPrim->state.slots[0].distance = 8.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 15;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_TEAL;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 20) {
     this->state.lastPrim->state.slots[0].distance = 2.4f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 27.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ALPHA_BLEND;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 21) {
     this->state.lastPrim->state.slots[0].distance = 24.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 4;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ADDITIVE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 90;
   } else if (kind == 22) {
@@ -18152,31 +18152,31 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     }
 
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y + lift;
-    this->state.lastPrim->state.slots[0].flag1[2] = 16;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_OVERHEAD_WHITE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 30) {
     this->state.lastPrim->state.slots[0].distance = 24.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 19;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RAISED_GREEN_GLOW;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 31) {
     this->state.lastPrim->state.slots[0].distance = 2.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 0;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_WHITE_ALPHA_BLEND;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 32) {
     this->state.lastPrim->state.slots[0].distance = 8.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 30.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = kind;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_RED_ADDITIVE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else {
     this->state.lastPrim->state.slots[0].distance = 5.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
-    this->state.lastPrim->state.slots[0].flag1[2] = 2;
+    this->state.lastPrim->state.slots[0].flag1[2] = TEI_FACING_PALE_BLUE;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   }
@@ -18208,9 +18208,9 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     if (type == 2) {
-      this->state.lastPrim->state.size = 4.0f;
+      this->state.lastPrim->state.size = TEI_RECT_SOFT_BLUE;
     } else {
-      this->state.lastPrim->state.size = 9.0f;
+      this->state.lastPrim->state.size = TEI_RECT_MUTED_GREEN;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -18330,7 +18330,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
       this->state.lastPrim->state.slots[i].flag1[1] = 1;
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
       this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
   }
@@ -18345,7 +18345,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
-    this->state.lastPrim->state.size = 9.0f;
+    this->state.lastPrim->state.size = TEI_RECT_MUTED_GREEN;
 
     this->state.lastPrim->state.slots[0].life = 1;
     this->state.lastPrim->state.slots[0].process = 0;
@@ -18434,7 +18434,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
       this->state.lastPrim->state.slots[i].flag1[1] = 1;
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
       this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
   }
@@ -18455,9 +18455,9 @@ void CRagEffect::HealBurst(const char* name, char flag) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
     if (flag == 0) {
-      this->state.lastPrim->state.size = 9.0f;
+      this->state.lastPrim->state.size = TEI_RECT_MUTED_GREEN;
     } else if (flag == 1) {
-      this->state.lastPrim->state.size = 5.0f;
+      this->state.lastPrim->state.size = TEI_RECT_WHITE_ADDITIVE;
     }
 
     this->state.lastPrim->state.slots[0].life = 1;
@@ -18546,7 +18546,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
       this->state.lastPrim->state.slots[i].flag1[1] = 0;
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
       this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
 
@@ -18579,7 +18579,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
       this->state.lastPrim->state.slots[i].flag1[1] = 1;
-      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].flag1[2] = FIELD_PANEL_PALE_MINT;
       this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
   }
@@ -18858,7 +18858,7 @@ void CRagEffect::TorchDust(char kind) {
   }
   slot.distance = distance;
   stored()->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
-  stored()->state.slots[0].flag1[2] = 4;
+  stored()->state.slots[0].flag1[2] = TEI_FACING_WHITE_ADDITIVE;
 
   if (kind == 4) {
     stored()->state.slots[0].fullDisplayAngle = 120;
@@ -19909,7 +19909,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWaveInline(*this, "effect\\LG_EXEEDBREAK.wav");
     }
     for (int index = 0; index < 40; ++index) {
-      this->TexturedScatterSphere("effect\\alpha_center.tga", 0, 0);
+      this->TexturedScatterSphere("effect\\alpha_center.tga", BLADE_QUAD_CYAN_AND_RED, 0);
     }
     break;
   case EF_PRIMECHARGE2:
@@ -19917,7 +19917,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
     }
     for (int index = 0; index < 40; ++index) {
-      this->TexturedScatterSphere("effect\\alpha_center.tga", 1, 0);
+      this->TexturedScatterSphere("effect\\alpha_center.tga", BLADE_QUAD_WHITE_AND_YELLOW, 0);
     }
     break;
   case EF_PRIMECHARGE3:
@@ -19926,7 +19926,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWaveInline(*this, "effect\\LG_BANDING.wav");
     }
     for (int index = 0; index < 40; ++index) {
-      this->TexturedScatterSphere("effect\\alpha_center.tga", 2, 0);
+      this->TexturedScatterSphere("effect\\alpha_center.tga", BLADE_QUAD_RED_AND_PINK, 0);
     }
     break;
   case EF_PRIMECHARGE4:
@@ -19935,7 +19935,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWaveInline(*this, "effect\\LG_INSPIRATION.wav");
     }
     for (int index = 0; index < 40; ++index) {
-      this->TexturedScatterSphere("effect\\alpha_center.tga", 3, 0);
+      this->TexturedScatterSphere("effect\\alpha_center.tga", BLADE_QUAD_PALE_BLUE_AND_BLUE, 0);
     }
     break;
   case EF_DQ9_CHARGE:
@@ -19979,10 +19979,10 @@ bool CRagEffect::OnProcess3() {
     this->TexturedTwinkleRing("effect\\freeze_a.bmp", 8);
     break;
   case EF_BOT_REVERB:
-    this->TexturedDrop("effect\\melody_a.bmp", 0);
+    this->TexturedDrop("effect\\melody_a.bmp", JITTER_QUAD_WHITE_WITH_ADDITIVE_GLOW);
     break;
   case EF_BOT_REVERB2:
-    this->TexturedDrop("effect\\melody_a.bmp", 1);
+    this->TexturedDrop("effect\\melody_a.bmp", JITTER_QUAD_BLUE_GLOW);
     break;
   case EF_RAIN_PARTICLE:
     this->TexturedFloatingDust("effect\\번개1.bmp", 0);
@@ -20494,7 +20494,7 @@ bool CRagEffect::OnProcess3() {
     this->TexturedClassChange(60);
     break;
   case EF_GTHUNDER:
-    this->TexturedMark("effect\\storm2.tga", 10);
+    this->TexturedMark("effect\\storm2.tga", STACKED_RING_PALE_BLUE_ADDITIVE);
     this->TexturedRisingPillar("effect\\white01.bmp", 0);
     break;
   case EF_CRASHAXE:
@@ -20815,7 +20815,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWaveInline(*this, "effect\\샤프슈팅.wav");
     }
     this->TexturedRisingOrbs("effect\\white02.bmp", 1);
-    this->TexturedMark("effect\\storm2.tga", 8);
+    this->TexturedMark("effect\\storm2.tga", STACKED_RING_FAINT_PALE_BLUE);
     break;
   case EF_FIREBALL2:
     this->ShadedFireballVolley();
@@ -22776,9 +22776,9 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NEW_REVERBERATION:
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      this->TexturedDrop("effect\\mineffect\\new_reverberation\\melody_a.bmp", 2);
+      this->TexturedDrop("effect\\mineffect\\new_reverberation\\melody_a.bmp", JITTER_QUAD_WHITE_ADDITIVE);
     } else {
-      this->TexturedDrop("effect\\new_reverberation\\melody_a.bmp", 2);
+      this->TexturedDrop("effect\\new_reverberation\\melody_a.bmp", JITTER_QUAD_WHITE_ADDITIVE);
     }
     this->WhiteRingRippleSized(28);
     break;
@@ -24069,7 +24069,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\T_회오리차기.wav");
       }
-      this->TexturedMark("effect\\storm2.tga", 0);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_BLUE_ADDITIVE);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       if (this->state.stateCnt <= 47) {
@@ -24080,7 +24080,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_STORMKICK1:
-      this->TexturedMark("effect\\storm2.tga", 1);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_GOLD);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       if (this->state.stateCnt <= 50) {
@@ -24095,12 +24095,12 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "ice_titan_attack.wav");
       }
-      this->TexturedMark("effect\\storm2.tga", 6);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_WHITE);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       break;
     case EF_STORMKICK3:
-      this->TexturedMark("effect\\storm2.tga", 3);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_BLUE_ALPHA_BLEND);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       break;
@@ -24129,12 +24129,12 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\REVERBERATION.wav");
       }
-      this->TexturedMark("effect\\storm2.tga", 11);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_RED_WITH_WHITE_GLOW);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       break;
     case EF_STORMKICK7:
-      this->TexturedMark("effect\\storm2.tga", 2);
+      this->TexturedMark("effect\\storm2.tga", STACKED_RING_GREEN);
       this->Cloud11Burst(2);
       this->Cloud11Burst(3);
       break;

@@ -174,7 +174,7 @@ void UIRodexScrollBar::Paint() {
   }
 
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     this->FillRegion(0, 0, 5, this->geometry.height, 0xFFFFFF);
     if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);

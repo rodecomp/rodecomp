@@ -192,7 +192,7 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
       continue;
     }
 
-    const int cellIndex = GetSlotLayer(!g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? layer : 1);
+    const int cellIndex = GetSlotLayer(!g_session.IsSpecialMonsterJob(this->layerViews[layer]) ? layer : SPRITE_LAYER_HEAD);
     const SpriteFrameCell* cell = &frame->Cell(cellIndex);
     if (!cell || !sprite) {
       continue;
@@ -512,7 +512,7 @@ void SpriteLayerRenderer::DrawLayer(
 ) {
   int cellIndex;
   if (g_session.IsSpecialMonsterJob(this->layerViews[layer])) {
-    cellIndex = GetSlotLayer(1);
+    cellIndex = GetSlotLayer(SPRITE_LAYER_HEAD);
   } else {
     cellIndex = GetSlotLayer(layer);
   }
@@ -611,7 +611,7 @@ void SpriteLayerRenderer::LoadLayers() {
 
     if (layer == SPRITE_LAYER_HEAD) {
       const ActionFrame& frame = static_cast<CActRes*>(action)->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
-      if (frame.Cell(GetSlotLayer(1)).image == -1) {
+      if (frame.Cell(GetSlotLayer(SPRITE_LAYER_HEAD)).image == -1) {
         this->hideAccessories = true;
       }
 

@@ -38,6 +38,40 @@
 #include <string>
 #include <vector>
 
+enum ChatMenuMode : int {
+  CHAT_MENU_WHISPER_HISTORY = 0,
+  CHAT_MENU_TARGET = 1,
+};
+
+enum ChatMessageCategory : std::intptr_t {
+  CHAT_MESSAGE_STANDARD = 0,
+  CHAT_MESSAGE_GENERAL = 1,
+  CHAT_MESSAGE_WHISPER = 2,
+  CHAT_MESSAGE_PARTY = 3,
+  CHAT_MESSAGE_GUILD = 4,
+  CHAT_MESSAGE_ALLY = 5,
+  CHAT_MESSAGE_ITEM_PICKUP = 6,
+  CHAT_MESSAGE_EQUIP = 7,
+  CHAT_MESSAGE_STATUS_CHANGE = 8,
+  CHAT_MESSAGE_PARTY_ITEM_PICKUP = 9,
+  CHAT_MESSAGE_PARTY_STATUS_CHANGE = 10,
+  CHAT_MESSAGE_SKILL_FAILURE = 11,
+  CHAT_MESSAGE_PARTY_SETUP = 12,
+  CHAT_MESSAGE_EQUIPMENT_DAMAGE = 13,
+  CHAT_MESSAGE_SIEGE_INFO = 14,
+  CHAT_MESSAGE_SEEK_PARTY = 15,
+  CHAT_MESSAGE_COMBAT = 16,
+  CHAT_MESSAGE_PARTY_COMBAT = 17,
+  CHAT_MESSAGE_EXP_GAIN = 18,
+  CHAT_MESSAGE_QUEST_INFO = 19,
+  CHAT_MESSAGE_BATTLEFIELD_INFO = 20,
+  CHAT_MESSAGE_CLAN = 21,
+  CHAT_MESSAGE_CALL_NOTIFY = 22,
+  CHAT_MESSAGE_GUILD_EXP_TRIBUTE = 23,
+  CHAT_MESSAGE_EQUIPMENT_PROPERTIES = 24,
+  CHAT_MESSAGE_ALL_TABS = 25,
+};
+
 // GLOBAL: gl_25380
 const std::string s_chatItemLinkOpening = "<ITEML>";
 
@@ -262,25 +296,25 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
   case UM_COMBOBOX_SELECTED:
     switch (this->m_menuMode) {
-    case 1:
+    case CHAT_MENU_TARGET:
       g_session.m_chatTarget = a;
       switch (a) {
-      case 0:
+      case CHAT_TARGET_ALL:
         this->m_chatEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
         break;
-      case 1:
+      case CHAT_TARGET_PARTY:
         this->m_chatEdit->TextColor(0x80, 0, 0x80, 0xFFFFFFFF);
         break;
-      case 2:
+      case CHAT_TARGET_GUILD:
         this->m_chatEdit->TextColor(0, 0x80, 0x80, 0xFFFFFFFF);
         break;
-      case 4:
+      case CHAT_TARGET_ALLY:
         this->m_chatEdit->TextColor(0x94, 0, 0xD3, 0xFFFFFFFF);
         break;
       }
       this->Invalidate();
       return 0;
-    case 0: {
+    case CHAT_MENU_WHISPER_HISTORY: {
       const int count = static_cast<int>(this->m_whisperEdit->history.size());
       if (a >= 0 && a <= count) {
         if (a == count) {
@@ -321,10 +355,10 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       switch (c) {
-      case 1:
-      case 3:
-      case 4:
-      case 21: {
+      case CHAT_MESSAGE_GENERAL:
+      case CHAT_MESSAGE_PARTY:
+      case CHAT_MESSAGE_GUILD:
+      case CHAT_MESSAGE_CLAN: {
         std::string text(reinterpret_cast<const char*>(a));
         const int position = static_cast<int>(text.find(" :"));
         const int length = static_cast<int>(std::strlen(reinterpret_cast<const char*>(a)));
@@ -346,7 +380,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       bool everyTab = false;
-      if (c == 25 || (c == 0 && b == 0xFF)) {
+      if (c == CHAT_MESSAGE_ALL_TABS || (c == CHAT_MESSAGE_STANDARD && b == 0xFF)) {
         everyTab = true;
       }
       int index = 0;
@@ -412,7 +446,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->SendMsg(this, UM_DETACH_CHAT_TAB, this->m_currentTab, 0, 0, 0);
       return 0;
     case ID_TALKTOWHOCOMBO: {
-      this->m_menuMode = 1;
+      this->m_menuMode = CHAT_MENU_TARGET;
       if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
@@ -432,7 +466,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
     case ID_WHISPERCOMBO: {
-      this->m_menuMode = 0;
+      this->m_menuMode = CHAT_MENU_WHISPER_HISTORY;
       if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }

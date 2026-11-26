@@ -7,6 +7,7 @@
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Render/Text/FontCache.h"
 #include "Contents/Items/ItemType.h"
 #include "UI/Window/UIEnums.h"
@@ -127,6 +128,12 @@
 #include "Resource/MSGSTRINGID.h"
 #include "UI/Edit/UICandidateWnd.h"
 #include "UI/Items/UIMakeTargetProcessWnd.h"
+
+enum ItemShopDropSource : std::intptr_t {
+  ITEM_SHOP_DROP_INVENTORY = 0,
+  ITEM_SHOP_DROP_STORAGE = 1,
+};
+
 // GLOBAL: gl_24653
 int g_skillTooltipActive;
 
@@ -2201,7 +2208,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       mode->drag.quantity = quantity;
       window = g_windowMgr.itemShopWnd;
       if (window) {
-        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_DROP, ITEM_SHOP_DROP_INVENTORY, 0, 0, 0);
       }
       break;
     }
@@ -2227,7 +2234,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         break;
       }
       if (window) {
-        window->SendMsg(nullptr, UM_DROP, 1, 0, 0, 0);
+        window->SendMsg(nullptr, UM_DROP, ITEM_SHOP_DROP_STORAGE, 0, 0, 0);
       }
       break;
     }
@@ -2965,7 +2972,7 @@ void UISkillListWnd::Paint() {
       std::sprintf(text, format, it->level);
       this->DrawTextAt(levelX + x, top + 34, text, 0, 0, 12, 0, 0, 0);
 
-      if (it->type == 0) {
+      if (it->type == SKILLTYPE_PASSIVE) {
         std::sprintf(text, LookupMessage(MSI_PASSIVE));
       } else {
         int sp = static_cast<int>(it->spCost);
@@ -5655,7 +5662,7 @@ void UISkillListWnd::OnLBtnDown(int x, int y) {
 
   CSkillInfo skill = this->GetSkillAt(x, y);
 
-  if (skill.available && skill.level && skill.type) {
+  if (skill.available && skill.level && skill.type != SKILLTYPE_PASSIVE) {
     CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (mode) {
@@ -8576,7 +8583,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     break;
   case UM_DROP:
     switch (a) {
-    case 0: {
+    case ITEM_SHOP_DROP_INVENTORY: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       ModeDragState& drag = mode->drag;
       ITEM_INFO item;
@@ -8590,7 +8597,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
-    case 1: {
+    case ITEM_SHOP_DROP_STORAGE: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       ModeDragState& drag = mode->drag;
       ITEM_INFO item;
@@ -8692,7 +8699,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_DROP:
     switch (a) {
-    case 0: {
+    case ITEM_SHOP_DROP_INVENTORY: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       ModeDragState& drag = mode->drag;
       ITEM_INFO item;
@@ -8706,7 +8713,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
-    case 1: {
+    case ITEM_SHOP_DROP_STORAGE: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       ModeDragState& drag = mode->drag;
       ITEM_INFO item;

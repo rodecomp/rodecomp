@@ -10,6 +10,11 @@
 
 class CTexture;
 
+enum LightmappedQueue : int {
+  LIGHTMAPPED_QUEUE_FIRST = 0,
+  LIGHTMAPPED_QUEUE_SECOND = 1,
+};
+
 struct LightmappedVertex {
   // INLINED
   LightmappedVertex() : x(0.0f), y(0.0f), z(0.0f), rhw(0.0f), diffuse(0), specular(0xFF000000u), u(0.0f), v(0.0f) {

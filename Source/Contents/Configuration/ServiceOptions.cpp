@@ -1490,13 +1490,13 @@ void CSession::LoadOptionInfo() {
   g_configuredDeviceCount = this->GetOptionInteger("DEVICECNT", 0);
   g_configuredModeCount = this->GetOptionInteger("MODECNT", 0);
 
-  g_effectDetailLevel = this->GetOptionInteger("SPRITEMODE", 2);
+  g_effectDetailLevel = this->GetOptionInteger("SPRITEMODE", SPRITE_QUALITY_HIGH);
   switch (g_effectDetailLevel) {
-  case 0:
+  case SPRITE_QUALITY_LOW:
     g_spriteHalfWidth = 1;
     g_spriteHalfHeight = 1;
     break;
-  case 1:
+  case SPRITE_QUALITY_MEDIUM:
     g_spriteHalfHeight = 1;
     break;
   default:
@@ -1505,12 +1505,12 @@ void CSession::LoadOptionInfo() {
     break;
   }
 
-  g_textureDetailLevel = this->GetOptionInteger("TEXTUREMODE", 2);
+  g_textureDetailLevel = this->GetOptionInteger("TEXTUREMODE", TEXTURE_QUALITY_HIGH);
   switch (g_textureDetailLevel) {
-  case 0:
+  case TEXTURE_QUALITY_LOW:
     g_textureReduction = 4;
     break;
-  case 1:
+  case TEXTURE_QUALITY_MEDIUM:
     g_textureReduction = 2;
     break;
   default:

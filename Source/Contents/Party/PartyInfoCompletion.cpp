@@ -32,7 +32,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
     return;
   }
 
-  if (root["Type"].asInt() == 2 || root["Type"].asInt() == 3) {
+  if (root["Type"].asInt() == AGENCY_RESPONSE_UNKNOWN_2 || root["Type"].asInt() == AGENCY_RESPONSE_UNKNOWN_3) {
     return;
   }
 

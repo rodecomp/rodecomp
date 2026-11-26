@@ -2728,13 +2728,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->SendMsg(MM_CANCEL_USE_SKILL, 0, 0, 0, 0);
       this->ignoreSkillInterval = argument4 == -1;
       switch (skill->type) {
-        case 1:
-          this->SendMsg(MM_HANG_USE_SKILL, 2, argument1, argument2, 0);
+        case SKILLTYPE_TOCHARACTER:
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_TO_CHARACTER, argument1, argument2, 0);
           return 0;
-        case 2:
-          this->SendMsg(MM_HANG_USE_SKILL, 1, argument1, argument2, 0);
+        case SKILLTYPE_TOGROUND:
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_TO_GROUND, argument1, argument2, 0);
           return 0;
-        case 4: {
+        case SKILLTYPE_TOME: {
           std::uint32_t target;
           if (g_session.IsHomunculusSkill(skill->id)) {
             target = g_session.m_homunAid;
@@ -2743,17 +2743,17 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             target = mercenary ? g_session.m_mercenaryAid : g_session.m_aid;
           }
           this->SendMsg(MM_USE_SKILL, skill->id, target, argument2, argument3);
-          this->SendMsg(MM_HANG_USE_SKILL, 0, 0, 0, 0);
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_NOSKILL, 0, 0, 0);
           return 0;
         }
-        case 8:
-          this->SendMsg(MM_HANG_USE_SKILL, 3, argument1, argument2, 0);
+        case SKILLTYPE_TOITEM:
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_TO_ITEM, argument1, argument2, 0);
           return 0;
-        case 16:
-          this->SendMsg(MM_HANG_USE_SKILL, 4, argument1, argument2, 0);
+        case SKILLTYPE_TOALL:
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_TO_ALL, argument1, argument2, 0);
           return 0;
-        case 32:
-          this->SendMsg(MM_HANG_USE_SKILL, 5, argument1, argument2, 0);
+        case SKILLTYPE_TOSKILL:
+          this->SendMsg(MM_HANG_USE_SKILL, SUT_TO_SKILL, argument1, argument2, 0);
           return 0;
         default:
           return 0;
@@ -5301,7 +5301,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
 // OFFSET: 0x00CCD880
 // FUNCTION: fn_21217
 CGameMode::CGameMode()
-    : scene(nullptr), skillUseType(0), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
+    : scene(nullptr), skillUseType(SUT_NOSKILL), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
       broadcastBalloon(nullptr), noticeBalloon(nullptr), isInitializing(0), recordItemPickups(0) {
   this->camera = nullptr;
   this->mousePointer = nullptr;
@@ -6347,9 +6347,9 @@ void CGameMode::TargetActorByAid(int aid) {
   const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
   int force = shiftHeld;
   const std::intptr_t mode = this->skillUseType;
-  const bool skillMode = mode == 2 || mode == 4;
+  const bool skillMode = mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL;
   const bool isSelf = aid == static_cast<int>(g_session.m_aid);
-  const bool allowed = (isSelf && mode == 4) || !isSelf;
+  const bool allowed = (isSelf && mode == SUT_TO_ALL) || !isSelf;
 
   if (skillMode == true) {
     const bool support = IsSupportSkill(this->skillId);
@@ -8890,7 +8890,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   const std::intptr_t mode = this->skillUseType;
 
   int attack;
-  if (mode == 2 || mode == 4) {
+  if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
     const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     attack = IsSupportSkill(this->skillId) ? shiftHeld : shiftHeld == 0;
     this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
@@ -9110,7 +9110,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     }
   }
 
-  if (g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND) || this->skillUseType == 1) {
+  if (g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND) || this->skillUseType == SUT_TO_GROUND) {
     return result;
   }
 
@@ -9251,7 +9251,7 @@ int CGameMode::ProcessGroundClick(int result) {
   }
 
   const std::intptr_t mode = this->skillUseType;
-  if (mode == 2 || mode == 3 || mode == 4) {
+  if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ITEM || mode == SUT_TO_ALL) {
     return result;
   }
 
@@ -9337,7 +9337,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
     if (g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1) {
       g_session.ResetMercenaryStats();
-      if (this->skillUseType == 1 && g_session.IsMercenarySkill(this->skillId)) {
+      if (this->skillUseType == SUT_TO_GROUND && g_session.IsMercenarySkill(this->skillId)) {
         CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           const std::uint32_t state = mercenary->render.state;
@@ -9357,15 +9357,15 @@ int CGameMode::ProcessGroundClick(int result) {
     }
   }
 
-  if (this->skillUseType == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
+  if (this->skillUseType == SUT_TO_GROUND && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
     result = 1;
     if (g_session.IsHomunculusSkill(this->skillId) == 1 && g_session.homunAlive == 1) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI() == true) {
         switch (homun->render.state) {
-        case 0:
-        case 1:
-        case 4: {
+        case ST_STAND:
+        case ST_MOVE:
+        case ST_DAMAGE: {
           AiMessage message;
           message.type = SKILL_AREA_CMD;
           message.x = column;
@@ -9759,7 +9759,7 @@ void CGameMode::ProcessInput() {
   this->cursorOffsetY = 0.0f;
   if (handled == 0) {
     const std::intptr_t mode = this->skillUseType;
-    g_session.UpdateMonsterInfoEnabled(mode == 2 || mode == 4);
+    g_session.UpdateMonsterInfoEnabled(mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL);
     if (pick) {
       int offset;
       if (this->skillId == AM_POTIONPITCHER) {
@@ -10922,7 +10922,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   bool optionalSelf;
   unsigned int shiftHeld;
   unsigned int attack;
-  if (mode == 2 || mode == 4) {
+  if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
     skillMode = 1;
     shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     optionalSelf = IsOptionalSelfTargetSkill(this->skillId);
@@ -11321,7 +11321,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           int shift;
           int support;
           int attack;
-          if (mode == 2 || mode == 4) {
+          if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
             skillMode = 1;
             shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
             support = IsSupportSkill(this->skillId);
@@ -11395,7 +11395,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           const std::intptr_t mode = this->skillUseType;
           int skillMode;
           int attack;
-          if (mode == 2 || mode == 4) {
+          if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
             skillMode = 1;
             const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
             attack = shift == 0;
@@ -11488,10 +11488,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
+          action = this->skillUseType == SUT_TO_SKILL ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
           break;
         default:
-          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
+          action = this->skillUseType == SUT_TO_SKILL ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
           break;
         }
       } else {
@@ -11506,10 +11506,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
+          action = this->skillUseType == SUT_TO_SKILL ? CURSOR_ACTION_SKILL : CURSOR_ACTION_ATTACK;
           break;
         default:
-          action = this->skillUseType == 5 ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
+          action = this->skillUseType == SUT_TO_SKILL ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT;
           break;
         }
       }
@@ -11583,7 +11583,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
     const std::intptr_t mode = this->skillUseType;
     int attack;
-    if (mode == 2 || mode == 4) {
+    if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
       const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
       attack = shift;
       if (IsSupportSkill(this->skillId)) {
@@ -11639,7 +11639,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     if (g_session.IsMonsterClass(job)) {
       const std::intptr_t mode = this->skillUseType;
       int attack;
-      if (mode == 2 || mode == 4) {
+      if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
         const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
         const bool support = IsSupportSkill(this->skillId);
         attack = shift == 0;
@@ -11768,7 +11768,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
     const std::intptr_t mode = this->skillUseType;
     int attack;
-    if (mode == 2 || mode == 4) {
+    if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
       const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
       attack = shift;
       if (IsSupportSkill(this->skillId)) {
@@ -11860,7 +11860,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       return result;
     }
     default:
-      if (this->skillUseType == 5) {
+      if (this->skillUseType == SUT_TO_SKILL) {
         const long long skillUse = static_cast<long long>(reinterpret_cast<int>(this)) + offsetof(CGameMode, skillUseType);
         this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, pick->accountId, skillUse, 0, 0, 0, 0);
       }

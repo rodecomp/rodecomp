@@ -16,7 +16,7 @@ void UIScrollBar_Navi::Paint() {
   }
 
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     CBitmapRes* up = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_scroll_up.bmp")));
     CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_scroll_mid.bmp")));
     CBitmapRes* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_scroll_down.bmp")));
@@ -35,10 +35,10 @@ void UIScrollBar_Navi::Paint() {
     CBitmapRes* thumbDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_down.bmp")));
     int length = this->geometry.height;
     switch (this->vertical) {
-    case 0:
+    case SCROLLBAR_HORIZONTAL:
       length = this->geometry.width;
       break;
-    case 1:
+    case SCROLLBAR_VERTICAL:
       length = this->geometry.height;
       break;
     }

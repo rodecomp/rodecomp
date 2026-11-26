@@ -18,6 +18,11 @@ enum QuestHuntTarget : int {
   QUEST_HUNT_CONDITIONAL_MONSTER = 31999,
 };
 
+enum QuestFilterMode : int {
+  QUEST_FILTER_ALL = 0,
+  QUEST_FILTER_OTHER = 1,
+};
+
 struct lua_State;
 
 struct RenewQuestInfo {

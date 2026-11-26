@@ -3524,7 +3524,7 @@ C3dGrannyGameActor::C3dGrannyGameActor(const char* name) {
   this->motion = 0;
   this->alpha = 0xFF;
   std::strcpy(this->name, name);
-  this->renderState = 0;
+  this->renderState = GRANNY_RENDER_ACTIVE;
   this->cellTexture = 0;
   for (int index = 0; index < 20; ++index) {
     this->controls[index] = nullptr;
@@ -4106,8 +4106,8 @@ void C3dGrannyGameActor::Render(int argument) {
   light.blue = 200;
   light.intensity = 0x80;
   switch (this->renderState) {
-  case 1:
-  case 2:
+  case GRANNY_RENDER_UNKNOWN_1:
+  case GRANNY_RENDER_UNKNOWN_2:
     return;
   }
 

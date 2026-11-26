@@ -2037,7 +2037,7 @@ void UIScrollBar2::Paint() {
 
   std::string path = "유저인터페이스\\basic_interface\\";
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     this->FillRegion(0, 11, 10, this->geometry.height - 21, 0);
     if (this->state == 1) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up.bmp").c_str()))), false);
@@ -2071,7 +2071,7 @@ void UIScrollBar3::Paint() {
 
   std::string path = "유저인터페이스\\basic_interface\\";
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     this->FillRegion(0, 10, 9, this->geometry.height - 20, 0xF1F1F1);
     if (this->state == 1) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "dialscr_up1.bmp").c_str()))), false);
@@ -2115,7 +2115,7 @@ void UIScrollBar4::Paint() {
   }
 
   std::string path = "유저인터페이스\\basic_interface\\";
-  if (this->vertical == 0) {
+  if (this->vertical == SCROLLBAR_HORIZONTAL) {
     this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve((path + "scrollbar.bmp").c_str()))), true);
 
     const int offset = this->ThumbOffset();
@@ -2134,7 +2134,7 @@ void UIScrollBar_Custom::Paint() {
   }
 
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     int top = 0;
     if (this->m_trackTop) {
       top = this->m_trackTop->image.height;
@@ -2165,10 +2165,10 @@ void UIScrollBar_Custom::Paint() {
 
     int length = this->geometry.height;
     switch (this->vertical) {
-    case 0:
+    case SCROLLBAR_HORIZONTAL:
       length = this->geometry.width;
       break;
-    case 1:
+    case SCROLLBAR_VERTICAL:
       length = this->geometry.height;
       break;
     }
@@ -2217,10 +2217,10 @@ void UIZeroQuestScrollBar::Paint() {
 
   int extent = this->geometry.height;
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     extent = this->geometry.width;
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     extent = this->geometry.height;
     break;
   }
@@ -2247,7 +2247,7 @@ void UIChatHisBox2::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 13, 0);
   vertical->OnCreate(verticalWidth, height);
@@ -2257,7 +2257,7 @@ void UIChatHisBox2::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar2();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize(width - 13, horizontalHeight);
   horizontal->Move(0, height - 13);
   horizontal->OnCreate(width - 13, horizontalHeight);
@@ -2271,7 +2271,7 @@ void UIChatHisBox3::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 10, 0);
   vertical->OnCreate(verticalWidth, height);
@@ -2281,7 +2281,7 @@ void UIChatHisBox3::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar3();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize(width - 10, horizontalHeight);
   horizontal->Move(0, height - 10);
   horizontal->OnCreate(width - 10, horizontalHeight);
@@ -2295,7 +2295,7 @@ void UIChatHisBox::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar2();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move(width - 13, 0);
   vertical->OnCreate(verticalWidth, height);
@@ -2305,7 +2305,7 @@ void UIChatHisBox::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar2();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize(width - 13, horizontalHeight);
   horizontal->Move(0, height - 13);
   horizontal->OnCreate(width - 13, horizontalHeight);
@@ -2544,7 +2544,7 @@ void UIListBoxID::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move((width - 13), 0);
   vertical->OnCreate(verticalWidth, height);
@@ -2554,7 +2554,7 @@ void UIListBoxID::OnCreate(int width, int height) {
   auto* horizontal = new UIScrollBar();
   this->horizontalBar = horizontal;
   const int horizontalHeight = horizontal->thickness;
-  horizontal->vertical = 0;
+  horizontal->vertical = SCROLLBAR_HORIZONTAL;
   horizontal->UIWindow::Resize((width - 13), horizontalHeight);
   horizontal->Move(0, (height - 13));
   horizontal->OnCreate((width - 13), horizontalHeight);
@@ -2573,7 +2573,7 @@ void UITreeView::OnCreate(int width, int height) {
   auto* vertical = new UIScrollBar3();
   this->verticalBar = vertical;
   const int verticalWidth = vertical->thickness;
-  vertical->vertical = 1;
+  vertical->vertical = SCROLLBAR_VERTICAL;
   vertical->UIWindow::Resize(verticalWidth, height);
   vertical->Move((width - 10), 0);
   vertical->OnCreate(verticalWidth, height);

@@ -18,6 +18,12 @@ class UIMemberListBox;
 class UIResizer;
 class UIStaticText;
 
+enum ChatRoomRole : int {
+  CHAT_ROOM_ROLE_UNKNOWN_MINUS_1 = -1,
+  CHAT_ROOM_ROLE_OWNER = 0,
+  CHAT_ROOM_ROLE_MEMBER = 1,
+};
+
 class UIChatRoomWnd : public UIFrameWnd {
 public:
   UIChatRoomWnd();

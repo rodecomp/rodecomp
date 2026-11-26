@@ -3,6 +3,7 @@
 #include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Guild/UIGuildWnd.h"
 #include "Client/Mode/CGameMode.h"
@@ -1334,7 +1335,7 @@ void UIGuildSkillWnd::Paint() {
     if (skill->level != 0) {
       std::sprintf(text, g_serviceType == 12 ? "Nv : %d" : "Lv : %d", skill->level);
       this->DrawTextAt(x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
-      if (skill->type == 0) {
+      if (skill->type == SKILLTYPE_PASSIVE) {
         std::sprintf(text, LookupMessage(MSI_PASSIVE));
       } else {
         std::sprintf(text, "Sp : %d", skill->spCost);
@@ -1628,7 +1629,7 @@ void UIGuildSkillWnd::OnLBtnDown(int x, int y) {
 
   if (g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
-    if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
+    if (skill.available != 0 && skill.level != 0 && skill.type != SKILLTYPE_PASSIVE) {
       CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);

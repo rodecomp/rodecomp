@@ -9,11 +9,16 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UICheckBox.h"
 
+enum CheckBoxState : unsigned int {
+  CHECKBOX_UNCHECKED = 0,
+  CHECKBOX_CHECKED = 1,
+};
+
 // OFFSET: 0x0084F010
 // FUNCTION: fn_10656
 UICheckBox::UICheckBox() : UIWindow(0) {
   this->m_disabled = 0;
-  this->geometry.state = 0;
+  this->geometry.state = CHECKBOX_UNCHECKED;
   this->geometry.id = 213;
   this->m_hidden = 0;
   this->m_notify = 0;
@@ -45,13 +50,13 @@ void UICheckBox::Paint() {
   }
 
   switch (this->geometry.state) {
-  case 0: {
+  case CHECKBOX_UNCHECKED: {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
     this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, bitmap, false);
     width = bitmap->image.width;
     break;
   }
-  case 1: {
+  case CHECKBOX_CHECKED: {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
     this->DrawBitmap(0, (this->geometry.height - bitmap->image.height) / 2, bitmap, false);
     width = bitmap->image.width;
@@ -115,7 +120,7 @@ void UICheckBox::OnLBtnDown(int, int) {
     return;
   }
 
-  this->geometry.state = 1u - this->geometry.state;
+  this->geometry.state = CHECKBOX_CHECKED - this->geometry.state;
   this->Notify();
   if (this->m_notify != 0) {
     this->parent->SendMsg(this, UM_TOGGLEPUSH, this->m_message, 0, 0, 0);
@@ -138,7 +143,7 @@ void UICheckBox::OnMouseHover(int x, int y) {
   int screenY = -20;
   this->ToScreen(screenX, screenY);
 
-  if (this->geometry.state != 0 || this->m_uncheckedTooltip.empty()) {
+  if (this->geometry.state != CHECKBOX_UNCHECKED || this->m_uncheckedTooltip.empty()) {
     g_modeMgr.currentMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   } else {
     g_modeMgr.currentMode->ShowTooltip(this->m_uncheckedTooltip.c_str(), screenX, screenY, -1, false, true);
@@ -165,10 +170,10 @@ void UICheckBox::SetImages(const char* checked, const char* unchecked, const cha
     const int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
     CBitmapRes* bitmap = nullptr;
     switch (this->geometry.state) {
-    case 0:
+    case CHECKBOX_UNCHECKED:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
       break;
-    case 1:
+    case CHECKBOX_CHECKED:
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
       break;
     }
@@ -216,10 +221,10 @@ void UICheckBox::FitToText() {
   int width = this->TextWidth(this->m_text.c_str(), 0, 0, 12, 0, 0);
   CBitmapRes* bitmap = nullptr;
   switch (this->geometry.state) {
-  case 0:
+  case CHECKBOX_UNCHECKED:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_unchecked.c_str())));
     break;
-  case 1:
+  case CHECKBOX_CHECKED:
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_checked.c_str())));
     break;
   }

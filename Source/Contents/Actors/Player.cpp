@@ -36,6 +36,7 @@
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Jobs/JobInheritance.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Contents/Jobs/JobNames.h"
 #include "Contents/Models/ModelAnimation.h"
 #include "Contents/Map/MapSkyMgr.h"
@@ -1662,7 +1663,7 @@ CRes* CPc::GetEquipAction(unsigned slot) const {
 // FUNCTION: fn_22573
 int GetSlotLayer(int slot) {
   switch (slot) {
-    case 1:
+    case SPRITE_LAYER_HEAD:
       return 1;
   }
 

@@ -107,6 +107,19 @@
 #include <random>
 #include <timeapi.h>
 
+namespace {
+  enum CharacterSlotBillingCode : std::uint32_t {
+    SLOT_BILLING_MONTHLY_CARD = 100,
+    SLOT_BILLING_TIME_CARD = 200,
+    SLOT_BILLING_FREE = 300,
+    SLOT_BILLING_FREE_PERIOD = 400,
+    SLOT_BILLING_INTERNET_CAFE_CARD = 500,
+    SLOT_BILLING_INTERNET_CAFE_FREE_PERIOD = 600,
+    SLOT_BILLING_INTERNET_CAFE_FREE = 700,
+    SLOT_BILLING_TIME_CARD_REGION = 800,
+  };
+}
+
 #pragma pack(push, 1)
 struct CharacterAuthCodePacket {
   /* 0000 */ std::int16_t id;
@@ -3162,34 +3175,34 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   case LMM_GET_BILLING_INFO: {
     char* output = reinterpret_cast<char*>(argument1);
     switch (this->slotExtension.code) {
-    case 100:
+    case SLOT_BILLING_MONTHLY_CARD:
       std::sprintf(output, LookupMessage(MSI_BILLING_100), this->slotExtension.time1 / 60);
       return 0;
-    case 200: {
+    case SLOT_BILLING_TIME_CARD: {
       const std::uint32_t value = this->slotExtension.time1;
       std::sprintf(output, LookupMessage(MSI_BILLING_200), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
-    case 300:
+    case SLOT_BILLING_FREE:
       std::sprintf(output, LookupMessage(MSI_BILLING_300));
       return 0;
-    case 400:
+    case SLOT_BILLING_FREE_PERIOD:
       std::sprintf(output, LookupMessage(MSI_BILLING_400), (this->slotExtension.time2 - this->slotExtension.time1) / 3600,
         ((this->slotExtension.time2 - this->slotExtension.time1) / 60) % 60, (this->slotExtension.time2 - this->slotExtension.time1) % 60);
       return 0;
-    case 500: {
+    case SLOT_BILLING_INTERNET_CAFE_CARD: {
       const std::uint32_t value = this->slotExtension.time1 != 0 ? this->slotExtension.time1 : this->slotExtension.time2;
-      const int messageId = this->slotExtension.time1 != 0 ? 0x219 : 0x21A;
+      const int messageId = this->slotExtension.time1 != 0 ? MSI_BILLING_500 : MSI_BILLING_501;
       std::sprintf(output, LookupMessage(messageId), value / 3600, (value / 60) % 60, value % 60);
       return 0;
     }
-    case 600:
+    case SLOT_BILLING_INTERNET_CAFE_FREE_PERIOD:
       std::sprintf(output, LookupMessage(MSI_BILLING_600));
       return 0;
-    case 700:
+    case SLOT_BILLING_INTERNET_CAFE_FREE:
       std::sprintf(output, LookupMessage(MSI_BILLING_700));
       return 0;
-    case 800:
+    case SLOT_BILLING_TIME_CARD_REGION:
       std::sprintf(output, LookupMessage(MSI_BILLING_800));
       return 0;
     default:

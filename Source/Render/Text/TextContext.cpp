@@ -67,7 +67,7 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
   const signed char language = g_language;
   if (family == 0) {
     switch (language) {
-    case 1:
+    case LANGUAGE_ENGLISH:
       if (g_serviceType == ServiceIndonesia) {
         family = 8;
         height = (height + 2);
@@ -95,8 +95,8 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
       family = 5;
       height = (height + 3);
       break;
-    case 6:
-    case 8:
+    case LANGUAGE_PORTUGUESE:
+    case LANGUAGE_UNKNOWN_8:
       family = 7;
       height = (height + 3);
       if (g_serviceType == ServiceBrazil) {

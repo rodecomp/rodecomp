@@ -5,6 +5,11 @@
 #include <windows.h>
 
 namespace {
+  enum PackedBitmapFormat : unsigned char {
+    PACKED_BITMAP_RGB24 = 0,
+    PACKED_BITMAP_INDEXED8 = 1,
+  };
+
   // INLINED
   std::uint16_t Read16(const unsigned char* data) {
     std::uint16_t value;
@@ -143,10 +148,10 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
     WORD bits;
 
     switch (format) {
-    case 0:
+    case PACKED_BITMAP_RGB24:
       bits = 24;
       break;
-    case 1:
+    case PACKED_BITMAP_INDEXED8:
       bits = 8;
       break;
     default:

@@ -2,6 +2,7 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -162,7 +163,7 @@ int g_skillListHeadOffsetY;
 // OFFSET: 0x009AE900
 // FUNCTION: fn_45694
 bool UINewSkillListWnd::CanUseSkill(const CSkillInfo& skill) const {
-  return skill.available != 0 && skill.level != 0 && skill.type != 0;
+  return skill.available != 0 && skill.level != 0 && skill.type != SKILLTYPE_PASSIVE;
 }
 
 // OFFSET: 0x009AE930
@@ -348,7 +349,7 @@ void UINewSkillListWnd::DrawSkillList() {
         }
         this->DrawTextAt(levelX, textY, text, 0, 0, 12, (red << 8 | green) << 8 | green, 0, 0);
 
-        if (it->type == 0) {
+        if (it->type == SKILLTYPE_PASSIVE) {
           std::sprintf(text, LookupMessage(MSI_PASSIVE));
         } else {
           int sp = static_cast<int>(it->spCost);

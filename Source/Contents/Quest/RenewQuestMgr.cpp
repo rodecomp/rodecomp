@@ -582,9 +582,9 @@ bool CRenewQuestMgr::IsNewQuest(unsigned int id) {
 // FUNCTION: fn_05454
 bool CRenewQuestMgr::IsInFilter(int filter, std::string_view icon) {
   switch (filter) {
-  case 0:
+  case QUEST_FILTER_ALL:
     return true;
-  case 1:
+  case QUEST_FILTER_OTHER:
     for (auto& entry : this->m_filters) {
       std::list<std::string>& icons = entry.second.m_icons;
       if (icons.end() != std::find(icons.begin(), icons.end(), icon)) {

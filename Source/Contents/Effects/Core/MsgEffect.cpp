@@ -1428,10 +1428,10 @@ void CMsgEffect::FollowOwner() {
         const int dir = this->Get8Dir(this->render.angle);
         this->render.previousAnimation = this->render.animation + dir;
         switch (dir) {
-          case 2:
-          case 3:
-          case 4:
-          case 5:
+          case SPRITE_DIR_LEFT:
+          case SPRITE_DIR_UP_LEFT:
+          case SPRITE_DIR_UP:
+          case SPRITE_DIR_UP_RIGHT:
             this->render.depthLayer = 3;
             break;
           default:

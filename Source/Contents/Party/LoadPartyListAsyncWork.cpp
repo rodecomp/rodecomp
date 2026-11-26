@@ -71,11 +71,11 @@ bool CLoadPartyListAsyncWork::Execute() {
   handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0xC39FB559A17D3963ULL), this->m_token, 4);
 
   switch (this->m_search) {
-  case 0: {
+  case AGENCY_LIST_BROWSE: {
     handler.AddField(OBFUSCATE_BYTES_TEXT("page", 0x2B8725D7E95325F5ULL), page, 4);
     break;
   }
-  case 1: {
+  case AGENCY_LIST_SEARCH: {
     char minimum[10] = {};
     StringFormat(minimum, sizeof(minimum), _TRUNCATE, "%d", this->m_filter.minimumLevel);
     handler.AddField(OBFUSCATE_BYTES_TEXT("MinLV", 0x899D11BB83695B0DULL), minimum, 4);

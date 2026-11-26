@@ -69,7 +69,7 @@ void CRenderer::SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags) {
   command->vertices = triangle.vertices;
   command->vertexCount = 3;
   command->texture = triangle.texture;
-  command->textureMode = 0;
+  command->textureMode = TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA;
   command->sourceBlend = triangle.sourceBlend;
   command->destinationBlend = triangle.destinationBlend;
   this->Submit(command, flags);

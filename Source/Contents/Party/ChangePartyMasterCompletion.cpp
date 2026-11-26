@@ -25,8 +25,8 @@ void CAdventurerAgencyMgr::CompleteChangeMaster(AsyncDiagnostic diagnostic, std:
   }
 
   switch (root["Type"].asInt()) {
-  case 2:
-  case 3:
+  case AGENCY_RESPONSE_UNKNOWN_2:
+  case AGENCY_RESPONSE_UNKNOWN_3:
     break;
   default:
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND)) {

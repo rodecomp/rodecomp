@@ -160,7 +160,7 @@ void CRendererDX7::DrawBlendedQueue() {
     }
   }
 
-  this->SetTextureMode(0);
+  this->SetTextureMode(TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA);
 }
 
 // OFFSET: 0x0055C270
@@ -341,7 +341,7 @@ void CRendererDX7::FlushRenderList() {
     }
   }
 
-  this->SetTextureMode(0);
+  this->SetTextureMode(TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA);
   this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
   this->device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
@@ -380,7 +380,7 @@ void CRendererDX7::FlushRenderList() {
     }
   }
 
-  this->SetTextureMode(0);
+  this->SetTextureMode(TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA);
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
   this->device->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_NONE);

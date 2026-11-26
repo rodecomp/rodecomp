@@ -10,6 +10,18 @@
 
 enum ServiceOption : int { ConfineCursor = 271 };
 
+enum SpriteQuality : int {
+  SPRITE_QUALITY_LOW = 0,
+  SPRITE_QUALITY_MEDIUM = 1,
+  SPRITE_QUALITY_HIGH = 2,
+};
+
+enum TextureQuality : int {
+  TEXTURE_QUALITY_LOW = 0,
+  TEXTURE_QUALITY_MEDIUM = 1,
+  TEXTURE_QUALITY_HIGH = 2,
+};
+
 class CGameSettingsMgr;
 
 bool IsServiceOption(int id);

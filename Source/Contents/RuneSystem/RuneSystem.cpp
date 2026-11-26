@@ -740,8 +740,8 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
     oldId = static_cast<int>(this->m_curRuneSet->m_id);
     if (this->m_curRuneSet->m_id != runeSetId) {
       EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
-      const int one = 1;
-      mgr->RemoveExpansion(one, oldId);
+      const int kind = EQUIP_EXPANSION_RUNE;
+      mgr->RemoveExpansion(kind, oldId);
     }
   }
 
@@ -762,8 +762,8 @@ void CRuneSystemMgr::SetCurRuneSet(int tagId, int runeSetId, int grade, int slot
     }
     if (oldId != runeSetId) {
       EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
-      const int one = 1;
-      mgr->AddExpansion(one, runeSetId, false);
+      const int kind = EQUIP_EXPANSION_RUNE;
+      mgr->AddExpansion(kind, runeSetId, false);
     }
   }
 }

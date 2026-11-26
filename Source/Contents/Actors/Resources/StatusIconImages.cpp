@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Session/Session.h"
 #include "Contents/Jobs/JobId.h"
@@ -23,7 +24,7 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
   }
 
   switch (type) {
-    case 0:
+    case STATUS_ICON_PRIORITY_GOLD:
       switch (efstId) {
         case EFST_SWORDCLAN:
           return "effect\\SWORDCLAN.TGA";
@@ -35,7 +36,7 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
           return "effect\\CROSSBOWCLAN.TGA";
       }
       break;
-    case 1:
+    case STATUS_ICON_PRIORITY_RED:
       switch (efstId) {
         case EFST_BROKENARMOR:
           return "effect\\갑옷파괴.tga";
@@ -137,7 +138,7 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
           return "effect\\npc_hellpower.tga";
       }
       break;
-    case 2:
+    case STATUS_ICON_PRIORITY_BLUE:
       switch (efstId) {
         case EFST_ENDURE:
           return "effect\\인듀어.tga";
@@ -589,7 +590,7 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
           return "effect\\글로리아.tga";
       }
       break;
-    case 3:
+    case STATUS_ICON_PRIORITY_GREEN:
       switch (efstId) {
         case EFST_CONCENTRATION:
           return "effect\\집중력향상.tga";
@@ -636,7 +637,7 @@ const char* CSession::GetEFSTImgFileName(int efstId, int type) {
           return "effect\\ELDICASTES.TGA";
       }
       break;
-    case 4:
+    case STATUS_ICON_PRIORITY_WHITE:
       switch (efstId) {
         case EFST_GLORIA:
           return "effect\\글로리아.tga";

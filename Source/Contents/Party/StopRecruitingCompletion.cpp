@@ -33,8 +33,8 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
   }
 
   switch (root["Type"].asInt()) {
-  case 2:
-  case 3:
+  case AGENCY_RESPONSE_UNKNOWN_2:
+  case AGENCY_RESPONSE_UNKNOWN_3:
     if (this->masterAccountId == g_session.m_aid) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVENTURER_AGENCY_RECRUIT_STOP_FAILED)), 0xFF, 0, 0, 0);
     }

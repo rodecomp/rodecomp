@@ -14,6 +14,13 @@
 #include <json/value.h>
 
 namespace {
+  enum EmblemUploadResult : int {
+    EMBLEM_UPLOAD_SUCCESS = 1,
+    EMBLEM_UPLOAD_UNKNOWN_2 = 2,
+    EMBLEM_UPLOAD_UNKNOWN_3 = 3,
+    EMBLEM_UPLOAD_UNKNOWN_4 = 4,
+  };
+
 #pragma pack(push, 1)
   struct EmblemVersionPacket {
     short id;
@@ -40,7 +47,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
   }
 
   switch (root[(OBFUSCATE_DECRYPT_BYTES(0xC52FB5FBB94FF917ULL, 5, {0x43, 0x80, 0x3F, 0xDC, 0xFB}))].asInt()) {
-  case 1: {
+  case EMBLEM_UPLOAD_SUCCESS: {
     const int version = root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt();
     EmblemVersionPacket packet;
     packet.id = ID_CZ_REQ_ADD_NEW_EMBLEM;
@@ -49,9 +56,9 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
-  case 2:
-  case 3:
-  case 4: {
+  case EMBLEM_UPLOAD_UNKNOWN_2:
+  case EMBLEM_UPLOAD_UNKNOWN_3:
+  case EMBLEM_UPLOAD_UNKNOWN_4: {
     g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   }

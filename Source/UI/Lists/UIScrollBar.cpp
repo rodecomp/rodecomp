@@ -67,7 +67,7 @@ UIListBoxTitle::UIListBoxTitle() {
 UIScrollBar::UIScrollBar() : UIWindow(0), arrowLength(13) {
   this->maximum = 0;
   this->position = 0;
-  this->vertical = 1;
+  this->vertical = SCROLLBAR_VERTICAL;
   this->state = SCROLLBAR_STATE_NORMAL;
   this->pressX = 0;
   this->pressY = 0;
@@ -110,12 +110,12 @@ void UIScrollBar::Resize(int width, int height) {
   this->Invalidate();
 
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     height = this->thickness;
     UIWindow::Resize(width, height);
     this->OnSize(width, height);
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     width = this->thickness;
     break;
   }
@@ -138,10 +138,10 @@ bool UIScrollBar::IsTransmitMouseInput() {
 int UIScrollBar::ThumbLength() {
   int length = this->geometry.height;
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     length = this->geometry.width;
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     length = this->geometry.height;
     break;
   }
@@ -169,10 +169,10 @@ int UIScrollBar::Position() {
 int UIScrollBar::Travel() {
   int length = this->geometry.height;
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     length = this->geometry.width;
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     length = this->geometry.height;
     break;
   }
@@ -205,7 +205,7 @@ int UIScrollBar::Part(int x, int y) {
   }
 
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     if (x < this->arrowLength) {
       return 0;
     }
@@ -219,7 +219,7 @@ int UIScrollBar::Part(int x, int y) {
       return 3;
     }
     return 4;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     if (y < this->arrowLength) {
       return 0;
     }
@@ -253,7 +253,7 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
   this->dragAmount = 0;
 
   switch (this->vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     switch (part) {
     case SB_UPBTN:
       this->parent->SendMsg(this, UM_SCROLLHORZ, -this->horizontalStep, 0, 0, 0);
@@ -273,7 +273,7 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
       break;
     }
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     switch (part) {
     case SB_UPBTN:
       this->parent->SendMsg(this, UM_SCROLLVERT, -this->verticalStep, 0, 0, 0);
@@ -349,7 +349,7 @@ void UIScrollBar::OnMouseMove(int x, int y) {
 
   if (g_windowMgr.Capture() == this && this->parent) {
     switch (this->vertical) {
-    case 0: {
+    case SCROLLBAR_HORIZONTAL: {
       const int delta = (x - this->pressX) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
       if (delta != 0) {
@@ -357,7 +357,7 @@ void UIScrollBar::OnMouseMove(int x, int y) {
       }
       break;
     }
-    case 1: {
+    case SCROLLBAR_VERTICAL: {
       const int delta = (y - this->pressY) * (this->maximum + 1) / this->Travel() - this->dragAmount;
 
       if (delta != 0) {
@@ -413,7 +413,7 @@ void UIScrollBar::Paint() {
   }
 
   switch (this->vertical) {
-  case 0: {
+  case SCROLLBAR_HORIZONTAL: {
     if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
     } else if (this->state == SCROLLBAR_STATE_UP_PRESSED) {
@@ -448,7 +448,7 @@ void UIScrollBar::Paint() {
     }
     break;
   }
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
     } else if (this->state == SCROLLBAR_STATE_UP_PRESSED) {
@@ -494,11 +494,11 @@ void UIScrollBar::Configure(int x, int y, int vertical, int length) {
   int width;
   int height;
   switch (vertical) {
-  case 0:
+  case SCROLLBAR_HORIZONTAL:
     width = length;
     height = this->thickness;
     break;
-  case 1:
+  case SCROLLBAR_VERTICAL:
     width = this->thickness;
     height = length;
     break;

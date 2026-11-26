@@ -37,6 +37,11 @@
 #include <new>
 #include <vector>
 
+enum FlyingShipRouteType : int {
+  FLYING_SHIP_ROUTE_IZLUDE = 0,
+  FLYING_SHIP_ROUTE_EINBROCH = 1,
+};
+
 // GLOBAL: gl_24799
 CWorldViewMgr g_worldViewMgr;
 
@@ -718,10 +723,10 @@ UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
   this->m_resetTime = 1;
   this->m_flyingShipRoute.lineTextureName = "유저인터페이스\\worldview_interface\\wv_Airf3.bmp";
   this->m_flyingShipRoute.lineColor = 0xAAFFFFFF;
-  this->m_flyingShipRoute.routeType = 1;
+  this->m_flyingShipRoute.routeType = FLYING_SHIP_ROUTE_EINBROCH;
   this->m_flyingShipRoute2.lineTextureName = "유저인터페이스\\worldview_interface\\wv_Airf3.bmp";
   this->m_flyingShipRoute2.lineColor = 0xAAFFFFFF;
-  this->m_flyingShipRoute2.routeType = 0;
+  this->m_flyingShipRoute2.routeType = FLYING_SHIP_ROUTE_IZLUDE;
   this->m_comboHeight = 0x12;
   this->m_mouseX = 0;
   this->m_mouseY = 0;
@@ -743,12 +748,12 @@ __declspec(noinline) UIRoMapWnd::~UIRoMapWnd() {
 // FUNCTION: fn_12627
 bool CFlyingShipRouteInfo::IsRouteMap(std::string mapName) {
   switch (this->routeType) {
-  case 0:
+  case FLYING_SHIP_ROUTE_IZLUDE:
     if (mapName == "izlude.rsw" || mapName == "ra_fild12.rsw" || mapName == "yuno.rsw") {
       return true;
     }
     break;
-  case 1:
+  case FLYING_SHIP_ROUTE_EINBROCH:
     if (mapName == "einbroch.rsw" || mapName == "lighthalzen.rsw" || mapName == "hugel.rsw" || mapName == "yuno.rsw") {
       return true;
     }
@@ -869,7 +874,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
     std::string name = record->name;
 
     switch (this->routeType) {
-    case 1:
+    case FLYING_SHIP_ROUTE_EINBROCH:
       if (name == "einbroch.rsw") {
         std::vector<std::string> route;
         route.push_back("einbroch.rsw");
@@ -917,7 +922,7 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
       } else {
         return false;
       }
-    case 0: {
+    case FLYING_SHIP_ROUTE_IZLUDE: {
       std::vector<std::string> route;
       if (name == "izlude.rsw") {
         route.push_back("izlude.rsw");

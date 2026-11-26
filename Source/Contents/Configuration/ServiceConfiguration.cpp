@@ -35,7 +35,7 @@
 #include <windows.h>
 
 // GLOBAL: gl_24542
-signed char g_language = 0;
+signed char g_language = LANGUAGE_KOREAN;
 
 // GLOBAL: gl_24544
 CLanguageBase* g_serverLanguage;
@@ -354,26 +354,26 @@ void InitializeLanguage() {
     g_textCodePage = 874;
     break;
   case ServiceGermany:
-    g_language = 1;
+    g_language = LANGUAGE_ENGLISH;
     g_inlineCharset = 1;
     g_textCodePage = 0;
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceIndia:
-    g_language = 1;
+    g_language = LANGUAGE_ENGLISH;
     g_inlineCharset = 0;
     g_textCodePage = 0;
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceBrazil:
   case ServiceFrance:
-    g_language = 6;
+    g_language = LANGUAGE_PORTUGUESE;
     g_inlineCharset = 0;
     g_textCodePage = 1252;
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceRussia:
-    g_language = 1;
+    g_language = LANGUAGE_ENGLISH;
     g_inlineCharset = 0;
     g_textCodePage = 1251;
     g_serverLanguage = &defaultCharset;
@@ -385,7 +385,7 @@ void InitializeLanguage() {
     g_serverLanguage = &defaultCharset;
     break;
   case ServiceChile:
-    g_language = 1;
+    g_language = LANGUAGE_ENGLISH;
     g_inlineCharset = 0;
     g_textCodePage = 1145;
     g_serverLanguage = &defaultCharset;
@@ -406,7 +406,7 @@ void InitializeLanguage() {
   case ServiceAustralia:
   case ServiceEu:
     g_textCodePage = 0;
-    g_language = 1;
+    g_language = LANGUAGE_ENGLISH;
     g_serverLanguage = &defaultCharset;
     break;
   }

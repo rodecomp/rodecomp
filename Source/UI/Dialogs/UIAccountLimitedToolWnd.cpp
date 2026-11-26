@@ -316,7 +316,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (argument1) {
     case ACCOUNT_LIMITED_APPLY:
       switch (argument2) {
-      case 3: {
+      case ACCOUNT_LIMITED_APPLY_UNKNOWN_3: {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
@@ -331,7 +331,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         deleteButton->Invalidate();
         break;
       }
-      case 1: {
+      case ACCOUNT_LIMITED_APPLY_UNKNOWN_1: {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
@@ -346,7 +346,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         deleteButton->Invalidate();
         break;
       }
-      case 0: {
+      case ACCOUNT_LIMITED_APPLY_SUCCESS: {
         const std::string text = FormatOwnedString(
           LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->m_edits[0]->Text(), std::atoi(this->m_edits[1]->Text()), std::atoi(this->m_edits[3]->Text()),
           std::atoi(this->m_edits[4]->Text()), std::atoi(this->m_edits[5]->Text()), std::atoi(this->m_edits[6]->Text()), std::atoi(this->m_edits[7]->Text()),

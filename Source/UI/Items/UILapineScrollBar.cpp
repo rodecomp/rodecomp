@@ -58,7 +58,7 @@ void UILapineScrollBar::Paint() {
   }
 
   switch (this->vertical) {
-  case 1: {
+  case SCROLLBAR_VERTICAL: {
     CBitmapRes* top = load("유저인터페이스\\lapine\\scrollbar_bg_top.bmp");
     CBitmapRes* bottom = load("유저인터페이스\\lapine\\scrollbar_bg_btm.bmp");
     CBitmapRes* middle = load("유저인터페이스\\lapine\\scrollbar_bg_mid.bmp");

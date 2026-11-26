@@ -247,9 +247,18 @@ EquipmentProperties::CEquipmentProperties* EquipmentProperties::CEquipmentProper
 }
 
 namespace EquipmentProperties {
+  enum EquipmentInfoKind : int {
+    EQUIP_INFO_UNCLASSIFIED = 0,
+    EQUIP_INFO_ARMOR = 1,
+    EQUIP_INFO_MELEE_WEAPON = 2,
+    EQUIP_INFO_RANGED_WEAPON = 3,
+    EQUIP_INFO_AMMO = 4,
+    EQUIP_INFO_SPECIAL = 5,
+  };
+
   struct CEquipmentInfo {
     // INLINED
-    CEquipmentInfo() : kind(0) {
+    CEquipmentInfo() : kind(EQUIP_INFO_UNCLASSIFIED) {
     }
 
     /* 0000 */ int kind;
@@ -572,9 +581,9 @@ bool EquipmentProperties::CEquipmentWearable::IsActive() {
 // FUNCTION: fn_05626
 std::string_view EquipmentProperties::CEquipmentExpansion::GetSuffix() {
   switch (this->m_kind) {
-  case 0:
+  case EQUIP_EXPANSION_PET:
     return "(P)";
-  case 1:
+  case EQUIP_EXPANSION_RUNE:
     return "(R)";
   default:
     return "";
@@ -834,7 +843,7 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
           const int level = equipped.refiningLevel;
           if (level > 0) {
             switch (this->m_info->kind) {
-            case 1: {
+            case EQUIP_INFO_ARMOR: {
               const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
               if (attack != 0) {
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
@@ -847,14 +856,14 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
               }
               break;
             }
-            case 2:
-            case 3: {
+            case EQUIP_INFO_MELEE_WEAPON:
+            case EQUIP_INFO_RANGED_WEAPON: {
               const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(1, key, level);
               if (bonus != 0) {
                 const int rate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 1);
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0x29), "AddExtParam", -1,
                                   static_cast<int>(static_cast<float>(rate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
-                if (this->m_info->kind == 2) {
+                if (this->m_info->kind == EQUIP_INFO_MELEE_WEAPON) {
                   const int magicRate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 2);
                   this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xC8), "AddExtParam", -1,
                                     static_cast<int>(static_cast<float>(magicRate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
@@ -3999,8 +4008,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
 
   unsigned int key = itemId;
   switch (kind) {
-  case 0:
-  case 1:
+  case EQUIP_EXPANSION_PET:
+  case EQUIP_EXPANSION_RUNE:
     key = kind;
     break;
   }
@@ -4014,7 +4023,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
   CEquipment* equipment = this->properties2.insert({key, new CEquipmentExpansion(itemId, kind)}).first->second;
   bool load = notify;
   switch (kind) {
-  case 1:
+  case EQUIP_EXPANSION_RUNE:
     load = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND) != nullptr;
     break;
   }
@@ -4033,8 +4042,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
 
   unsigned int key = itemId;
   switch (kind) {
-  case 0:
-  case 1:
+  case EQUIP_EXPANSION_PET:
+  case EQUIP_EXPANSION_RUNE:
     key = kind;
     break;
   }
@@ -4057,8 +4066,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::RemoveExpansion(const int& ki
 void EquipmentProperties::CEquipmentPropertiesMgr::RefreshExpansion(const int& kind, const int& itemId) {
   unsigned int key = itemId;
   switch (kind) {
-  case 0:
-  case 1:
+  case EQUIP_EXPANSION_PET:
+  case EQUIP_EXPANSION_RUNE:
     key = kind;
     break;
   }
@@ -6822,23 +6831,23 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
         unsigned int hash = HashName(itemType.c_str());
         switch (hash) {
         case 0x0F1AAAA6:
-          info.kind = 1;
+          info.kind = EQUIP_INFO_ARMOR;
           count = 17;
           break;
         case 0x47F48D1C:
-          info.kind = 2;
+          info.kind = EQUIP_INFO_MELEE_WEAPON;
           count = 17;
           break;
         case 0xC8D7BCE1:
-          info.kind = 3;
+          info.kind = EQUIP_INFO_RANGED_WEAPON;
           count = 15;
           break;
         case 0x7C941E6F:
-          info.kind = 4;
+          info.kind = EQUIP_INFO_AMMO;
           count = 2;
           break;
         case 0xA4C66E86:
-          info.kind = 5;
+          info.kind = EQUIP_INFO_SPECIAL;
           count = 0;
           break;
         }
@@ -7079,7 +7088,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
         break;
       }
 
-      if (info.kind != 0) {
+      if (info.kind != EQUIP_INFO_UNCLASSIFIED) {
         this->equipmentInfo.try_emplace(key, std::move(info));
       }
 

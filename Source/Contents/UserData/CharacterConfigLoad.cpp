@@ -9,6 +9,13 @@
 #include <json/reader.h>
 #include <json/value.h>
 
+namespace {
+  enum CharacterConfigLoadResult : int {
+    CHARACTER_CONFIG_LOAD_SUCCESS = 1,
+    CHARACTER_CONFIG_LOAD_USE_LOCAL_DEFAULTS = 4,
+  };
+}
+
 // OFFSET: 0x005E5FD0
 // FUNCTION: fn_03925
 std::string CCharacterLinkedUserDataMgr::LoadUrl() const {
@@ -38,7 +45,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
   }
 
   switch (root["Type"].asInt()) {
-  case 1: {
+  case CHARACTER_CONFIG_LOAD_SUCCESS: {
     this->LoadUseSkillLevels(root["data"]);
     this->LoadHomunculusSkillLevels(root["data"]);
 
@@ -56,7 +63,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
     this->m_loaded = true;
     break;
   }
-  case 4:
+  case CHARACTER_CONFIG_LOAD_USE_LOCAL_DEFAULTS:
     g_windowMgr.LoadSkillUseLevelRegistry();
     g_session.SetOption(7, 1);
     g_session.SetOption(8, 1);

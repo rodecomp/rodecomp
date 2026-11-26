@@ -11,6 +11,7 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Chat/UIChatRoomTitle.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Text/ColoredText.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 
@@ -134,39 +135,39 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   this->roomOption = static_cast<short>(b);
   UIStaticText* label;
   switch (static_cast<short>(b)) {
-  case 1:
+  case TEXT_FONT_STYLE_RIX_LOVEANGEL:
     label = this->label;
     label->fontFamily = 21;
     break;
-  case 2:
+  case TEXT_FONT_STYLE_RIX_SQUIRREL:
     label = this->label;
     label->fontFamily = 20;
     break;
-  case 3:
+  case TEXT_FONT_STYLE_RIX_NHCGOGO:
     label = this->label;
     label->fontFamily = 22;
     break;
-  case 4:
+  case TEXT_FONT_STYLE_RIX_DIARY:
     label = this->label;
     label->fontFamily = 23;
     break;
-  case 5:
+  case TEXT_FONT_STYLE_RIX_MINI_HEART:
     label = this->label;
     label->fontFamily = 24;
     break;
-  case 6:
+  case TEXT_FONT_STYLE_RIX_FRESHMAN:
     label = this->label;
     label->fontFamily = 25;
     break;
-  case 7:
+  case TEXT_FONT_STYLE_RIX_KID:
     label = this->label;
     label->fontFamily = 26;
     break;
-  case 8:
+  case TEXT_FONT_STYLE_RIX_MAGIC:
     label = this->label;
     label->fontFamily = 27;
     break;
-  case 9:
+  case TEXT_FONT_STYLE_RIX_JJANGU:
     label = this->label;
     label->fontFamily = 28;
     break;

@@ -14,6 +14,7 @@
 #include "Contents/Sound/SoundMgr.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Device/DisplayMode.h"
 #include "Render/DX7/RenderSystemDX7.h"
@@ -1221,7 +1222,7 @@ void CUIGroupLogInOut::Apply() {
 // OFFSET: 0x00A404F0
 // FUNCTION: fn_15974
 void CUIGroupRodexSpam::Apply() {
-  RodexSpamOptionPacket packet = {0x0B93, 1, 1};
+  RodexSpamOptionPacket packet = {0x0B93, USER_CONFIG_RODEX_SPAM_FILTER, 1};
   GetRagConnection().Send(GetRagConnection().GetPacketSize(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
@@ -1611,7 +1612,7 @@ void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
 // OFFSET: 0x00A41F30
 // FUNCTION: fn_16007
 void CUIGroupRodexSpam::OnSelect(CUIRadioButton* button) {
-  RodexSpamOptionPacket packet = {0x0B93, 1, this->m_offButton != button};
+  RodexSpamOptionPacket packet = {0x0B93, USER_CONFIG_RODEX_SPAM_FILTER, this->m_offButton != button};
   GetRagConnection().Send(GetRagConnection().GetPacketSize(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
@@ -1737,7 +1738,7 @@ void CUIGroupSound::Refresh() {
 void CUIGroupSpriteDetailLevel::Refresh() {
   this->m_slider->SetTotal(3);
   this->m_slider->SetVisible(1);
-  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_effectDetailLevel), 2u));
+  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_effectDetailLevel), static_cast<unsigned int>(SPRITE_QUALITY_HIGH)));
 }
 
 // OFFSET: 0x00A43A80
@@ -1745,7 +1746,7 @@ void CUIGroupSpriteDetailLevel::Refresh() {
 void CUIGroupTextureDetailLevel::Refresh() {
   this->m_slider->SetTotal(3);
   this->m_slider->SetVisible(1);
-  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_textureDetailLevel), 2u));
+  this->m_slider->SetPosition(std::min(static_cast<unsigned int>(g_textureDetailLevel), static_cast<unsigned int>(TEXTURE_QUALITY_HIGH)));
 }
 
 // OFFSET: 0x00A43AC0
@@ -3536,11 +3537,11 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
   if (spriteLevel != g_effectDetailLevel) {
     g_effectDetailLevel = spriteLevel;
     switch (spriteLevel) {
-    case 0:
+    case SPRITE_QUALITY_LOW:
       g_spriteHalfWidth = 1;
       g_spriteHalfHeight = 1;
       break;
-    case 1:
+    case SPRITE_QUALITY_MEDIUM:
       g_spriteHalfWidth = 0;
       g_spriteHalfHeight = 1;
       break;
@@ -3556,9 +3557,9 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
   if (textureLevel != g_textureDetailLevel) {
     g_textureDetailLevel = textureLevel;
     int reduction = 1;
-    if (textureLevel == 0) {
+    if (textureLevel == TEXTURE_QUALITY_LOW) {
       reduction = 4;
-    } else if (textureLevel == 1) {
+    } else if (textureLevel == TEXTURE_QUALITY_MEDIUM) {
       reduction = 2;
     }
     if (reduction != g_textureReduction) {

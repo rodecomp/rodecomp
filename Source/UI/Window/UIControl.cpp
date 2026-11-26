@@ -43,6 +43,12 @@
 #include <format>
 #include <windows.h>
 
+enum ListItemState : int {
+  LIST_ITEM_NORMAL = 0,
+  LIST_ITEM_SELECTED = 1,
+  LIST_ITEM_HIGHLIGHTED = 2,
+};
+
 // GLOBAL: gl_25174
 const char* g_uiInfoTempPath = "savedata\\UIInfo.temp";
 
@@ -1690,7 +1696,7 @@ void CUIListItem::OnLBtnUp(int, int) {
 // OFFSET: 0x009F0230
 // FUNCTION: fn_14659
 void CUIListItem::OnMouseMove(int, int) {
-  if (this->selected != 2) {
+  if (this->selected != LIST_ITEM_HIGHLIGHTED) {
     this->OnMouseEnter();
   }
 }
@@ -1698,8 +1704,8 @@ void CUIListItem::OnMouseMove(int, int) {
 // OFFSET: 0x009F0250
 // FUNCTION: fn_14660
 void CUIListItem::SetHighlighted(bool highlighted) {
-  if (this->selected != 1) {
-    const int state = highlighted * 2;
+  if (this->selected != LIST_ITEM_SELECTED) {
+    const int state = highlighted * LIST_ITEM_HIGHLIGHTED;
     if (this->selected != state) {
       this->selected = state;
       if (!this->frozen) {
@@ -3696,10 +3702,10 @@ CUIListItem::~CUIListItem() {
 
 // OFFSET: 0x009EFC30
 // FUNCTION: fn_14653
-CUIListItem::CUIListItem() : CUIControl(), images(), selected(0), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
-  this->images[0] = nullptr;
-  this->images[1] = nullptr;
-  this->images[2] = nullptr;
+CUIListItem::CUIListItem() : CUIControl(), images(), selected(LIST_ITEM_NORMAL), disabledImage(nullptr), frozen(0), index(-1), onHover(), onPress() {
+  this->images[LIST_ITEM_NORMAL] = nullptr;
+  this->images[LIST_ITEM_SELECTED] = nullptr;
+  this->images[LIST_ITEM_HIGHLIGHTED] = nullptr;
   this->m_clip = 1;
 }
 
@@ -3713,10 +3719,10 @@ void CUIListItem::Paint() {
     }
   } else if (!this->images[this->selected]) {
     switch (this->selected) {
-    case 1:
+    case LIST_ITEM_SELECTED:
       this->ClearSurface(0xFFDECE);
       break;
-    case 2:
+    case LIST_ITEM_HIGHLIGHTED:
       this->ClearSurface(0xEF9C73);
       break;
     }
@@ -3729,9 +3735,9 @@ void CUIListItem::Paint() {
 // FUNCTION: fn_14663
 void CUIListItem::SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled) {
   this->images.clear();
-  this->images[0] = normal;
-  this->images[1] = hover;
-  this->images[2] = pressed;
+  this->images[LIST_ITEM_NORMAL] = normal;
+  this->images[LIST_ITEM_SELECTED] = hover;
+  this->images[LIST_ITEM_HIGHLIGHTED] = pressed;
   this->disabledImage = disabled;
   this->Invalidate();
 }

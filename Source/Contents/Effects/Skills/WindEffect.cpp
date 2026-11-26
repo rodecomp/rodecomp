@@ -9,6 +9,13 @@
 #include <cmath>
 #include <cstdlib>
 
+namespace {
+  enum WindParticleFade : signed char {
+    WIND_PARTICLE_FADE_IN = 0,
+    WIND_PARTICLE_FADE_OUT = 1,
+  };
+}
+
 // INLINED
 static EffectPoint TransformPoint(const matrix& transform, const EffectPoint& point) {
   EffectPoint result;
@@ -55,7 +62,7 @@ void CWindEffect::Init() {
       }
       particle->SetTexture(this->textureName);
       particle->angle = static_cast<float>(segment) * step + static_cast<float>(startAngle);
-      particle->animationState = 0;
+      particle->animationState = WIND_PARTICLE_FADE_IN;
       particle->InitParticleQuad(particle->vertices);
       particle->effectId = this->id;
       particle->columnIndex = segment;
@@ -201,20 +208,20 @@ void CWindEffect::UpdateParticleAlpha(CParticle* particle) {
   }
 
   switch (particle->animationState) {
-  case 0: {
+  case WIND_PARTICLE_FADE_IN: {
     int alpha = particle->alpha + 1;
     if (this->maxAlpha <= alpha) {
       alpha = this->maxAlpha;
-      particle->animationState = 1;
+      particle->animationState = WIND_PARTICLE_FADE_OUT;
     }
     particle->alpha = alpha;
     break;
   }
-  case 1: {
+  case WIND_PARTICLE_FADE_OUT: {
     int alpha = particle->alpha - 1;
     if (alpha <= 0) {
       alpha = 0;
-      particle->animationState = 0;
+      particle->animationState = WIND_PARTICLE_FADE_IN;
     }
     particle->alpha = alpha;
     break;

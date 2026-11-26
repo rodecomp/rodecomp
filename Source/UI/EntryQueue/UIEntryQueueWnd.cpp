@@ -32,6 +32,16 @@
 #include <utility>
 #include <windows.h>
 
+enum EntryQueueRequestCommand : int {
+  ENTRYQUEUE_REQUEST_ACCEPT = 0,
+  ENTRYQUEUE_REQUEST_DECLINE = 1,
+};
+
+enum EntryQueueStandByCommand : int {
+  ENTRYQUEUE_STANDBY_CANCEL = 0,
+  ENTRYQUEUE_STANDBY_CLOSE = 1,
+};
+
 // OFFSET: 0x00BA3920
 // FUNCTION: fn_19677
 UIEntryQueueHelpWnd::UIEntryQueueHelpWnd() : UIFrameWnd(0), m_viewer(nullptr), m_close(nullptr) {
@@ -167,7 +177,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_ok->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
   this->m_ok->SetSize(this->m_ok->BitmapWidth(), this->m_ok->BitmapHeight());
   this->m_ok->Move(209, 226);
-  this->m_ok->SetId(0);
+  this->m_ok->SetId(ENTRYQUEUE_REQUEST_ACCEPT);
   this->AddChild(this->m_ok);
 
   this->m_cancel = new UIBitmapButton();
@@ -176,7 +186,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_cancel->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
   this->m_cancel->SetSize(this->m_cancel->BitmapWidth(), this->m_cancel->BitmapHeight());
   this->m_cancel->Move(254, 226);
-  this->m_cancel->SetId(1);
+  this->m_cancel->SetId(ENTRYQUEUE_REQUEST_DECLINE);
   this->AddChild(this->m_cancel);
 
   this->m_countdown = new UIStaticText();
@@ -227,13 +237,13 @@ int UIEntryQueueRequestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   if (message == UM_COMMAND) {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
-    case 0:
+    case ENTRYQUEUE_REQUEST_ACCEPT:
       g_entryQueueMgr->SendAdmissionReply(1);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BATTLEFIELD_WAIT_PLAYER)), 0x64FFFF, 0, 0, 0);
       break;
-    case 1:
+    case ENTRYQUEUE_REQUEST_DECLINE:
       g_entryQueueMgr->SendAdmissionReply(2);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
       g_windowMgr.CloseWindow(WID_ENTRYQUEUEREQUESTWND);
@@ -283,7 +293,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->m_cancel->SetBitmap((path + "cancel_waiting_b" + ".bmp").c_str(), 2, 0);
   this->m_cancel->SetSize(this->m_cancel->BitmapWidth(), this->m_cancel->BitmapHeight());
   this->m_cancel->Move(159, 96);
-  this->m_cancel->SetId(0);
+  this->m_cancel->SetId(ENTRYQUEUE_STANDBY_CANCEL);
   this->AddChild(this->m_cancel);
 
   this->m_close = new UIBitmapButton();
@@ -292,7 +302,7 @@ bool UIEntryQueueStandByWnd::Create() {
   this->m_close->SetBitmap((path + "btn_close_b" + ".bmp").c_str(), 2, 0);
   this->m_close->SetSize(this->m_close->BitmapWidth(), this->m_close->BitmapHeight());
   this->m_close->Move(234, 96);
-  this->m_close->SetId(1);
+  this->m_close->SetId(ENTRYQUEUE_STANDBY_CLOSE);
   this->AddChild(this->m_close);
   return true;
 }
@@ -320,10 +330,10 @@ int UIEntryQueueStandByWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   if (message == UM_COMMAND) {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
-    case 0:
+    case ENTRYQUEUE_STANDBY_CANCEL:
       g_entryQueueMgr->SendCancel();
       break;
-    case 1:
+    case ENTRYQUEUE_STANDBY_CLOSE:
       g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
       break;
     }

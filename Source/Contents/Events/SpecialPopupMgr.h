@@ -7,10 +7,16 @@
 
 struct lua_State;
 
+enum SPUI_IDS : int {
+  SPU_CHAT = 0,
+  SPU_FLOATING = 1,
+  SPU_FLOATING_CHAT = 2,
+};
+
 // VTABLE: vt_00752
 struct PopupData {
   // INLINED
-  PopupData() : m_messageId(0), m_color(0xFFFFFFFF) {
+  PopupData() : m_messageId(SPU_CHAT), m_color(0xFFFFFFFF) {
   }
   virtual ~PopupData();
 

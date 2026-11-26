@@ -48,7 +48,7 @@ RenderCommand::RenderCommand() {
   this->commandMode = 0;
   this->sourceBlend = 0;
   this->destinationBlend = 0;
-  this->textureMode = 0;
+  this->textureMode = TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA;
   this->primitiveType = D3DPT_TRIANGLELIST;
 }
 
@@ -73,7 +73,7 @@ RenderPrimitive::RenderPrimitive() : RenderCommand(0) {
   this->commandMode = 0;
   this->sourceBlend = 0;
   this->destinationBlend = 0;
-  this->textureMode = 0;
+  this->textureMode = TEXTURE_MODE_MODULATE_COLOR_AND_ALPHA;
   new (this->quad) QuadVertex[4];
   this->primitiveType = D3DPT_TRIANGLESTRIP;
 }

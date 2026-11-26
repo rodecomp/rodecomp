@@ -13,6 +13,12 @@ class CTexture;
 struct RenderCommand;
 struct RenderVertex;
 
+enum GrannyRenderState : int {
+  GRANNY_RENDER_ACTIVE = 0,
+  GRANNY_RENDER_UNKNOWN_1 = 1,
+  GRANNY_RENDER_UNKNOWN_2 = 2,
+};
+
 struct GrannyActorLight {
   /* 0000 */ vector3d direction;
   /* 000C */ int intensity;

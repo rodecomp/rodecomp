@@ -28,6 +28,7 @@
 #include "Contents/Messenger/EquipmentPropertiesMgr.h"
 #include "File/File.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Network/Packets/PacketId.h"
 #include "Network/TextEncoding.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -3333,8 +3334,8 @@ void CSession::InitVariables() {
 
   this->equippedArrowIndex = 0;
   this->partyExpShare = 0;
-  this->partyItemCollect = 0;
-  this->partyItemDistribute = 0;
+  this->partyItemCollect = PARTY_ITEM_PICKUP_INDIVIDUAL;
+  this->partyItemDistribute = PARTY_ITEM_SHARE_INDIVIDUAL;
   this->monsterInfoEnabled = 1;
   this->quitBlocked = 0;
   this->battleChat = 0;

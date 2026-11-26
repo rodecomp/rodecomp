@@ -611,6 +611,16 @@ enum EXP_SHARE : int {
   EXP_CHANGE_IMPOSSIBLE = 2,
 };
 
+enum PartyItemPickupRule : int {
+  PARTY_ITEM_PICKUP_INDIVIDUAL = 0,
+  PARTY_ITEM_PICKUP_SHARED = 1,
+};
+
+enum PartyItemShareRule : int {
+  PARTY_ITEM_SHARE_INDIVIDUAL = 0,
+  PARTY_ITEM_SHARE_EVEN = 1,
+};
+
 enum e_CASHSHOP_ACK : int {
   ERROR_TYPE_NONE = 0,
   ERROR_TYPE_NPC = 1,
@@ -684,6 +694,25 @@ enum e_laphine_synthesis_result : int {
   LAPHINE_SYNTHESIS_SUCCESS = 0,
   LAPHINE_SYNTHESIS_AMOUNT = 5,
   LAPHINE_SYNTHESIS_ITEM = 7,
+};
+
+enum UserConfigType : int {
+  USER_CONFIG_RODEX_SPAM_FILTER = 1,
+};
+
+enum UserConfigUpdateResult : int {
+  USER_CONFIG_UPDATE_FAILED = 1,
+};
+
+enum e_adopt_reply : int {
+  ADOPT_REPLY_MORE_CHILDREN = 0,
+  ADOPT_REPLY_LEVEL_70 = 1,
+  ADOPT_REPLY_MARRIED = 2,
+};
+
+enum PetEggUpdate : int {
+  PET_EGG_UPDATE_CLEAR = 0,
+  PET_EGG_UPDATE_HATCH = 1,
 };
 
 #endif

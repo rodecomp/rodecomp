@@ -29,8 +29,8 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
   const int type = root["Type"].asInt();
 
   switch (type) {
-    case 2:
-    case 3:
+    case AGENCY_RESPONSE_UNKNOWN_2:
+    case AGENCY_RESPONSE_UNKNOWN_3:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED)), 0xFF, 0, 0, 0);
       return;
   }

@@ -33,6 +33,11 @@
 #include <string>
 #include <timeapi.h>
 
+enum CreationRace : int {
+  CREATION_RACE_HUMAN = 0,
+  CREATION_RACE_DORAM = 1,
+};
+
 // GLOBAL: gl_25613
 static const std::string s_makeCharItemLinkOpen = "<ITEML>";
 
@@ -46,17 +51,17 @@ UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 
 // OFFSET: 0x007D99C0
 // FUNCTION: fn_09608
-UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
+UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_style(style), m_sex(sex), m_race(CREATION_RACE_HUMAN), m_preview(nullptr), m_selected(false) {
 }
 
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()
     : UIFrameWnd(0) {
-  this->m_race = 0;
+  this->m_race = CREATION_RACE_HUMAN;
   this->m_nameEdit = nullptr;
-  this->m_raceViews[0] = nullptr;
-  this->m_raceViews[1] = nullptr;
+  this->m_raceViews[CREATION_RACE_HUMAN] = nullptr;
+  this->m_raceViews[CREATION_RACE_DORAM] = nullptr;
   this->geometry.animationFrame = 0;
 
   {
@@ -277,7 +282,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   case UM_SETCURITEM: {
     char name[128];
     memset(name, 0, sizeof(name));
-    if (this->m_race == 0) {
+    if (this->m_race == CREATION_RACE_HUMAN) {
       if (this->m_style > 22) {
         if (this->m_preview) {
           this->m_preview->Enable(0);
@@ -290,7 +295,7 @@ int UIHairStyleButton::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         name, this->m_sex != 0 ? "유저인터페이스\\make_character_ver2\\img_hairStyle%02d.bmp" : "유저인터페이스\\make_character_ver2\\img_hairStyle_girl%02d.bmp",
         this->m_style + 1
       );
-    } else if (this->m_race == 1) {
+    } else if (this->m_race == CREATION_RACE_DORAM) {
       if (this->m_style > 5) {
         if (this->m_preview) {
           this->m_preview->Enable(0);
@@ -399,16 +404,16 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   this->m_nameEdit->maximum = 0x17;
   this->AddChild(this->m_nameEdit);
 
-  UIDescriptRace* human = new UIDescriptRace(0);
+  UIDescriptRace* human = new UIDescriptRace(CREATION_RACE_HUMAN);
   human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_off.bmp", 0, 0);
   human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_on.bmp", 1, 0);
   human->SetBitmap("유저인터페이스\\make_character_ver2\\img_human_on.bmp", 2, 0);
   human->SetSize(human->BitmapWidth(), human->BitmapHeight());
   human->Move(0x15, 0x24);
-  this->m_raceViews[0] = human;
+  this->m_raceViews[CREATION_RACE_HUMAN] = human;
   this->AddChild(human);
 
-  UIDescriptRace* doram = new UIDescriptRace(1);
+  UIDescriptRace* doram = new UIDescriptRace(CREATION_RACE_DORAM);
   const char* doramNormal;
   const char* doramActive;
   if (!g_session.m_makeableDoram) {
@@ -423,7 +428,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   doram->SetBitmap(doramActive, 2, 0);
   doram->SetSize(doram->BitmapWidth(), doram->BitmapHeight());
   doram->Move(0x15, 0xCA);
-  this->m_raceViews[1] = doram;
+  this->m_raceViews[CREATION_RACE_DORAM] = doram;
   this->AddChild(doram);
 
   this->m_genderButtons[1] = new UIBitmapButton();
@@ -551,7 +556,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (argument1) {
   case ID_OK: {
     for (int index = 0; index < 2; ++index) {
-      if ((g_session.m_makeableDoram || index != 1) && sender == this->m_raceViews[index]) {
+      if ((g_session.m_makeableDoram || index != CREATION_RACE_DORAM) && sender == this->m_raceViews[index]) {
         return 0;
       }
     }
@@ -634,7 +639,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
 
   case ID_SLOT:
-    if (g_session.m_makeableDoram || sender != this->m_raceViews[1]) {
+    if (g_session.m_makeableDoram || sender != this->m_raceViews[CREATION_RACE_DORAM]) {
       for (int index = 0; index < 2; ++index) {
         if (sender == this->m_raceViews[index]) {
           this->m_race = index;
@@ -658,10 +663,10 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         }
 
         switch (this->m_race) {
-        case 0:
+        case CREATION_RACE_HUMAN:
           this->m_character.job = 0;
           break;
-        case 1:
+        case CREATION_RACE_DORAM:
           this->m_character.job = JT_DO_SUMMONER;
           break;
         }

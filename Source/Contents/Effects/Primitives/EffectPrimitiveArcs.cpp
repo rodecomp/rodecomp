@@ -105,43 +105,43 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
           texture = this->state.slots[ec].process / 3 % static_cast<int>(this->state.totalTexture);
         } else {
           texture = this->state.slots[ec].process % static_cast<int>(this->state.totalTexture);
-          this->state.size = 0.0f;
+          this->state.size = TEI_RECT_WHITE_ALPHA_BLEND;
           this->RenderTeiRect(&rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, prevB, curB, curT, prevT, wtm, static_cast<char>(texture));
         }
 
         if (this->state.slots[ec].alphaT <= 2) {
-          this->state.size = 17.0f;
+          this->state.size = TEI_RECT_BLUE;
           alpha = this->state.slots[ec].alphaB * 3;
         } else if (this->state.slots[ec].alphaT == 3) {
-          this->state.size = 18.0f;
+          this->state.size = TEI_RECT_RED;
           alpha = this->state.slots[ec].alphaB * 3;
         } else if (this->state.slots[ec].alphaT == 4) {
-          this->state.size = 19.0f;
+          this->state.size = TEI_RECT_GREEN;
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 5) {
-          this->state.size = 20.0f;
+          this->state.size = TEI_RECT_YELLOW;
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 7) {
-          this->state.size = 21.0f;
+          this->state.size = TEI_RECT_MAGENTA;
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 8) {
-          this->state.size = 22.0f;
+          this->state.size = TEI_RECT_CYAN;
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 9) {
-          this->state.size = 30.0f;
+          this->state.size = TEI_RECT_DEEP_VIOLET;
           if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
             alpha = this->state.slots[ec].alphaB;
           } else {
             alpha = this->state.slots[ec].alphaB * 2;
           }
         } else if (this->state.slots[ec].alphaT == 6) {
-          this->state.size = 5.0f;
+          this->state.size = TEI_RECT_WHITE_ADDITIVE;
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 10) {
-          this->state.size = 6.0f;
+          this->state.size = TEI_RECT_SOFT_RED;
           alpha = this->state.slots[ec].alphaB * 3;
         } else if (this->state.slots[ec].alphaT == 11) {
-          this->state.size = 32.0f;
+          this->state.size = TEI_RECT_BLACK_ALPHA_BLEND;
           if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
             alpha = this->state.slots[ec].alphaB;
           } else {
@@ -611,7 +611,7 @@ __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
     vec4.z = this->state.slots[ec].vecBNow.z + vec4.z;
 
     switch (this->state.slots[0].flag1[1]) {
-    case 1:
+    case JITTER_QUAD_BLUE_GLOW:
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 1, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(
         &rpCnt, this->state.slots[ec].alphaB / 2, vector3d{vec2.x + 0.2f, vec2.y + 0.0f, vec2.z + 0.0f}, vector3d{vec1.x + 0.2f, vec1.y + 0.0f, vec1.z + 0.0f},
@@ -634,7 +634,7 @@ __declspec(safebuffers) void CEffectPrim::RenderJitterQuads(matrix& wtm) {
         this->state.slots[ec].flag1[0], 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0
       );
       break;
-    case 2:
+    case JITTER_QUAD_WHITE_ADDITIVE:
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(
         &rpCnt, this->state.slots[ec].alphaB / 2, vector3d{vec2.x + 0.2f, vec2.y + 0.0f, vec2.z + 0.0f}, vector3d{vec1.x + 0.2f, vec1.y + 0.0f, vec1.z + 0.0f},
@@ -1578,18 +1578,18 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p3 += slot.vecBNow;
 
     switch (slot.flag1[2]) {
-    case 0:
-    case 3:
+    case POLYGON_FRAME_UNKNOWN_0:
+    case POLYGON_FRAME_UNKNOWN_3:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p0, p1, p2, p3, wtm, 1, slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 19:
+    case POLYGON_FRAME_GREEN:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 20:
+    case POLYGON_FRAME_RED_GLOW:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 255, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 21:
+    case POLYGON_FRAME_PALE_GREEN:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 1, slot.flag1[0], 1, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
     }
@@ -1672,14 +1672,14 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p3 += slot.vecBNow;
 
     switch (slot.flag1[2]) {
-    case 0:
-    case 3:
+    case POLYGON_FRAME_UNKNOWN_0:
+    case POLYGON_FRAME_UNKNOWN_3:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p0, p1, p2, p3, wtm, 1, slot.flag1[0], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 19:
+    case POLYGON_FRAME_GREEN:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 105, 255, 105, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;
-    case 20:
+    case POLYGON_FRAME_RED_GLOW:
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p0, p3, p2, wtm, 0, slot.flag1[0], 1, 255, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       break;

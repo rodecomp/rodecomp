@@ -27,10 +27,10 @@ void CView::Start(int enabled, unsigned duration, float horizontal, float distan
   this->shake.horizontal = horizontal;
   this->shake.pitch = pitch;
   switch (duration) {
-  case 0:
+  case CAMERA_SHAKE_DEFAULT:
     this->shake.duration = 650;
     break;
-  case 1:
+  case CAMERA_SHAKE_SHORT:
     this->shake.duration = 200;
     break;
   default:

@@ -225,7 +225,7 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
       CRuneSystemMgr::GetInstance()->SetSelectTag(this->m_runeSet->GetTagId());
       CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, -1);
     }
-    this->parent->SendMsg(this, UM_RUNE_SELECT_TAB, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
+    this->parent->SendMsg(this, UM_RUNE_SELECT_TAB, RUNESYSTEM_TAB_RUNE, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
   }
 }
 
@@ -1817,7 +1817,7 @@ void UIRuneSystemWnd::OnCreate(int, int) {
   this->m_lists[0] = new UIRuneSetList();
   this->AddChild(this->m_lists[0]);
   UIRuneSetList* list = this->m_lists[0];
-  list->vertical = 1;
+  list->vertical = SCROLLBAR_VERTICAL;
   list->UIWindow::Resize(0x11B, 0x159);
   list->OnCreate(0x11B, 0x159);
   list->OnSize(0x11B, 0x159);
@@ -1828,7 +1828,7 @@ void UIRuneSystemWnd::OnCreate(int, int) {
   this->m_lists[1] = new UIRuneList();
   this->AddChild(this->m_lists[1]);
   list = this->m_lists[1];
-  list->vertical = 1;
+  list->vertical = SCROLLBAR_VERTICAL;
   list->UIWindow::Resize(0x11B, 0x1AB);
   list->OnCreate(0x11B, 0x1AB);
   list->OnSize(0x11B, 0x1AB);
@@ -1839,7 +1839,7 @@ void UIRuneSystemWnd::OnCreate(int, int) {
   this->m_lists[2] = new UIDecomlist();
   this->AddChild(this->m_lists[2]);
   list = this->m_lists[2];
-  list->vertical = 1;
+  list->vertical = SCROLLBAR_VERTICAL;
   list->UIWindow::Resize(0x11B, 0x1CB);
   list->OnCreate(0x11B, 0x1CB);
   list->OnSize(0x11B, 0x1CB);
@@ -1943,7 +1943,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_infoList = new UIRuneSetinfoList();
   this->AddChild(this->m_infoList);
   UIRuneSetinfoList* infoList = this->m_infoList;
-  infoList->vertical = 1;
+  infoList->vertical = SCROLLBAR_VERTICAL;
   infoList->UIWindow::Resize(0xF9, 0x192);
   infoList->OnCreate(0xF9, 0x192);
   infoList->OnSize(0xF9, 0x192);
@@ -2233,14 +2233,14 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->m_tab->Invalidate();
     this->SelectTab();
     switch (argument1) {
-    case 0:
+    case RUNESYSTEM_TAB_RUNESET:
       if (CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2)) {
         this->m_lists[0]->Select(argument2);
         this->SendMsg(this, UM_SELECT_ITEM, ID_ITEMS, argument2, 0, 0);
       }
       this->Invalidate();
       break;
-    case 1: {
+    case RUNESYSTEM_TAB_RUNE: {
       unsigned int index = 0;
       if (CRuneSystemMgr::GetInstance()->FindRune(-1, 1, argument2, &index)) {
         this->m_lists[1]->Select(index);
@@ -2255,7 +2255,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     switch (argument1) {
     case ID_ITEMS:
       switch (this->m_tab->geometry.state) {
-      case 0: {
+      case RUNESYSTEM_TAB_RUNESET: {
         RuneData* rune = argument2 == -1 ? CRuneSystemMgr::GetInstance()->GetCurRuneSet() : CRuneSystemMgr::GetInstance()->GetCurrentRune(0, argument2);
         if (!rune) {
           break;
@@ -2294,7 +2294,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->m_runeSetInfo->Invalidate();
         break;
       }
-      case 1: {
+      case RUNESYSTEM_TAB_RUNE: {
         RuneData* rune = CRuneSystemMgr::GetInstance()->GetCurrentRune(1, argument2);
         UIRune_Info* info = this->m_runeInfo;
         if (rune) {
@@ -2308,7 +2308,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->m_runeInfo->Invalidate();
         break;
       }
-      case 2:
+      case RUNESYSTEM_TAB_DECOMPOSE:
         this->m_runeDecom->SetItem(CRuneSystemMgr::GetInstance()->GetOwnedDecomItem(argument2));
         this->m_runeDecom->Invalidate();
         break;
@@ -2369,16 +2369,16 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 
     list->Invalidate();
     switch (this->m_tab->geometry.state) {
-    case 0:
+    case RUNESYSTEM_TAB_RUNESET:
       this->m_equipRuneSet->Invalidate();
       this->m_runeSetInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       this->m_lists[0]->SendMsg(this, UM_REFRESH, CRuneSystemMgr::GetInstance()->GetTag(-1)->GetRuneCount(0), 0, 0, 0);
       break;
-    case 1:
+    case RUNESYSTEM_TAB_RUNE:
       this->m_runeInfo->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       this->m_lists[1]->SendMsg(this, UM_REFRESH, CRuneSystemMgr::GetInstance()->GetTag(-1)->GetRuneCount(1), 0, 0, 0);
       break;
-    case 2: {
+    case RUNESYSTEM_TAB_DECOMPOSE: {
       const int count = CRuneSystemMgr::GetInstance()->UpdateOwnedDecomItems();
       if (this->m_lists[2]->total != count) {
         this->m_lists[2]->SetRange(std::max(count - 10, 0), 10, count);

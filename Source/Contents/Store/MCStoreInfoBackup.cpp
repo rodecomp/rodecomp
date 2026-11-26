@@ -13,6 +13,13 @@
 #include <json/value.h>
 #include <json/writer.h>
 
+namespace {
+  enum StoreBackupResult : int {
+    STORE_BACKUP_SUCCESS = 1,
+    STORE_BACKUP_NO_DATA = 4,
+  };
+}
+
 // OFFSET: 0x00605BF0
 // FUNCTION: fn_04226
 CMCStoreInfoBackup::CMCStoreInfoBackup() : loaded(false), pendingSaves(0), saveUrl(0, '\0'), loadUrl(0, '\0'), title(0, '\0'), type(0) {
@@ -108,11 +115,11 @@ void CMCStoreInfoBackup::CompleteLoad(
   }
 
   switch (root["Type"].asInt()) {
-  case 1:
+  case STORE_BACKUP_SUCCESS:
     this->ImportData(root["data"]);
     this->loaded = true;
     break;
-  case 4:
+  case STORE_BACKUP_NO_DATA:
     this->loaded = true;
     break;
   }
@@ -134,7 +141,7 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
     return;
   }
 
-  if (root["Type"].asInt() != 1) {
+  if (root["Type"].asInt() != STORE_BACKUP_SUCCESS) {
     return;
   }
 

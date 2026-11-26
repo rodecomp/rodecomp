@@ -116,6 +116,11 @@ const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 const std::string s_messageBoxItemLinkClosing = "</ITEML>";
 
 namespace {
+  enum LoginAccountClass : std::intptr_t {
+    LOGIN_ACCOUNT_CLASS_INTEGRATED = 0,
+    LOGIN_ACCOUNT_CLASS_RAGNAROK = 1,
+  };
+
   // INLINED
   int TileCount(int length, int tile) {
     const std::div_t tiles = std::div(length, tile);
@@ -2546,13 +2551,13 @@ std::vector<unsigned char> UIChatRoomWnd::SerializeReplayData() {
   AppendRecord(records, BuildReplayTaggedRecord(0x501C, &this->info.id, 4));
 
   for (auto it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-    if (it->second == 0) {
+    if (it->second == CHAT_ROOM_ROLE_OWNER) {
       AppendRecord(records, MakeChatRoomRecord(0x501E, it->first.data(), static_cast<std::uint32_t>(it->first.size())));
     }
   }
 
   for (auto it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
-    if (it->second != 0) {
+    if (it->second != CHAT_ROOM_ROLE_OWNER) {
       AppendRecord(records, MakeChatRoomRecord(0x501F, it->first.data(), static_cast<std::uint32_t>(it->first.size())));
     }
   }
@@ -3358,11 +3363,11 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_COMBOBOX_SELECTED:
     if (sender == this->loginTypeCombo) {
       switch (a) {
-      case 0: {
+      case LOGIN_ACCOUNT_CLASS_INTEGRATED: {
         this->loginExtra = OBFUSCATE_TEXT("G000", 0x9FED7DA189490D5DULL);
         break;
       }
-      case 1: {
+      case LOGIN_ACCOUNT_CLASS_RAGNAROK: {
         this->loginExtra = OBFUSCATE_TEXT("G007", 0xFBD599E117C547C1ULL);
         break;
       }
@@ -4489,8 +4494,8 @@ void UILoginWnd::OnCreate(int, int) {
   this->loginTypeCombo->AddOption(LookupMessage(MSI_ACCOUNTCLASS_RAGNAROK), 0);
   this->loginTypeCombo->Clear();
   this->loginTypeCombo->AddOption(LookupMessage(MSI_ACCOUNTCLASS_INTEGRATION), 0);
-  this->loginTypeCombo->Select(0);
-  this->SendMsg(this->loginTypeCombo, UM_COMBOBOX_SELECTED, 0, 0, 0, 0);
+  this->loginTypeCombo->Select(LOGIN_ACCOUNT_CLASS_INTEGRATED);
+  this->SendMsg(this->loginTypeCombo, UM_COMBOBOX_SELECTED, LOGIN_ACCOUNT_CLASS_INTEGRATED, 0, 0, 0);
   this->idEdit->maximum = 24;
   this->passwordEdit->maximum = 24;
 
