@@ -37,7 +37,7 @@ PakAuxiliary::PakAuxiliary() : m_archiveKeys(), m_headerKey(), m_archiveKeyBlock
 
 // OFFSET: 0x00657640
 // FUNCTION: fn_05091
-PakAuxiliary::~PakAuxiliary() {
+__declspec(noinline) PakAuxiliary::~PakAuxiliary() {
 }
 
 // OFFSET: 0x00656B60
