@@ -682,7 +682,7 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindEntry(mode->drag.barterId);
     if (!found.first) {
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      return 0;
+      break;
     }
 
     found.second.value = mode->drag.quantity;
@@ -690,12 +690,12 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     g_windowMgr.LookupWindow(WID_EXPANDEDBARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-    return 0;
+    break;
   }
 
   case UM_RESIZE: {
     if (a != 7) {
-      return 0;
+      break;
     }
 
     int width = b;
@@ -721,7 +721,7 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
       this->UpdateScrollBar();
     }
     g_windowMgr.StoreSnapRectangle(this);
-    return 0;
+    break;
   }
 
   case UM_SCROLLVERT:
@@ -752,12 +752,14 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
     this->Invalidate();
     this->UpdateScrollBar();
-    return 0;
+    break;
   }
 
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00AE75C0
