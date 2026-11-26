@@ -105,7 +105,7 @@ __declspec(noinline) void Concurrency::details::Resource::sub_E88720() {
 
 // OFFSET: 0x00E8BAF0
 // FUNCTION: fn_25483
-void Concurrency::details::Resource::sub_E8BAF0() {
+__declspec(noinline) void Concurrency::details::Resource::sub_E8BAF0() {
   DWORD oldProtect;
   this->isProtected = VirtualProtect(this->regionInfo.AllocationBase, this->size, PAGE_READONLY, &oldProtect);
 }
