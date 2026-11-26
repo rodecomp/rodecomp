@@ -675,7 +675,7 @@ void UIMessageBox::Configure(
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[3] = {ID_OK, ID_YES, ID_NO};
-  int positions[3][2] = {{189, height - 24}, {189, height - 24}, {189, height - 24}};
+  int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
 
   switch (type) {
   case MESSAGE_BOX_CANCEL: {
