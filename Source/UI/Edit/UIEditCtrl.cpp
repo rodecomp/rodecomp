@@ -5790,10 +5790,10 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->columns = 1;
         this->visibleRows = (height - 38) / 32;
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-        this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
         this->buttons[0]->Move(this->geometry.width - 107, this->geometry.height - 24);
         this->buttons[1]->Move(this->geometry.width - 61, this->geometry.height - 24);
+        this->scrollBar->Move(this->geometry.width - 15, 14);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
         int row = 0;
         for (int y = 17; y < 241; y += 32, ++row) {
           int x = -200;
