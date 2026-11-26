@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/MandraAttackEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 
 #include "Resource/ResourceMgr.h"
@@ -42,7 +43,7 @@ bool CMandraAttackEffect::OnProcess() {
 // OFFSET: 0x00E50F30
 // FUNCTION: fn_24300
 void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
-  if (message != 14) {
+  if (message != AM_SETPOS) {
     this->CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }

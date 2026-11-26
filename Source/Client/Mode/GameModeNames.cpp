@@ -1,4 +1,5 @@
 #include "Client/Application/Launcher.h"
+#include "Contents/CombatTypes.h"
 #include "Contents/Jobs/JobId.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/CGameMode.h"
@@ -40,7 +41,7 @@ __declspec(noinline) void TraceSelection(int selection) {
 // OFFSET: 0x00DDC6F0
 // FUNCTION: fn_23368
 ITEM_INFO CSession::GetEquippedItemAt(int index) const {
-  if (index == 15) {
+  if (index == EQUIP_SLOT_AMMO) {
     return this->LookupClientItemByIdentity(this->equippedArrowIndex);
   }
 

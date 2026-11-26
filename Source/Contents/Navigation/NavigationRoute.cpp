@@ -846,49 +846,49 @@ std::vector<unsigned char> CNavigationManager::WriteReplayState() {
   std::vector<unsigned char> output;
   const auto append = [&output](const std::vector<unsigned char>& record) { output.insert(output.end(), record.begin(), record.end()); };
 
-  append(MakeReplayTaggedRecord(8000, nullptr, 0));
-  append(MakeReplayTaggedRecord(8002, &this->allowGates, 1));
-  append(MakeReplayTaggedRecord(8003, &this->includeObjects, 1));
-  append(MakeReplayTaggedRecord(8004, &this->allowWarps, 1));
-  append(MakeReplayTaggedRecord(8005, &this->routeSide, 4));
+  append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_BEGIN, nullptr, 0));
+  append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_UNKNOWN_8002, &this->allowGates, 1));
+  append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_UNKNOWN_8003, &this->includeObjects, 1));
+  append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_UNKNOWN_8004, &this->allowWarps, 1));
+  append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_ROUTE_SIDE, &this->routeSide, 4));
 
   for (std::size_t i = 0; i < this->nodes.size(); ++i) {
     const std::vector<char> buffer = WriteLink(this->nodes[i]);
-    append(MakeReplayTaggedRecord(8022, buffer.data(), static_cast<std::uint32_t>(buffer.size())));
+    append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_NODE, buffer.data(), static_cast<std::uint32_t>(buffer.size())));
   }
 
-  append(BuildReplayTaggedRecord(8009, &this->savedCellX, 4));
-  append(BuildReplayTaggedRecord(8010, &this->savedCellY, 4));
-  append(BuildReplayTaggedRecord(8011, &this->expandedMap, 1));
-  append(BuildReplayTaggedRecord(8013, &this->displayMode, 4));
-  append(BuildReplayTaggedRecord(8014, &this->searchType, 4));
-  append(BuildReplayTaggedRecord(8016, &this->previewType, 4));
-  append(BuildReplayTaggedRecord(8017, &this->drawRoute, 1));
-  append(BuildReplayTaggedRecord(8018, &this->routeResult, 4));
-  append(BuildReplayTaggedRecord(8019, &this->routeFlag, 1));
-  append(BuildReplayTaggedRecord(8020, &this->selectedNode, 4));
-  append(BuildReplayTaggedRecord(8023, &this->hideWindow, 1));
-  append(BuildReplayTaggedRecord(8012, &this->viewMode, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SAVED_CELL_X, &this->savedCellX, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SAVED_CELL_Y, &this->savedCellY, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_EXPANDED_MAP, &this->expandedMap, 1));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_DISPLAY_MODE, &this->displayMode, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SEARCH_TYPE, &this->searchType, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_PREVIEW_TYPE, &this->previewType, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_DRAW_ROUTE, &this->drawRoute, 1));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_ROUTE_RESULT, &this->routeResult, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_ROUTE_FLAG, &this->routeFlag, 1));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SELECTED_NODE, &this->selectedNode, 4));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_HIDE_WINDOW, &this->hideWindow, 1));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_VIEW_MODE, &this->viewMode, 4));
   if (!this->searchText.empty()) {
-    append(BuildReplayTaggedRecord(8015, this->searchText.c_str(), static_cast<std::uint32_t>(this->searchText.size())));
+    append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SEARCH_TEXT, this->searchText.c_str(), static_cast<std::uint32_t>(this->searchText.size())));
   }
 
   std::vector<char> target;
   for (std::size_t i = 0; i < this->states.size(); ++i) {
     target = this->WriteTarget(this->states[i]);
     if (!target.empty()) {
-      append(MakeReplayTaggedRecord(8006, target.data(), static_cast<std::uint32_t>(target.size())));
+      append(MakeReplayTaggedRecord(NAVIGATION_REPLAY_STATE_TARGET, target.data(), static_cast<std::uint32_t>(target.size())));
     }
   }
 
   target = this->WriteTarget(this->currentTarget);
   if (target.size() != 0) {
-    append(BuildReplayTaggedRecord(8007, target.data(), static_cast<std::uint32_t>(target.size())));
+    append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_CURRENT_TARGET, target.data(), static_cast<std::uint32_t>(target.size())));
   }
 
   target = this->WriteTarget(this->savedTarget);
   if (target.size() != 0) {
-    append(BuildReplayTaggedRecord(8008, target.data(), static_cast<std::uint32_t>(target.size())));
+    append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_SAVED_TARGET, target.data(), static_cast<std::uint32_t>(target.size())));
   }
 
   const int count = static_cast<int>(this->movementRoute.points.size());
@@ -898,10 +898,10 @@ std::vector<unsigned char> CNavigationManager::WriteReplayState() {
     route[0].y = this->movementRoute.points[0].y;
     route[1].x = this->movementRoute.points[count - 1].x;
     route[1].y = this->movementRoute.points[count - 1].y;
-    append(BuildReplayTaggedRecord(8021, route, sizeof(route)));
+    append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_ROUTE_ENDPOINTS, route, sizeof(route)));
   }
 
-  append(BuildReplayTaggedRecord(8001, nullptr, 0));
+  append(BuildReplayTaggedRecord(NAVIGATION_REPLAY_END, nullptr, 0));
   return output;
 }
 
@@ -1858,7 +1858,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
   header.Clear();
   header = *reinterpret_cast<const NavigationReplayHeader*>(data.data() + offset);
   offset += 6;
-  if (8000 != header.tag) {
+  if (NAVIGATION_REPLAY_BEGIN != header.tag) {
     offset = static_cast<unsigned>(-1);
     return static_cast<int>(offset);
   }
@@ -1868,7 +1868,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
       offset += 6;
 
       switch (header.tag) {
-      case 8006: {
+      case NAVIGATION_REPLAY_STATE_TARGET: {
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -1878,65 +1878,65 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         }
         break;
       }
-      case 8007:
+      case NAVIGATION_REPLAY_CURRENT_TARGET:
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->currentTarget = this->ReadTarget(buffer.data(), header.size);
         break;
-      case 8008:
+      case NAVIGATION_REPLAY_SAVED_TARGET:
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->savedTarget = this->ReadTarget(buffer.data(), header.size);
         break;
-      case 8009:
+      case NAVIGATION_REPLAY_SAVED_CELL_X:
         std::memcpy(&this->savedCellX, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8010:
+      case NAVIGATION_REPLAY_SAVED_CELL_Y:
         std::memcpy(&this->savedCellY, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8011:
+      case NAVIGATION_REPLAY_EXPANDED_MAP:
         std::memcpy(&this->expandedMap, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8012:
+      case NAVIGATION_REPLAY_VIEW_MODE:
         std::memcpy(&this->viewMode, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8013:
+      case NAVIGATION_REPLAY_DISPLAY_MODE:
         std::memcpy(&this->displayMode, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8014:
+      case NAVIGATION_REPLAY_SEARCH_TYPE:
         std::memcpy(&this->searchType, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8015:
+      case NAVIGATION_REPLAY_SEARCH_TEXT:
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
         this->searchText = buffer.data();
         break;
-      case 8016:
+      case NAVIGATION_REPLAY_PREVIEW_TYPE:
         std::memcpy(&this->previewType, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8017:
+      case NAVIGATION_REPLAY_DRAW_ROUTE:
         std::memcpy(&this->drawRoute, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8018:
+      case NAVIGATION_REPLAY_ROUTE_RESULT:
         std::memcpy(&this->routeResult, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8019:
+      case NAVIGATION_REPLAY_ROUTE_FLAG:
         std::memcpy(&this->routeFlag, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8021: {
+      case NAVIGATION_REPLAY_ROUTE_ENDPOINTS: {
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -1985,7 +1985,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         }
         break;
       }
-      case 8022: {
+      case NAVIGATION_REPLAY_NODE: {
         buffer.resize(header.size + 1, 0);
         std::memcpy(buffer.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -1995,31 +1995,31 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         }
         break;
       }
-      case 8020:
+      case NAVIGATION_REPLAY_SELECTED_NODE:
         std::memcpy(&this->selectedNode, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8002:
+      case NAVIGATION_REPLAY_UNKNOWN_8002:
         std::memcpy(&this->includeObjects, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8003:
+      case NAVIGATION_REPLAY_UNKNOWN_8003:
         std::memcpy(&this->allowWarps, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8004:
+      case NAVIGATION_REPLAY_UNKNOWN_8004:
         std::memcpy(&this->allowGates, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8005:
+      case NAVIGATION_REPLAY_ROUTE_SIDE:
         std::memcpy(&this->routeSide, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8023:
+      case NAVIGATION_REPLAY_HIDE_WINDOW:
         std::memcpy(&this->hideWindow, data.data() + offset, header.size);
         offset += header.size;
         break;
-      case 8001:
+      case NAVIGATION_REPLAY_END:
         if (this->viewMode == 1) {
           this->LoadTargetPreview();
           g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);

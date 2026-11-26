@@ -51,6 +51,10 @@ enum equip_pos : unsigned int {
   EQP_SHADOW_ACC_RL = 3145728,
 };
 
+enum EquipSlotIndex : int {
+  EQUIP_SLOT_AMMO = 15,
+};
+
 enum e_element : int {
   ELE_NEUTRAL = 0,
   ELE_WATER = 1,

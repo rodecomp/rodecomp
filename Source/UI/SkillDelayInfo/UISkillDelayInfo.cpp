@@ -396,7 +396,8 @@ void SkillDelayInfoSelectCallback::operator()(CUIListItem* const& item) {
 // OFFSET: 0x00A77200
 // FUNCTION: fn_16872
 CUISkillDelayInfo::CUISkillDelayInfo()
-    : titleBar(nullptr), skillNameText(nullptr), labels{nullptr, nullptr, nullptr}, columns{nullptr, nullptr, nullptr, nullptr}, delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(7999) {
+    : titleBar(nullptr), skillNameText(nullptr), labels{nullptr, nullptr, nullptr}, columns{nullptr, nullptr, nullptr, nullptr},
+      delayList(nullptr), description(nullptr), backgroundColor(0), borderColor(0), skillId(SKILLID_NORMAL_END) {
 }
 
 namespace SkillDelayInfo {
@@ -506,7 +507,7 @@ int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argu
   if (message != UM_REFRESH) {
     return CUIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
-  if (this->skillId != 7999) {
+  if (this->skillId != SKILLID_NORMAL_END) {
     this->SetSkill(reinterpret_cast<void*>(this->skillId));
   }
   return 0;

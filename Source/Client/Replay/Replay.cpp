@@ -1306,8 +1306,8 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_BEGIN, nullptr, 0));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_AID, &this->m_aid, sizeof(this->m_aid)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_GID, &this->m_gid, sizeof(this->m_gid)));
-  AppendRecord(records, MakeReplayRecord(1012, &this->unknown_1620[0], sizeof(this->unknown_1620[0])));
-  AppendRecord(records, MakeReplayRecord(1013, &this->unknown_1620[1], sizeof(this->unknown_1620[1])));
+  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1012, &this->unknown_1620[0], sizeof(this->unknown_1620[0])));
+  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1013, &this->unknown_1620[1], sizeof(this->unknown_1620[1])));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_JOB, &this->m_job, sizeof(this->m_job)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_EXP, &this->m_exp, 8));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_LEVEL, &this->m_level, sizeof(this->m_level)));
@@ -1333,7 +1333,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_ASPD, &this->m_aspd, sizeof(this->m_aspd)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_ATK1, &this->m_atk1, sizeof(this->m_atk1)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_MDEF1, &this->m_mdef1, sizeof(this->m_mdef1)));
-  AppendRecord(records, MakeReplayRecord(1039, &this->m_sp36, sizeof(this->m_sp36)));
+  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_PLUS_ASPD, &this->m_sp36, sizeof(this->m_sp36)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_DEF1, &this->m_def1, sizeof(this->m_def1)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_DEF2, &this->m_def2, sizeof(this->m_def2)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_ATK2, &this->m_atk2, sizeof(this->m_atk2)));
@@ -1387,7 +1387,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_VENDING_SLOT_COUNT, &this->m_vendingSlotCount, 4));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_BUYING_STORE_SLOT_COUNT, &this->m_buyingStoreSlotCount, 4));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_CHAT_TARGET, &this->m_chatTarget, sizeof(this->m_chatTarget)));
-  AppendRecord(records, MakeReplayRecord(1093, &this->m_replayValue1093, sizeof(this->m_replayValue1093)));
+  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1093, &this->m_replayValue1093, sizeof(this->m_replayValue1093)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_PARTY_EXP_SHARE, &this->partyExpShare, sizeof(this->partyExpShare)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_COLLECT, &this->partyItemCollect, sizeof(this->partyItemCollect)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_DISTRIBUTE, &this->partyItemDistribute, sizeof(this->partyItemDistribute)));
@@ -1439,7 +1439,7 @@ std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_X, &this->memorialWindowX, sizeof(this->memorialWindowX)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_Y, &this->memorialWindowY, sizeof(this->memorialWindowY)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_STATE, &this->memorialDungeonState, sizeof(this->memorialDungeonState)));
-  AppendRecord(records, MakeReplayRecord(5514, &this->memorialReplayValue, sizeof(this->memorialReplayValue)));
+  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_5514, &this->memorialReplayValue, sizeof(this->memorialReplayValue)));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_NAME, this->memorialDungeonName.c_str(), this->memorialDungeonName.size()));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_QUEUE_POSITION, &this->memorialQueuePosition, sizeof(this->memorialQueuePosition)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_CREATION_TIME, &this->memorialCreationTime, sizeof(this->memorialCreationTime)));
@@ -1468,10 +1468,10 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_D, &this->randomStatIndexD, sizeof(this->randomStatIndexD)));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_E, &this->randomStatIndexE, sizeof(this->randomStatIndexE)));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_VALUES, this->randomStatValues, sizeof(this->randomStatValues)));
-  AppendRecord(records, BuildReplayTaggedRecord(2025, this->replayStatValuesA, sizeof(this->replayStatValuesA)));
-  AppendRecord(records, BuildReplayTaggedRecord(2026, this->replayStatValuesB, sizeof(this->replayStatValuesB)));
-  AppendRecord(records, BuildReplayTaggedRecord(2027, this->replayStatValuesC, sizeof(this->replayStatValuesC)));
-  AppendRecord(records, BuildReplayTaggedRecord(2028, this->replayStatValuesD, 0x30));
+  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2025, this->replayStatValuesA, sizeof(this->replayStatValuesA)));
+  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2026, this->replayStatValuesB, sizeof(this->replayStatValuesB)));
+  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2027, this->replayStatValuesC, sizeof(this->replayStatValuesC)));
+  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2028, this->replayStatValuesD, 0x30));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_HP, &this->hp, sizeof(this->hp)));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_HP, &this->maxHp, sizeof(this->maxHp)));
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_SP, &this->m_sp, sizeof(this->m_sp)));

@@ -543,7 +543,7 @@ void CSoundMaker::Render(int) {
 void CBlowEffect::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message != 14) {
+  if (message != AM_SETPOS) {
     CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }
@@ -598,7 +598,7 @@ void CCorpse::SendMsg(
 void CGndRiser::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message == 14) {
+  if (message == AM_SETPOS) {
     const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     this->render.position.x = position[0];
     this->render.position.y = position[1];
@@ -867,7 +867,7 @@ void CNpc::SendMsg(
 void CNumEffect::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message == 14) {
+  if (message == AM_SETPOS) {
     const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     float* target = &this->render.position.x;
     target[0] = position[0];
@@ -890,7 +890,7 @@ void CNumEffect::SendMsg(
     return;
   }
 
-  if (message == 22) {
+  if (message == AM_SETMASTERGID) {
     return;
   }
 
@@ -902,7 +902,7 @@ void CNumEffect::SendMsg(
 void CSoundMaker::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  if (message != 14) {
+  if (message != AM_SETPOS) {
     CRenderObject::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;
   }

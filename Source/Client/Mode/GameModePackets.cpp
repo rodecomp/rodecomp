@@ -12737,7 +12737,7 @@ void CGameMode::NotifySkillCasting(
       if (target && source != target) {
         source->Face(target->render.position.x, target->render.position.z);
       }
-      g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, PR_KYRIE, reinterpret_cast<std::intptr_t>(source), 0, 0);
     } else if (skillId == IQ_OLEUM_SANCTUM) {
       g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
@@ -23452,9 +23452,9 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_WORLDSTORE_MOVEITEMINFO:
     case ID_ZC_CELLATTR_UPDATE:
     case ID_ZC_PING_LIVE:
-    case 0xC20:
-    case 0xC29:
-    case 0xC35:
+    case ID_UNKNOWN_0xC20:
+    case ID_UNKNOWN_0xC29:
+    case ID_UNKNOWN_0xC35:
       break;
     case ID_ZC_NOTIFY_ACTORINIT:
       this->ReceiveDeferredReset(g_gameModePacketBuffer);
@@ -24384,7 +24384,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_CLOSE_DIALOG:
       this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
       break;
-    case 0xC08:
+    case ID_ZC_CLOSE_DIALOG2:
       this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
       this->miniMapTooltipId = ILLUSTRATION_CLEAR;
       this->miniMapTooltipText.assign("", 0);
@@ -24420,7 +24420,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_STATUS_CHANGE:
       this->ReceiveStatusChange(g_gameModePacketBuffer);
       break;
-    case 0xBF6: {
+    case ID_ZC_CASH_EMOTION_LIST: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_LIST*>(g_gameModePacketBuffer);
       const int count = static_cast<unsigned int>(packet->length - 10) / 7;
       CCashEmotionMgr *manager = g_cashEmotionMgr;
@@ -24437,7 +24437,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->RefreshEmotionPurchaseSchedule();
       break;
     }
-    case 0xBEA: {
+    case ID_ZC_CASH_EMOTION: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION*>(g_gameModePacketBuffer);
       CRenderObject *actor;
       if (g_session.m_aid == packet->aid) {
@@ -24454,7 +24454,7 @@ void CGameMode::ProcessIncomingPackets() {
       actor->SendMsg(nullptr, AM_CASH_EMOTION, first, second, 0, 0, 0, 0);
       break;
     }
-    case 0xBEB: {
+    case ID_ZC_CASH_EMOTION_USE_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_USE_RESULT*>(g_gameModePacketBuffer);
       switch (packet->result) {
       case CASH_EMOTION_USE_EXPIRED:
@@ -24475,7 +24475,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->isEmotionRequested = 0;
       break;
     }
-    case 0xBED: {
+    case ID_ZC_CASH_EMOTION_ACQUIRE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_ACQUIRE*>(g_gameModePacketBuffer);
       g_cashEmotionMgr->AcquirePack(packet->packId,
                                     packet->hasExpireTime ? packet->expireTime : 0);
@@ -24483,7 +24483,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->RefreshEmotionPurchaseSchedule();
       break;
     }
-    case 0xBEE: {
+    case ID_ZC_CASH_EMOTION_PURCHASE_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CASH_EMOTION_PURCHASE_RESULT*>(g_gameModePacketBuffer);
       switch (packet->result) {
       case CASH_EMOTION_PURCHASE_INSUFFICIENT_NYANGVINE:
@@ -26997,7 +26997,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SKILL_ENTRY5:
       this->ReceiveGroundSkillExtended(g_gameModePacketBuffer);
       break;
-    case 0xBC8: {
+    case ID_ZC_SKILL_ENTRY_WITH_GRAFFITI: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_ENTRY5*>(g_gameModePacketBuffer);
       if (packet->job != UNT_GRAFFITI) {
         this->SpawnGroundSkill(
@@ -27075,7 +27075,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveActorPairFreeze(g_gameModePacketBuffer);
       break;
     case ID_ZC_COMBODELAY:
-    case 0xC36:
+    case ID_ZC_COMBODELAY2:
       this->ReceiveActorSequenceDeadline(g_gameModePacketBuffer);
       break;
     case ID_ZC_SOUND:
@@ -28087,7 +28087,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_RESULT_PACKAGE_ITEM_TEST:
       this->ReceivePackageItemTest(g_gameModePacketBuffer);
       break;
-    case 0xC44:
+    case ID_ZC_ITEM_SIMULATION_RESULT:
       this->ReceiveSimulationResult(g_gameModePacketBuffer);
       break;
     case ID_ZC_EQUIPMENT_EFFECT:
@@ -28400,7 +28400,7 @@ void CGameMode::ProcessIncomingPackets() {
                                 packet->refine, packet->result);
       break;
     }
-    case 0xC3B: {
+    case ID_ZC_BROADCAST_ITEMREFINING_RESULT2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_BROADCAST_ITEMREFINING_RESULT2*>(g_gameModePacketBuffer);
       this->ReceiveRefineStatusGraded(packet->name, packet->itemId,
                                       packet->refine, packet->grade, packet->result);
@@ -28727,13 +28727,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN_WITH_REFINE_LEVEL:
       this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, 1);
       break;
-    case 0xC38:
+    case ID_ZC_ITEM_BROADCAST:
       this->ReceiveItemBroadcast(g_gameModePacketBuffer);
       break;
-    case 0xC39:
+    case ID_ZC_TRADE_BROADCAST:
       this->ReceiveTradeBroadcast(g_gameModePacketBuffer);
       break;
-    case 0xC3A:
+    case ID_ZC_REFINE_BROADCAST:
       this->ReceiveRefineBroadcast(g_gameModePacketBuffer);
       break;
     case ID_ZC_MACRO_CHECK_REMOVE_CHEAT: {
@@ -28759,7 +28759,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->NotifyMacroBlacklistCheckResult(packet->result, packet->timeout);
       break;
     }
-    case 0xBDB: {
+    case ID_ZC_MACRO_BLACKLIST_CODE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_MACRO_BLACKLIST_CODE*>(g_gameModePacketBuffer);
       this->ReceiveMacroBlackListCode(packet->result, packet->code);
       break;
@@ -28774,20 +28774,20 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveMacroBlackListResult(packet->value);
       break;
     }
-    case 0xBCC:
+    case ID_ZC_RUNE_ACTIVATION_LIST:
       this->ReceiveRuneActivation(g_gameModePacketBuffer);
       break;
-    case 0xBCD:
+    case ID_ZC_RUNESET_GRADE_LIST:
       this->ReceiveRuneSetGrades(g_gameModePacketBuffer);
       break;
-    case 0xBCF: {
+    case ID_ZC_RUNE_ACTIVATE_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
       this->ReceiveRuneGradeResult(packet->result, packet->slot, 1,
                                    static_cast<std::uint32_t>(packet->runeId), 0, 0);
       break;
     }
-    case 0xBD1:
-    case 0xBD3: {
+    case ID_ZC_RUNESET_ACTIVATE_RESULT:
+    case ID_ZC_RUNESET_UPGRADE_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
       this->ReceiveRuneGradeResult(packet->result, packet->slot, 0,
                                    static_cast<std::uint32_t>(packet->runeId),
@@ -28795,13 +28795,13 @@ void CGameMode::ProcessIncomingPackets() {
                                    packet->requestType);
       break;
     }
-    case 0xBD5: {
+    case ID_ZC_RUNESET_CURRENT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
       this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
                                           packet->runeId, -1, -1);
       break;
     }
-    case 0xBF2: {
+    case ID_ZC_RUNESET_CURRENT_WITH_GRADE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
       g_runeSystemMgr->ClearCurRuneSet();
       this->ApplyRuneSetResultWithRequest(packet->result, packet->slot,
@@ -28810,58 +28810,58 @@ void CGameMode::ProcessIncomingPackets() {
                                           packet->requestType);
       break;
     }
-    case 0xBD7: {
+    case ID_ZC_RUNESET_EQUIP_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_RESULT*>(g_gameModePacketBuffer);
       this->ApplyRuneSetResult(packet->result, packet->slot,
                                packet->runeId);
       break;
     }
-    case 0xBD9:
+    case ID_ZC_RUNE_DECOMPOSE_RESULT:
       this->ReceiveRuneRewardPacket(g_gameModePacketBuffer);
       break;
-    case 0xBDF: {
+    case ID_ZC_RUNE_UI_TOGGLE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
       this->ToggleWindow169(packet->result);
       break;
     }
-    case 0xBE1: {
+    case ID_ZC_RUNE_UI_OPEN_REQUEST: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_WINDOW_REQUEST*>(g_gameModePacketBuffer);
       this->RequestWindow169(packet->result);
       break;
     }
-    case 0xC15:
+    case ID_ZC_RUNESET_REWARD_STEPS:
       this->ReceiveRuneRewardSteps(g_gameModePacketBuffer);
       break;
-    case 0xC17: {
+    case ID_ZC_RUNESET_REWARD_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RUNE_REWARD_RESULT*>(g_gameModePacketBuffer);
       this->ReceiveRuneRewardResult(packet->result, packet->slot,
                                     packet->rewardId, packet->type);
       break;
     }
-    case 0xBC9: {
+    case ID_ZC_CONFIG_NOTIFY5: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_CONFIG_NOTIFY5*>(g_gameModePacketBuffer);
       this->ReceiveFeedConfig4(packet->type, packet->flag, packet->value, packet->option,
                                packet->remaining);
       break;
     }
-    case 0xC3C: {
+    case ID_ZC_PET_INFO_ALERT: {
       const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
       this->ReceiveToggle128(packet->value);
       break;
     }
-    case 0xBE3: {
+    case ID_ZC_MACRO_REPORT_USER_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NAMED_RESULT*>(g_gameModePacketBuffer);
       this->ReceiveNamedResult(packet->aid, packet->name,
                                packet->result);
       break;
     }
-    case 0xBF4: {
+    case ID_ZC_QUEST_STATUS_LIST: {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       this->ReceiveQuestStates(static_cast<unsigned int>(packet->length - 4) / 5,
                                reinterpret_cast<const unsigned char*>(packet + 1));
       break;
     }
-    case 0xC06: {
+    case ID_ZC_SELLING_SLOT_RESULT: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_RESULT_NOTICE*>(g_gameModePacketBuffer);
       this->ReceiveResultNotice(packet->result);
       break;
@@ -28871,16 +28871,16 @@ void CGameMode::ProcessIncomingPackets() {
       this->NotifyGmCheckerResult(packet->result);
       break;
     }
-    case 0xC14:
+    case ID_ZC_MESSAGE_BOX:
       this->ReceiveMessageBox(g_gameModePacketBuffer);
       break;
-    case 0xC10:
+    case ID_ZC_STOVE_PURCHASE_RESULT:
       this->ReceiveStovePurchaseResult(g_gameModePacketBuffer);
       break;
-    case 0xC2B:
+    case ID_ZC_ACK_DEBUFF_REMOVE:
       this->ReceiveDebuffRemovalResult(g_gameModePacketBuffer);
       break;
-    case 0xC2C:
+    case ID_ZC_ACK_DEBUFF_REMOVE_RESULT:
       this->ReceiveResultNotice4327(g_gameModePacketBuffer);
       break;
     default:

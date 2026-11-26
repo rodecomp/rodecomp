@@ -204,7 +204,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         case UM_LOADINGPERCENT:
         case UM_DOWNPUSH:
           if (item.identity[3] == EQP_AMMO) {
-            mode->SendMsg(MM_TAKE_OFF_EQUIP, 0xF, 0, 0, 0);
+            mode->SendMsg(MM_TAKE_OFF_EQUIP, EQUIP_SLOT_AMMO, 0, 0, 0);
             mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
           }
           break;

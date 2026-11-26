@@ -319,7 +319,7 @@ const char* CSession::GetPetTalkName(int job) {
   case JT_ALIOT: {
     return OBFUSCATE_TEXT("ALIOT", 0xC5B1BBCD9BC9C997ULL);
   }
-  case 20338:
+  case JT_NIGHTMARE_TERROR_MJ:
   case JT_NIGHTMARE_TERROR_H: {
     return OBFUSCATE_TEXT("nightmare_terror_mj", 0x01CB4F1DF9D3F931ULL);
   }
@@ -341,7 +341,7 @@ const char* CSession::GetPetTalkName(int job) {
   case JT_KIEL_D_01_2: {
     return OBFUSCATE_TEXT("pet_kiel", 0x0399459DAF454F0FULL);
   }
-  case 21291: {
+  case JT_CAPOO_COLLABO_TW: {
     return OBFUSCATE_TEXT("capoo_tw", 0xFFABE3D5D1BBEF73ULL);
   }
   case JT_DESERT_WOLF: {
@@ -386,7 +386,7 @@ const char* CSession::GetPetTalkName(int job) {
   case JT_EDDGA3: {
     return OBFUSCATE_TEXT("EDDGA3", 0xB3E307A5F753D5E3ULL);
   }
-  case 23009: {
+  case JT_PITAYA_R_PET: {
     return OBFUSCATE_TEXT("PITAYA_R_PET", 0x192D654D29337BE5ULL);
   }
   case JT_LARVA_VIOLET: {
@@ -404,16 +404,16 @@ const char* CSession::GetPetTalkName(int job) {
   case JT_DARK_LORD2: {
     return OBFUSCATE_TEXT("DARK_LORD2", 0xC39FB559A17D3963ULL);
   }
-  case 23215: {
+  case JT_PITAYA_B_PET: {
     return OBFUSCATE_TEXT("PITAYA_B_PET", 0x71B7691737C5A1AFULL);
   }
-  case 23216: {
+  case JT_HOSANGTO_PET: {
     return OBFUSCATE_TEXT("HOSANGTO_PET", 0x07112F85A39F4FABULL);
   }
-  case 23233: {
+  case JT_USAGI_PET: {
     return OBFUSCATE_TEXT("Usagi_PET", 0x45E3F103CBB5F157ULL);
   }
-  case 23234: {
+  case JT_PISKE_PET: {
     return OBFUSCATE_TEXT("Piske_PET", 0x936F3D2FFDFD87F5ULL);
   }
   case JT_VR_CHAO: {
@@ -449,10 +449,10 @@ const char* CSession::GetPetTalkName(int job) {
   case JT_ANGELGOLT3: {
     return OBFUSCATE_TEXT("ANGELGOLT", 0xBD3F430159B551FDULL);
   }
-  case 23434: {
+  case JT_DOUGHKUN: {
     return OBFUSCATE_TEXT("DOUGHKUN", 0x2B477F9B5B39B301ULL);
   }
-  case 23435: {
+  case JT_FUMI_HAUSU: {
     return OBFUSCATE_TEXT("FUMI_HAUSU", 0x5B832361BDA77197ULL);
   }
   case JT_TIMEHOLDER3: {

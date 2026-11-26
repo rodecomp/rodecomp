@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/ArrowEffect.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 
 #include "Client/Mode/ModeMgr.h"
@@ -95,7 +96,7 @@ __declspec(safebuffers) bool CArrowEffect::OnProcess() {
 // OFFSET: 0x00E50500
 // FUNCTION: fn_24295
 void CArrowEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
-  if (message == 14) {
+  if (message == AM_SETPOS) {
     const char* sprite;
     const char* action;
     switch (static_cast<std::int64_t>(static_cast<std::uint64_t>(e))) {
@@ -247,7 +248,7 @@ void CArrowEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64
     this->render.visible = 0;
     this->GetTargetPos(static_cast<std::uint32_t>(c), this->targetPos);
     this->render.motionStartTime = timeGetTime();
-  } else if (message == 64) {
+  } else if (message == AM_SETPOS2) {
     this->SetSpriteName("몬스터\\skel_archer_arrow.spr");
     this->SetActionName("몬스터\\skel_archer_arrow.act");
     this->speedScale = 1.0f;

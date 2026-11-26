@@ -3306,7 +3306,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       CSoundMgr* const soundMgr = g_soundMgr;
       soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
-        g_modeMgr.currentMode->SendMsg(LMM_SET_STATE_GET_EMAIL_ADDRESS, 38, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_SET_STATE_GET_EMAIL_ADDRESS, LOGIN_STATE_CONNECT_AGENCY, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
         CMode* passwordMode = g_modeMgr.currentMode;
         passwordMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
@@ -4299,7 +4299,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     case ID_CANCEL:
       g_windowMgr.Schedule(this);
-      g_modeMgr.currentMode->SendMsg(MM_COMMAND, 10004, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_COMMAND, LMM_SELECTCHARACTER, 0, 0, 0);
       return 0;
     case ID_LEFT: {
       const int action = this->m_view.action + 1;
@@ -4424,7 +4424,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close_press.bmp", 0xD1413DBB01CD8B51ULL, closePressName), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(13, 104);
-  button->SetId(285);
+  button->SetId(ID_INTRO);
   button->SetText(LookupMessage(MSI_OPENING));
   button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);

@@ -1,6 +1,7 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Session/Session.h"
 #include "UI/Window/UIControl.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIRadioButton.h"
 #include "UI/Buttons/ButtonState.h"
 #include "UI/Buttons/UITextButton.h"
@@ -2408,7 +2409,7 @@ void CUITextViewer::OnWheel(int value) {
 // OFFSET: 0x009EA6A0
 // FUNCTION: fn_14520
 int CUITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == 98) {
+  if (message == UM_TEXT_LBTN_UP) {
     switch (a) {
     case LINE_SEGMENT_URL:
       OpenTextButtonLink(static_cast<UITextButton*>(sender));

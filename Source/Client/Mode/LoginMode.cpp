@@ -2327,7 +2327,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_AC_ACCEPT_LOGIN4:
     case ID_ZC_SEND_EAC_MESSAGE:
     case ID_AC_REFUSE_LOGIN_USA:
-    case 0xC20:
+    case ID_UNKNOWN_0xC20:
       break;
     case ID_AC_REFUSE_LOGIN: {
       RefuseLoginPacket* packet = reinterpret_cast<RefuseLoginPacket*>(g_gameModePacketBuffer);

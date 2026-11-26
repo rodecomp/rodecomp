@@ -6514,7 +6514,7 @@ void UInCashWnd::OnCreate(int width, int height) {
     case NCASH_BUTTON_TAB_BUFF:
     case NCASH_BUTTON_TAB_RECOVERY:
     case NCASH_BUTTON_TAB_ETC:
-      this->m_buttons[index]->SetTooltip(LookupMessage(index + 0x736));
+      this->m_buttons[index]->SetTooltip(LookupMessage(index + MSI_NC_CAT1));
       break;
     case NCASH_BUTTON_TAB_BARGAIN:
       this->m_buttons[NCASH_BUTTON_TAB_BARGAIN]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_TAB_NAME));

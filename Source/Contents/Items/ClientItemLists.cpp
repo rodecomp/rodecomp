@@ -1231,7 +1231,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
 // FUNCTION: fn_23300
 EquipSlots CSession::GetEquipSlots(int location) {
   if (location == EQP_AMMO) {
-    return {15, -1, -1};
+    return {EQUIP_SLOT_AMMO, -1, -1};
   }
 
   int mask = location;

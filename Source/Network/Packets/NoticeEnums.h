@@ -741,4 +741,8 @@ enum PetEggUpdate : int {
   PET_EGG_UPDATE_HATCH = 1,
 };
 
+enum EffectStateFlag : int {
+  EFFECTSTATE_SPECIALHIDING = 0x40,
+};
+
 #endif

@@ -1514,7 +1514,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         mode->SendMsg(MM_REQ_CLOSE_BUYING_STORE, 0, 0, 0, 0);
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND_MODE_1);
-        UIWindow* window = g_windowMgr.EnsureWindow(258);
+        UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_1);
         if (window) {
           window->Show(WINDOW_VISIBLE);
           window->Move(this->geometry.x, this->geometry.y);
@@ -1529,7 +1529,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         mode->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERCHANTITEMMYSHOPWND);
-        UIWindow* window = g_windowMgr.EnsureWindow(257);
+        UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_0);
         if (window) {
           window->Show(WINDOW_VISIBLE);
           window->Move(this->geometry.x, this->geometry.y);
@@ -8332,11 +8332,11 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
     this->tabs[index]->SetId(tabIds[index]);
 
     if (index < 4) {
-      this->tabs[index]->SetTooltip(LookupMessage(index + 1465));
+      this->tabs[index]->SetTooltip(LookupMessage(index + MSI_STORE_TABNAME_0));
     } else if (index == 4) {
       this->tabs[index]->SetTooltip(LookupMessage(MSI_STORE_TABNAME_7));
     } else {
-      this->tabs[index]->SetTooltip(LookupMessage(index + 1464));
+      this->tabs[index]->SetTooltip(LookupMessage(index - 5 + MSI_STORE_TABNAME_4));
     }
     this->AddChild(this->tabs[index]);
   }

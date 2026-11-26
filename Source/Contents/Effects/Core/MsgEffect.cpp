@@ -418,14 +418,14 @@ bool CMsgEffect::OnProcess() {
       return true;
     }
 
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
+    case MET_UNKNOWN_28:
+    case MET_UNKNOWN_29:
+    case MET_UNKNOWN_30:
     case MET_SHIELD_EFFECT:
     case MET_COSTUME_BODY_EFFECT:
-    case 0x22:
-    case 0x23:
-    case 0x24: {
+    case MET_QUEST_MARKER_6:
+    case MET_QUEST_MARKER_7:
+    case MET_QUEST_MARKER_10: {
       CActRes* action = this->GetActRes();
       elapsed = MsgEffectElapsedFrames(this);
       const int frames = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -1375,12 +1375,12 @@ void CMsgEffect::FollowOwner() {
       }
       break;
 
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
-    case 0x22:
-    case 0x23:
-    case 0x24:
+    case MET_UNKNOWN_28:
+    case MET_UNKNOWN_29:
+    case MET_UNKNOWN_30:
+    case MET_QUEST_MARKER_6:
+    case MET_QUEST_MARKER_7:
+    case MET_QUEST_MARKER_10:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
         this->render.position = owner->render.position;

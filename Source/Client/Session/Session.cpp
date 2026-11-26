@@ -1261,40 +1261,40 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     offset = 0;
   } else if (tokenizer[0] == "/str+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_STR, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/agi+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_AGI, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/luk+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x12, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_LUK, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/int+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x10, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_INT, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/vit+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0xF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_VIT, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/dex+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, 0x11, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_STATUS_CHANGE, SP_DEX, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/pow+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDB, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_POW, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/sta+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDC, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_STA, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/wis+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDD, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_WIS, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/spl+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDE, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_SPL, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/con+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xDF, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_CON, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/crt+" && tokenizer.TokenCount() > 1) {
     *talkType = TT_SIYEON_STATUS;
-    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, 0xE0, std::atoi(tokenizer[1].c_str()), 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_ADVANCED_STATUS_CHANGE, SP_CRT, std::atoi(tokenizer[1].c_str()), 0, 0);
   } else if (tokenizer[0] == "/hi") {
     std::string message("");
     *talkType = TT_EX_HI;

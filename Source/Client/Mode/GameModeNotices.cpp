@@ -3589,13 +3589,13 @@ void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, It
 // FUNCTION: fn_22103
 void CGameMode::ReceiveFeedConfig(volatile unsigned char state, bool option) {
   g_session.m_allowEquipView = state;
-  const char* message = LookupMessage(state + 0x54E);
+  const char* message = LookupMessage(state + MSI_OPEN_EQUIPEDITEM_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + MSI_BLOCK_CALL_PERMIT)), 0x64FFFF, 0, 0, 0);
   g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
 }
 
@@ -3603,13 +3603,13 @@ void CGameMode::ReceiveFeedConfig(volatile unsigned char state, bool option) {
 // FUNCTION: fn_22104
 void CGameMode::ReceiveFeedConfig2(volatile unsigned char state, bool option, bool petAutoFeed) {
   g_session.m_allowEquipView = state;
-  const char* message = LookupMessage(state + 0x54E);
+  const char* message = LookupMessage(state + MSI_OPEN_EQUIPEDITEM_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + MSI_BLOCK_CALL_PERMIT)), 0x64FFFF, 0, 0, 0);
   g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
 }
@@ -3618,13 +3618,13 @@ void CGameMode::ReceiveFeedConfig2(volatile unsigned char state, bool option, bo
 // FUNCTION: fn_22105
 void CGameMode::ReceiveFeedConfig3(volatile unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed) {
   g_session.m_allowEquipView = state;
-  const char* message = LookupMessage(state + 0x54E);
+  const char* message = LookupMessage(state + MSI_OPEN_EQUIPEDITEM_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + MSI_BLOCK_CALL_PERMIT)), 0x64FFFF, 0, 0, 0);
   g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
@@ -3634,13 +3634,13 @@ void CGameMode::ReceiveFeedConfig3(volatile unsigned char state, bool option, bo
 // FUNCTION: fn_22106
 void CGameMode::ReceiveFeedConfig4(volatile unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed, int value) {
   g_session.m_allowEquipView = state;
-  const char* message = LookupMessage(state + 0x54E);
+  const char* message = LookupMessage(state + MSI_OPEN_EQUIPEDITEM_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + MSI_BLOCK_CALL_PERMIT)), 0x64FFFF, 0, 0, 0);
   g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);

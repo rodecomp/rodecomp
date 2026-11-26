@@ -182,7 +182,7 @@ int UICandidateWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x0096DED0
 // FUNCTION: fn_13207
 int UICompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message != 66) {
+  if (message != UM_IME_SET_COMPOSITION_STRING) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
   const char* text = reinterpret_cast<const char*>(argument1);

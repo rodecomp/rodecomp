@@ -152,19 +152,19 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       std::memcpy(this->randomStatValues, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2025:
+    case REPLAY_CHUNK_UNKNOWN_2025:
       std::memcpy(this->replayStatValuesA, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2026:
+    case REPLAY_CHUNK_UNKNOWN_2026:
       std::memcpy(this->replayStatValuesB, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2027:
+    case REPLAY_CHUNK_UNKNOWN_2027:
       std::memcpy(this->replayStatValuesC, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 2028:
+    case REPLAY_CHUNK_UNKNOWN_2028:
       std::memcpy(this->replayStatValuesD, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -316,7 +316,7 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
     offset += 6;
     switch (header.id) {
     case REPLAY_CHUNK_ITEMS_END:
-    case 4703:
+    case REPLAY_CHUNK_UNKNOWN_4703:
       return offset;
     case REPLAY_CHUNK_ITEMS_EXCHANGE_MONEY:
       std::memcpy(&this->exchangeMoney, data.data() + offset, header.bytes);
@@ -481,7 +481,7 @@ std::uint32_t CSession::ReadReplayExtra(const std::vector<unsigned char>& data) 
       std::memcpy(&this->memorialDungeonState, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 5514:
+    case REPLAY_CHUNK_UNKNOWN_5514:
       std::memcpy(&this->memorialReplayValue, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1173,11 +1173,11 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->m_gid, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1012:
+    case REPLAY_CHUNK_UNKNOWN_1012:
       std::memcpy(&this->unknown_1620[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1013:
+    case REPLAY_CHUNK_UNKNOWN_1013:
       std::memcpy(&this->unknown_1620[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1281,7 +1281,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->m_mdef1, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1039:
+    case REPLAY_CHUNK_CHARACTER_PLUS_ASPD:
       std::memcpy(&this->m_sp36, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
@@ -1497,7 +1497,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       std::memcpy(&this->m_chatTarget, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 1093:
+    case REPLAY_CHUNK_UNKNOWN_1093:
       std::memcpy(&this->m_replayValue1093, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;

@@ -1456,14 +1456,14 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
       offset += 6;
 
       switch (header.type) {
-      case 0xCD: {
+      case REPLAY_CHUNK_GROUND_SKILLS_ENTRY: {
         std::vector<unsigned char> record(0x10, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->Zc_Skill_Entry(record.data());
         break;
       }
-      case 0xCE: {
+      case REPLAY_CHUNK_GROUND_SKILLS_ENTRY2: {
         std::vector<unsigned char> record(0x61, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -2519,13 +2519,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_QUIT_GAME:
       this->SendMsg(MM_REQ_DISCONNECT, 0, 0, 0, 0);
       return 0;
-    case 0x24:
-    case 0x55:
+    case MM_REQ_ITEM_EXPLANATION_BYNAME:
+    case MM_PKMODE_CHANGE:
     case MM_CHANGE_SKILL_NAME:
-    case 0x9F:
-    case 0xA0:
-    case 0xA6:
-    case 0x127:
+    case MM_FORCING_MOVE_AID:
+    case MM_FORCING_MOVE_GID:
+    case MM_REQ_ACCOUNT_NAME:
+    case MM_UNKNOWN_295:
       return 0;
     case MM_CHATMSG: {
       if (g_windowMgr.chatInputText.empty() || g_session.IsBerserkActive() == 1) {
@@ -5790,7 +5790,7 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
       offset += 6;
 
       switch (header.type) {
-      case 0xCF: {
+      case REPLAY_CHUNK_GROUND_ITEMS_FALL_ENTRY: {
         std::vector<unsigned char> record(0x13, 0);
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -5836,47 +5836,47 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
       switch (header.type) {
       case REPLAY_CHUNK_ACTORS_END:
         goto finished;
-      case 0xD0:
+      case REPLAY_CHUNK_ACTORS_MOVE_ENTRY_NAMED:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorMoveEntryNamed(record.data());
         break;
-      case 0xD2:
+      case REPLAY_CHUNK_ACTORS_STATE_ENTRY_NAMED_OLD:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorStateEntryNamedOld(record.data());
         break;
-      case 0xD4:
+      case REPLAY_CHUNK_ACTORS_MOVE_ENTRY_LEGACY:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorMoveEntryLegacy(record.data());
         break;
-      case 0xD7:
+      case REPLAY_CHUNK_ACTORS_STATE_ENTRY_LEGACY:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorStateEntryLegacy(record.data());
         break;
-      case 0xD5:
+      case REPLAY_CHUNK_ACTORS_MOVE_ENTRY:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorMoveEntry(record.data());
         break;
-      case 0xD8:
+      case REPLAY_CHUNK_ACTORS_STATE_ENTRY_NAMED:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorStateEntryNamed(record.data());
         break;
-      case 0xD6:
+      case REPLAY_CHUNK_ACTORS_MOVE_ENTRY_BODY:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorMoveEntryBody(record.data());
         break;
-      case 0xD9:
+      case REPLAY_CHUNK_ACTORS_STATE_ENTRY_NAMED_BODY:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorStateEntryNamedBody(record.data());
         break;
-      case 0xDA: {
+      case REPLAY_CHUNK_ACTORS_STANDING_PC: {
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         const auto* stored = reinterpret_cast<const GameModeStoredRecord00DA*>(record.data());
@@ -5887,27 +5887,27 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
         );
         break;
       }
-      case 0xC9:
+      case REPLAY_CHUNK_ACTORS_CHAT_ROOM:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorMessage32(record.data());
         break;
-      case 0xCA:
+      case REPLAY_CHUNK_ACTORS_STORE:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorTitle(record.data());
         break;
-      case 0xCB:
+      case REPLAY_CHUNK_ACTORS_PROGRESS:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceivePlayerMessage82(record.data());
         break;
-      case 0xCC:
+      case REPLAY_CHUNK_ACTORS_BUYING_STORE:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveActorText(record.data());
         break;
-      case 0x191:
+      case REPLAY_CHUNK_ACTORS_STATUS_CHANGE:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
         this->ReceiveStatusChangeEntry(record.data());
@@ -6446,7 +6446,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     packet.x = static_cast<std::int16_t>(x);
     packet.y = static_cast<std::int16_t>(y);
 
-    const std::vector<unsigned char> chunk = MakeRecordChunk(0xCD, packet);
+    const std::vector<unsigned char> chunk = MakeRecordChunk(REPLAY_CHUNK_GROUND_SKILLS_ENTRY, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -6663,9 +6663,9 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
     if ((*it)->storedActorEntry == 0) {
       if ((*it)->render.state == ST_MOVE) {
-        AppendChunk(data, MakeDataChunk(0xD6, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_MOVEENTRY11)));
+        AppendChunk(data, MakeDataChunk(REPLAY_CHUNK_ACTORS_MOVE_ENTRY_BODY, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_MOVEENTRY11)));
       } else {
-        AppendChunk(data, MakeDataChunk(0xD9, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_STANDENTRY11)));
+        AppendChunk(data, MakeDataChunk(REPLAY_CHUNK_ACTORS_STATE_ENTRY_NAMED_BODY, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_STANDENTRY11)));
       }
     }
 
@@ -6682,13 +6682,13 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->type = static_cast<unsigned char>(room->info.type);
       scratch.insert(scratch.end(), room->info.title.begin(), room->info.title.end());
 
-      const std::vector<unsigned char> chunk = MakeDataChunk(0xC9, scratch);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_ACTORS_CHAT_ROOM, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
     CGameActor* actor = *it;
     if (actor->storedActorEntry == 1) {
-      AppendChunk(data, MakeDataChunk(0xDA, BuildStoredActorRecord(actor, this)));
+      AppendChunk(data, MakeDataChunk(REPLAY_CHUNK_ACTORS_STANDING_PC, BuildStoredActorRecord(actor, this)));
     }
 
     UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>((*it)->actorWindows[2]);
@@ -6699,7 +6699,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->aid = (*it)->render.accountId;
       std::memcpy(packet->name, shop->label->tooltip.c_str(), sizeof(packet->name));
 
-      const std::vector<unsigned char> chunk = MakeDataChunk(0xCA, scratch);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_ACTORS_STORE, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6710,7 +6710,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->packetType = ID_ZC_PROGRESS;
       packet->seconds = ((*it)->skillRechargeEndTick - (*it)->skillRechargeStartTick) / 1000;
 
-      const std::vector<unsigned char> chunk = MakeDataChunk(0xCB, scratch);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_ACTORS_PROGRESS, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6722,7 +6722,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       packet->aid = (*it)->render.accountId;
       std::memcpy(packet->name, buyingShop->label->tooltip.c_str(), sizeof(packet->name));
 
-      const std::vector<unsigned char> chunk = MakeDataChunk(0xCC, scratch);
+      const std::vector<unsigned char> chunk = MakeDataChunk(REPLAY_CHUNK_ACTORS_BUYING_STORE, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
@@ -6738,7 +6738,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       record.total = 9999;
       record.value3 = 0;
 
-      const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x191, record);
+      const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_ACTORS_STATUS_CHANGE, record);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
@@ -7090,7 +7090,7 @@ std::vector<unsigned char> CGameMode::SaveGroundItems() {
     std::memcpy(text, static_cast<CItem*>(*it)->name.c_str() + (length - 3) - digits, digits);
     packet.count = static_cast<std::int16_t>(std::atoi(text));
 
-    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0xCF, packet);
+    const std::vector<unsigned char> chunk = MakeFilledRecordChunk(REPLAY_CHUNK_GROUND_ITEMS_FALL_ENTRY, packet);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
@@ -10368,7 +10368,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     LowercaseText(value);
     if (value == "off" || value == "on") {
       const int enabled = value == "off" ? 0 : 1;
-      this->SendMsg(0x55, enabled, 0, 0, 0);
+      this->SendMsg(MM_PKMODE_CHANGE, enabled, 0, 0, 0);
     }
     break;
   }
@@ -10637,7 +10637,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     } else {
       SetMemberFlags(&flags);
     }
-    this->SendMsg(MM_CHANGE_EFFECTSTATE, 0x40, 0, 0, 0);
+    this->SendMsg(MM_CHANGE_EFFECTSTATE, EFFECTSTATE_SPECIALHIDING, 0, 0, 0);
     break;
   }
   case TT_COPY_NAME:

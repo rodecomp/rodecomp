@@ -79,7 +79,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
     }
     break;
   case SPRITE_LAYER_HEAD_MID:
-    if (this->upperHeadgear == 1485) {
+    if (this->upperHeadgear == ACCESSORY_BELIEVERS_CAP) {
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.00035f + bottomDepth;
         quad.topRhw = 0.0006f + topDepth;
@@ -89,7 +89,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
       }
     } else {
       switch (this->middleHeadgear) {
-      case 1318:
+      case ACCESSORY_LOVE_CHEEK:
         if (g_cameraDistance < robeTopLayerThreshold) {
           quad.bottomRhw = 0.00025f + bottomDepth;
           quad.topRhw = 0.0001f + topDepth;
@@ -98,7 +98,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
           quad.topRhw = 0.00005f + topDepth;
         }
         break;
-      case 1354:
+      case ACCESSORY_CHARLESTON_ANTENNA:
         if (g_cameraDistance < robeTopLayerThreshold) {
           quad.bottomRhw = bottomDepth + 0.00009f;
           quad.topRhw = topDepth - 0.00005f;
@@ -107,7 +107,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
           quad.topRhw = topDepth;
         }
         break;
-      case 1363:
+      case ACCESSORY_LITTLE_AQUARIUM:
         if (g_cameraDistance < robeTopLayerThreshold) {
           quad.bottomRhw = bottomDepth + 0.000027f + 0.0004f;
           quad.topRhw = topDepth + 0.000027f + 0.0007f;
@@ -116,7 +116,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
           quad.topRhw = topDepth + 0.00017f;
         }
         break;
-      case 1582:
+      case ACCESSORY_C_BLACK_CAT:
         if (g_cameraDistance < robeTopLayerThreshold) {
           quad.bottomRhw = bottomDepth + 0.0002f;
           quad.topRhw = topDepth + 0.0002f;
@@ -139,7 +139,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
     break;
   case SPRITE_LAYER_HEAD_LOW:
     switch (this->lowerHeadgear) {
-    case 1041:
+    case ACCESSORY_JACK_CASTLE_BAT:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
         quad.topRhw = 0.0008f + topDepth;
@@ -148,7 +148,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
         quad.topRhw = 0.00019f + topDepth;
       }
       break;
-    case 1358:
+    case ACCESSORY_FLYING_GALAPAGO:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
         quad.topRhw = 0.0008f + topDepth;
@@ -157,7 +157,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
         quad.topRhw = 0.00019f + topDepth;
       }
       break;
-    case 1478:
+    case ACCESSORY_WHISTLE:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
         quad.topRhw = 0.0008f + topDepth;
@@ -166,7 +166,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
         quad.topRhw = 0.00019f + topDepth;
       }
       break;
-    case 1499:
+    case ACCESSORY_C_PORING_SOAP_PIPE:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
         quad.topRhw = 0.0008f + topDepth;
@@ -175,7 +175,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
         quad.topRhw = 0.00019f + topDepth;
       }
       break;
-    case 1235:
+    case ACCESSORY_WORG_IN_MOUTH:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = 0.0008f + bottomDepth;
         quad.topRhw = 0.0008f + topDepth;
@@ -184,7 +184,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, fl
         quad.topRhw = 0.00013f + topDepth;
       }
       break;
-    case 1488:
+    case ACCESSORY_SURVIVE_ORB:
       if (g_cameraDistance < robeTopLayerThreshold) {
         quad.bottomRhw = bottomDepth + 0.0008f;
         quad.topRhw = topDepth + 0.0008f;

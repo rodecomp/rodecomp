@@ -137,10 +137,10 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
   for (int i = 0; i < 6; ++i) {
     short job = info.detail.job[i];
     if (static_cast<unsigned short>(job) <= 4) {
-      std::strcat(buffer, LookupMessage(job + 0x6AF));
+      std::strcat(buffer, LookupMessage(job - 1 + static_cast<int>(MSI_JOB_ATTACKER)));
       std::strcat(buffer, ",");
     } else if (job >= JT_NOVICE) {
-      std::strcat(buffer, LookupMessage(job + 0x658));
+      std::strcat(buffer, LookupMessage(job - 5 + static_cast<int>(MSI_JOB_SWORDMAN)));
       std::strcat(buffer, ",");
     }
   }
@@ -265,10 +265,10 @@ void PartyBookingMgr::SetJobs(int index, const short* jobs) {
   for (int i = 0; i < 6; ++i) {
     short job = jobs[i];
     if (static_cast<unsigned short>(job) <= 4) {
-      std::strcat(buffer, LookupMessage(job + 0x6AF));
+      std::strcat(buffer, LookupMessage(job - 1 + static_cast<int>(MSI_JOB_ATTACKER)));
       std::strcat(buffer, ",");
     } else if (job >= JT_NOVICE) {
-      std::strcat(buffer, LookupMessage(job + 0x658));
+      std::strcat(buffer, LookupMessage(job - 5 + static_cast<int>(MSI_JOB_SWORDMAN)));
       std::strcat(buffer, ",");
     }
   }

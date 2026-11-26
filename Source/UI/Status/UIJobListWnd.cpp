@@ -174,12 +174,12 @@ void UIJobListWnd::RefreshJobs() {
     if (job - 1 < 4) {
       this->m_jobChecks[index]->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job + 0x6AF)
+        LookupMessage(job - 1 + MSI_JOB_ATTACKER)
       );
     } else {
       this->m_jobChecks[index]->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job + 0x658)
+        LookupMessage(job - 5 + MSI_JOB_SWORDMAN)
       );
     }
 
