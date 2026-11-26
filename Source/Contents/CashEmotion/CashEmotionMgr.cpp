@@ -1130,6 +1130,12 @@ void CCashEmotionMgr::LoadScripts() {
   this->m_action = new (std::nothrow) CCashEmotionAction_Play;
 }
 
+// INLINED
+static int RegisterSpecialEmotion(std::unordered_map<CashEmotionSpecial, int, CashEmotionSpecialHash>& specials, CashEmotionSpecial type, int emotionId) {
+  specials.emplace(type, emotionId);
+  return emotionId;
+}
+
 // OFFSET: 0x0059B320
 // FUNCTION: fn_02967
 int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
@@ -1140,8 +1146,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
       std::string key("ET_CHAT_PROHIBIT");
       emotionId = this->FindEmotionIdByKey(key);
     }
-    this->m_specials.emplace(type, emotionId);
-    return emotionId;
+    return RegisterSpecialEmotion(this->m_specials, type, emotionId);
   }
   case CashEmotionSpecial::Yut: {
     int emotionId;
@@ -1149,8 +1154,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
       std::string key("ET_YUT1");
       emotionId = this->FindEmotionIdByKey(key);
     }
-    this->m_specials.emplace(type, emotionId);
-    return emotionId;
+    return RegisterSpecialEmotion(this->m_specials, type, emotionId);
   }
   case CashEmotionSpecial::Dice: {
     int emotionId;
@@ -1159,8 +1163,7 @@ int CCashEmotionMgr::LookupSpecialEmotion(CashEmotionSpecial type) {
       auto it = this->m_emotionIds.find(key);
       emotionId = it != this->m_emotionIds.end() ? it->second : -1;
     }
-    this->m_specials.emplace(type, emotionId);
-    return emotionId;
+    return RegisterSpecialEmotion(this->m_specials, type, emotionId);
   }
   case CashEmotionSpecial::Sweat:
     return this->LookupSpecialEmotion(type, "ET_SWEAT");
