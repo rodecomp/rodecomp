@@ -28,23 +28,24 @@ void UIWindow::AddSpriteCellOverlay(
 
   SpriteAtlasRecord record{};
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  const SpriteFrameCell* frame = cell;
+  const SpriteRleImage* rle = image;
 
-  float left = static_cast<float>(cell->x) * scale * cell->scaleX;
-  float right = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;
-  float top = static_cast<float>(cell->y) * scale * cell->scaleY;
-  float bottom = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height - 1 + cell->y) * scale * cell->scaleY * extentScale;
-
+  float left = static_cast<float>(frame->x) * scale * frame->scaleX;
   record.u0 = record.v0 = 0.0f;
+  float right = static_cast<float>((static_cast<std::int16_t>(rle->doubleWidth) + 1) * rle->width + frame->x - 1) * scale * frame->scaleX * extentScale;
+  float bottom = static_cast<float>((static_cast<std::int16_t>(rle->doubleHeight) + 1) * rle->height - 1 + frame->y) * scale * frame->scaleY * extentScale;
+  float top = static_cast<float>(frame->y) * scale * frame->scaleY;
   CTexture* texture;
-  if (cell->imageType == 0) {
-    texture = g_renderer->atlas.Find(image, palette, record);
+  if (frame->imageType == 0) {
+    texture = g_renderer->atlas.Find(rle, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(image, palette, record);
+      texture = g_renderer->atlas.Insert(rle, palette, record);
     }
   } else {
-    texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
-    record.u1 = static_cast<float>(image->width) / static_cast<float>(texture->TextureWidth());
-    record.v1 = static_cast<float>(image->height) / static_cast<float>(texture->TextureHeight());
+    texture = static_cast<CTexture*>(const_cast<void*>(rle->surface));
+    record.u1 = static_cast<float>(rle->width) / static_cast<float>(texture->TextureWidth());
+    record.v1 = static_cast<float>(rle->height) / static_cast<float>(texture->TextureHeight());
   }
   primitive->texture = texture;
 
@@ -59,16 +60,16 @@ void UIWindow::AddSpriteCellOverlay(
   if (angle != 0.0f) {
     const float cosine = ClientCosine(static_cast<int>(angle));
     const float sine = ClientSine(static_cast<int>(angle));
-    const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
-    const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y);
+    const float upper = static_cast<float>(frame->y) * scale + static_cast<float>(y);
+    const float lower = static_cast<float>((static_cast<std::int16_t>(rle->doubleHeight) + 1) * rle->height + frame->y) * scale + static_cast<float>(y);
     float startX;
     float endX;
-    if (cell->mirrored & 1) {
-      startX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x);
-      endX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
+    if (frame->mirrored & 1) {
+      startX = static_cast<float>((static_cast<std::int16_t>(rle->doubleWidth) + 1) * rle->width + frame->x) * scale + static_cast<float>(x);
+      endX = static_cast<float>(frame->x) * scale + static_cast<float>(x);
     } else {
-      startX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
-      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x);
+      startX = static_cast<float>(frame->x) * scale + static_cast<float>(x);
+      endX = static_cast<float>((static_cast<std::int16_t>(rle->doubleWidth) + 1) * rle->width + frame->x) * scale + static_cast<float>(x);
     }
     const float halfWidth = (endX - startX + g_projectionDepthNumerator) * g_depthAverageHalf;
     const float halfHeight = (lower - upper + g_projectionDepthNumerator) * g_depthAverageHalf;
@@ -83,7 +84,7 @@ void UIWindow::AddSpriteCellOverlay(
     x3 = halfWidth * cosine - halfHeight * sine + centerX;
     y3 = halfWidth * sine + halfHeight * cosine + centerY;
   } else {
-    if (!(cell->mirrored & 1)) {
+    if (!(frame->mirrored & 1)) {
       x0 = left;
       x1 = right;
     } else {
