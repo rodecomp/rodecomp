@@ -4816,7 +4816,8 @@ std::vector<std::string> CCommonObject::ReadCsvRow(CFile& file, char) {
   while (!file.IsEOF()) {
     char value;
     file.Read(&value, 1);
-    if (value == '\n' || value == '\r' || value == ',') {
+    const bool isDelimiter = value == '\n' || value == '\r' || value == ',';
+    if (isDelimiter) {
       this->DecodeField(field, row, false);
       field.clear();
       if (value == '\r') {
