@@ -11212,15 +11212,16 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       this->statusIconTooltip->SetText(" ", 35);
     }
 
-    std::string extra;
     int line = 1;
+    std::string extra;
     std::uint32_t color = 0;
     switch (id) {
     case 0x2B7:
       {
         ITEM_INFO item = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (item.identity[1] > 0) {
-          extra = static_cast<const std::string&>(FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity));
+          const std::string& formatted = FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity);
+          extra = formatted;
           color = 0xFABEBE;
         }
       }
@@ -11264,7 +11265,8 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         if (timeGetTime() - g_session.nameValidationTick > 10000) {
           g_session.minimumNameLength = 0;
         } else if (g_session.minimumNameLength != 0) {
-          extra = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_OVERHEAT_LIMIT_POINT), g_session.minimumNameLength));
+          const std::string& formatted = FormatOwnedString(LookupMessage(MSI_OVERHEAT_LIMIT_POINT), g_session.minimumNameLength);
+          extra = formatted;
         }
 
         if (extra.size() != 0) {
