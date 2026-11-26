@@ -120,24 +120,24 @@ void CNProtectGameGuardMgr::Tick() {
 
 // OFFSET: 0x0076CD60
 // FUNCTION: fn_08210
-int CNProtectGameGuardMgr::Create() {
+bool CNProtectGameGuardMgr::Create() {
   if (g_nProtectGameGuardMgr != nullptr) {
-    return 0;
+    return false;
   }
 
   CNProtectGameGuardMgr* manager = new (std::nothrow) CNProtectGameGuardMgr;
   g_nProtectGameGuardMgr = manager;
   if (manager == nullptr) {
-    return 0;
+    return false;
   }
 
   if (!manager->m_initialized) {
     delete manager;
     g_nProtectGameGuardMgr = nullptr;
-    return 0;
+    return false;
   }
 
-  return 1;
+  return true;
 }
 
 // OFFSET: 0x0076CEA0

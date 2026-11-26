@@ -33,7 +33,7 @@ public:
     }
   }
 
-  static int Create();
+  static bool Create();
   static void Destroy();
   static const char* GameName();
 
