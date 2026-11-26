@@ -71,7 +71,7 @@ void UIWindowMgr::CloseWindowExcept251(int id) {
 // OFFSET: 0x00AA8A90
 // FUNCTION: fn_17246
 void UIWindowMgr::RecordWindowPacket(int argument) {
-  if (Replay::Instance().state == 2 &&
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING &&
       Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
       Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) &&
       Replay::Instance().header.options.Get(ReplayRecordOption::Status)) {

@@ -682,7 +682,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
 
   {
     std::string recordName = name;
-    if (Replay::Instance().state == 2) {
+    if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
       char packet[400] = {};
       NavigationRouteRecord record = {};
       record.header = ReplayUiRecordHeader(REPLAY_UI_START_NAVIGATION);
@@ -1287,7 +1287,7 @@ static_assert(sizeof(NavigationDestinationRecord) == 0x2C);
 
 // INLINED
 static void RecordDestination(std::string name, int x, int y) {
-  if (Replay::Instance().state == 2) {
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
     char packet[100] = {};
     NavigationDestinationRecord record = {};
     record.header = ReplayUiRecordHeader(REPLAY_UI_NAVIGATION_DESTINATION);

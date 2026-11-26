@@ -12342,12 +12342,12 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
   std::string mapName(name);
   mapName.resize(mapName.size() - 4);
 
-  if (Replay::Instance().state == 2) {
-    Replay::Instance().SetState(3);
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
+    Replay::Instance().SetState(REPLAY_STATE_RECORDING_MAP_CHANGE);
     g_windowMgr.replayRecordControlWnd->SendMsg(nullptr, UM_SETPOS, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
-  } else if (Replay::Instance().state == 7) {
-    Replay::Instance().SetState(8);
+  } else if (Replay::Instance().state == REPLAY_STATE_PLAYING) {
+    Replay::Instance().SetState(REPLAY_STATE_PLAYING_MAP_CHANGE);
   }
 
   unsigned char sameMap;
@@ -23365,9 +23365,9 @@ void CGameMode::ProcessIncomingPackets() {
   }
 
   const int replayState = Replay::Instance().state;
-  if (replayState == 7) {
+  if (replayState == REPLAY_STATE_PLAYING) {
     g_windowMgr.replayControlWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-  } else if (replayState == 2) {
+  } else if (replayState == REPLAY_STATE_RECORDING) {
     Replay::Instance().WriteHeader(12);
     if (g_windowMgr.replayRecordControlWnd) {
       g_windowMgr.replayRecordControlWnd->SendMsg(nullptr, UM_UPDATE_RECORD_TIME, 0, 0, 0, 0);
@@ -23382,7 +23382,7 @@ void CGameMode::ProcessIncomingPackets() {
       received = GetRagConnection().ReadPacket(g_gameModePacketBuffer, &size, g_packetLengths);
       if (received) {
         type = GetRagConnection().GetPacketType(reinterpret_cast<const char *>(g_gameModePacketBuffer));
-        if (replayState == 2) {
+        if (replayState == REPLAY_STATE_RECORDING) {
           Replay::Instance().Record(size, g_gameModePacketBuffer, 42, 0);
         }
       }

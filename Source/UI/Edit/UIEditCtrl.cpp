@@ -2570,7 +2570,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   }
 
   this->m_message0 = ID_OK;
-  if (Replay::Instance().state != 6) {
+  if (Replay::Instance().state != REPLAY_STATE_PLAYBACK_PAUSED) {
     g_session.ClearMerchantPurchaseSavedItems();
   }
 
@@ -5196,7 +5196,7 @@ void UIMerchantMirrorItemWnd::OnCreate(int width, int height) {
     g_session.CollectFilteredMerchantMyShopItems();
   } else if (this->mode == 2) {
     g_session.RefreshMerchantMyShopItems();
-  } else if (Replay::Instance().state != 6) {
+  } else if (Replay::Instance().state != REPLAY_STATE_PLAYBACK_PAUSED) {
     g_session.CopyItems1740To1750();
   }
   this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);

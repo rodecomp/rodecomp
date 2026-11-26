@@ -2345,7 +2345,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->filenameEdit->SetText("");
       g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
 
-      if (Replay::Instance().state != 1) {
+      if (Replay::Instance().state != REPLAY_STATE_IDLE) {
         this->mode = 1;
         this->ApplyMode();
       }
@@ -2827,7 +2827,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     switch (a) {
     case ID_CANCEL:
     case ID_SELECT_REPLAY:
-      Replay::Instance().SetState(1);
+      Replay::Instance().SetState(REPLAY_STATE_IDLE);
       g_windowMgr.Schedule(this);
       g_modeMgr.currentMode->SendMsg(LMM_REPLAY_SELECT_SERVER, 0, 0, 0, 0);
       return 0;

@@ -1090,7 +1090,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   }
 
   this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-  if (Replay::Instance().state == 7) {
+  if (Replay::Instance().state == REPLAY_STATE_PLAYING) {
     this->edit->SetText("임시");
   }
 

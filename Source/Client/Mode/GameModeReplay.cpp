@@ -8,11 +8,11 @@
 // FUNCTION: fn_21368
 bool CGameMode::UpdateReplayPause(bool resume) {
   if (resume == true && this->replayPauseTick != 0) {
-    if (Replay::Instance().state != 7) {
+    if (Replay::Instance().state != REPLAY_STATE_PLAYING) {
       const std::uint32_t paused = timeGetTime() - this->replayPauseTick;
       Replay::Instance().started += paused;
     }
-  } else if (Replay::Instance().state == 7) {
+  } else if (Replay::Instance().state == REPLAY_STATE_PLAYING) {
     this->replayPauseTick = timeGetTime();
   }
 

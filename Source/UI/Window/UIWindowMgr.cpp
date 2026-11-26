@@ -2206,12 +2206,12 @@ bool UIWindowMgr::ProcessEnterKey() {
   } else if (this->quitWnd != nullptr) {
     this->quitWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
   } else if (this->npcEditDialogWnd != nullptr) {
-    if (Replay::Instance().state == 2) {
+    if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
       this->npcEditDialogWnd->RecordEditTexts();
     }
     this->npcEditDialogWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
   } else if (this->npcTextEditDialogWnd != nullptr) {
-    if (Replay::Instance().state == 2) {
+    if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
       this->npcTextEditDialogWnd->RecordEditTexts();
     }
     this->npcTextEditDialogWnd->SendMsg(nullptr, UM_DEFPUSH, 0, 0, 0, 0);
@@ -2242,7 +2242,7 @@ bool UIWindowMgr::ProcessEnterKey() {
       }
       handled = false;
     }
-    if (Replay::Instance().state == 2 && handled) {
+    if (Replay::Instance().state == REPLAY_STATE_RECORDING && handled) {
       this->hoverWindow->Root()->RecordEditTexts();
     }
     if (g_windowMgr.chatModeChanged == 0) {
@@ -2750,7 +2750,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     this->keyboardCommandRootWnd = nullptr;
   }
 
-  if (Replay::Instance().state == 2 && Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING && Replay::Instance().header.options.Get(ReplayRecordOption::Item) &&
       Replay::Instance().header.options.Get(ReplayRecordOption::BasicInfo) && Replay::Instance().header.options.Get(ReplayRecordOption::Status)) {
     switch (id) {
     case WID_TIPBOXWND:
@@ -4571,7 +4571,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_REPLAY_STARTSTOP + 100:
     if (g_replayAnimationScaling != 0 && this->replayControlWnd) {
       const int state = Replay::Instance().state;
-      if (state == 6) {
+      if (state == REPLAY_STATE_PLAYBACK_PAUSED) {
         this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, ID_PAUSE_REPLAY, 0, 0, 0);
       } else {
         this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, ID_RESUME_REPLAY, 0, 0, 0);
@@ -6351,7 +6351,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_REPLAYRECCONTROLWND:
     if (this->replayRecordControlWnd == nullptr) {
-      if (Replay::Instance().state == 2) {
+      if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
         window = this->replayRecordControlWnd = new UIReplayRECControlWnd(1);
       } else {
         window = this->replayRecordControlWnd = new UIReplayRECControlWnd(0);

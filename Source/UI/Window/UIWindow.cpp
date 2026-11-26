@@ -248,7 +248,7 @@ __declspec(noinline) void UIWindow::Resize(int width, int height) {
 // OFFSET: 0x00A82F00
 // FUNCTION: fn_16999
 void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -277,7 +277,7 @@ void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, st
 // OFFSET: 0x00A82F80
 // FUNCTION: fn_17000
 void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -318,7 +318,7 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
 // OFFSET: 0x00A83300
 // FUNCTION: fn_17002
 void UIWindow::RecordValues(int value, int argument1, int argument2, int argument3, int argument4) {
-  if (g_replayAnimationScaling != 0 || Replay::Instance().state != 2) {
+  if (g_replayAnimationScaling != 0 || Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -338,7 +338,7 @@ void UIWindow::RecordValues(int value, int argument1, int argument2, int argumen
 // OFFSET: 0x00A83390
 // FUNCTION: fn_45730
 void UIWindow::RecordMessageText(int message, int argument, const char* text) {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -356,7 +356,7 @@ void UIWindow::RecordMessageText(int message, int argument, const char* text) {
 // OFFSET: 0x00A83440
 // FUNCTION: fn_17003
 void UIWindow::RecordText(int event, const char* text) {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -2553,7 +2553,7 @@ static_assert(sizeof(EditTextsRecord) == 0x1000);
 // OFFSET: 0x00A834E0
 // FUNCTION: fn_17004
 int UIWindow::RecordEditTexts() {
-  if (Replay::Instance().state != 2 || !g_windowMgr.WindowPolicy(6, this->geometry.id)) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING || !g_windowMgr.WindowPolicy(6, this->geometry.id)) {
     return 0;
   }
 

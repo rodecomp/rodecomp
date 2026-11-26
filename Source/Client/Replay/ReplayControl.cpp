@@ -31,19 +31,19 @@ float Replay::AnimationScale() const {
 // FUNCTION: fn_19343
 bool Replay::SetState(int state) {
   if (state == 4) {
-    this->state = 1;
+    this->state = REPLAY_STATE_IDLE;
     return true;
   }
   if (state == 5) {
-    this->state = 6;
+    this->state = REPLAY_STATE_PLAYBACK_PAUSED;
     return true;
   }
-  if (state >= 1 && state <= 8) {
+  if (state >= REPLAY_STATE_IDLE && state <= REPLAY_STATE_PLAYING_MAP_CHANGE) {
     this->state = state;
-    g_replayAnimationScaling = static_cast<unsigned>(state - 1) <= 2 ? 0 : g_replayAnimationScaling;
+    g_replayAnimationScaling = static_cast<unsigned>(state - REPLAY_STATE_IDLE) <= 2 ? 0 : g_replayAnimationScaling;
   } else {
-    this->state = 1;
+    this->state = REPLAY_STATE_IDLE;
   }
-  g_replayAnimationScaling = state >= 6 && state <= 8 ? 1 : g_replayAnimationScaling;
+  g_replayAnimationScaling = state >= REPLAY_STATE_PLAYBACK_PAUSED && state <= REPLAY_STATE_PLAYING_MAP_CHANGE ? 1 : g_replayAnimationScaling;
   return true;
 }

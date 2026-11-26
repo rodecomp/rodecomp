@@ -88,6 +88,15 @@ struct ReplaySection {
 };
 #pragma pack(pop)
 
+enum ReplayState : int {
+  REPLAY_STATE_IDLE = 1,
+  REPLAY_STATE_RECORDING = 2,
+  REPLAY_STATE_RECORDING_MAP_CHANGE = 3,
+  REPLAY_STATE_PLAYBACK_PAUSED = 6,
+  REPLAY_STATE_PLAYING = 7,
+  REPLAY_STATE_PLAYING_MAP_CHANGE = 8
+};
+
 class Replay {
 public:
   static Replay& Instance();

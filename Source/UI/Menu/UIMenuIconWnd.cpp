@@ -424,7 +424,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(WID_ESCOPTIONWND);
         break;
       case MENUICON_REC:
-        if (Replay::Instance().state != 1) {
+        if (Replay::Instance().state != REPLAY_STATE_IDLE) {
           g_windowMgr.Confirm("REC End please", 0, true, false, 0, "메시지", 280, 120, 0);
         } else {
           this->ToggleWindow(WID_REPLAYRECCONTROLWND);

@@ -212,7 +212,7 @@ void Replay::RecordCachedPackets() {
 // OFFSET: 0x00A83180
 // FUNCTION: fn_17001
 int UIWindow::RecordData(std::uint16_t type, std::vector<unsigned char> data) {
-  if (Replay::Instance().state != 2 || data.empty()) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING || data.empty()) {
     return 0;
   }
 

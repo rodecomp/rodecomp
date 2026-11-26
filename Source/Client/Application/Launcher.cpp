@@ -1160,7 +1160,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   const std::array<char, 7> replaySource = OBFUSCATE_SOURCE_ARRAY_CHAR("Replay", 0xFFBF43D1FFD5FF49ULL);
   EncryptedName<sizeof(replaySource), 0xFFBF43D1FFD5FF49ULL>& replay = OBFUSCATE_DECRYPT_NAME(0xFFBF43D1FFD5FF49ULL, replaySource);
   g_replayMode = std::strstr(commandLine, replay.Text()) != nullptr;
-  Replay::Instance().SetState(1);
+  Replay::Instance().SetState(REPLAY_STATE_IDLE);
 
   const std::array<char, 5> qmSource = OBFUSCATE_SOURCE_ARRAY_CHAR("1qm1", 0x7DB1050779034DE7ULL);
   EncryptedName<sizeof(qmSource), 0x7DB1050779034DE7ULL>& qm = OBFUSCATE_DECRYPT_NAME(0x7DB1050779034DE7ULL, qmSource);

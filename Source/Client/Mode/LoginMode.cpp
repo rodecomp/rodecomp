@@ -3462,7 +3462,7 @@ void CLoginMode::OnChangeState(int value) {
     this->pendingCursorType = LOGIN_STATE_CONNECT_ACCOUNT_SERVER;
     break;
   case LOGIN_STATE_SELECT_SERVER: {
-    Replay::Instance().SetState(1);
+    Replay::Instance().SetState(REPLAY_STATE_IDLE);
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
@@ -3870,7 +3870,7 @@ void CLoginMode::OnChangeState(int value) {
     g_session.ClearMerchantShopItems();
     g_session.ResetSwapCostumeItems();
     g_session.ResetSwapEquippedItems();
-    Replay::Instance().SetState(6);
+    Replay::Instance().SetState(REPLAY_STATE_PLAYBACK_PAUSED);
     ReplayHeader header = Replay::Instance().header;
     g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(header.characterName));
     g_session.SetNavigationPlayerMap(header.mapName);

@@ -2100,7 +2100,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->moveSpeed = entry->speed;
     this->headType = entry->head;
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
-    if (Replay::Instance().state == 6) {
+    if (Replay::Instance().state == REPLAY_STATE_PLAYBACK_PAUSED) {
       switch (entry->state) {
       case PCSTATE_DEAD:
         this->SetState(ST_DEAD, 1);

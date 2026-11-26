@@ -1338,7 +1338,7 @@ int CGameMode::SubD07740(int id, int defaultResult) {
 // OFFSET: 0x00CEB8E0
 // FUNCTION: fn_21352
 void CGameMode::RecordChatRoomSettings() {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -2130,11 +2130,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_PAUSE_REPLAY:
       this->UpdateReplayPause(true);
-      Replay::Instance().SetState(7);
+      Replay::Instance().SetState(REPLAY_STATE_PLAYING);
       return 0;
     case MM_RESUME_REPLAY:
       this->UpdateReplayPause(false);
-      Replay::Instance().SetState(6);
+      Replay::Instance().SetState(REPLAY_STATE_PLAYBACK_PAUSED);
       return 0;
     case MM_INCREASE_REPLAY_SPEED:
       Replay::Instance().IncreaseSpeed();
@@ -2146,12 +2146,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_RESTART_REPLAY:
       g_loginStartMode = LOGIN_STATE_OPEN_REPLAY;
-      Replay::Instance().SetState(6);
+      Replay::Instance().SetState(REPLAY_STATE_PLAYBACK_PAUSED);
       g_modeMgr.Switch(0, "login.rsw");
       return 0;
     case MM_EXIT_REPLAY:
       g_loginStartMode = LOGIN_STATE_REPLAY_SERVER_LIST;
-      Replay::Instance().SetState(6);
+      Replay::Instance().SetState(REPLAY_STATE_PLAYBACK_PAUSED);
       g_modeMgr.Switch(0, "login.rsw");
       return 0;
     case MM_REQ_CLOSE_BUYING_STORE: {
@@ -2944,18 +2944,18 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const int windowCount = g_windowMgr.GetRenderedWindowIds(windowIds);
       const int result = ReplayFileList::Instance().Open(0x1F, windowCount, reinterpret_cast<int>(windowIds));
       if (result == REPLAY_OPEN_SUCCESS) {
-        Replay::Instance().SetState(1);
+        Replay::Instance().SetState(REPLAY_STATE_IDLE);
         return 0;
       }
       if (result == REPLAY_OPEN_FILE_EXISTS) {
-        Replay::Instance().SetState(1);
+        Replay::Instance().SetState(REPLAY_STATE_IDLE);
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_THESAMEFILEEXISTS), 0, true, false, 0, "메시지", 280, 120, 0);
         return 0;
       }
       char message[50]{};
       std::sprintf(message, LookupMessage(MSI_REPLAY_RECORDSTART));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x62B0FF, 0, 0, 0);
-      Replay::Instance().SetState(2);
+      Replay::Instance().SetState(REPLAY_STATE_RECORDING);
       {
         auto records = g_navigationManager.WriteReplayState();
         Replay::Instance().WriteSection(0x18, records, 0xE);
@@ -4689,7 +4689,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const PACKET_CZ_ADD_EXCHANGE_ITEM packet{ID_CZ_ADD_EXCHANGE_ITEM, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
       this->exchangeItemCnt = argument2;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-      if (Replay::Instance().state == 2) {
+      if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
         std::uint16_t record[5] = {ID_CC_REPLAYPACKET, 0x0387, 10};
         std::memcpy(record + 3, &this->exchangeItemCnt, sizeof(int));
         Replay::Instance().Record(10, record, 0x2A, 0);
@@ -4766,8 +4766,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_STOP_REPLAY_RECORDING: {
-      if (Replay::Instance().state == 2) {
-        Replay::Instance().SetState(1);
+      if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
+        Replay::Instance().SetState(REPLAY_STATE_IDLE);
         Replay::Instance().UpdateDuration();
         Replay::Instance().Duration();
         Replay::Instance().CloseFile();
@@ -5630,7 +5630,7 @@ void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, f
 // OFFSET: 0x00CE8F10
 // FUNCTION: fn_21344
 void __stdcall RecordWhisper(const void* info, const unsigned char* data) {
-  if (Replay::Instance().state != 2) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
 
@@ -5679,7 +5679,7 @@ static_assert(sizeof(GameModeMessageRecord) == 0x16);
 // OFFSET: 0x00CE8FC0
 // FUNCTION: fn_21345
 bool CGameMode::RecordReplayMessage(int message, int value, int first, int second) {
-  if (Replay::Instance().state != 2 || message != 0x45 || value != 10000) {
+  if (Replay::Instance().state != REPLAY_STATE_RECORDING || message != 0x45 || value != 10000) {
     return false;
   }
 
@@ -5719,8 +5719,8 @@ int ConfirmGameModeAction96() {
 // OFFSET: 0x00CF1060
 // FUNCTION: fn_21425
 std::uint32_t CGameMode::StopReplayRecording() {
-  if (Replay::Instance().state == 2) {
-    Replay::Instance().SetState(1);
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
+    Replay::Instance().SetState(REPLAY_STATE_IDLE);
     Replay::Instance().UpdateDuration();
     const std::uint32_t duration = Replay::Instance().Duration();
     Replay::Instance().CloseFile();
@@ -8150,19 +8150,19 @@ void CGameMode::InitializeState() {
   const int replayState = Replay::Instance().state;
   if (g_replayAnimationScaling) {
     g_windowMgr.EnsureWindow(WID_REPLAYCONTROLWND);
-    if (replayState == 8) {
+    if (replayState == REPLAY_STATE_PLAYING_MAP_CHANGE) {
       g_windowMgr.replayControlWnd->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
-      Replay::Instance().SetState(7);
+      Replay::Instance().SetState(REPLAY_STATE_PLAYING);
     }
   }
 
-  if (replayState == 3) {
-    Replay::Instance().SetState(2);
+  if (replayState == REPLAY_STATE_RECORDING_MAP_CHANGE) {
+    Replay::Instance().SetState(REPLAY_STATE_RECORDING);
     g_windowMgr.EnsureWindow(WID_REPLAYRECCONTROLWND);
     g_windowMgr.replayRecordControlWnd->Move(Replay::Instance().recordingState, Replay::Instance().playbackState);
     g_windowMgr.replayRecordControlWnd->SendMsg(nullptr, UM_REPLAY_FRAMED_DATA, 0, 0, 0, 0);
-  } else if (replayState == 8 && !g_replayAnimationScaling) {
-    Replay::Instance().SetState(7);
+  } else if (replayState == REPLAY_STATE_PLAYING_MAP_CHANGE && !g_replayAnimationScaling) {
+    Replay::Instance().SetState(REPLAY_STATE_PLAYING);
   }
 
   g_navigationManager.ResumeRoute();
@@ -8584,7 +8584,7 @@ void CGameMode::Initialize(const char* name) {
   this->bossAlarmAndCopyNameFlags[0] = 0;
   this->bossAlarmAndCopyNameFlags[1] = 0;
 
-  if (Replay::Instance().state == 6) {
+  if (Replay::Instance().state == REPLAY_STATE_PLAYBACK_PAUSED) {
     ReadReplaySkillEffects(Replay::Instance().ReadSection(0x12));
   }
 
@@ -8685,7 +8685,7 @@ void CGameMode::Initialize(const char* name) {
     }
   }
 
-  if (Replay::Instance().state == 6) {
+  if (Replay::Instance().state == REPLAY_STATE_PLAYBACK_PAUSED) {
     Replay::Instance().speed = 1.0f;
     g_session.ReadReplayQuests(Replay::Instance().ReadSection(6));
     g_session.ReadReplayStats(Replay::Instance().ReadSection(4));
@@ -9813,7 +9813,7 @@ void CGameMode::ProcessInput() {
   }
 
   const bool statusIcons = g_serviceOptions.Get(TT_STATEINFO_ON_OFF);
-  if (Replay::Instance().state != 6 && statusIcons) {
+  if (Replay::Instance().state != REPLAY_STATE_PLAYBACK_PAUSED && statusIcons) {
     this->ProcessStatusIconTooltip(g_mouse.x, g_mouse.y);
   }
 

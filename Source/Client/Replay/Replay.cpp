@@ -198,7 +198,7 @@ ReplaySection::~ReplaySection() {
 // OFFSET: 0x00B83540
 // FUNCTION: fn_19300
 Replay::Replay() : cipherIndex(0), cipherBase(0), cipherKey(0), recordingState(0), playbackState(0) {
-  this->state = 1;
+  this->state = REPLAY_STATE_IDLE;
   this->baseFrame = 0;
   this->started = 0;
   this->frame = 0;
@@ -375,14 +375,14 @@ int Replay::AdvanceFrame() {
   } else {
     const std::uint32_t now = timeGetTime();
 
-    if (this->state != 6) {
+    if (this->state != REPLAY_STATE_PLAYBACK_PAUSED) {
       ++this->frame;
       this->elapsed += static_cast<std::uint32_t>(static_cast<float>(now - this->previousTick) * this->speed);
 
       if (static_cast<int>(this->elapsed) >= static_cast<int>(this->header.duration)) {
         this->previousTick = now;
         this->elapsed = this->header.duration;
-        this->state = 6;
+        this->state = REPLAY_STATE_PLAYBACK_PAUSED;
         return 0;
       }
     }
@@ -395,7 +395,7 @@ int Replay::AdvanceFrame() {
 // OFFSET: 0x00B83E10
 // FUNCTION: fn_19309
 void Replay::ResetPlayback() {
-  if (this->state != 3 && this->state != 8) {
+  if (this->state != REPLAY_STATE_RECORDING_MAP_CHANGE && this->state != REPLAY_STATE_PLAYING_MAP_CHANGE) {
     this->records = 0;
     this->frame = 0;
     this->elapsed = 0;
@@ -664,7 +664,7 @@ std::uint32_t Replay::ParseMetadata(const std::vector<unsigned char>& data) {
 // OFFSET: 0x00B85350
 // FUNCTION: fn_19323
 bool Replay::ReadRecord(unsigned char* buffer, std::uint16_t& id, bool force) {
-  if (!force && this->state != 7) {
+  if (!force && this->state != REPLAY_STATE_PLAYING) {
     return false;
   }
 
@@ -1023,7 +1023,7 @@ void Replay::DecreaseSpeed() {
 // OFFSET: 0x00B872C0
 // FUNCTION: fn_19342
 void Replay::RestartClock() {
-  if (this->state != 3 && this->state != 8) {
+  if (this->state != REPLAY_STATE_RECORDING_MAP_CHANGE && this->state != REPLAY_STATE_PLAYING_MAP_CHANGE) {
     this->baseFrame = this->frame;
     this->started = this->previousTick = timeGetTime();
   }

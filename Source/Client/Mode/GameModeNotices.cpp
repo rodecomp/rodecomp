@@ -4359,12 +4359,12 @@ struct GameAcceptEnterPacket {
 // FUNCTION: fn_21620
 void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GameAcceptEnterPacket*>(data);
-  if (Replay::Instance().state == 2) {
-    Replay::Instance().SetState(3);
+  if (Replay::Instance().state == REPLAY_STATE_RECORDING) {
+    Replay::Instance().SetState(REPLAY_STATE_RECORDING_MAP_CHANGE);
     g_windowMgr.replayRecordControlWnd->SendMsg(nullptr, UM_SETPOS, 0, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_REPLAYRECCONTROLWND);
-  } else if (Replay::Instance().state == 7) {
-    Replay::Instance().SetState(8);
+  } else if (Replay::Instance().state == REPLAY_STATE_PLAYING) {
+    Replay::Instance().SetState(REPLAY_STATE_PLAYING_MAP_CHANGE);
   }
 
   g_session.SetServerTime(packet->startTime);
