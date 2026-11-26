@@ -1,3 +1,18 @@
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <list>
+#include <map>
+#include <string>
+#include <string_view>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+#define explicit __declspec(noinline) explicit
+#include "UI/Window/UIControl.h"
+#undef explicit
+
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "UI/Text/UIStaticTextControl.h"
 #include "Utility/Cipher/XorBytes.h"
