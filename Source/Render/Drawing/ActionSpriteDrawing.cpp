@@ -84,14 +84,14 @@ void CMode::DrawActionSprite(
       const float sine = ClientSine(degrees);
       const float originX = static_cast<float>(x);
       const float originY = static_cast<float>(y);
-      x0 = cosine * scaledLeft - sine * top + originX;
-      y0 = sine * scaledLeft + cosine * top + originY;
-      x1 = cosine * scaledRight - sine * top + originX;
-      y1 = sine * scaledRight + cosine * top + originY;
-      x2 = cosine * scaledRight - sine * bottom + originX;
-      y2 = cosine * bottom + sine * scaledRight + originY;
-      x3 = cosine * scaledLeft - sine * bottom + originX;
       y3 = cosine * bottom + sine * scaledLeft + originY;
+      x3 = cosine * scaledLeft - sine * bottom + originX;
+      y2 = cosine * bottom + sine * scaledRight + originY;
+      x2 = cosine * scaledRight - sine * bottom + originX;
+      y1 = sine * scaledRight + cosine * top + originY;
+      x1 = cosine * scaledRight - sine * top + originX;
+      y0 = sine * scaledLeft + cosine * top + originY;
+      x0 = cosine * scaledLeft - sine * top + originX;
     } else {
       float first = scaledLeft;
       float second = right;
