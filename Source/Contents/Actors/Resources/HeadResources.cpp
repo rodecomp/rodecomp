@@ -254,9 +254,9 @@ void CSession::NormalizeHead(int* head, int job) {
 // OFFSET: 0x00BAAB10
 // FUNCTION: fn_19750
 std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int palette) {
-  std::string result = "";
-  std::string sexName = "";
-  std::string headName = "";
+  std::string result;
+  std::string sexName;
+  std::string headName;
 
   if (g_session.IsDoramJob(job) == true) {
     if (head < 1 || head >= 11) {
