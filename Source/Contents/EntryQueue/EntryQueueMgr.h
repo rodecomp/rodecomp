@@ -34,6 +34,12 @@ struct EntryQueueInfo {
   /* 0634 */ char bitmapName[0x104];
 };
 
+enum EntryQueueLevelLimit : unsigned char {
+  ENTRYQUEUE_LEVEL_LIMIT_MAX = 1,
+  ENTRYQUEUE_LEVEL_LIMIT_MIN = 2,
+  ENTRYQUEUE_LEVEL_LIMIT_RANGE = 3,
+};
+
 enum EntryQueueNoticeResult : std::uint8_t {
   ENTRYQUEUE_NOTICE_CANCELLED = 1,
   ENTRYQUEUE_NOTICE_WRONG_NAME = 3,

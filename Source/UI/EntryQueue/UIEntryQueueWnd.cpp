@@ -605,11 +605,11 @@ void UIEntryQueueWnd::SelectQueue(EntryQueueInfo* info) {
       sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_D_VS_D), info->minLevel, info->maxLevel);
       break;
     case 3:
-      if (info->limitType == 1) {
+      if (info->limitType == ENTRYQUEUE_LEVEL_LIMIT_MAX) {
         sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LEVELDOWN_D), info->limitValue);
-      } else if (info->limitType == 2) {
+      } else if (info->limitType == ENTRYQUEUE_LEVEL_LIMIT_MIN) {
         sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LEVELUP_D), info->limitValue);
-      } else if (info->limitType == 3) {
+      } else if (info->limitType == ENTRYQUEUE_LEVEL_LIMIT_RANGE) {
         sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LEVEL_D_D), info->limitValue, info->limitValueEnd);
       } else {
         sprintf_s(text, sizeof(text), LookupMessage(MSI_BATTLEFIELD_LIMITLESS));
