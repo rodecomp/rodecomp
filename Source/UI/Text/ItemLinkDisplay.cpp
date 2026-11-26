@@ -67,11 +67,12 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
       do {
         position += static_cast<unsigned>(begin);
         remaining = remaining.substr(begin + g_itemLinkTagBegin.size());
+        std::size_t beginSize = g_itemLinkTagBegin.size();
         begin = remaining.find(g_itemLinkTagBegin);
         close = remaining.find(g_itemLinkTagEnd);
 
         if (begin != std::string::npos) {
-          position += static_cast<unsigned>(g_itemLinkTagBegin.size());
+          position += static_cast<unsigned>(beginSize);
         }
       } while (begin != std::string::npos);
 
