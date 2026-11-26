@@ -163,7 +163,9 @@ __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
 // FUNCTION: fn_12883
 void UIGuild_Storage_Log::FillRows() {
   const unsigned page = this->m_page;
-  char pages[10] = {};
+  char pages[10];
+  pages[9] = pages[8] = 0;
+  std::memset(pages, 0, 8);
   if (this->m_category == 0) {
     std::sprintf(pages, "%02d / %02d", page, this->m_pageCounts[0]);
     this->DrawTextAt(175, 228, pages, 0, 0, 12, 0, 0, 0);
