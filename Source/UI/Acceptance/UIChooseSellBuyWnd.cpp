@@ -2030,7 +2030,7 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
   }
 
   const int count = static_cast<int>(this->m_items.size());
-  const int last = count == 0 ? 0 : std::min(index, count - 1);
+  const int last = count == 0 ? 0 : std::min(count - 1, index);
   int separators = 0;
   for (int i = 0; i < last; ++i) {
     if (this->IsSeparator(i)) {
