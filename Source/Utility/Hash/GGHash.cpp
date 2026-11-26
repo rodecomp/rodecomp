@@ -45,7 +45,7 @@ static const GGHashEntry* FindEntryImpl(const GGHashEntry* table, DWORD count, D
 
 // OFFSET: 0x004016E0
 // FUNCTION: fn_46728
-const GGHashEntry* FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
+const GGHashEntry* __fastcall FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
   while (count != 0) {
     const GGHashEntry* mid = &table[count >> 1];
     DWORD midName = mid->nameHash;
