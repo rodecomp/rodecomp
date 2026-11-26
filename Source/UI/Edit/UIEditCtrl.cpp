@@ -129,6 +129,9 @@
 #include "UI/Edit/UICandidateWnd.h"
 #include "UI/Items/UIMakeTargetProcessWnd.h"
 
+// STRING: st_00939
+static const char g_messageTitle[] = "Message";
+
 enum ItemShopDropSource : std::intptr_t {
   ITEM_SHOP_DROP_INVENTORY = 0,
   ITEM_SHOP_DROP_STORAGE = 1,
@@ -1766,7 +1769,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         }
 
         if (amount == 0 && g_session.m_pendingAid < total) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_BUY_TO_FREE_POINT), 0, true, false, 0, "메시지", 280, 120, 0)) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_BUY_TO_FREE_POINT), 0, true, false, 0, g_messageTitle, 280, 120, 0)) {
             return 0;
           }
         }
@@ -1779,7 +1782,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           confirm = FormatOwnedString(LookupMessage(MSI_BUY_RECONFIRM1_2019), price);
         }
 
-        if (g_windowMgr.Confirm(confirm.c_str(), 2, true, true, 0, "메시지", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(confirm.c_str(), 2, true, true, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
           g_windowMgr.SetFocus(this->quantityEdit);
           this->quantityEdit->SetText("0");
           mode->SendMsg(MM_REQ_BUY_CASH_POINT, amount, 0, 0, 0);
@@ -3079,7 +3082,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
   case TYPE_SCHANGE:
   case TYPE_SPECIAL:
     if (item.GetItemId() == ITEMID_TIME_GUARDIAN_BOX &&
-        g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "메시지", 280, 120, 0) == ID_NO) {
+        g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_NO) {
       break;
     }
     mode->SendMsg(MM_USEITEM, static_cast<int>(item.itemIndex), 0, 0, 0);
@@ -3087,7 +3090,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
   case TYPE_CASH_POINT_ITEM:
     if (g_session.m_manner >= 0) {
       if (g_windowMgr
-              .Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+              .Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_USEITEM, static_cast<int>(item.itemIndex), 0, 0, 0);
       }
     }
@@ -3228,7 +3231,7 @@ void UIMerchantShopMakeWnd::OnProcess() {
     char text[24];
     std::sprintf(text, "%s ", edit->Text());
     if (!g_session.IsNumberWithCommas(text)) {
-      g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, g_messageTitle, 280, 120, 0);
       edit->SetText(this->previousPriceText.c_str());
       g_windowMgr.SetFocus(edit);
       return;
@@ -3238,7 +3241,7 @@ void UIMerchantShopMakeWnd::OnProcess() {
     if (price < 0) {
       price = 0;
     } else if (price > 1000000000) {
-      if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
         price = 1000000000;
         edit->SetText(_itoa(static_cast<int>(price), text, 10));
       } else {
@@ -4286,7 +4289,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   char text[24];
   std::sprintf(text, "%s ", edit->Text());
   if (!g_session.IsNumberWithCommas(text)) {
-    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, "메시지", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_CAN_INPUT_NUMBER_ONLY), 0, true, false, 0, g_messageTitle, 280, 120, 0);
     edit->SetText("0");
     g_windowMgr.SetFocus(edit);
     edit->SelectAll();
@@ -4297,7 +4300,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
   if (0x7FFFFFFF >= price && price < 0) {
     price = 0;
   } else if (price > 0x7FFFFFFF || price > 1000000000) {
-    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
       price = 1000000000;
       edit->SetText(_itoa(1000000000, text, 10));
       this->Invalidate();
@@ -4327,7 +4330,7 @@ int UIMerchantShopMakeWnd::CommitPrice(int next) {
     }
 
     message += std::string(LookupMessage(MSI_WARNING_PRICE6));
-    if (g_windowMgr.Confirm(message.c_str(), 2, true, false, 0, "메시지", 280, 120, 0) != ID_YES) {
+    if (g_windowMgr.Confirm(message.c_str(), 2, true, false, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
       edit->SetText("0");
       g_windowMgr.SetFocus(edit);
       edit->SelectAll();
@@ -6666,7 +6669,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (count > 0) {
-        const int result = g_windowMgr.Confirm(LookupMessage(MSI_MIX_ACCEPT), 2, true, false, 0, "메시지", 280, 120, 0);
+        const int result = g_windowMgr.Confirm(LookupMessage(MSI_MIX_ACCEPT), 2, true, false, 0, g_messageTitle, 280, 120, 0);
         if (result == ID_YES) {
           mode->SendMsg(MM_ITEMLISTWIN_RES, this->shopId, 0, 0, 0);
         } else {
@@ -11865,7 +11868,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case DRAG_BUYINGSTORE_SHOP_LIST: {
       if (this->slotCount > g_session.GetNumMerchantPurchaseSavedItems()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {
-          g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, "메시지", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         } else {
           g_session.RemoveMerchantMyShopItem(item, 1, 1);
         }
@@ -12101,7 +12104,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         break;
       }
       if (g_windowMgr.chatRoomWnd || g_windowMgr.chatRoomMakeWnd) {
-        g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "메시지", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         if (this->itemsSet == 1) {
           if (this->mode == 1) {
             g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
@@ -12138,13 +12141,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           if (price == 0) {
             const std::string name = current->DisplayName(0);
             const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_INPUTPRICE), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, g_messageTitle, 280, 120, 0);
             return 0;
           }
           if (price > 99990000) {
             const std::string name = current->DisplayName(0);
             const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_REINPUTPRICE), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, g_messageTitle, 280, 120, 0);
             return 0;
           }
           ++current;
@@ -12172,11 +12175,11 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       if (this->mode == 0) {
-        if (freeItem && g_windowMgr.Confirm(LookupMessage(MSI_YOU_HAVE_FREE_ITEM_ON_SHOP), 2, true, false, 0, "메시지", 280, 120, 0) != ID_YES) {
+        if (freeItem && g_windowMgr.Confirm(LookupMessage(MSI_YOU_HAVE_FREE_ITEM_ON_SHOP), 2, true, false, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
           break;
         }
         if (!g_session.m_skipPriceWarning && highPrice &&
-            g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "메시지", 280, 120, 0) != ID_YES) {
+            g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
           break;
         }
       }
@@ -12196,13 +12199,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           if (quantity == 0) {
             const std::string name = current->DisplayName(0);
             const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_INPUTNUM), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, g_messageTitle, 280, 120, 0);
             return 0;
           }
           if (std::atoi(text) + current->quantity > 9999) {
             const std::string name = current->DisplayName(0);
             const std::string message = FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_MAKEWND_REINPUTNUM), name.c_str());
-            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, g_messageTitle, 280, 120, 0);
             return 0;
           }
           ++current;
@@ -12300,6 +12303,6 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   return 0;
 showError:
-  g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, "메시지", 280, 120, 0);
+  g_windowMgr.Confirm(LookupMessage(error), 0, true, false, 0, g_messageTitle, 280, 120, 0);
   return 0;
 }

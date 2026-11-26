@@ -23,6 +23,9 @@
 #include <mbstring.h>
 #include "Resource/MSGSTRINGID.h"
 
+// STRING: st_00939
+static const char g_messageTitle[] = "Message";
+
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
 void UIStylingshopTabParentWnd::OnCreate(int, int) {
@@ -297,7 +300,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           this->m_display->headPalette = i + 1;
           this->m_display->Invalidate();
         } else {
-          g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD), 0, false, false, 0, "메시지", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD), 0, false, false, 0, g_messageTitle, 280, 120, 0);
         }
       } else {
         this->m_paletteButtons[i]->SetState(0);
@@ -390,7 +393,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   } else {
     switch (argument1) {
     case ID_CLOSE:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_DELETE_CHAR), 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_DELETE_CHAR), 2, false, false, 0, g_messageTitle, 280, 120, 0) != ID_NO) {
         for (int i = 0; i < 2; ++i) {
           if (sender == this->deleteStyleButtons[i]) {
             this->RemoveChild(this->m_slots[i], 1);
@@ -1130,7 +1133,7 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case ID_BOOKMARK:
     if (this->m_favoriteButton->m_argument == 0) {
       if (shop->AddToMyStyle() == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_REGISTER_BOOKMARK), 0, true, false, 0, "메시지", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_REGISTER_BOOKMARK), 0, true, false, 0, g_messageTitle, 280, 120, 0);
       } else {
         this->m_favoriteButton->SetTooltip(LookupMessage(MSI_STYLING_SHOP_FAIL_TO_ADD_CHAR_TO_LIKE));
       }
@@ -1465,7 +1468,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     break;
   case ID_BUY:
     if (this->m_buyButton->m_argument == 0 &&
-        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_ADJUST_NEW_CHAR_STYLE), 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_ADJUST_NEW_CHAR_STYLE), 2, false, false, 0, g_messageTitle, 280, 120, 0) != ID_NO) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         UIStylingshopTabParentWnd* tab = it->second;
         if (tab->geometry.visible == 0) {
