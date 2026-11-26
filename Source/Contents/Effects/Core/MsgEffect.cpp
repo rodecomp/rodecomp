@@ -1544,8 +1544,8 @@ void CMsgEffect::FollowOwner() {
           direction.y = this->render.position.z - owner->render.position.z;
           direction.Normalize();
           this->render.position.x += (owner->render.position.x - this->render.position.x) / 25.0f;
-          this->render.curMotion = 8;
           this->render.position.z += (owner->render.position.z - this->render.position.z) / 25.0f;
+          this->render.curMotion = 8;
           movedX = this->render.position.x - oldPosition.x;
           movedZ = this->render.position.z - oldPosition.z;
           moved = SquareRoot(movedZ * movedZ + movedX * movedX);
