@@ -9908,125 +9908,6 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
   }
 }
 
-// OFFSET: 0x00D2F200
-// FUNCTION: fn_21729
-void CGameMode::ReceiveItemPickupAck5(
-  std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
-  std::uint32_t location, unsigned char type, unsigned char result, std::uint32_t expireTime, std::uint16_t bindOnEquip
-) {
-  this->pickupReqItemNaidList.erase(this->pickupReqItemNaidList.begin(), this->pickupReqItemNaidList.end());
-
-  switch (result) {
-  case PICKUP_SUCCEED: {
-    {
-      StoreItemOption options[5] = {0};
-      ITEM_INFO item;
-      item.identity[0] = type;
-      item.identity[2] = location;
-      item.identity[1] = index;
-      item.identity[3] = 0;
-      item.quantity = amount;
-      item.SetItemId(itemId);
-      std::memcpy(item.cards, slots.cards, sizeof(slots.cards));
-      item.identified = identified;
-      item.damaged = damaged;
-      item.refiningLevel = refine;
-      item.expireTime = expireTime;
-      item.bindOnEquip = bindOnEquip;
-      item.selected = 1;
-      item.optionCount = CountStoreItemOptions(options);
-      for (int option = 0; option < item.optionCount; ++option) {
-        item.options[option] = options[option];
-      }
-      if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
-        g_modeMgr.GetGameMode()->lastPickItemTime = 0;
-      }
-      if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-        item.identity[3] = 0x8000;
-      }
-
-      g_session.AddInventoryItem(item, 1);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
-
-      UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
-      window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-      window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-      if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-        quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
-      }
-    }
-    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
-    }
-    break;
-  }
-  case RECEIVE_ITEM: {
-    StoreItemOption options[5] = {0};
-    ITEM_INFO item;
-    item.identity[0] = type;
-    item.identity[2] = location;
-    item.identity[1] = index;
-    item.identity[3] = 0;
-    item.quantity = amount;
-    item.SetItemId(itemId);
-    std::memcpy(item.cards, slots.cards, sizeof(slots.cards));
-    item.identified = identified;
-    item.damaged = damaged;
-    item.refiningLevel = refine;
-    item.expireTime = expireTime;
-    item.bindOnEquip = bindOnEquip;
-    item.selected = 1;
-    item.optionCount = CountStoreItemOptions(options);
-    for (int option = 0; option < item.optionCount; ++option) {
-      item.options[option] = options[option];
-    }
-    if (std::atoi(item.itemId.c_str()) == ITEMID_YGGDRASILBERRY) {
-      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
-    }
-    if (type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
-      item.identity[3] = 0x8000;
-    }
-    switch (type) {
-    case TYPE_ARMOR:
-    case TYPE_WEAPON:
-    case TYPE_BOW:
-    case TYPE_BOTHHAND:
-    case TYPE_ARMORTM:
-    case TYPE_ARMORTB:
-    case TYPE_ARMORMB:
-    case TYPE_ARMORTMB:
-    case TYPE_GUN:
-      break;
-    default:
-      item.identity[2] = 0;
-      break;
-    }
-
-    const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
-    const int count = current.identity[1] > 0 ? amount - current.quantity : amount;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
-
-    UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
-    window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
-    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
-      g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
-      g_session.ResetSlots();
-    }
-    g_session.UpdateInventoryItem(item, 1);
-    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
-    }
-    break;
-  }
-  default:
-    this->NotifyItemResult(result);
-    break;
-  }
-}
-
 namespace {
 
   // INLINED
@@ -10138,6 +10019,34 @@ namespace {
     if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
     }
+  }
+}
+
+// OFFSET: 0x00D2F200
+// FUNCTION: fn_21729
+void CGameMode::ReceiveItemPickupAck5(
+  std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
+  std::uint32_t location, unsigned char type, unsigned char result, std::uint32_t expireTime, std::uint16_t bindOnEquip
+) {
+  this->pickupReqItemNaidList.erase(this->pickupReqItemNaidList.begin(), this->pickupReqItemNaidList.end());
+
+  switch (result) {
+  case PICKUP_SUCCEED: {
+    PickupItemOptions options = {0};
+    AddPickedUpItem(index, amount, itemId, identified, damaged, refine, slots, location, type, expireTime, bindOnEquip, options);
+    if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+      quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
+    }
+    break;
+  }
+  case RECEIVE_ITEM: {
+    PickupItemOptions options = {0};
+    UpdateReceivedItem(index, amount, itemId, identified, damaged, refine, slots, location, type, expireTime, bindOnEquip, options);
+    break;
+  }
+  default:
+    this->NotifyItemResult(result);
+    break;
   }
 }
 
