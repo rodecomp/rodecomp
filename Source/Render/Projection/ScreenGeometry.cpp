@@ -19,6 +19,20 @@ static void SetScreenQuadVertex(RenderVertex& vertex, float x, float y, std::uin
   vertex.v = v;
 }
 
+// OFFSET: 0x0054DB40
+// FUNCTION: fn_01944
+static __declspec(noinline) void DrawLineQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  SetScreenQuadVertex(primitive->vertices[0], p0.x, p0.y, color, 0.0f, 0.0f);
+  SetScreenQuadVertex(primitive->vertices[1], p1.x, p1.y, color, 1.0f, 0.0f);
+  SetScreenQuadVertex(primitive->vertices[2], p2.x, p2.y, color, 0.0f, 1.0f);
+  SetScreenQuadVertex(primitive->vertices[3], p3.x, p3.y, color, 1.0f, 1.0f);
+  primitive->texture = texture;
+  primitive->sourceBlend = 2;
+  primitive->destinationBlend = 4;
+  g_renderer->Submit(primitive, 513);
+}
+
 // OFFSET: 0x0054E2B0
 // FUNCTION: fn_01951
 void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture* texture, std::uint32_t color) {
@@ -83,7 +97,11 @@ void DrawDashedScreenLine(
   const float halfDashY = dashY * g_depthAverageHalf;
   const float halfDashX = dashX * g_depthAverageHalf;
   do {
-    DrawScreenQuad(currentX, currentY, currentX + sideX, currentY + sideY, nextX, nextY, nextX + sideX, nextY + sideY, texture, color);
+    const ScreenPoint p0 = {currentX, currentY};
+    const ScreenPoint p1 = {currentX + sideX, currentY + sideY};
+    const ScreenPoint p2 = {nextX, nextY};
+    const ScreenPoint p3 = {nextX + sideX, nextY + sideY};
+    DrawLineQuad(p0, p1, p2, p3, texture, color);
 
     currentX = halfDashX + nextX;
     currentY = halfDashY + nextY;
@@ -91,20 +109,6 @@ void DrawDashedScreenLine(
     nextY = dashY + currentY;
     distance = SquareRoot((nextY - startY) * (nextY - startY) + (nextX - startX) * (nextX - startX));
   } while (length > distance);
-}
-
-// OFFSET: 0x0054DB40
-// FUNCTION: fn_01944
-void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture, std::uint32_t color) {
-  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  SetScreenQuadVertex(primitive->vertices[0], x0, y0, color, 0.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[1], x1, y1, color, 1.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[2], x2, y2, color, 0.0f, 1.0f);
-  SetScreenQuadVertex(primitive->vertices[3], x3, y3, color, 1.0f, 1.0f);
-  primitive->texture = texture;
-  primitive->sourceBlend = 2;
-  primitive->destinationBlend = 4;
-  g_renderer->Submit(primitive, 513);
 }
 
 // OFFSET: 0x00915F60

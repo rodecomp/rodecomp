@@ -33,9 +33,6 @@ inline void NormalizePoint(ScreenPoint& point) {
   point.y = inverse * point.y;
 }
 
-__declspec(noinline) void DrawScreenQuad(
-  float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture, std::uint32_t color
-);
 void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture* texture, std::uint32_t color);
 void DrawDashedScreenLine(
   float startX, float startY, float endX, float endY, int dashLength, int thickness, CTexture* texture, std::uint32_t color
