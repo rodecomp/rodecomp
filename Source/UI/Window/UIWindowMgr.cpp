@@ -2746,7 +2746,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     return false;
   }
 
-  if (this->LookupWindow(static_cast<WindowId>(id)) == this->keyboardCommandRootWnd) {
+  if (this->LookupWindow(windowId) == this->keyboardCommandRootWnd) {
     this->keyboardCommandRootWnd = nullptr;
   }
 
@@ -2799,7 +2799,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_RUNESYSTEMWND:
-    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* found = this->LookupWindow(windowId)) {
       this->CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
       this->Schedule(found);
       closed = true;
@@ -3860,8 +3860,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_HOTKEYWND: case WID_RELOADLUASCRIPTWND: case WID_QUIKSLOTWND: case WID_BATTLEFIELD_DESCRIBEWND: case WID_BATTLEFIELD_STATUSWND: case WID_BATTLEFIELD_HELPWND: case 171: case WID_SEARCH_STORE_INFO: case WID_SHOWINFO_TESTLAYER: case WID_EXMACRO_SETUPWND:
-    if (this->LookupWindow(static_cast<WindowId>(id))) {
-      if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (this->LookupWindow(windowId)) {
+      if (UIWindow* found = this->LookupWindow(windowId)) {
         switch (id) {
         case WID_HOTKEYWND:
           this->Schedule(this->hotkeyWnd);
@@ -3897,7 +3897,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_MERCHANTITEMLOGWND_MODE_1:
   case WID_RENEWDETAILQUESTINFOWND:
   case WID_RPIMAGEWND2:
-    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* found = this->LookupWindow(windowId)) {
       this->Schedule(found);
       closed = true;
     }
@@ -4106,7 +4106,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_LOGINOTPWND:
-    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* found = this->LookupWindow(windowId)) {
       this->Schedule(found);
       this->loginOTPWnd = nullptr;
       closed = true;
@@ -4130,7 +4130,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_RENEWQUESTWND:
-    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* found = this->LookupWindow(windowId)) {
       this->Schedule(found);
       this->questWndVisible = 0;
       closed = true;
@@ -4181,7 +4181,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   default:
-    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+    if (UIWindow* found = this->LookupWindow(windowId)) {
       this->Schedule(found);
       closed = true;
     }
