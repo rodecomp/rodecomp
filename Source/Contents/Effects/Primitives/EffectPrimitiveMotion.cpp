@@ -7961,8 +7961,8 @@ namespace {
         if (leading) {
           if (kind == 11) {
             if (height < -50.0f) {
-              point.x = static_cast<float>(ClampedRandom(15) - 8);
-              point.z = static_cast<float>(ClampedRandom(15) - 8);
+              point.x = static_cast<float>(ClampedRandom(15)) - 8.0f;
+              point.z = static_cast<float>(ClampedRandom(15)) - 8.0f;
               height = static_cast<float>(ClampedRandom(100));
             }
           } else if (height < -30.0f) {
@@ -7972,8 +7972,8 @@ namespace {
           }
         } else if (height < -30.0f) {
           if (kind == 11) {
-            point.x = static_cast<float>(ClampedRandom(15) - 8);
-            point.z = static_cast<float>(ClampedRandom(15) - 8);
+            point.x = static_cast<float>(ClampedRandom(15)) - 8.0f;
+            point.z = static_cast<float>(ClampedRandom(15)) - 8.0f;
           } else {
             point.x = 0.0f;
             point.z = 0.0f;
