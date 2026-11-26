@@ -3,7 +3,6 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Bitmap/GifResource.h"
-#include "Resource/Bitmap/GifLzw.h"
 #include "Resource/ResourceMgr.h"
 
 #include <algorithm>
@@ -454,7 +453,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
       ++cursor;
 
       unsigned char* indices = new unsigned char[descriptor.width * descriptor.height];
-      if (DecodeGifLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
+      if (this->DecodeLzw(minimumCodeSize, compressed, compressedBytes, indices) > 0) {
         const unsigned int pixelCount = screenHeight * screenWidth;
         std::uint32_t* pixels = new std::uint32_t[pixelCount];
 

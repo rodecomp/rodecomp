@@ -29,6 +29,7 @@ public:
 
   void CreateBlank(int width, int height);
   bool DecodeGif(const void* data, int bytes, bool iconOnly);
+  int DecodeLzw(int minimumCodeSize, const unsigned char* input, int inputBytes, unsigned char* output);
   bool AdvanceFrame();
 
   /* 0124 */ std::vector<Frame> frames;

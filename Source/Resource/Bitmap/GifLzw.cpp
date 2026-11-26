@@ -15,7 +15,7 @@ namespace {
 
 // OFFSET: 0x0074A840
 // FUNCTION: fn_07868
-int __stdcall DecodeGifLzw(int codeSize, const unsigned char* input, int inputBytes, unsigned char* output) {
+int CGifRes::DecodeLzw(int codeSize, const unsigned char* input, int inputBytes, unsigned char* output) {
   int previousCode = -1;
   unsigned int bitMask = 1;
   int matchLength = 0;
