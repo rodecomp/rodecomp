@@ -571,14 +571,16 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
       const int available = g_session.m_maxWeight - g_session.m_weight;
       const float remaining = static_cast<float>(available) - g_expandedBarterMarketItemMgr->GetWeightedTotal();
       if (static_cast<int>(remaining) / factor < mode->drag.quantity) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_WEIGHT)), 255, 0, 0, 0);
+        const std::intptr_t notice = reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_WEIGHT));
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, notice, 255, 0, 0, 0);
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
       }
     }
 
     if (static_cast<__int64>(mode->drag.quantity * found.second.field_8) + g_expandedBarterMarketItemMgr->total > g_session.m_zeny) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_MONEY)), 255, 0, 0, 0);
+      const std::intptr_t notice = reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_MONEY));
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, notice, 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
