@@ -3820,7 +3820,7 @@ void CSevereRainStorm::SpawnParticles() {
 // OFFSET: 0x00725D60
 // FUNCTION: fn_07414
 void CSevereRainStorm::SpawnCrossRain() {
-  const int ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
+  const std::array<int, 10> ranges = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
   const int index = std::max(0, std::min(this->effectLevel - 1, 9));
   vector3d position = *&this->positionVector;
   const int spread = ranges[index] * 50;
@@ -3835,7 +3835,7 @@ void CSevereRainStorm::SpawnCrossRain() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
   CEZ2STRParticle* emitter = particle;
   particle->Load(std::string("IMPERIAL_GUARD\\IG_CROSS_RAIN\\new_crossrain\\new_cross_rain\\new_cross_rain.str"));
-  this->emitters.push_back(emitter);
+  this->emitters.push_back(std::move(emitter));
 }
 
 // OFFSET: 0x00726110
