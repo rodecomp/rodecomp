@@ -399,18 +399,19 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
   float maxBottom = depthBias;
   float maxTop = depthBias;
-  for (std::map<int, SpriteLayerQuad>::iterator it = quads.begin(); it != quads.end(); ++it) {
-    float bottom = it->second.quad.bottomRhw;
-    float top = it->second.quad.topRhw;
-    if (it != quads.begin()) {
-      bottom = bottom > maxBottom ? bottom : maxBottom;
-      top = top > maxTop ? top : maxTop;
+  const auto first = quads.begin();
+  if (first != quads.end()) {
+    maxBottom = first->second.quad.bottomRhw;
+    maxTop = first->second.quad.topRhw;
+    for (auto it = std::next(first); it != quads.end(); ++it) {
+      const float bottom = it->second.quad.bottomRhw;
+      const float top = it->second.quad.topRhw;
+      maxBottom = bottom > maxBottom ? bottom : maxBottom;
+      maxTop = top > maxTop ? top : maxTop;
     }
-    maxBottom = bottom;
-    maxTop = top;
   }
 
-  for (std::map<int, SpriteLayerQuad>::iterator it = quads.begin(); it != quads.end(); ++it) {
+  for (auto it = first; it != quads.end(); ++it) {
     SpriteLayerQuad& entry = it->second;
     entry.quad.bottomRhw = depthBias + maxBottom;
     entry.quad.topRhw = depthBias + maxTop;
