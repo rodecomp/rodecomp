@@ -100,12 +100,14 @@ void CSignBoardMgr::Initialize() {
       }
       case SIGNBOARD_ICON: {
         CIcon* icon = new CIcon();
+        std::string image;
         vector3d position = {0.0f, 0.0f, 0.0f};
         g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
         position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
           static_cast<float>(it->offset);
         icon->render.position = position;
-        icon->Load(std::string(it->image));
+        image = it->image;
+        icon->Load(image);
         g_modeMgr.GetGameMode()->scene->objects.push_back(icon);
         break;
       }
