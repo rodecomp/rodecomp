@@ -2999,18 +2999,18 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (message) {
   case UM_SETCURITEM:
     this->m_serverList->SendMsg(nullptr, UM_SETCURITEM, this->m_selectedServer, 0, 0, 0);
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_serverList->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_DOWNPUSH:
     this->m_serverList->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_SET_TARGET: {
     this->m_event = a;
     this->m_valueName = reinterpret_cast<const char*>(b);
     this->LoadServerSelection(this->m_valueName.c_str());
-    return 0;
+    break;
   }
   case UM_COMMAND:
     switch (a) {
@@ -3020,7 +3020,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ReplayFileList::Instance().dialogState = g_session.GetCurrentSex();
       g_modeMgr.currentMode->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
-      return 0;
+      break;
     case ID_OK:
       if (this->m_serverList->selected != -1) {
         g_windowMgr.Schedule(this);
@@ -3032,19 +3032,19 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case ID_CANCEL:
       g_windowMgr.Schedule(this);
       g_modeMgr.currentMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_EXIT:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
         g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
-        return 0;
+        break;
       }
       break;
     }
     break;
   case 89:
     this->m_okButton->Move(234, this->m_okButton->geometry.y);
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
