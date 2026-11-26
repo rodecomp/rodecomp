@@ -532,21 +532,21 @@ void UIAchSummaryWnd::Paint() {
 
   this->DrawTextAt(9, 292, LookupMessage(MSI_ACHIEVEMENT_RECENT_ACHIEVEMENT), 0, 0, 12, 0x9C6B5A, 1, 0);
 
-  int x = 260;
+  int offset = 0;
   for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
     std::string icon = "유저인터페이스\\achievement_re\\icon_" + g_achievementMgr->GetIconName(it->first) + ".bmp";
-    this->DrawBitmap(x - 242, 314, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str()))), true);
-    this->DrawBitmap(x, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
-    this->DrawTextAt(x + 23, 325, FormatOwnedString("%d", g_achievementMgr->GetPoints(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
-    this->DrawTextAt(x - 241, 365, g_achievementMgr->GetSummaryText(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
+    this->DrawBitmap(offset + 18, 314, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str()))), true);
+    this->DrawBitmap(offset + 260, 316, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
+    this->DrawTextAt(offset + 283, 325, FormatOwnedString("%d", g_achievementMgr->GetPoints(it->first)).c_str(), 0, 0, 12, 0xA55239, 1, 0);
+    this->DrawTextAt(offset + 19, 365, g_achievementMgr->GetSummaryText(it->first).c_str(), 0, 0, 12, 0xC9977D, 0, 0);
 
     SessionRecord6144 record = g_session.FindAchievementRecord(it->first);
     if (g_achievementMgr->HasReward(it->first) == 1 && record.rewarded == 0) {
-      this->DrawBitmap(x + 12, 360, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
+      this->DrawBitmap(offset + 272, 360, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
     }
 
-    this->DrawOutlinedText(x - 3, 366, FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day).c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
-    x += 316;
+    this->DrawOutlinedText(offset + 257, 366, FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day).c_str(), 0, 0x635AA5, 0xFFFFFF, 0, 10, 0, 0);
+    offset += 316;
   }
 }
 
