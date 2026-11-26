@@ -1806,11 +1806,17 @@ void CUIGameSettingsUI::OnTitleIconClick() {
 // OFFSET: 0x00A3F100
 // FUNCTION: fn_45480
 void CUIGameSettingsUI::OnApply() {
-  const bool modified = this->m_graphicsPage->IsModified();
-  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_WARNING_RESTART : MSI_GRAPHIC_SETTING_APPLY), 2, true, false, 0, "메시지", 280, 120, 0) != ID_NO) {
-    this->m_graphicsPage->ApplySettings();
-    this->UpdateApplyButton();
+  if (this->m_graphicsPage->IsModified()) {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_WARNING_RESTART), 2, true, false, 0, "메시지", 280, 120, 0) == ID_NO) {
+      return;
+    }
+  } else {
+    if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_APPLY), 2, true, false, 0, "메시지", 280, 120, 0) == ID_NO) {
+      return;
+    }
   }
+  this->m_graphicsPage->ApplySettings();
+  this->UpdateApplyButton();
 }
 
 // OFFSET: 0x00A3F170
