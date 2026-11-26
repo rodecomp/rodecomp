@@ -39,6 +39,8 @@ struct SpriteRleImage {
   /* 0006 */ std::int16_t doubleHeight;
   /* 0008 */ const void* surface;
   /* 000C */ const std::uint8_t* runs;
+
+  SpriteRleImage() : width(0), height(0), doubleWidth(0), doubleHeight(0), surface(nullptr), runs(nullptr) {}
 };
 
 __declspec(noinline) void DecodeSprite(const SpriteRleImage& image, const std::uint32_t* palette, void* pixels, int pitch);

@@ -89,7 +89,7 @@ bool CSprRes::Load(const char* name) {
     image->doubleWidth = 0;
     image->doubleHeight = 0;
     std::uint16_t encodedBytes;
-    std::uint8_t value = 0;
+    int value;
 
     if (g_spriteHalfWidth == 0 && g_spriteHalfHeight == 0) {
       if (header.version >= 0x0201) {
@@ -98,9 +98,8 @@ bool CSprRes::Load(const char* name) {
         image->runs = runs;
         file.Read(runs, encodedBytes);
       } else {
-        const int count = image->width * image->height;
-        auto* pixels = new std::uint8_t[count];
-        file.Read(pixels, count);
+        auto* pixels = new std::uint8_t[image->width * image->height];
+        file.Read(pixels, image->width * image->height);
         image->runs = this->EncodeSpriteRuns(pixels, image->width, image->height, encodedBytes);
         delete[] pixels;
       }
@@ -112,28 +111,29 @@ bool CSprRes::Load(const char* name) {
         const unsigned width = dimensions[0];
         const unsigned height = dimensions[1];
         auto* pixels = new std::uint8_t[width * height];
-        const std::uint8_t* current = runs;
         std::uint16_t zeroCount = 0;
-        std::uint8_t* row = pixels;
+        const std::uint8_t* source = runs;
 
-        for (unsigned y = height; y > 0; --y) {
-          std::uint8_t* pixel = row;
-          if (pixel) {
-            for (unsigned x = width; x != 0; --x) {
+        for (unsigned y = 0; y < height; ++y) {
+          std::uint8_t* line = pixels + width * y;
+
+          if (line) {
+            for (unsigned x = 0; x < width; ++x) {
               if (zeroCount == 0) {
-                value = *current++;
-
+                value = *source++;
                 if (value == 0) {
-                  zeroCount = *current++;
+                  zeroCount = *source++;
                 }
               }
 
-              const std::uint16_t before = zeroCount;
-              zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
-              *pixel++ = before == 0 ? value : 0;
+              if (zeroCount) {
+                *line++ = 0;
+                --zeroCount;
+              } else {
+                *line++ = static_cast<std::uint8_t>(value);
+              }
             }
           }
-          row += width;
         }
 
         delete[] runs;
@@ -152,9 +152,8 @@ bool CSprRes::Load(const char* name) {
           image->doubleHeight = 1;
         }
       } else {
-        const int count = image->width * image->height;
-        auto* pixels = new std::uint8_t[count];
-        file.Read(pixels, count);
+        auto* pixels = new std::uint8_t[image->width * image->height];
+        file.Read(pixels, image->width * image->height);
         auto* reduced = this->ReduceSprite(pixels, dimensions[0], dimensions[1], g_spriteHalfWidth, g_spriteHalfHeight);
         delete[] pixels;
         image->runs = this->EncodeSpriteRuns(reduced, dimensions[0] / (g_spriteHalfWidth + 1), dimensions[1] / (g_spriteHalfHeight + 1), encodedBytes);
@@ -190,12 +189,12 @@ bool CSprRes::Load(const char* name) {
         for (int x = 0; x < image->width; ++x) {
           std::uint32_t packed;
           file.Read(&packed, sizeof(packed));
-          *out++ = ((((((packed & 0xFFu) << 8) + (packed >> 24)) << 8) + ((packed >> 16) & 0xFFu)) << 8) + ((packed >> 8) & 0xFFu);
+          *out++ = (((packed & 0xFF) * 256 + (packed >> 24)) * 256 + ((packed >> 16) & 0xFF)) * 256 + ((packed >> 8) & 0xFF);
         }
       }
 
-      const int width = g_spriteHalfWidth != 0 ? image->width / 2 : image->width;
       const int height = g_spriteHalfHeight != 0 ? image->height / 2 : image->height;
+      const int width = g_spriteHalfWidth != 0 ? image->width / 2 : image->width;
       CTexture* texture = g_texMgr.CreateTexture(width, height, TextureFormat::A4R4G4B4, false, false);
       image->surface = texture;
       texture->Upload(0, 0, image->width, image->height, pixels, 0, 0);
