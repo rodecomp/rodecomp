@@ -943,8 +943,8 @@ void UIEditCtrl_Custom::Synchronize() {
   g_serverLanguage->Selection(this->anchor, this->cursor);
   this->Trim();
 
-  const auto length = static_cast<unsigned>(this->text.size());
   bool clamped = false;
+  const auto length = static_cast<unsigned>(this->text.size());
 
   if (static_cast<unsigned>(this->cursor) > length || static_cast<unsigned>(this->anchor) > length) {
     this->anchor = std::min<unsigned>(this->anchor, length);
@@ -971,9 +971,9 @@ void UIEditCtrl_Custom::Synchronize() {
       before = this->TextWidth(this->text.c_str(), this->firstVisible, 0, 12, this->labelBold, 0);
     }
 
-    const int position = this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->labelBold, 0);
+    const int position = this->TextWidth(this->text.c_str(), this->cursor, 0, 12, this->labelBold, 0) + 3 - before;
 
-    if (position + 3 - before > this->geometry.width - 12) {
+    if (position > this->geometry.width - 12) {
       const char* end = this->text.c_str() + this->text.size();
       const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), this->text.c_str(), 0);
 
