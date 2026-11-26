@@ -2151,19 +2151,17 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
 
           if (alpha > 0) {
             if (this->state.slots[ec].alphaT == 2) {
-              const unsigned char shade = static_cast<unsigned char>(200 - (20 - j) * 7);
-              this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 255, shade, shade, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 255, 200 - (20 - j) * 7, 200 - (20 - j) * 7, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (this->state.slots[ec].alphaT == 8) {
-              const unsigned char shade = static_cast<unsigned char>(150 - (20 - j) * 7);
-              this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, shade, shade, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+              this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 150 - (20 - j) * 7, 150 - (20 - j) * 7, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else {
               this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 255, 200, 150 - (20 - j) * 7, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
         }
 
-        vec3 = vec4;
         vec1 = vec2;
+        vec3 = vec4;
       }
     }
   }
@@ -6810,12 +6808,21 @@ void CEffectPrim::Render3DCasting2(matrix& wtm) {
       this->state.slots[ec].vecTNow.z = this->state.slots[ec].vecBNow.z + rz;
       this->state.slots[ec].vecTNow.y = -ry;
 
-      const float offsetX = this->state.slots[ec].flag1[0];
-      const float offsetZ = this->state.slots[ec].flag1[1];
-      vec1.Set(this->state.slots[ec].vecTNow.x + offsetX, this->state.slots[ec].vecTNow.y, this->state.slots[ec].vecTNow.z + offsetZ);
-      vec2.Set(this->state.slots[ec].vecBNow.x + offsetX, this->state.slots[ec].vecBNow.y, this->state.slots[ec].vecBNow.z + offsetZ);
-      vec3.Set(this->state.slots[ec].vecTPre.x + offsetX, this->state.slots[ec].vecTPre.y, this->state.slots[ec].vecTPre.z + offsetZ);
-      vec4.Set(this->state.slots[ec].vecBPre.x + offsetX, this->state.slots[ec].vecBPre.y, this->state.slots[ec].vecBPre.z + offsetZ);
+      vec1 = this->state.slots[ec].vecTNow;
+      vec1.x += this->state.slots[ec].flag1[0];
+      vec1.z += this->state.slots[ec].flag1[1];
+
+      vec2 = this->state.slots[ec].vecBNow;
+      vec2.x += this->state.slots[ec].flag1[0];
+      vec2.z += this->state.slots[ec].flag1[1];
+
+      vec3 = this->state.slots[ec].vecTPre;
+      vec3.x += this->state.slots[ec].flag1[0];
+      vec3.z += this->state.slots[ec].flag1[1];
+
+      vec4 = this->state.slots[ec].vecBPre;
+      vec4.x += this->state.slots[ec].flag1[0];
+      vec4.z += this->state.slots[ec].flag1[1];
 
       if (order > 0) {
         this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec4, vec2, vec1, vec3, wtm, 0);
