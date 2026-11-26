@@ -4817,10 +4817,10 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       case JT_GUILLOTINE_CROSS_H:
       case JT_GUILLOTINE_CROSS_B:
       case JT_SHADOW_CROSS:
-        actor->SetSprWeapon2(packet->valueLow, packet->valueHigh);
+        actor->SetSprWeapon2(packet->value);
         break;
       default:
-        actor->SetSprWeapon2(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
+        actor->SetSprWeapon2(weapon);
         break;
       }
       if (view == -1 || shield == 0) {

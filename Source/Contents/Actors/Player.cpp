@@ -243,7 +243,7 @@ void CPc::SetBodyCostume(int first, int second) {
       job = this->GetEffectiveJob(-1);
     }
     this->SetSprJob(job);
-    this->SetSprWeapon2(this->weapon, this->secondaryWeapon);
+    this->SetSprWeapon2(this->weaponPair);
     this->SetBodyPaletteName();
   }
 }
@@ -350,8 +350,8 @@ void CGrannyPc::SetSprAccessory(int value) {
 
 // OFFSET: 0x00DB0CB0
 // FUNCTION: fn_22632
-void CGrannyPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int) {
-  this->SetSprActFull(first, second, third, fourth, fifth, sixth, seventh, eighth, this->shield, ninth, tenth);
+void CGrannyPc::SetSprAct2(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int) {
+  this->SetSprActFull(first, second, third, weapon, sixth, seventh, eighth, this->shield, ninth, tenth);
 }
 
 // OFFSET: 0x00DB1960
@@ -376,7 +376,7 @@ void CGrannyPc::SetSprJob(int value) {
 
 // OFFSET: 0x00DB2830
 // FUNCTION: fn_22646
-void CGrannyPc::SetSprWeapon2(int, int) {
+void CGrannyPc::SetSprWeapon2(std::int64_t) {
 }
 
 // OFFSET: 0x00DB3720
@@ -828,7 +828,7 @@ void CPc::AddMsgEffect(CGameObject* effect) {
 void CPc::SetSex(int value) {
   this->SetSexBit(value);
   this->SetSprActFull(
-    this->appearanceJob, this->sex, this->head, this->weapon, this->secondaryWeapon, this->accessory, this->accessory2,
+    this->appearanceJob, this->sex, this->head, this->weaponPair, this->accessory, this->accessory2,
     this->accessory3, this->shield, this->headPalette, this->render.bodyPalette
   );
 }
@@ -1244,8 +1244,8 @@ void CPc::ApplyLayerEffects(
 
 // OFFSET: 0x00DB2840
 // FUNCTION: fn_22647
-void CPc::SetSprWeapon2(int first, int second) {
-  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&first);
+void CPc::SetSprWeapon2(std::int64_t weapon) {
+  this->weaponPair = weapon;
 
   int job = this->GetEffectiveJob(-1);
   if (this->IsCostumeOutfit()) {
@@ -2404,11 +2404,11 @@ void CPc::UpdateGaugeWindow() {
 
 // OFFSET: 0x00DB1760
 // FUNCTION: fn_22635
-void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+void CPc::SetSprActFull(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->appearanceJob = first;
   this->SetSexBit(second);
   this->head = third;
-  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&fourth);
+  this->weaponPair = weapon;
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
@@ -2449,16 +2449,15 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
 
 // OFFSET: 0x00DB0CE0
 // FUNCTION: fn_22633
-void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+void CPc::SetSprAct2(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->appearanceJob = first;
   this->SetSexBit(second);
   this->head = third;
-  this->weapon = fourth;
-  this->secondaryWeapon = fifth;
+  this->weaponPair = weapon;
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
-  this->shield = g_session.GetWeaponViewValue(fifth) < 0 ? fifth : 0;
+  this->shield = g_session.GetWeaponViewValue(static_cast<int>(weapon >> 32)) < 0 ? static_cast<int>(weapon >> 32) : 0;
   this->headPalette = ninth;
   this->render.bodyPalette = tenth;
   this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);
@@ -2495,11 +2494,11 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
       case JT_GUILLOTINE_CROSS_H:
       case JT_GUILLOTINE_CROSS_B:
       case JT_SHADOW_CROSS:
-        this->SetSprWeapon2(fourth, fifth);
+        this->SetSprWeapon2(weapon);
         break;
       default: {
-        const std::int64_t weapon = fourth;
-        this->SetSprWeapon2(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
+        const std::int64_t primary = static_cast<int>(weapon);
+        this->SetSprWeapon2(primary);
         break;
       }
     }
@@ -2637,10 +2636,10 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
 
 // OFFSET: 0x00DB0FC0
 // FUNCTION: fn_22634
-void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
+void CGrannyPc::SetSprActFull(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->SetSexBit(second);
   this->head = third;
-  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&fourth);
+  this->weaponPair = weapon;
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
@@ -4365,8 +4364,7 @@ void CPlayer::Initialize() {
   this->SetMadogearType(g_session.madogearType);
   this->SetBodyCostume(g_session.m_bodyCostume, 0);
   this->SetSprAct2(
-    g_session.GetDisplayJob(), g_session.GetCurrentSex(), g_session.m_head, g_session.m_weapon,
-    g_session.m_weaponLeft, g_session.m_accessory,
+    g_session.GetDisplayJob(), g_session.GetCurrentSex(), g_session.m_head, g_session.m_weaponLook, g_session.m_accessory,
     g_session.m_accessory2, g_session.m_accessory3,
     g_session.m_headPalette, g_session.m_bodyStyle, g_session.m_jobFlags
   );
@@ -4747,8 +4745,13 @@ struct PcStandEntry {
   /* 001C */ int xSize;
   /* 0020 */ int ySize;
   /* 0024 */ int head;
-  /* 0028 */ int weapon;
-  /* 002C */ int secondaryWeapon;
+  union {
+    /* 0028 */ std::int64_t weaponPair;
+    struct {
+      /* 0028 */ int weapon;
+      /* 002C */ int secondaryWeapon;
+    };
+  };
   /* 0030 */ int accessory;
   /* 0034 */ int state;
   /* 0038 */ int bodyState;
@@ -4783,8 +4786,13 @@ struct PcMoveEntry {
   /* 0024 */ int destY;
   /* 0028 */ int speed;
   /* 002C */ int head;
-  /* 0030 */ int weapon;
-  /* 0034 */ int secondaryWeapon;
+  union {
+    /* 0030 */ std::int64_t weaponPair;
+    struct {
+      /* 0030 */ int weapon;
+      /* 0034 */ int secondaryWeapon;
+    };
+  };
   /* 0038 */ int accessory;
   /* 003C */ int bodyState;
   /* 0040 */ int effectState;
@@ -4850,7 +4858,7 @@ void CPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -4888,7 +4896,7 @@ void CPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
@@ -4922,7 +4930,7 @@ void CPc::SendMsg(
     if (weapon >= 1 && weapon <= 104) {
       this->SetSprWeapon(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
     } else {
-      this->SetSprWeapon2(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
+      this->SetSprWeapon2(weapon);
     }
     this->SetSprShield(this->shield);
     this->SetHeadPaletteName();
@@ -4946,7 +4954,7 @@ void CPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -4991,7 +4999,7 @@ void CPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
@@ -5028,7 +5036,7 @@ void CPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5060,7 +5068,7 @@ void CPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
@@ -5094,7 +5102,7 @@ void CPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5120,7 +5128,7 @@ void CPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprAct2(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->headPalette, entry->bodyPalette, entry->stateFlags
     );
     this->SetSprRobe(entry->robe, 0);
@@ -5278,7 +5286,7 @@ void CGrannyPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5315,7 +5323,7 @@ void CGrannyPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5367,7 +5375,7 @@ void CGrannyPc::SendMsg(
     this->headType = entry->head;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5402,7 +5410,7 @@ void CGrannyPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5436,7 +5444,7 @@ void CGrannyPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);
@@ -5468,7 +5476,7 @@ void CGrannyPc::SendMsg(
     this->headDir = 0;
     entry->job = MountedJob(entry->job, entry->stateFlags);
     this->SetSprActFull(
-      entry->job, entry->sex, entry->head, entry->weapon, entry->secondaryWeapon, entry->accessory, entry->accessory2,
+      entry->job, entry->sex, entry->head, entry->weaponPair, entry->accessory, entry->accessory2,
       entry->accessory3, entry->shield, entry->headPalette, entry->bodyPalette
     );
     this->SetStatusStates(entry->bodyState, entry->stateFlags, entry->effectState, false);

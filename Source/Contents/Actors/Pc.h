@@ -44,15 +44,15 @@ public:
   void SetState(int state, int resetPosition) override;
   void SetSprRobe(int first, int second) override;
   void SetSprActFull(
-    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
+    int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
   void SetSprAct2(
-    int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
+    int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh
   ) override;
   void SetSprJob(int job) override;
   void SetSprHead(int value) override;
   void SetSprWeapon(int first, int second) override;
-  void SetSprWeapon2(int first, int second) override;
+  void SetSprWeapon2(std::int64_t weapon) override;
   void SetSprAccessory(int value) override;
   void SetSprAccessory2(int value) override;
   void SetSprAccessory3(int value) override;
@@ -280,12 +280,12 @@ public:
   void ProcessMotion() override;
   bool ProcessState() override;
   void SetState(int first, int second) override;
-  void SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
-  void SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
+  void SetSprActFull(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
+  void SetSprAct2(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) override;
   void SetSprJob(int value) override;
   void SetSprHead(int value) override;
   void SetSprWeapon(int first, int second) override;
-  void SetSprWeapon2(int first, int second) override;
+  void SetSprWeapon2(std::int64_t weapon) override;
   void SetSprAccessory(int value) override;
   void SetSprAccessory2(int value) override;
   void SetSprAccessory3(int value) override;

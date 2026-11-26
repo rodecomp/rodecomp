@@ -195,12 +195,12 @@ public:
   virtual void RegisterPos();
   virtual void UnRegisterPos();
   virtual void SetSprAct(int first, int second, int third);
-  virtual void SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
-  virtual void SetSprAct2(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
+  virtual void SetSprActFull(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
+  virtual void SetSprAct2(int first, int second, int third, std::int64_t weapon, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh);
   virtual void SetSprJob(int value);
   virtual void SetSprHead(int value);
   virtual void SetSprWeapon(int first, int second);
-  virtual void SetSprWeapon2(int first, int second);
+  virtual void SetSprWeapon2(std::int64_t weapon);
   virtual void SetSprAccessory(int value);
   virtual void SetSprAccessory2(int value);
   virtual void SetSprAccessory3(int value);

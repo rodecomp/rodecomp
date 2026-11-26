@@ -2259,7 +2259,7 @@ void CGameActor::SetSprShield(int) {
 
 // OFFSET: 0x005A1AA0
 // FUNCTION: fn_03074
-void CGameActor::SetSprWeapon2(int, int) {
+void CGameActor::SetSprWeapon2(std::int64_t) {
 }
 
 // OFFSET: 0x00CABD40
@@ -2678,12 +2678,12 @@ void CGameActor::SetModifyFactorOfmotionSpeed(int value) {
 
 // OFFSET: 0x005A1A30
 // FUNCTION: fn_03067
-void CGameActor::SetSprActFull(int, int, int, int, int, int, int, int, int, int, int) {
+void CGameActor::SetSprActFull(int, int, int, std::int64_t, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x005A1A20
 // FUNCTION: fn_03066
-void CGameActor::SetSprAct2(int, int, int, int, int, int, int, int, int, int, int) {
+void CGameActor::SetSprAct2(int, int, int, std::int64_t, int, int, int, int, int, int) {
 }
 
 // OFFSET: 0x005A19F0
