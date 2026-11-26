@@ -264,6 +264,21 @@
    "/source-charset:utf-8",
    "/execution-charset:.949",
    "-c"
+  ],
+  [
+   "/nologo",
+   "-D_CRT_SECURE_NO_WARNINGS",
+   "/DWIN32",
+   "/D_WINDOWS",
+   "/O2",
+   "/Ob2",
+   "/Oy-",
+   "/DNDEBUG",
+   "-MD",
+   "/FS",
+   "/source-charset:utf-8",
+   "/execution-charset:.949",
+   "-c"
   ]
  ],
  "units": {
@@ -1154,8 +1169,6 @@
   "Source/Utility/Hash/MD5.cpp": 10,
   "Source/Utility/Hash/Md5State.cpp": 0,
   "Source/Utility/Hash/SHA3.cpp": 0,
-  "Source/Utility/Hash/XxHash3.cpp": 0,
-  "Source/Utility/Hash/XxHash32.cpp": 0,
   "Source/Utility/Lexicon/LexiconBoundary.cpp": 0,
   "Source/Utility/Lexicon/LexiconMatcher.cpp": 0,
   "Source/Utility/Lexicon/LexiconTrie.cpp": 4,
@@ -1229,7 +1242,8 @@
   "ThirdParty/lua/src/lundump.c": 9,
   "ThirdParty/lua/src/lvm.c": 9,
   "ThirdParty/lua/src/lzio.c": 9,
-  "ThirdParty/lz4/lz4.c": 11,
+  "ThirdParty/lz4/lz4.c": 12,
+  "ThirdParty/xxhash/xxhash.c": 12,
   "ThirdParty/zlib/adler32.c": 6,
   "ThirdParty/zlib/compress.c": 6,
   "ThirdParty/zlib/crc32.c": 6,

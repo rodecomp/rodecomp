@@ -33,7 +33,9 @@
  ],
  "vendored": {
   "ThirdParty/lz4/lz4.c": "b6a85fd8f9be0fedb568abd1338719b23b999583ccda6f3404d5ae11e4ce7b8e",
-  "ThirdParty/lz4/lz4.h": "c1614ecf7ada7b0be1acb560d4239595f96fbb7aa6a79a7c40cb358753830be6"
+  "ThirdParty/lz4/lz4.h": "c1614ecf7ada7b0be1acb560d4239595f96fbb7aa6a79a7c40cb358753830be6",
+  "ThirdParty/xxhash/xxhash.c": "0ae36c075eb8ae22769f0ea38f4f892413499c347d0ffd50cccca338d138c58d",
+  "ThirdParty/xxhash/xxhash.h": "d4f2b91b547c79061649186721a6b331609f2bf8595485a21ea631c82ec3ef93"
  },
  "vmLiterals": [
   "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dlib\\Renderer.cpp",
