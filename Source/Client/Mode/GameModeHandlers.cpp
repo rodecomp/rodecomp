@@ -741,10 +741,10 @@ struct GameOptionEntry {
 void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_DELETE*>(packet);
   switch (value->result) {
-  case 2:
+  case PARTY_BOOKING_DELETE_FAILED:
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_AD_DELETE_FAILED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 3:
+  case PARTY_BOOKING_DELETE_NOT_EXIST:
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_NOT_EXIST_AD), 0, true, false, 0, "메시지", 280, 120, 0);
     [[fallthrough]];
   case 0:
@@ -2245,49 +2245,49 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
 // FUNCTION: fn_22022
 int CGameMode::HandleRuneResult(int result) {
   switch (result) {
-  case 0:
+  case RUNE_SYSTEM_SUCCESS:
     return 0;
-  case 1:
+  case RUNE_SYSTEM_ALREADY_EXIST:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 2:
+  case RUNE_SYSTEM_NOT_EXIST:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 3:
+  case RUNE_SYSTEM_LACK_OF_ITEM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 4:
+  case RUNE_SYSTEM_ALREADY_EQUIPPED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 5:
+  case RUNE_SYSTEM_NOTHING_EQUIPPED:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 6:
+  case RUNE_SYSTEM_INVALID_ID:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_ID)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_ID), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 7:
+  case RUNE_SYSTEM_MAX_LEVEL:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 8:
+  case RUNE_SYSTEM_INVALID_OWNER:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 10:
+  case RUNE_SYSTEM_TABLE_NOT_EXIST:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 11:
+  case RUNE_SYSTEM_DB_LOAD_NOT_YET:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
-  case 12:
+  case RUNE_SYSTEM_INVALID_TABLE_DATA:
   case 13:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA), 0, true, false, 0, "메시지", 280, 120, 0);

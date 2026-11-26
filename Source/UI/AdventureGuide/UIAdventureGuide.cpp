@@ -384,7 +384,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
 // FUNCTION: fn_14323
 void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
   switch (data.type) {
-  case 1:
+  case ADVENTURE_GUIDE_EPISODE:
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
@@ -395,14 +395,14 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
       owner->stampImage->Show(isNew);
     }
     break;
-  case 3:
+  case ADVENTURE_GUIDE_QUEST:
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;
     owner->SetStatusLine(data.contents.second);
     owner->stampImage->Show(WINDOW_HIDDEN);
     return;
-  case 4:
+  case ADVENTURE_GUIDE_DUNGEON:
     owner->SetTip(data.id);
     owner->SetViewerLines(data.contents.values);
     owner->title = data.contents.first;

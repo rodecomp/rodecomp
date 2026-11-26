@@ -11,6 +11,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarVariants.h"
+#include "UI/Lists/ScrollBarState.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIButton.h"
@@ -67,7 +68,7 @@ UIScrollBar::UIScrollBar() : UIWindow(0), arrowLength(13) {
   this->maximum = 0;
   this->position = 0;
   this->vertical = 1;
-  this->state = 0;
+  this->state = SCROLLBAR_STATE_NORMAL;
   this->pressX = 0;
   this->pressY = 0;
   this->dragAmount = 0;
@@ -262,7 +263,7 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
       break;
     case SB_THUMB:
       g_windowMgr.SetCapture(this);
-      this->state = 6;
+      this->state = SCROLLBAR_STATE_THUMB_PRESSED;
       break;
     case SB_DNPAGE:
       this->parent->SendMsg(this, UM_SCROLLHORZPAGEDOWN, 0, 0, 0, 0);
@@ -282,7 +283,7 @@ void UIScrollBar::OnLBtnDown(int x, int y) {
       break;
     case SB_THUMB:
       g_windowMgr.SetCapture(this);
-      this->state = 6;
+      this->state = SCROLLBAR_STATE_THUMB_PRESSED;
       break;
     case SB_DNPAGE:
       this->parent->SendMsg(this, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
@@ -325,18 +326,18 @@ void UIScrollBar::OnMouseMove(int x, int y) {
 
   switch (this->Part(x, y)) {
   case SB_UPBTN:
-    this->state = 1;
+    this->state = SCROLLBAR_STATE_UP_HOVER;
     break;
   case SB_THUMB:
-    this->state = 3;
+    this->state = SCROLLBAR_STATE_THUMB_HOVER;
     break;
   case SB_NULL:
   case SB_UPPAGE:
   case SB_DNPAGE:
-    this->state = 0;
+    this->state = SCROLLBAR_STATE_NORMAL;
     break;
   case SB_DNBTN:
-    this->state = 2;
+    this->state = SCROLLBAR_STATE_DOWN_HOVER;
     break;
   default:
     break;
@@ -413,9 +414,9 @@ void UIScrollBar::Paint() {
 
   switch (this->vertical) {
   case 0: {
-    if (this->state == 1) {
+    if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
-    } else if (this->state == 4) {
+    } else if (this->state == SCROLLBAR_STATE_UP_PRESSED) {
       this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
     } else {
       this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
@@ -429,9 +430,9 @@ void UIScrollBar::Paint() {
       this->DrawBitmap(this->geometry.width - this->arrowLength - 13, 0, middle, false);
     }
     this->FillRegion(this->geometry.width - this->arrowLength, 0, 13, this->geometry.height, 0xFFFF00FFu);
-    if (this->state == 2) {
+    if (this->state == SCROLLBAR_STATE_DOWN_HOVER) {
       this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
-    } else if (this->state == 5) {
+    } else if (this->state == SCROLLBAR_STATE_DOWN_PRESSED) {
       this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
     } else {
       this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
@@ -448,9 +449,9 @@ void UIScrollBar::Paint() {
     break;
   }
   case 1: {
-    if (this->state == 1) {
+    if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
-    } else if (this->state == 4) {
+    } else if (this->state == SCROLLBAR_STATE_UP_PRESSED) {
       this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
     } else {
       this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
@@ -464,9 +465,9 @@ void UIScrollBar::Paint() {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength - 13, middle, false);
     }
     this->FillRegion(0, this->geometry.height - this->arrowLength, this->geometry.width, 13, 0xFFFF00FFu);
-    if (this->state == 2) {
+    if (this->state == SCROLLBAR_STATE_DOWN_HOVER) {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);
-    } else if (this->state == 5) {
+    } else if (this->state == SCROLLBAR_STATE_DOWN_PRESSED) {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);
     } else {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);

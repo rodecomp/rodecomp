@@ -1958,7 +1958,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
     UIWindow* window;
     switch (this->geometry.state) {
-    case 1:
+    case ITEM_DROP_COUNT_NPC_PURCHASE:
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -1979,7 +1979,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
       break;
-    case 21: {
+    case ITEM_DROP_COUNT_PARA_PURCHASE: {
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2001,7 +2001,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 22: {
+    case ITEM_DROP_COUNT_PARA_SHOP: {
       const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
       if (owned == 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2020,7 +2020,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 24: {
+    case ITEM_DROP_COUNT_BARTER_PURCHASE: {
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2046,7 +2046,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 23: {
+    case ITEM_DROP_COUNT_BARTER_MARKET: {
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2066,7 +2066,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 26: {
+    case ITEM_DROP_COUNT_EXPANDED_BARTER_PURCHASE: {
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2092,7 +2092,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 25: {
+    case ITEM_DROP_COUNT_EXPANDED_BARTER_MARKET: {
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2112,7 +2112,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 19:
+    case ITEM_DROP_COUNT_CASH_PURCHASE:
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2131,7 +2131,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
       break;
-    case 20: {
+    case ITEM_DROP_COUNT_CASH_SHOP: {
       const int current = mode->drag.quantity;
       if (current <= 0) {
         if (quantity <= 0) {
@@ -2153,15 +2153,15 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 0:
+    case ITEM_DROP_COUNT_THROW:
       if (quantity <= 0 || quantity > mode->drag.quantity) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
       }
       mode->SendMsg(MM_ITEMTHROW_THROUGH_DROPCNTWND, quantity, 0, 0, 0);
       break;
-    case 2:
-    case 16: {
+    case ITEM_DROP_COUNT_NPC_SELL:
+    case ITEM_DROP_COUNT_NPC_SELL2: {
       const int owned = g_session.GetShopItemNum(mode->drag.id);
       if (owned == 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2186,7 +2186,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 3: {
+    case ITEM_DROP_COUNT_NPC_SHOP: {
       const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
       if (owned == 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2205,8 +2205,8 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 4:
-    case 15: {
+    case ITEM_DROP_COUNT_STORAGE_SHOP:
+    case ITEM_DROP_COUNT_STORAGE_SHOP2: {
       const int owned = g_session.GetStorageItemNum(mode->drag.id);
       if (owned == 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2231,7 +2231,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 5: {
+    case ITEM_DROP_COUNT_EXCHANGE: {
       if (!g_session.HasInventoryItem(mode->drag.id)) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2249,7 +2249,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 6: {
+    case ITEM_DROP_COUNT_INVENTORY: {
       int owned = 0;
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2277,7 +2277,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 7: {
+    case ITEM_DROP_COUNT_STORAGE: {
       int owned = 0;
       if (mode->drag.source == DRAG_ITEM_MERCHANT_INVENTORY) {
         const ITEM_INFO item = g_session.FindMerchantShopItem(mode->drag.id);
@@ -2303,7 +2303,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 8: {
+    case ITEM_DROP_COUNT_CART: {
       int owned = 0;
       switch (mode->drag.source) {
       case DRAG_ITEM_INVENTORY: {
@@ -2334,7 +2334,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 9: {
+    case ITEM_DROP_COUNT_VENDING_MAKE: {
       int owned = 0;
       if (mode->drag.source == DRAG_VENDING_SHOP_LIST) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
@@ -2355,7 +2355,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 10: {
+    case ITEM_DROP_COUNT_VENDING_MIRROR: {
       int owned = 0;
       if (mode->drag.source == DRAG_VENDING_PURCHASE_LIST) {
         const ITEM_INFO item = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
@@ -2376,7 +2376,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 11: {
+    case ITEM_DROP_COUNT_VENDING_SHOP: {
       if (mode->drag.source != DRAG_VENDING_ITEM_PURCHASE) {
         break;
       }
@@ -2394,7 +2394,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 12:
+    case ITEM_DROP_COUNT_VENDING_PURCHASE:
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
@@ -2404,7 +2404,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
       break;
-    case 13: {
+    case ITEM_DROP_COUNT_RODEX_COMPOSE: {
       if (!g_session.HasInventoryItem(mode->drag.id)) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         break;
@@ -2422,7 +2422,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 17: {
+    case ITEM_DROP_COUNT_BUYINGSTORE_PURCHASE: {
       int owned = 0;
       if (mode->drag.source == DRAG_PURCHASE_MIRROR_LIST) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
@@ -2443,7 +2443,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 18: {
+    case ITEM_DROP_COUNT_BUYINGSTORE_MIRROR: {
       int owned = 0;
       if (mode->drag.source == DRAG_BUYINGSTORE_ITEM_PURCHASE) {
         const ITEM_INFO item = g_session.FindMerchantHopeToSellItem(mode->drag.id);

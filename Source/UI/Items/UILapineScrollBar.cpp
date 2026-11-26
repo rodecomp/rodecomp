@@ -4,6 +4,7 @@
 #include "Render/Text/TextContext.h"
 #include "UI/Items/UIIngredientInfoWnd.h"
 #include "UI/Items/UILapineScrollBar.h"
+#include "UI/Lists/ScrollBarState.h"
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
@@ -75,7 +76,7 @@ void UILapineScrollBar::Paint() {
     const int thumbOffset = this->position * travel / this->total;
 
     switch (this->state) {
-    case 0: {
+    case SCROLLBAR_STATE_NORMAL: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_out_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_out_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_out_mid.bmp");
@@ -88,7 +89,7 @@ void UILapineScrollBar::Paint() {
       this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
       break;
     }
-    case 3: {
+    case SCROLLBAR_STATE_THUMB_HOVER: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_over_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_over_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_over_mid.bmp");
@@ -101,7 +102,7 @@ void UILapineScrollBar::Paint() {
       this->DrawBitmap(0, thumbOffset - capBottom->image.height + thumbLength + top->image.height, capBottom, true);
       break;
     }
-    case 6: {
+    case SCROLLBAR_STATE_THUMB_PRESSED: {
       CBitmapRes* capTop = load("유저인터페이스\\lapine\\scrollbar_thumb_press_top.bmp");
       CBitmapRes* capBottom = load("유저인터페이스\\lapine\\scrollbar_thumb_press_btm.bmp");
       CBitmapRes* fill = load("유저인터페이스\\lapine\\scrollbar_thumb_press_mid.bmp");

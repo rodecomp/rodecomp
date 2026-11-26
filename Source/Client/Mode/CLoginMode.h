@@ -139,6 +139,7 @@ enum TarenLoginFailure : unsigned char {
   TAREN_LOGIN_SYSTEM_FAILURE = 6,
   TAREN_LOGIN_NOT_ACTIVATED = 7,
   TAREN_LOGIN_TEENAGER_BLOCKED = 9,
+  TAREN_LOGIN_BLOCKED_UNTIL = 101,
 };
 
 enum LoginErrorCode : int {

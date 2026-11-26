@@ -1196,28 +1196,28 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x891B232D09451965ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
 
   switch (packet->result) {
-  case 1:
+  case TAREN_LOGIN_ACCOUNT_NOT_FOUND:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x758F1D0B4F7705B9ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_NOTEXIST));
     break;
-  case 2:
+  case TAREN_LOGIN_INVALID_PASSWORD:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x35E5656B5DEDCD75ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD));
     break;
-  case 3:
+  case TAREN_LOGIN_INVALID_IP:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x4941FD9F21BBB9FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_IP));
     break;
-  case 4:
+  case TAREN_LOGIN_INVALID_PERSONAL_NUMBER:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xE7978FB5A94DD7FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER));
     break;
-  case 5:
+  case TAREN_LOGIN_ACCOUNT_BLOCKED:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xB7FD8F670FC7B96BULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK));
     break;
-  case 6:
+  case TAREN_LOGIN_SYSTEM_FAILURE:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x39FF7FB50DEB998FULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM));
     break;
-  case 7:
+  case TAREN_LOGIN_NOT_ACTIVATED:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2FE993D1DDE1F197ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED));
     break;
-  case 101: {
+  case TAREN_LOGIN_BLOCKED_UNTIL: {
     char blockDate[21] = "";
     memcpy_s(blockDate, 20, packet->blockDate, 20);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), blockDate);
@@ -1228,7 +1228,7 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   case 102:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xAD075B8DB599F1CDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
     break;
-  case 9:
+  case TAREN_LOGIN_TEENAGER_BLOCKED:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2F8B0F37118D157FULL)), LookupMessage(MSI_BAN_TEENAGER));
     break;
   default:

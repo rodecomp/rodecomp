@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Lists/ScrollBarState.h"
 #include "Client/Mode/CMode.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -175,9 +176,9 @@ void UIRodexScrollBar::Paint() {
   switch (this->vertical) {
   case 1: {
     this->FillRegion(0, 0, 5, this->geometry.height, 0xFFFFFF);
-    if (this->state == 1) {
+    if (this->state == SCROLLBAR_STATE_UP_HOVER) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
-    } else if (this->state == 4) {
+    } else if (this->state == SCROLLBAR_STATE_UP_PRESSED) {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
     } else {
       this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
@@ -194,9 +195,9 @@ void UIRodexScrollBar::Paint() {
     }
 
     this->FillRegion(0, offset, 5, length, 0xE9E9E9);
-    if (this->state == 2) {
+    if (this->state == SCROLLBAR_STATE_DOWN_HOVER) {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);
-    } else if (this->state == 5) {
+    } else if (this->state == SCROLLBAR_STATE_DOWN_PRESSED) {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);
     } else {
       this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);

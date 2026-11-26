@@ -16,19 +16,19 @@ int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, 
     case 1:
       return imfRes->GetLayer(0, action, motion);
     case 2:
-      return 2;
+      return SPRITE_LAYER_HEAD_LOW;
     case 3:
-      return 3;
+      return SPRITE_LAYER_HEAD_TOP;
     case 4:
-      return 4;
+      return SPRITE_LAYER_HEAD_MID;
     case 5:
-      return 8;
+      return SPRITE_LAYER_ROBE;
     case 6:
-      return 5;
+      return SPRITE_LAYER_WEAPON;
     case 7:
-      return 6;
+      return SPRITE_LAYER_WEAPON_EFFECT;
     case 8:
-      return 7;
+      return SPRITE_LAYER_SHIELD;
     }
     break;
   case 2:
@@ -37,23 +37,23 @@ int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, 
   case 5:
     switch (order) {
     case 0:
-      return 7;
+      return SPRITE_LAYER_SHIELD;
     case 1:
       return imfRes->GetLayer(1, action, motion);
     case 2:
       return imfRes->GetLayer(0, action, motion);
     case 3:
-      return 2;
+      return SPRITE_LAYER_HEAD_LOW;
     case 4:
-      return 3;
+      return SPRITE_LAYER_HEAD_TOP;
     case 5:
-      return 4;
+      return SPRITE_LAYER_HEAD_MID;
     case 6:
-      return 8;
+      return SPRITE_LAYER_ROBE;
     case 7:
-      return 5;
+      return SPRITE_LAYER_WEAPON;
     case 8:
-      return 6;
+      return SPRITE_LAYER_WEAPON_EFFECT;
     }
     break;
   }

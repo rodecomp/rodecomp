@@ -82,16 +82,16 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
         }
       }
       break;
-    case 2:
+    case LANGUAGE_JAPANESE:
       family = 2;
       break;
-    case 3:
+    case LANGUAGE_CHINESE:
       family = 3;
       break;
-    case 4:
+    case LANGUAGE_TAIWANESE:
       family = 4;
       break;
-    case 5:
+    case LANGUAGE_THAI:
       family = 5;
       height = (height + 3);
       break;
@@ -109,11 +109,11 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
         }
       }
       break;
-    case 7:
+    case LANGUAGE_VIETNAMESE:
       family = 10;
       height = (height + 3);
       break;
-    case 12:
+    case LANGUAGE_ARABIC:
       family = 11;
       height = (height + 3);
       break;

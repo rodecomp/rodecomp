@@ -7899,18 +7899,18 @@ void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
   }
 
   switch (result) {
-    case 2:
+    case STORE_ASSISTANT_INVALID_POSITION:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_FAILED_ASSISTANT_POS)), 0xFF, 0, 0, 0);
       break;
-    case 3:
+    case STORE_ASSISTANT_NPC_AROUND:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND)), 0xFF, 0, 0, 0);
       break;
-    case 8:
+    case STORE_ASSISTANT_OVERWEIGHT:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_OVER_WEIGHT)), 0xFF, 0, 0, 0);
       break;
   }
 
-  if (result == 200) {
+  if (result == STORE_ASSISTANT_DB_SAVING) {
     g_session.ClearMerchantPurchaseSavedItems();
     g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
     g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
