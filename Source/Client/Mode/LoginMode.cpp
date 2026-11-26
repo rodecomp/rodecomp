@@ -2288,8 +2288,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
 }
 
-static void IgnoreRemovedPacket(const unsigned char* packet) {
-}
+void IgnoreRemovedPacket(const unsigned char* packet);
 
 // OFFSET: 0x00D98470
 // FUNCTION: fn_22309

@@ -1700,6 +1700,10 @@ void CGameMode::IgnoreRemovedPacket8() {
 void CGameMode::IgnoreRemovedPacket9() {
 }
 
+// FOLDED: fn_21587
+void IgnoreRemovedPacket(const unsigned char* packet) {
+}
+
 // OFFSET: 0x00D088F0
 // FUNCTION: fn_21593
 void CGameMode::IgnoreRemovedPacket10(const unsigned char*) {
