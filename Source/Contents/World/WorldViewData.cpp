@@ -897,7 +897,11 @@ void CWorldViewMgr::Load(LuaScript& script) {
         *searchColor += RGB(blue, green, red);
       }
     }
-    std::memcpy(this->searchColors + 11, this->searchColors + 1, 5 * sizeof(this->searchColors[0]));
+    this->searchColors[11] = this->searchColors[1];
+    this->searchColors[12] = this->searchColors[2];
+    this->searchColors[13] = this->searchColors[3];
+    this->searchColors[14] = this->searchColors[4];
+    this->searchColors[15] = this->searchColors[5];
   }
   if (script.Call(std::string("Get_Worldview_info_Run",
                               "Get_Worldview_info_Run" + sizeof("Get_Worldview_info_Run") - 1),
