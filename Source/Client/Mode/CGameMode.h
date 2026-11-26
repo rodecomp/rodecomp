@@ -633,6 +633,8 @@ public:
   void ReceivePartyRoster(const unsigned char* packet);
   void ReceivePartyMemberInfo(const unsigned char* packet);
   void ReceivePartyMemberList(const unsigned char* packet);
+  void ReceivePartyJoinResult(const unsigned char* packet);
+  void CloseAccountLimitedTool();
   void SetPartyMemberList(const char* partyName, std::vector<PartyRosterEntry>* members);
   void ReceiveGuildExpulsion2(const unsigned char* data);
   void ReceiveGuildLeave2(const unsigned char* data);
@@ -1095,7 +1097,6 @@ static_assert(sizeof(CGameMode) == 0x670);
 
 void SendPacketHeader(std::uint16_t packetType);
 void SendPacketHeader2(std::uint16_t packetType);
-void CloseAccountLimitedTool();
 
 struct MiniMapEffectMarker {
   /* 0000 */ int count;

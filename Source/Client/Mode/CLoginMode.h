@@ -294,6 +294,7 @@ public:
   virtual ~CLoginMode();
   void SubD97780(int value);
   void SendKeepalive();
+  void SendExecutableDigest();
   /* 0058 */ int charParams[6];
   /* 0070 */ int characterParameter7;
   /* 0074 */ int characterParameter8;

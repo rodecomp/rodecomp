@@ -20,6 +20,4 @@ enum PartyJoinAnswer : std::uint32_t {
   PARTY_JOIN_UNKNOWN_FAILURE = 13,
 };
 
-void ReceivePartyJoinResult(const void* packet);
-
 #endif

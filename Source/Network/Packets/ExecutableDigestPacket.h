@@ -6,6 +6,4 @@
 class CConnection;
 class PacketLengths;
 
-void SendExecutableDigest();
-
 #endif

@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
 #include "Contents/Tables/MessageTable.h"
@@ -26,8 +27,8 @@ static_assert(offsetof(PACKET_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER, status) == 54);
 
 // OFFSET: 0x00D3B9E0
 // FUNCTION: fn_21788
-void ReceivePartyJoinResult(const void* packet) {
-  const auto* ack = static_cast<const PACKET_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER*>(packet);
+void CGameMode::ReceivePartyJoinResult(const unsigned char* packet) {
+  const auto* ack = reinterpret_cast<const PACKET_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER*>(packet);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   switch (ack->status) {

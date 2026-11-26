@@ -1774,7 +1774,7 @@ void CGameMode::ReceiveWindow99Values(int count, const int* values) {
 
 // OFFSET: 0x00D6E440
 // FUNCTION: fn_22099
-void CloseAccountLimitedTool() {
+void CGameMode::CloseAccountLimitedTool() {
   g_windowMgr.CloseWindow(WID_ACCOUNTLIMITEDTOOLWND);
 }
 

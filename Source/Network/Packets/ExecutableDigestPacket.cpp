@@ -1,4 +1,5 @@
 #include "Network/Packets/ExecutableDigestPacket.h"
+#include "Client/Mode/CLoginMode.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Hash/Md5State.h"
@@ -23,7 +24,7 @@ namespace {
 
 // OFFSET: 0x00D8D790
 // FUNCTION: fn_22267
-void SendExecutableDigest() {
+void CLoginMode::SendExecutableDigest() {
   if (g_serviceType != ServiceIndonesia && (g_serviceType != ServiceKorea || g_serviceMode != ServerSakray)) {
     return;
   }

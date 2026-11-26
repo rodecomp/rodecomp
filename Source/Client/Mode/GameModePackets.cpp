@@ -25058,7 +25058,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceivePartyMemberList(g_gameModePacketBuffer);
       break;
     case ID_ZC_PARTY_JOIN_REQ_ACK_FROM_MASTER:
-      ReceivePartyJoinResult(reinterpret_cast<const void *>(g_gameModePacketBuffer));
+      this->ReceivePartyJoinResult(g_gameModePacketBuffer);
       break;
     case ID_ZC_PARTY_REQ_MASTER_TO_JOIN: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PARTY_REQ_MASTER_TO_JOIN*>(g_gameModePacketBuffer);
@@ -28579,7 +28579,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->OpenWindow154();
       break;
     case ID_ZC_CLOSE_ACCOUNT_LIMTIED_SALE_TOOL:
-      CloseAccountLimitedTool();
+      this->CloseAccountLimitedTool();
       break;
     case ID_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM*>(g_gameModePacketBuffer);

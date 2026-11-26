@@ -3616,7 +3616,7 @@ void CLoginMode::OnChangeState(int value) {
     }
 
     g_packetReassembler->Notify(2);
-    SendExecutableDigest();
+    this->SendExecutableDigest();
     if (g_serviceType != ServiceKorea && g_serviceType != ServiceFrance && g_serviceType != ServiceBrazil) {
       AccountLoginPacket packet;
       packet.id = ID_CA_LOGIN;
