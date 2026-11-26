@@ -156,4 +156,6 @@ static_assert(offsetof(ITEM_INFO, expireTime) == 0x68);
 static_assert(offsetof(ITEM_INFO, saleData) == 0x78);
 #endif
 
+extern unsigned char g_digitCharacters[256];
+
 #endif
