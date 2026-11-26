@@ -77,15 +77,14 @@ void CSession::InitMapTypeInfoTable() {
           } else {
             char valueText[16] = {};
             int textIndex = 0;
-            bool reading = true;
-
-            while (reading && character != ' ' && character != '\t') {
+            while (character != ' ' && character != '\t') {
               valueText[textIndex++] = character;
               character = buffer[index++];
-              if (character == '\r') {
-                reading = false;
-                index += 1;
+              if (character != '\r') {
+                continue;
               }
+              ++index;
+              break;
             }
 
             CMapPropertyMgr* mapPropertyMgr = g_mapPropertyMgr;
