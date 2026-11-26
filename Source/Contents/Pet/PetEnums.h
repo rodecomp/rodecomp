@@ -16,6 +16,7 @@ enum PETTALKACTION : int {
 };
 
 enum PETHUNGER : int {
+  PET_HUNGER = 0,
   PET_HUNGRY = 1,
   PET_SATISFIED = 2,
   PET_ENOUGH = 3,

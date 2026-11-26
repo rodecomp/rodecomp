@@ -70,7 +70,7 @@ int CGuildTip::Load() {
       tmpList.clear();
       baseBuf = fileBuf + i + 1;
       break;
-    case 10:
+    case '\n':
       fileBuf[i] = 0;
       tmpList.push_back(baseBuf);
       baseBuf = fileBuf + i + 1;

@@ -2174,58 +2174,58 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
         int variable;
         switch (hash) {
         case 0x617FECDF:
-          variable = 6;
+          variable = SP_MAXHP;
           break;
         case 0x8854128A:
-          variable = 8;
+          variable = SP_MAXSP;
           break;
         case 0x4BA88EBA:
-          variable = 13;
+          variable = SP_STR;
           break;
         case 0x66C4AA72:
-          variable = 14;
+          variable = SP_AGI;
           break;
         case 0x1C3E3594:
-          variable = 15;
+          variable = SP_VIT;
           break;
         case 0xCF35A0EC:
-          variable = 16;
+          variable = SP_INT;
           break;
         case 0x6E5FE302:
-          variable = 17;
+          variable = SP_DEX;
           break;
         case 0xEDABA34D:
-          variable = 18;
+          variable = SP_LUK;
           break;
         case 0x35175B63:
-          variable = 41;
+          variable = SP_ATK1;
           break;
         case 0xBDC4C598:
-          variable = 45;
+          variable = SP_DEF1;
           break;
         case 0xEFCBA0D6:
-          variable = 47;
+          variable = SP_MDEF1;
           break;
         case 0xD1114E90:
-          variable = 200;
+          variable = EQUIPMENT_STAT_VAR_MAGIC_ATTACK_POWER;
           break;
         case 0xD1CD4317:
-          variable = 219;
+          variable = SP_POW;
           break;
         case 0x2F0A85E9:
-          variable = 220;
+          variable = SP_STA;
           break;
         case 0x43C069D4:
-          variable = 221;
+          variable = SP_WIS;
           break;
         case 0xCCC3CEB0:
-          variable = 222;
+          variable = SP_SPL;
           break;
         case 0x32AF6341:
-          variable = 223;
+          variable = SP_CON;
           break;
         case 0xC5524E6A:
-          variable = 224;
+          variable = SP_CRT;
           break;
         default:
           variable = 0;
@@ -4769,28 +4769,28 @@ int GetPlayerValue(lua_State* state) {
   case SP_ULUK:
     value = g_session.m_standardStats[5];
     break;
-  case 255:
+  case PLAYER_VALUE_POW:
     value = traitStats[SP_POW];
     break;
-  case 256:
+  case PLAYER_VALUE_STA:
     value = traitStats[SP_STA];
     break;
-  case 259:
+  case PLAYER_VALUE_CON:
     value = traitStats[SP_CON];
     break;
-  case 260:
+  case PLAYER_VALUE_CRT:
     value = traitStats[SP_CRT];
     break;
-  case 258:
+  case PLAYER_VALUE_SPL:
     value = traitStats[SP_SPL];
     break;
-  case 257:
+  case PLAYER_VALUE_WIS:
     value = traitStats[SP_WIS];
     break;
-  case 263:
+  case PLAYER_VALUE_RUNE_SLOT_COUNT:
     value = g_runeSystemMgr->GetCurSlotCount();
     break;
-  case 264: {
+  case PLAYER_VALUE_RUNE_SET_GRADE: {
     RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet();
     if (runeSet != nullptr) {
       value = runeSet->m_grade;
@@ -6871,52 +6871,52 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           int variable;
           switch (index) {
           case 0:
-            variable = 45;
+            variable = SP_DEF1;
             break;
           case 1:
-            variable = 13;
+            variable = SP_STR;
             break;
           case 2:
-            variable = 16;
+            variable = SP_INT;
             break;
           case 3:
-            variable = 15;
+            variable = SP_VIT;
             break;
           case 4:
-            variable = 17;
+            variable = SP_DEX;
             break;
           case 5:
-            variable = 14;
+            variable = SP_AGI;
             break;
           case 6:
-            variable = 18;
+            variable = SP_LUK;
             break;
           case 7:
-            variable = 6;
+            variable = SP_MAXHP;
             break;
           case 8:
-            variable = 8;
+            variable = SP_MAXSP;
             break;
           case 9:
-            variable = 47;
+            variable = SP_MDEF1;
             break;
           case 11:
-            variable = 219;
+            variable = SP_POW;
             break;
           case 12:
-            variable = 222;
+            variable = SP_SPL;
             break;
           case 13:
-            variable = 220;
+            variable = SP_STA;
             break;
           case 14:
-            variable = 221;
+            variable = SP_WIS;
             break;
           case 15:
-            variable = 223;
+            variable = SP_CON;
             break;
           case 16:
-            variable = 224;
+            variable = SP_CRT;
             break;
           case 10:
             info.values.try_emplace(2, stats[index]);
@@ -6940,46 +6940,46 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           int variable;
           switch (index) {
           case 2:
-            variable = 41;
+            variable = SP_ATK1;
             break;
           case 3:
-            variable = 200;
+            variable = EQUIPMENT_STAT_VAR_MAGIC_ATTACK_POWER;
             break;
           case 4:
-            variable = 13;
+            variable = SP_STR;
             break;
           case 5:
-            variable = 16;
+            variable = SP_INT;
             break;
           case 6:
-            variable = 15;
+            variable = SP_VIT;
             break;
           case 7:
-            variable = 17;
+            variable = SP_DEX;
             break;
           case 8:
-            variable = 14;
+            variable = SP_AGI;
             break;
           case 9:
-            variable = 18;
+            variable = SP_LUK;
             break;
           case 11:
-            variable = 219;
+            variable = SP_POW;
             break;
           case 12:
-            variable = 222;
+            variable = SP_SPL;
             break;
           case 13:
-            variable = 220;
+            variable = SP_STA;
             break;
           case 14:
-            variable = 221;
+            variable = SP_WIS;
             break;
           case 15:
-            variable = 223;
+            variable = SP_CON;
             break;
           case 16:
-            variable = 224;
+            variable = SP_CRT;
             break;
           case 0:
             info.values.try_emplace(0, stats[index]);
@@ -7009,43 +7009,43 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           int variable;
           switch (index) {
           case 1:
-            variable = 41;
+            variable = SP_ATK1;
             break;
           case 2:
-            variable = 13;
+            variable = SP_STR;
             break;
           case 3:
-            variable = 16;
+            variable = SP_INT;
             break;
           case 4:
-            variable = 15;
+            variable = SP_VIT;
             break;
           case 5:
-            variable = 17;
+            variable = SP_DEX;
             break;
           case 6:
-            variable = 14;
+            variable = SP_AGI;
             break;
           case 7:
-            variable = 18;
+            variable = SP_LUK;
             break;
           case 9:
-            variable = 219;
+            variable = SP_POW;
             break;
           case 10:
-            variable = 222;
+            variable = SP_SPL;
             break;
           case 11:
-            variable = 220;
+            variable = SP_STA;
             break;
           case 12:
-            variable = 221;
+            variable = SP_WIS;
             break;
           case 13:
-            variable = 223;
+            variable = SP_CON;
             break;
           case 14:
-            variable = 224;
+            variable = SP_CRT;
             break;
           case 0:
             info.values.try_emplace(1, stats[index]);
@@ -7074,7 +7074,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             info.values.try_emplace(0, stats[index]);
             break;
           case 1: {
-            const int variable = 41;
+            const int variable = SP_ATK1;
             auto found = this->statVariables.find(variable);
             if (this->statVariables.end() == found) {
               ShowErrorDialog(fmt::format("Not available stat type: {0}", static_cast<int>(variable)), 0);

@@ -1563,7 +1563,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   case ST_A_DOWN:
     this->render.sequenceInterval = 5;
-    this->SetAnimationSequence(0x50, 3, 0x50, 5, 0x50, 7, 0x50, 8, 0x50, 2, 1, 500, 0);
+    this->SetAnimationSequence(SPRITE_ACTION_ATTACK, 3, SPRITE_ACTION_ATTACK, 5, SPRITE_ACTION_ATTACK, 7, SPRITE_ACTION_ATTACK, 8, SPRITE_ACTION_ATTACK, 2, 1, 500, 0);
     break;
   case ST_R_TURN:
     this->render.sequenceInterval = 10;
@@ -1620,17 +1620,17 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 5, action, 5, 1, 1000, 0);
     break;
-  case 0x37:
+  case ST_UNKNOWN_55:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 4, action, 4, 1, 500, 0);
     break;
-  case 0x38:
+  case ST_UNKNOWN_56:
     this->render.isMotionFinished = false;
   case ST_NINJASKILL1:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 1, action, 1, 1, 500, 0);
     break;
-  case 0x39:
+  case ST_UNKNOWN_57:
     this->render.isMotionFinished = false;
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 500, 0);
@@ -1679,14 +1679,14 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 500, 0);
     break;
   case ST_AB_SPECIAL:
-  case 0x34:
-  case 0x35:
-  case 0x36:
-  case 0x3a:
-  case 0x3b:
+  case ST_UNKNOWN_52:
+  case ST_UNKNOWN_53:
+  case ST_UNKNOWN_54:
+  case ST_UNKNOWN_58:
+  case ST_UNKNOWN_59:
     this->SetAction(action, 3, 1);
     break;
-  case 0x2e:
+  case ST_RL_FALLEN_ANGEL:
     this->render.sequenceInterval = 20;
     this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
     while (HasEffectOfType(this->effectList, EF_LANDBODY)) {
@@ -1698,7 +1698,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->LaunchEffect(EF_JUMPBODY1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(EF_PEONG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
-  case 0x2f:
+  case ST_SU_STOOP:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 3, action, 3, 1, 9999999, 1);
     break;
@@ -1707,119 +1707,119 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 4, 5, action, 5, 1, 500, 0);
     break;
-  case 0x31:
+  case ST_SU_SCRATCH:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 1000, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x32:
+  case ST_SU_BEGIN_SKILL:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 9999999, 0);
     break;
-  case 0x33:
+  case ST_SJ_FLASHKICK:
     this->render.sequenceInterval = 4;
     this->SetAnimationSequence(action, 2, action, 3, action, 4, action, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x3e:
+  case ST_UNKNOWN_62:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x3f:
+  case ST_UNKNOWN_63:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x40:
+  case ST_UNKNOWN_64:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x41:
+  case ST_UNKNOWN_65:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x3c:
-  case 0x3d:
-  case 0x42:
+  case ST_UNKNOWN_60:
+  case ST_UNKNOWN_61:
+  case ST_UNKNOWN_66:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 500, 0);
     break;
-  case 0x43:
+  case ST_UNKNOWN_67:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x44:
+  case ST_UNKNOWN_68:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 5, action, 5, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x45:
+  case ST_UNKNOWN_69:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 8, action, 8, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x46:
+  case ST_UNKNOWN_70:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x4c:
+  case ST_UNKNOWN_76:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x47:
+  case ST_UNKNOWN_71:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 4, 8, action, 8, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x48:
+  case ST_UNKNOWN_72:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 4, action, 4, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x49:
+  case ST_UNKNOWN_73:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x4d:
+  case ST_UNKNOWN_77:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 3, 7, action, 7, 1, 500, 0);
     this->render.isMotionFinished = false;
     break;
-  case 0x4b:
+  case ST_UNKNOWN_75:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 2, 5, action, 5, 1, 500, 1);
     this->render.isMotionFinished = false;
     break;
-  case 0x4e:
+  case ST_UNKNOWN_78:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 4, action, 4, 1, 500, 1);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x4f:
+  case ST_UNKNOWN_79:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 1, 8, action, 4, 1, 500, 1);
     this->render.isMotionFinished = false;
     this->attackMotion = 6.0f;
     break;
-  case 0x50:
+  case ST_UNKNOWN_80:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 0, 5, action, 5, 1, 500, 1);
     this->render.isMotionFinished = false;
     break;
-  case 0x51:
+  case ST_NATURE_PROTECTION:
     this->render.sequenceInterval = 6;
     this->SetFrameSequence(action, 5, 5, action, 5, 1, 9999999, 0);
     break;
@@ -1831,7 +1831,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     this->render.previousState = previous;
   }
   this->render.state = state;
-  if (state == ST_SKILL || state == 0x31) {
+  if (state == ST_SKILL || state == ST_SU_SCRATCH) {
     this->render.state = ST_SKILL;
   }
   this->render.motionStartTime = timeGetTime();
@@ -3368,10 +3368,10 @@ CActRes* CRenderObject::GetActRes() {
 // OFFSET: 0x00CAB9C0
 // FUNCTION: fn_21034
 int CGameActor::WeaponActionBase(int weaponType) {
-  int base = 0;
+  int base = SPRITE_ACTION_STAND;
   switch (weaponType) {
   case ST_AUTOCOUNTER:
-    base = g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
+    base = g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? SPRITE_ACTION_ATTACK2 : SPRITE_ACTION_ATTACK;
     break;
   case ST_A_COUNTER:
     switch (this->GetEffectiveJob(-1)) {
@@ -3380,69 +3380,69 @@ int CGameActor::WeaponActionBase(int weaponType) {
     case JT_SOUL_REAPER:
     case JT_SOUL_REAPER_B:
     case JT_SOUL_ASCETIC:
-      base = 88;
+      base = SPRITE_ACTION_ATTACK2;
       break;
     default:
-      base = 40;
+      base = SPRITE_ACTION_THROW;
       break;
     }
     break;
   case ST_ATTACK2:
   case ST_READYSHOT:
   case ST_A_TURN:
-  case 49:
-  case 53:
-  case 54:
-  case 59:
-  case 70:
-  case 73:
-  case 76:
-  case 77:
-    base = 88;
+  case ST_SU_SCRATCH:
+  case ST_UNKNOWN_53:
+  case ST_UNKNOWN_54:
+  case ST_UNKNOWN_59:
+  case ST_UNKNOWN_70:
+  case ST_UNKNOWN_73:
+  case ST_UNKNOWN_76:
+  case ST_UNKNOWN_77:
+    base = SPRITE_ACTION_ATTACK2;
     break;
   case ST_THROW:
   case ST_READYJUMP:
   case ST_THROW2:
   case ST_GUNSKILL3:
   case ST_GUNREADY2:
-  case 50:
-  case 51:
-  case 58:
-    base = 40;
+  case ST_SU_BEGIN_SKILL:
+  case ST_SJ_FLASHKICK:
+  case ST_UNKNOWN_58:
+    base = SPRITE_ACTION_THROW;
     break;
   case ST_DAMAGE:
-    base = 48;
+    base = SPRITE_ACTION_DAMAGE;
     break;
   case ST_ATTACK:
   case ST_MADOSKILL:
   case ST_MADOSKILL2:
-  case 52:
-  case 60:
-  case 62:
-  case 63:
-  case 69:
-  case 71:
-  case 72:
-  case 78:
-  case 79:
-    base = 80;
+  case ST_UNKNOWN_52:
+  case ST_UNKNOWN_60:
+  case ST_UNKNOWN_62:
+  case ST_UNKNOWN_63:
+  case ST_UNKNOWN_69:
+  case ST_UNKNOWN_71:
+  case ST_UNKNOWN_72:
+  case ST_UNKNOWN_78:
+  case ST_UNKNOWN_79:
+    base = SPRITE_ACTION_ATTACK;
     break;
   case ST_DEAD:
-    base = 64;
+    base = SPRITE_ACTION_DEAD;
     break;
   case ST_STAND:
-    base = 0;
+    base = SPRITE_ACTION_STAND;
     break;
   case ST_MOVE:
-    base = 8;
+    base = SPRITE_ACTION_MOVE;
     break;
   case ST_PICKUP:
   case ST_LANDJUMP:
   case ST_R_DODGE:
-    base = 24;
+    base = SPRITE_ACTION_PICKUP;
     break;
   case ST_ATTACKWAIT:
-    base = 32;
+    base = SPRITE_ACTION_ATTACKWAIT;
     break;
   case ST_DANCE:
   case ST_SING:
@@ -3463,22 +3463,22 @@ int CGameActor::WeaponActionBase(int weaponType) {
   case ST_AB_SPECIAL:
   case ST_SU_STOOP:
   case ST_SU_HIDE:
-  case 55:
-  case 56:
-  case 57:
-  case 61:
-  case 64:
-  case 65:
-  case 66:
-  case 67:
-  case 68:
-  case 80:
+  case ST_UNKNOWN_55:
+  case ST_UNKNOWN_56:
+  case ST_UNKNOWN_57:
+  case ST_UNKNOWN_61:
+  case ST_UNKNOWN_64:
+  case ST_UNKNOWN_65:
+  case ST_UNKNOWN_66:
+  case ST_UNKNOWN_67:
+  case ST_UNKNOWN_68:
+  case ST_UNKNOWN_80:
   case ST_NATURE_PROTECTION:
-    base = 96;
+    base = SPRITE_ACTION_SKILL;
     break;
-  case 74:
-  case 75:
-    base = 104;
+  case ST_UNKNOWN_74:
+  case ST_UNKNOWN_75:
+    base = SPRITE_ACTION_UNKNOWN_104;
     break;
   }
   return base;
@@ -3608,29 +3608,29 @@ bool CGrannyCorpse3d::OnProcess() {
 void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
   this->render.state = ST_STAND;
   switch (animation) {
-    case 48:
+    case SPRITE_ACTION_DAMAGE:
       this->render.state = ST_DAMAGE;
       break;
-    case 80:
-    case 88:
+    case SPRITE_ACTION_ATTACK:
+    case SPRITE_ACTION_ATTACK2:
       this->render.state = ST_ATTACK;
       break;
-    case 64:
+    case SPRITE_ACTION_DEAD:
       this->render.state = ST_DEAD;
       break;
-    case 0:
+    case SPRITE_ACTION_STAND:
       this->render.state = ST_STAND;
       break;
-    case 8:
+    case SPRITE_ACTION_MOVE:
       this->render.state = ST_MOVE;
       break;
-    case 24:
+    case SPRITE_ACTION_PICKUP:
       this->render.state = ST_PICKUP;
       break;
-    case 32:
+    case SPRITE_ACTION_ATTACKWAIT:
       this->render.state = ST_ATTACKWAIT;
       break;
-    case 40:
+    case SPRITE_ACTION_THROW:
       this->render.state = ST_THROW;
       break;
   }
@@ -3788,25 +3788,25 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
       switch (type) {
         case DMG_ENDURE:
         case DMG_MULTI_HIT_ENDURE:
-          action = 0x27;
+          action = AM_ATTACKEDNOMOTION;
           break;
         case DMG_CRITICAL:
-          action = 0x5D;
+          action = AM_ATTACKED_CRITICAL;
           flag = 1;
           break;
         case DMG_MULTI_HIT_CRITICAL:
-          action = 0x94;
+          action = AM_ATTACKED_MANYTIMES_CRITICAL;
           flag = 1;
           break;
         case DMG_LUCY_DODGE:
           if (this->isCounter != 0) {
-            action = 0x1A;
+            action = AM_ATTACKED;
           } else {
-            action = 0x5E;
+            action = AM_ATTACKED_LUCKY;
           }
           break;
         default:
-          action = 0x1A;
+          action = AM_ATTACKED;
           break;
       }
 
@@ -5749,19 +5749,19 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   switch (type) {
   case DMG_ENDURE:
   case DMG_MULTI_HIT_ENDURE:
-    action = 0x27;
+    action = AM_ATTACKEDNOMOTION;
     break;
   case DMG_SINGLE:
-    action = 0x61;
+    action = AM_ATTACKEDNOMOTION_SKILL;
     break;
   case DMG_CRITICAL:
-    action = 0x5D;
+    action = AM_ATTACKED_CRITICAL;
     break;
   case DMG_MULTI_HIT_CRITICAL:
-    action = 0x94;
+    action = AM_ATTACKED_MANYTIMES_CRITICAL;
     break;
   default:
-    action = 0x60;
+    action = AM_ATTACKED_SKILL;
     break;
   }
 

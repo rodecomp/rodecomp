@@ -1,4 +1,5 @@
 #include "UI/Dialogs/MessageBoxType.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skin/SkinMgr.h"
@@ -319,8 +320,8 @@ void UIMakeCharWnd::Paint() {
     int offsetX = point.x;
     int offsetY = point.y;
 
-    if (i == 1) {
-      CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
+    if (i == SPRITE_LAYER_HEAD) {
+      CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[SPRITE_LAYER_BODY].c_str()));
       const ActionFrame& bodyFrame = body->Frame(this->m_view.action, this->m_view.frame);
       if (frame.anchorCount != 0 && bodyFrame.anchorCount != 0 && frame.anchors[0].attachmentId == bodyFrame.anchors[0].attachmentId) {
         offsetX += bodyFrame.anchors[0].x - frame.anchors[0].x;
@@ -330,12 +331,12 @@ void UIMakeCharWnd::Paint() {
 
     const std::uint32_t* palette = sprite->palette;
     switch (i) {
-    case 0:
+    case SPRITE_LAYER_BODY:
       if (this->m_view.bodyPalette) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.bodyPaletteName.c_str()))->palette;
       }
       break;
-    case 1:
+    case SPRITE_LAYER_HEAD:
       if (this->m_view.headPalette) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.headPaletteName.c_str()))->palette;
       }
@@ -2435,7 +2436,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->InvalidateChildren();
     break;
   case UM_REPLAY_FRAMED_DATA:
-  case 251:
+  case UM_UNKNOWN_251:
     break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -2752,7 +2753,7 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_REFRESH:
     this->RefreshInfo();
     break;
-  case 251:
+  case UM_UNKNOWN_251:
     break;
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
@@ -2867,7 +2868,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->UpdateInfo();
     this->Invalidate();
     break;
-  case 89:
+  case UM_ENABLE_EXIT:
     this->m_serverButton->Move(234, this->m_serverButton->geometry.y);
     break;
   default:
@@ -3042,7 +3043,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     }
     break;
-  case 89:
+  case UM_ENABLE_EXIT:
     this->m_okButton->Move(234, this->m_okButton->geometry.y);
     break;
   default:
@@ -3350,11 +3351,11 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       list->Move(x + 1, y);
       break;
     }
-    case 359:
+    case ID_B_GRAVITY:
       g_session.m_channelCopId = 0;
       this->Invalidate();
       break;
-    case 360:
+    case ID_B_HANGAME:
       g_session.m_channelCopId = 2;
       this->Invalidate();
       break;

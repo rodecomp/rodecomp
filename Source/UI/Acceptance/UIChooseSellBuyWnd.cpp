@@ -6749,7 +6749,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
 
-    case 365: {
+    case ID_FIND: {
       std::string query(this->m_searchEdit->Text());
       if (query.size() != 0) {
         g_session.ClearInventoryCategoryItems(10);
@@ -6816,7 +6816,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case ID_CASHSHOP_TAB_ETC:
     case ID_CASHSHOP_TAB_BARGAIN:
     case ID_CASHSHOP_TAB_SEARCH:
-    case 477: {
+    case ID_UNKNOWN_477: {
       if (static_cast<unsigned int>(this->m_tab) <= 10 && this->m_buttons[this->m_tab] != nullptr) {
         {
           UIBitmapButton* button = this->m_buttons[this->m_tab];
@@ -7240,7 +7240,7 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
   this->ToScreen(tooltipX, tooltipY);
 
   CMode* tooltip = g_modeMgr.currentMode;
-  item.identity[0] = 21;
+  item.identity[0] = TYPE_UNKNOWN_21;
   if (item.identified == 1 && item.optionCount != 0) {
     tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                   g_session.GetItemNameColor(item), 0, 1);

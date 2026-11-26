@@ -37,6 +37,21 @@ enum EquipmentJobCategory : unsigned int {
   EQUIP_JOB_CATEGORY_NORMAL_THIRD = 4,
 };
 
+enum LuaPlayerValueId : int {
+  PLAYER_VALUE_POW = 255,
+  PLAYER_VALUE_STA = 256,
+  PLAYER_VALUE_WIS = 257,
+  PLAYER_VALUE_SPL = 258,
+  PLAYER_VALUE_CON = 259,
+  PLAYER_VALUE_CRT = 260,
+  PLAYER_VALUE_RUNE_SLOT_COUNT = 263,
+  PLAYER_VALUE_RUNE_SET_GRADE = 264,
+};
+
+enum EquipmentStatVariable : int {
+  EQUIPMENT_STAT_VAR_MAGIC_ATTACK_POWER = 200,
+};
+
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr;
 }

@@ -1,8 +1,11 @@
 #include "UI/Login/FuncDrawWNDChar.h"
+#include "Contents/Actors/AccessoryId.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Client/Session/Session.h"
 #include "Script/LuaScript.h"
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Contents/Sprites/SpriteRidingPolicy.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -94,8 +97,8 @@ void FuncDrawWNDChar::Draw(bool option) {
         case WNDCHAR_LAYER_HEAD_TOP:
         case WNDCHAR_LAYER_HEAD_LOW:
         case WNDCHAR_LAYER_HELM_ROBE: {
-          if (!this->hideHeadLayer && this->Resource(2).second) {
-            this->BodyAnchorOffset(&this->Resource(2).second->Frame(this->m_action, this->m_motion), option);
+          if (!this->hideHeadLayer && this->Resource(WNDCHAR_LAYER_HEAD).second) {
+            this->BodyAnchorOffset(&this->Resource(WNDCHAR_LAYER_HEAD).second->Frame(this->m_action, this->m_motion), option);
           }
 
           FuncDrawOffset anchor = this->LayerAnchorOffset(layer, &frame, act);
@@ -113,7 +116,7 @@ void FuncDrawWNDChar::Draw(bool option) {
               baseMotion = 0;
             }
 
-            g_session.GetSyncedFrame(this->Resource(1).second, layerAct, action, baseMotion, this->m_time, &syncedMotion);
+            g_session.GetSyncedFrame(this->Resource(WNDCHAR_LAYER_BODY).second, layerAct, action, baseMotion, this->m_time, &syncedMotion);
             frame = &layerAct->Frame(this->m_action, syncedMotion);
           }
           break;
@@ -121,13 +124,13 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const std::uint32_t* palette = sprite->palette;
-    switch (layer - 1) {
-      case 0:
+    switch (layer - WNDCHAR_LAYER_BODY) {
+      case SPRITE_LAYER_BODY:
         if (this->m_bodyStyle > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
         }
         break;
-      case 1:
+      case SPRITE_LAYER_HEAD:
         if (this->m_headPalette > 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
         }
@@ -338,7 +341,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   const ActionFrame* current = *frame;
   FuncDrawOffset offset;
 
-  CActRes* bodyAct = this->Resource(2).second;
+  CActRes* bodyAct = this->Resource(WNDCHAR_LAYER_HEAD).second;
   const ActionFrame& base = bodyAct->Frame(this->m_action, this->m_motion);
   int syncedMotion = 0;
   const ActionFrame* synced = g_session.GetSyncedFrame(bodyAct, act, this->m_action, this->m_motion, this->m_time, &syncedMotion);
@@ -365,12 +368,12 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 
   if (layer == WNDCHAR_LAYER_HEAD_TOP) {
     switch (this->m_topAccessory) {
-    case 181:
-    case 197:
+    case ACCESSORY_TIGER_MASK:
+    case ACCESSORY_BANANA_HAT:
       offset.y -= 7;
       break;
-    case 200:
-      if (g_session.GetCurrentSex() == 0) {
+    case ACCESSORY_ZIRTAS_MASK:
+      if (g_session.GetCurrentSex() == SEX_FEMALE) {
         offset.y -= 4;
       }
       break;

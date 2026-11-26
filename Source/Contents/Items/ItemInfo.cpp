@@ -307,7 +307,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
   ItemRecordHeader header;
   header.Read(data.data());
   std::uint32_t offset = 6;
-  if (281 != header.id) {
+  if (ITEM_INFO_TAG_BEGIN != header.id) {
     return 0xFFFFFFFF;
   }
 
@@ -315,41 +315,41 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
     header.Read(data.data() + offset);
     offset += 6;
     switch (header.id) {
-    case 282:
+    case ITEM_INFO_TAG_END:
       return offset;
-    case 283:
+    case ITEM_INFO_TAG_ITEM_TYPE:
       std::memcpy(&this->identity[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 285:
+    case ITEM_INFO_TAG_ITEM_INDEX:
       std::memcpy(&this->identity[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 284:
+    case ITEM_INFO_TAG_LOCATION:
       std::memcpy(&this->identity[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 286:
+    case ITEM_INFO_TAG_WEAR_LOCATION:
       std::memcpy(&this->identity[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 287:
+    case ITEM_INFO_TAG_QUANTITY:
       std::memcpy(&this->quantity, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 288:
+    case ITEM_INFO_TAG_PRICE:
       std::memcpy(&this->prices[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 289:
+    case ITEM_INFO_TAG_REAL_PRICE:
       std::memcpy(&this->prices[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 290:
+    case ITEM_INFO_TAG_CARDS:
       std::memcpy(this->cards, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 291: {
+    case ITEM_INFO_TAG_ITEM_ID: {
       int id = 0;
       std::memcpy(&id, data.data() + offset, header.bytes);
       offset += header.bytes;
@@ -357,7 +357,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       this->itemId = _itoa(id, buffer, 10);
       break;
     }
-    case 292: {
+    case ITEM_INFO_TAG_DISPLAY_NAME: {
       char buffer[260];
       std::memset(buffer, 0, sizeof(buffer));
       std::memcpy(buffer, data.data() + offset, header.bytes);
@@ -365,39 +365,39 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       this->displayName = buffer;
       break;
     }
-    case 293:
+    case ITEM_INFO_TAG_IDENTIFIED:
       std::memcpy(&this->identified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 294:
+    case ITEM_INFO_TAG_DAMAGED:
       std::memcpy(&this->damaged, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 295:
+    case ITEM_INFO_TAG_REFINING_LEVEL:
       std::memcpy(&this->refiningLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 296:
+    case ITEM_INFO_TAG_BIND_ON_EQUIP:
       std::memcpy(&this->bindOnEquip, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 297:
+    case ITEM_INFO_TAG_EXPIRE_TIME:
       std::memcpy(&this->expireTime, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 298:
+    case ITEM_INFO_TAG_SPRITE:
       std::memcpy(&this->sprite, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 299:
+    case ITEM_INFO_TAG_GRADE:
       std::memcpy(&this->grade, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 300:
+    case ITEM_INFO_TAG_OPTION_COUNT:
       std::memcpy(&this->optionCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
-    case 301:
+    case ITEM_INFO_TAG_OPTIONS:
       std::memcpy(this->options, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;

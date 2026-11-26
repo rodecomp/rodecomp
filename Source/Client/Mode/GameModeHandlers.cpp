@@ -1616,47 +1616,47 @@ void CGameMode::ReceiveStatusNotice(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const PACKET_ZC_SKILLMSG*>(packet);
   const char* message;
   switch (value->messageId) {
-  case 21:
+  case SKILLMSG_GOSPEL1:
     message = LookupMessage(MSI_GOSPEL1);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 22:
+  case SKILLMSG_GOSPEL2:
     message = LookupMessage(MSI_GOSPEL2);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 23:
+  case SKILLMSG_GOSPEL3:
     message = LookupMessage(MSI_GOSPEL3);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 24:
+  case SKILLMSG_GOSPEL4:
     message = LookupMessage(MSI_GOSPEL4);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 25:
+  case SKILLMSG_GOSPEL5:
     message = LookupMessage(MSI_GOSPEL5);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 28:
+  case SKILLMSG_GOSPEL6:
     message = LookupMessage(MSI_GOSPEL6);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 29:
+  case SKILLMSG_GOSPEL7:
     message = LookupMessage(MSI_GOSPEL7);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 30:
+  case SKILLMSG_GOSPEL8:
     message = LookupMessage(MSI_GOSPEL8);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 31:
+  case SKILLMSG_GOSPEL9:
     message = LookupMessage(MSI_GOSPEL9);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 32:
+  case SKILLMSG_GOSPEL10:
     message = LookupMessage(MSI_GOSPEL10);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
-  case 40:
+  case SKILLMSG_FULLSTRIP:
     message = LookupMessage(MSI_FULLSTRIP);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
     break;
@@ -2211,7 +2211,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
 // OFFSET: 0x00D67360
 // FUNCTION: fn_22027
 void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int64_t id, int grade, int gradeLevel) {
-  if (this->HandleRuneResult(result) == 0) {
+  if (this->HandleRuneResult(result) == RUNE_SYSTEM_SUCCESS) {
     const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
     const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
     if (state == 2) {
@@ -2246,7 +2246,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
 int CGameMode::HandleRuneResult(int result) {
   switch (result) {
   case RUNE_SYSTEM_SUCCESS:
-    return 0;
+    return RUNE_SYSTEM_SUCCESS;
   case RUNE_SYSTEM_ALREADY_EXIST:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST), 0, true, false, 0, "메시지", 280, 120, 0);
@@ -2288,7 +2288,7 @@ int CGameMode::HandleRuneResult(int result) {
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
   case RUNE_SYSTEM_INVALID_TABLE_DATA:
-  case 13:
+  case RUNE_SYSTEM_UNKNOWN_13:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA)), 0xFF, 0, 0, 0);
     g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA), 0, true, false, 0, "메시지", 280, 120, 0);
     break;
@@ -2300,7 +2300,7 @@ int CGameMode::HandleRuneResult(int result) {
 // OFFSET: 0x00D67540
 // FUNCTION: fn_22028
 void CGameMode::ApplyRuneSetResult(int result, int tagId, int runeSetId) {
-  if (this->HandleRuneResult(result) == 0) {
+  if (this->HandleRuneResult(result) == RUNE_SYSTEM_SUCCESS) {
     g_runeSystemMgr->SetCurRuneSet(tagId, runeSetId, -1, -1);
   }
 
@@ -2313,7 +2313,7 @@ void CGameMode::ApplyRuneSetResult(int result, int tagId, int runeSetId) {
 // OFFSET: 0x00D67590
 // FUNCTION: fn_22029
 void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSetId, int grade, int slotCount) {
-  if (this->HandleRuneResult(result) == 0) {
+  if (this->HandleRuneResult(result) == RUNE_SYSTEM_SUCCESS) {
     g_runeSystemMgr->SetCurRuneSet(tagId, runeSetId, grade, slotCount);
   }
 

@@ -59,7 +59,7 @@ __declspec(noinline) unsigned char CSession::IsAllyActor(std::uint32_t aid, int 
     switch (actor->objectType) {
     case NPC_TYPE:
     case NPC_EVT_TYPE:
-    case 12:
+    case NPC_DISGUISED_TYPE:
       return 1;
     }
   }

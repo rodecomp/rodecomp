@@ -1,5 +1,6 @@
 #include "Client/Session/Session.h"
 #include "UI/GameSettings/TalkType.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
@@ -559,7 +560,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     effectId = EF_NEW_HEAL_BLUE;
     return;
   case RL_FALLEN_ANGEL:
-    motion = 46;
+    motion = ST_RL_FALLEN_ANGEL;
     effectId = EF_NONE;
     return;
   case TF_HIDING:
@@ -1007,7 +1008,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SU_TUNABELLY:
   case SU_BUNCHOFSHRIMP:
   case SU_LUNATICCARROTBEAT2:
-    motion = 50;
+    motion = ST_SU_BEGIN_SKILL;
     effectId = EF_NONE;
     return;
   case AB_CLEMENTIA:
@@ -1646,7 +1647,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     effectId = EF_BEGINSPELL6;
     return;
   case SJ_FLASHKICK:
-    motion = 51;
+    motion = ST_SJ_FLASHKICK;
     effectId = EF_NONE;
     return;
   case NJ_SYURIKEN:
@@ -1902,7 +1903,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     effectId = EF_NONE;
     return;
   case SU_SCRATCH:
-    motion = 49;
+    motion = ST_SU_SCRATCH;
     effectId = EF_NONE;
     return;
   case AM_DEMONSTRATION:

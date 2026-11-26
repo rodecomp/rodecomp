@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Client/Mode/ModeDragState.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
@@ -228,8 +229,8 @@ void UINewSkillListWnd::DrawCharacter() {
       offsetY = y;
     }
 
-    if (layer == 1) {
-      CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[0].c_str()));
+    if (layer == SPRITE_LAYER_HEAD) {
+      CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[SPRITE_LAYER_BODY].c_str()));
       const ActionFrame& bodyFrame = bodyAction->Frame(23, frame);
       if (actionFrame.anchorCount != 0 && bodyFrame.anchorCount != 0 && actionFrame.anchors[0].attachmentId == bodyFrame.anchors[0].attachmentId) {
         offsetX += bodyFrame.anchors[0].x - actionFrame.anchors[0].x;
@@ -240,19 +241,19 @@ void UINewSkillListWnd::DrawCharacter() {
     }
     const std::uint32_t* palette = sprite->palette;
     switch (layer) {
-    case 0:
+    case SPRITE_LAYER_BODY:
       if (bodyPalette != 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(bodyPal.c_str()))->palette;
       }
       break;
-    case 1:
+    case SPRITE_LAYER_HEAD:
       if (headPalette != 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(headPal.c_str()))->palette;
       }
       break;
     }
 
-    const SpriteFrameCell& cell = actionFrame.Cell(layer <= 1 ? layer : 0);
+    const SpriteFrameCell& cell = actionFrame.Cell(layer <= SPRITE_LAYER_HEAD ? layer : SPRITE_LAYER_BODY);
     if (cell.image == -1) {
       continue;
     }

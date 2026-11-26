@@ -1,4 +1,5 @@
 #include "Contents/Effects/Primitives/EffectPrim.h"
+#include "Contents/Effects/Core/EffectPrimId.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/World/World.h"
 #include "Client/Mode/ModeMgr.h"
@@ -27,7 +28,7 @@ CEffectPrim::CEffectPrim() {
   this->state.playWaveType = 0;
   this->state.playWaveName = 0;
   this->state.type = 0;
-  this->state.count = 0;
+  this->state.count = PP_2DTEXTURE;
   this->state.pattern = 0;
   this->state.renderFlag = 1;
   this->state.masterReached = 0;

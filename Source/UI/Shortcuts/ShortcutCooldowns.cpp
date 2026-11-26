@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/AccessoryId.h"
 #include "UI/Window/UIEnums.h"
@@ -661,8 +662,8 @@ void UISelCharForUServerWnd::Paint() {
         offsetY = y;
       }
 
-      if (layer == 1) {
-        const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[0].c_str()))->Frame(this->m_slots[index].action, this->m_slots[index].frame);
+      if (layer == SPRITE_LAYER_HEAD) {
+        const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_slots[index].actionNames[SPRITE_LAYER_BODY].c_str()))->Frame(this->m_slots[index].action, this->m_slots[index].frame);
         if (frame->anchorCount != 0 && body->anchorCount != 0) {
           const ActionAnchor* base = body->anchors.data();
           const ActionAnchor* head = frame->anchors.data();
@@ -709,19 +710,19 @@ void UISelCharForUServerWnd::Paint() {
 
       const std::uint32_t* palette = sprite->palette;
       switch (layer) {
-      case 0:
+      case SPRITE_LAYER_BODY:
         if (this->m_slots[index].bodyPalette != 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].bodyPaletteName.c_str()))->palette;
         }
         break;
-      case 1:
+      case SPRITE_LAYER_HEAD:
         if (this->m_slots[index].headPalette != 0) {
           palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_slots[index].headPaletteName.c_str()))->palette;
         }
         break;
       }
 
-      const SpriteFrameCell& cell = frame->Cell(layer <= 1 ? layer : 0);
+      const SpriteFrameCell& cell = frame->Cell(layer <= SPRITE_LAYER_HEAD ? layer : SPRITE_LAYER_BODY);
       if (cell.image == -1) {
         continue;
       }

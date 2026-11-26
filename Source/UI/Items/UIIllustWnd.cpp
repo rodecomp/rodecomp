@@ -1,4 +1,5 @@
 #include "UI/Items/UIIllustWnd.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 
@@ -104,18 +105,18 @@ int UIIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   switch (message) {
     case UM_COMMAND:
       if (argument1 == ID_CLOSE) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 1, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), ILLUSTRATION_CLEAR, 1, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;
     case UM_SETINFO:
-      if (argument1 == -1) {
+      if (argument1 == ILLUSTRATION_CLEAR) {
         this->m_titled = 0;
         this->m_closable = 0;
         this->DeleteChildren();
         return 0;
       }
-      if (argument1 == -2) {
+      if (argument1 == ILLUSTRATION_INFO_ENABLE_TITLE) {
         this->m_titled = 1;
         return 0;
       }
@@ -163,34 +164,34 @@ int UIMultiIllustWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (message) {
     case UM_COMMAND:
       if (argument1 == ID_CLOSE) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), ILLUSTRATION_CLEAR, 0, 0);
         g_windowMgr.ReleaseCapture();
       }
       return 0;
     case UM_SETINFO:
       switch (argument1) {
-        case 10:
+        case ILLUSTRATION_MULTI_CENTER:
           this->m_closable = 0;
           break;
-        case 12:
+        case ILLUSTRATION_MULTI_BOTTOM_LEFT:
           this->m_titled = 0;
           this->geometry.currentAlpha = 128;
           this->m_state = -1;
           this->m_closable = 0;
           break;
         default:
-          if (argument1 == -1) {
+          if (argument1 == ILLUSTRATION_CLEAR) {
             this->m_titled = 0;
             this->m_closable = 0;
             this->DeleteChildren();
             return 0;
           }
-          if (argument1 == -2) {
+          if (argument1 == ILLUSTRATION_INFO_ENABLE_TITLE) {
             this->m_titled = 1;
             return 0;
           }
-          if (argument1 == 5) {
-            this->m_state = 5;
+          if (argument1 == ILLUSTRATION_INFO_HIDE_CHROME) {
+            this->m_state = ILLUSTRATION_INFO_HIDE_CHROME;
             this->m_titled = 0;
             this->m_closable = 0;
             return 0;

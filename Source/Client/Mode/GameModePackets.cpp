@@ -2363,7 +2363,7 @@ __declspec(noinline) void CGameMode::ReceiveDynamicNpcNotice(const unsigned char
   const auto* p = reinterpret_cast<const PACKET_ZC_DYNAMICNPC_CREATE_RESULT*>(packet);
   char text[0x400];
   switch (p->result) {
-  case 0:
+  case DYNAMICNPC_RESULT_SUCCESS:
     return;
   case DYNAMICNPC_RESULT_DUPLICATE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DYNAMICNPC_FAIL_DUPLICATENAME)), 0x64FFFF, 0, 0, 0);
@@ -5874,7 +5874,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     g_session.InvalidateWindowFrames();
     break;
-  case 169:
+  case SP_GENDER_CHANGE_BLOCKED:
     g_session.m_genderChangeBlocked = packet->value != 0;
     break;
   }
@@ -10976,21 +10976,21 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_TARGET_SHADOW_SPACE:
     PushSkillFailureNotice(MSI_FAIL_NO_SPACE_BEHIND_THE_TARGET);
     break;
-  case USESKILL_FAIL_MAX:
+  case USESKILL_FAIL_CALLHOMUN_INVALID_JOBTYPE:
     PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_INVALID_JOBTYPE);
     break;
-  case 113:
+  case USESKILL_FAIL_CALLHOMUN_OVER_100LEVEL:
     PushSkillFailureNotice(MSI_FAIL_CALLHOMUN_OVER_100LEVEL);
     break;
-  case 114:
+  case USESKILL_FAIL_STRIPSHADOW_TO_MADO:
     PushSkillFailureNotice(MSI_FAIL_STRIPSHADOW_TO_MADO_NOTICE);
     break;
-  case 115:
+  case USESKILL_FAIL_NEED_SHOTGUN_GATLING_GLAUNCHER:
     PushSkillFailureNotice(MSI_USESKILL_FAIL_NEED_SHOTGUN_OR_GATLING_OR_GRANADE);
     break;
-  case 116:
-  case 117:
-    PushSkillFailureNotice(packet->value == 0 ? 0x1119 : packet->value);
+  case USESKILL_FAIL_UNKNOWN_116:
+  case USESKILL_FAIL_UNKNOWN_117:
+    PushSkillFailureNotice(packet->value == 0 ? static_cast<int>(MSI_USESKILL_FAIL_COMMON_MESSAGE) : packet->value);
     break;
   default:
     return;
@@ -14499,7 +14499,7 @@ void CGameMode::SpawnMovingActor(
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
-    } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job) == 1)) {
+    } else if (!((objectType == NPC_TYPE || objectType == NPC_EVT_TYPE || objectType == NPC_DISGUISED_TYPE) && g_session.IsPlayerJob(job) == 1)) {
       entry.appearanceVariant = 0;
     }
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -16651,7 +16651,7 @@ void CGameMode::SpawnStateActor(
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
-      if ((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job) == 1) {
+      if ((objectType == NPC_TYPE || objectType == NPC_EVT_TYPE || objectType == NPC_DISGUISED_TYPE) && g_session.IsPlayerJob(job) == 1) {
         entry.bodyCostume = job;
       } else {
         entry.appearanceVariant = 0;
@@ -24386,7 +24386,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case 0xC08:
       this->ReceiveNpcDialogEnd(g_gameModePacketBuffer);
-      this->miniMapTooltipId = -1;
+      this->miniMapTooltipId = ILLUSTRATION_CLEAR;
       this->miniMapTooltipText.assign("", 0);
       g_windowMgr.CloseWindow(WID_ILLUSTWND);
       g_windowMgr.RestoreHiddenWindows();
@@ -26090,7 +26090,7 @@ void CGameMode::ProcessIncomingPackets() {
       int index = packet->type;
       name[16] = 0;
       if (index == 0xFF) {
-        index = -1;
+        index = ILLUSTRATION_CLEAR;
       }
       this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), index, 0, 0);
       break;
@@ -26102,7 +26102,7 @@ void CGameMode::ProcessIncomingPackets() {
       int position = packet->type;
       name[64] = 0;
       if (position == 255) {
-        position = -1;
+        position = ILLUSTRATION_CLEAR;
       }
       this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(name), position, 0, 0);
       break;
@@ -27094,15 +27094,15 @@ void CGameMode::ProcessIncomingPackets() {
       g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, g_session.m_serviceOption229 != 0);
       const std::int16_t type = packet->type;
       g_session.mapPropertyId = type;
-      if (type == 5 || type == 6) {
+      if (type == MAPTYPE_PENALTY_FREEPKZONE || type == MAPTYPE_NOPENALTY_FREEPKZONE) {
         this->scene->isPKZone = 1;
         this->forcedAttack = 1;
-      } else if (type != 11 && type != 12) {
-        if (g_session.GetMapProperty09() || packet->type == 18 ||
-            packet->type == 8) {
+      } else if (type != MAPTYPE_PKSERVER && type != MAPTYPE_PVPSERVER) {
+        if (g_session.GetMapProperty09() || packet->type == MAPTYPE_AGIT_SIEGEV15 ||
+            packet->type == MAPTYPE_AGIT) {
           this->scene->isSiegeMode = 1;
           g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
-        } else if (packet->type == 19) {
+        } else if (packet->type == MAPTYPE_BATTLEFIELD) {
           this->scene->isBattleFieldMode = 1;
           this->scene->isPKZone = 1;
         }
@@ -27125,8 +27125,8 @@ void CGameMode::ProcessIncomingPackets() {
       case MAPTYPE_AGIT_SIEGEV15:
       case MAPTYPE_BATTLEFIELD:
       case MAPTYPE_SIEGE_LOWLEVEL:
-      case 31:
-      case 32:
+      case MAPTYPE_UNKNOWN_31:
+      case MAPTYPE_UNKNOWN_32:
         this->scene->partyRestricted = true;
         break;
       }

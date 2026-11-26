@@ -58,7 +58,7 @@ CMsgEffect::CMsgEffect() {
   this->render.curMotion = 0;
   this->render.flatDepth = 1;
   this->m_value = 0;
-  this->m_type = 0;
+  this->m_type = MET_JUST_ANIMATE;
   this->m_finished = 0;
   this->travelDistance = 0.0f;
   this->m_baseY = 1.0f;
@@ -118,6 +118,14 @@ static float MsgEffectElapsedFrames(CMsgEffect* effect) {
   return effect->GetElapsedFrames();
 }
 
+enum DamageDriftDirection : int {
+  DAMAGE_DRIFT_NEGATIVE_X_POSITIVE_Z = 0,
+  DAMAGE_DRIFT_NEGATIVE_X_NEGATIVE_Z = 2,
+  DAMAGE_DRIFT_POSITIVE_X_NEGATIVE_Z = 4,
+  DAMAGE_DRIFT_POSITIVE_X_POSITIVE_Z = 6,
+};
+
+
 // INLINED
 __forceinline static float MsgEffectDriftDirection(CMsgEffect* effect) {
   float dirX = effect->m_drift.x;
@@ -127,31 +135,31 @@ __forceinline static float MsgEffectDriftDirection(CMsgEffect* effect) {
       const int angle = static_cast<int>(effect->m_owner->render.angle);
       int dir;
       if (angle >= 0 && angle < 90) {
-        dir = 0;
+        dir = DAMAGE_DRIFT_NEGATIVE_X_POSITIVE_Z;
       } else if (angle >= 90 && angle < 180) {
-        dir = 2;
+        dir = DAMAGE_DRIFT_NEGATIVE_X_NEGATIVE_Z;
       } else if (angle >= 180 && angle < 270) {
-        dir = 4;
+        dir = DAMAGE_DRIFT_POSITIVE_X_NEGATIVE_Z;
       } else {
-        dir = 6;
+        dir = DAMAGE_DRIFT_POSITIVE_X_POSITIVE_Z;
       }
       switch (dir) {
-        case 0:
+        case DAMAGE_DRIFT_NEGATIVE_X_POSITIVE_Z:
           dirX = -0.8f;
           effect->m_drift.x = -0.8f;
           effect->m_drift.z = 0.8f;
           break;
-        case 2:
+        case DAMAGE_DRIFT_NEGATIVE_X_NEGATIVE_Z:
           dirX = -0.8f;
           effect->m_drift.x = -0.8f;
           effect->m_drift.z = -0.8f;
           break;
-        case 4:
+        case DAMAGE_DRIFT_POSITIVE_X_NEGATIVE_Z:
           dirX = 0.8f;
           effect->m_drift.x = 0.8f;
           effect->m_drift.z = -0.8f;
           break;
-        case 6:
+        case DAMAGE_DRIFT_POSITIVE_X_POSITIVE_Z:
           dirX = 0.8f;
           effect->m_drift.x = 0.8f;
           effect->m_drift.z = 0.8f;
@@ -1854,7 +1862,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->render.visible = 0;
           break;
 
-        case 19:
+        case MET_BIRDEFFECT:
           this->render.position = *position;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;

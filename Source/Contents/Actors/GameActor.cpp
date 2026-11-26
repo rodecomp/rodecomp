@@ -268,13 +268,13 @@ bool CGameActor::ProcessState() {
   case ST_ATTACK:
   case ST_ATTACK2:
   case ST_THROW:
-  case 0x34:
-  case 0x35:
-  case 0x36:
-  case 0x38:
-  case 0x39:
-  case 0x3A:
-  case 0x3B:
+  case ST_UNKNOWN_52:
+  case ST_UNKNOWN_53:
+  case ST_UNKNOWN_54:
+  case ST_UNKNOWN_56:
+  case ST_UNKNOWN_57:
+  case ST_UNKNOWN_58:
+  case ST_UNKNOWN_59:
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
       this->SetState(ST_STAND, 1);
@@ -385,12 +385,12 @@ bool CGameActor::ProcessState() {
   case ST_GUNREADY2:
   case ST_MADOSKILL:
   case ST_MADOSKILL2:
-  case 0x2F:
-  case 0x30:
-  case 0x31:
-  case 0x32:
-  case 0x33:
-  case 0x37:
+  case ST_SU_STOOP:
+  case ST_SU_HIDE:
+  case ST_SU_SCRATCH:
+  case ST_SU_BEGIN_SKILL:
+  case ST_SJ_FLASHKICK:
+  case ST_UNKNOWN_55:
     this->isCounter = 0;
     this->ProcessMotion();
     this->lastProcessStateTime = timeGetTime();

@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Replay/Replay.h"
 #include "UI/Window/WindowPolicy.h"
@@ -595,12 +596,12 @@ void UIDescriptRace::DrawRaceDescription() {
     CSprRes* sprite = nullptr;
     CImfRes* imf = nullptr;
     switch (layer) {
-      case 0:
+      case SPRITE_LAYER_BODY:
         act = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(job, g_session.m_sex, job, 0)));
         sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetBodySprName(job, g_session.m_sex, job, 0)));
         imf = static_cast<CImfRes*>(ResourceMgr::Instance().Load(g_session.GetBodyImfName(job, g_session.m_sex, 1, job).c_str()));
         break;
-      case 1: {
+      case SPRITE_LAYER_HEAD: {
         int head = 1;
         act = static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetHeadActName(job, g_session.m_sex, &head).c_str()));
         sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(g_session.GetHeadSprName(job, g_session.m_sex, &head).c_str()));
@@ -624,7 +625,7 @@ void UIDescriptRace::DrawRaceDescription() {
     const ActionFrame* actionFrame = &act->Frame(action, frame);
     const std::uint32_t* palette = sprite->palette;
     POINT point = imf->GetLongPoint(layer, action, frame);
-    if (layer == 1) {
+    if (layer == SPRITE_LAYER_HEAD) {
       const ActionFrame* body = &static_cast<CActRes*>(ResourceMgr::Instance().Load(g_session.GetBodyActionResourceName(job, g_session.m_sex, job, 0)))->Frame(action, frame);
       if (actionFrame->anchorCount != 0 && body->anchorCount != 0 && actionFrame->anchors[0].attachmentId == body->anchors[0].attachmentId) {
         point.x += body->anchors[0].x - actionFrame->anchors[0].x;

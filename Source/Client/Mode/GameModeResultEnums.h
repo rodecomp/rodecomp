@@ -26,6 +26,7 @@ enum RuneSystemResult : int {
   RUNE_SYSTEM_TABLE_NOT_EXIST = 10,
   RUNE_SYSTEM_DB_LOAD_NOT_YET = 11,
   RUNE_SYSTEM_INVALID_TABLE_DATA = 12,
+  RUNE_SYSTEM_UNKNOWN_13 = 13,
 };
 
 enum StoreAssistantKind : unsigned char {

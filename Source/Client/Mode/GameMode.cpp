@@ -2449,8 +2449,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_INITWHISPERMENU:
       this->lastWhisperMenuCharacterName = reinterpret_cast<const char*>(argument1);
       this->actorMenuIds.clear();
-      this->actorMenuIds.push_back(0xB);
-      this->actorMenuIds.push_back(0x15);
+      this->actorMenuIds.push_back(MENUID_WRITE_CHAT_TO_FILE);
+      this->actorMenuIds.push_back(MENUID_ADD_TO_FRIEND_CHAR_LIST_FROM_WINDOW);
       return 0;
     case MM_QUIT_TO_IDENTRY:
       g_charServerAccountIdPending = 0;
@@ -3423,8 +3423,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const std::string text(reinterpret_cast<const char*>(argument1));
       this->miniMapTooltipId = argument2;
       this->miniMapTooltipText = text;
-      if (text.empty() && argument2 == -1 && argument3 == 0) {
-        this->miniMapTooltipId = 11;
+      if (text.empty() && argument2 == ILLUSTRATION_CLEAR && argument3 == 0) {
+        this->miniMapTooltipId = ILLUSTRATION_MULTI_RESTORE;
       }
       LowercaseText(this->miniMapTooltipText);
       if (this->miniMapTooltipText.find(".bmp") == std::string::npos &&
@@ -3956,7 +3956,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       g_windowMgr.CloseWindow(WID_BARTERITEMPURCHASEWND);
       g_windowMgr.CloseWindow(WID_EXPANDEDBARTERMARKETWND);
       g_windowMgr.CloseWindow(WID_EXPANDEDBARTERITEMPURCHASEWND);
-      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 0, 0);
+      this->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), ILLUSTRATION_CLEAR, 0, 0);
       return 0;
     case MM_CREATE_CHATROOM: {
       const ChatRoomSetting& setting = *reinterpret_cast<const ChatRoomSetting*>(argument1);
@@ -4306,7 +4306,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_INVITE_IN_PARTY:
-        case 58: {
+        case MENUID_WRITE_RODEX: {
           const std::string name = this->ActorName(this->menuTargetAid);
           this->SendMsg(action == MENUID_INVITE_IN_PARTY ? MM_REQ_JOIN_GROUP : MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
           return 0;
@@ -4320,7 +4320,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case MENUID_REQ_EX_LIST:
         case MENUID_REQ_IN: {
           std::string name = this->ActorName(this->menuTargetAid);
-          this->ExecuteTalkType(action == 12 ? 0x12 : 0x13, &name);
+          this->ExecuteTalkType(action == MENUID_REQ_EX_LIST ? TT_REQ_WHISPER_PC_EX : TT_REQ_WHISPER_PC_IN, &name);
           return 0;
         }
         case MENUID_MAKE_WHISPER_WINDOW: {
@@ -4341,9 +4341,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case MENUID_INVITE_IN_GUILD:
           this->SendMsg(MM_REQ_JOIN_GUILD, this->menuTargetAid, 0, 0, 0);
           return 0;
-        case 23:
-        case 24: {
-          if (!(action == 23 ? IsMonsterJob(g_session.m_aid) : IsAdminAccount(g_session.m_aid))) {
+        case MENUID_REQ_MANNER_POINT_PLUS:
+        case MENUID_REQ_MANNER_POINT_MINUS: {
+          if (!(action == MENUID_REQ_MANNER_POINT_PLUS ? IsMonsterJob(g_session.m_aid) : IsAdminAccount(g_session.m_aid))) {
             return 0;
           }
           auto* window = new UICntWnd;
@@ -4351,8 +4351,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           const int y = ScaleByScreenHeight(200);
           window->Move(UIWindowMgr::CenterOnViewportX(200), y);
           g_windowMgr.AddRendered(window);
-          window->SendMsg(nullptr, UM_SET_TARGET, action == 23 ? 0x97 : 0x98, 0, 0, 0);
-          window->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(action == 23 ? MSI_GIVE_PLUS_MANNER_POINT : MSI_GIVE_MINUS_MANNER_POINT)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_SET_TARGET,
+            action == MENUID_REQ_MANNER_POINT_PLUS ? MM_REQ_GIVE_MANNER_POINT_PLUS : MM_REQ_GIVE_MANNER_POINT_MINUS, 0, 0, 0);
+          window->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(
+            action == MENUID_REQ_MANNER_POINT_PLUS ? MSI_GIVE_PLUS_MANNER_POINT : MSI_GIVE_MINUS_MANNER_POINT)), 0, 0, 0);
           window->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
           return 0;
         }
@@ -4367,14 +4369,14 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         case MENUID_PET_FEEDING:
         case MENUID_HOMUN_FEEDING: {
-          if (action == 29 && g_windowMgr.rodexComposeWnd) {
+          if (action == MENUID_PET_FEEDING && g_windowMgr.rodexComposeWnd) {
             g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_CLOSE_RODEX)), 0xFF, 0, 0, 0);
             return 0;
           }
           auto* window = new UINormalMB;
           window->Create(nullptr, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
           g_windowMgr.AddRendered(window);
-          window->SetAction(0xBB, reinterpret_cast<void (*)()>(action == 29 ? ConfirmGameModeAction96 : ConfirmGameModeActionB8));
+          window->SetAction(0xBB, reinterpret_cast<void (*)()>(action == MENUID_PET_FEEDING ? ConfirmGameModeAction96 : ConfirmGameModeActionB8));
           return 0;
         }
         case MENUID_PET_PERFORMANCE:
@@ -4433,17 +4435,19 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         }
         case MENUID_VIEW_OTHERUSER_EQUIPWND:
-        case 44:
-        case 65: {
-          if (action == 44 && !IsAdminAccount(g_session.m_aid)) {
+        case MENUID_GM_FULLSTRIP:
+        case MENUID_KICK_STORE_ASSISTANT: {
+          if (action == MENUID_GM_FULLSTRIP && !IsAdminAccount(g_session.m_aid)) {
             return 0;
           }
-          const PACKET_CZ_EQUIPWIN_MICROSCOPE packet{action == 42 ? ID_CZ_EQUIPWIN_MICROSCOPE : action == 44 ? ID_CZ_GM_FULLSTRIP : ID_CZ_KICK_STORE_ASSISTANT,
+          const PACKET_CZ_EQUIPWIN_MICROSCOPE packet{
+            action == MENUID_VIEW_OTHERUSER_EQUIPWND ? ID_CZ_EQUIPWIN_MICROSCOPE :
+            action == MENUID_GM_FULLSTRIP ? ID_CZ_GM_FULLSTRIP : ID_CZ_KICK_STORE_ASSISTANT,
             static_cast<std::uint32_t>(this->menuTargetAid)};
           GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
           return 0;
         }
-        case 57: {
+        case MENUID_COPY_CCODE: {
           auto* actor = dynamic_cast<CPc*>(this->scene->GetGameActorByAID(this->menuTargetAid));
           if (!actor) {
             return 0;
@@ -4462,7 +4466,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         }
-        case 63:
+        case MENUID_MACRO_REPORT:
           g_windowMgr.EnsureWindow(WID_MACROREPORT);
           return 0;
         default:
@@ -8038,7 +8042,7 @@ void CGameMode::InitializeState() {
   this->skillId = 0;
   g_pickInvert = 0;
   this->cardItemIndex = 0;
-  this->miniMapTooltipId = -1;
+  this->miniMapTooltipId = ILLUSTRATION_CLEAR;
   this->shownSkillId = -1;
 
   char subKey[512];
@@ -8736,7 +8740,7 @@ void CGameMode::Initialize(const char* name) {
 
   if (g_session.GetOption(0xB) == 1) {
     const std::set<std::string>& names = g_whisperBlockMgr->Names();
-    std::for_each(names.begin(), names.end(), [this](std::string name) { this->ExecuteTalkType(0x12, &name); });
+    std::for_each(names.begin(), names.end(), [this](std::string name) { this->ExecuteTalkType(TT_REQ_WHISPER_PC_EX, &name); });
     g_session.SetOption(0xB, 0);
   }
 

@@ -158,32 +158,32 @@ void CGrannyPc::SetAction(unsigned animation, int, int repeat) {
 
   this->render.state = ST_STAND;
   switch (animation) {
-    case 0:
+    case SPRITE_ACTION_STAND:
       this->render.state = ST_STAND;
       break;
-    case 48:
+    case SPRITE_ACTION_DAMAGE:
       this->render.state = ST_DAMAGE;
       break;
-    case 80:
-    case 88:
+    case SPRITE_ACTION_ATTACK:
+    case SPRITE_ACTION_ATTACK2:
       this->render.state = ST_ATTACK;
       break;
-    case 64:
+    case SPRITE_ACTION_DEAD:
       this->render.state = ST_DEAD;
       break;
-    case 8:
+    case SPRITE_ACTION_MOVE:
       this->render.state = ST_MOVE;
       break;
-    case 24:
+    case SPRITE_ACTION_PICKUP:
       this->render.state = ST_PICKUP;
       break;
-    case 32:
+    case SPRITE_ACTION_ATTACKWAIT:
       this->render.state = ST_ATTACKWAIT;
       break;
-    case 40:
+    case SPRITE_ACTION_THROW:
       this->render.state = ST_THROW;
       break;
-    case 16:
+    case SPRITE_ACTION_SIT:
       this->render.state = ST_SIT;
       break;
   }
@@ -528,24 +528,24 @@ bool CPlayer::IsSpecialState(int state) const {
     case ST_ATTACK:
     case ST_PICKUP:
     case ST_SIT:
-    case 62:
-    case 63:
-    case 64:
-    case 65:
-    case 67:
-    case 68:
-    case 69:
-    case 70:
-    case 71:
-    case 72:
-    case 73:
-    case 74:
-    case 75:
-    case 76:
-    case 77:
-    case 78:
-    case 79:
-    case 80:
+    case ST_UNKNOWN_62:
+    case ST_UNKNOWN_63:
+    case ST_UNKNOWN_64:
+    case ST_UNKNOWN_65:
+    case ST_UNKNOWN_67:
+    case ST_UNKNOWN_68:
+    case ST_UNKNOWN_69:
+    case ST_UNKNOWN_70:
+    case ST_UNKNOWN_71:
+    case ST_UNKNOWN_72:
+    case ST_UNKNOWN_73:
+    case ST_UNKNOWN_74:
+    case ST_UNKNOWN_75:
+    case ST_UNKNOWN_76:
+    case ST_UNKNOWN_77:
+    case ST_UNKNOWN_78:
+    case ST_UNKNOWN_79:
+    case ST_UNKNOWN_80:
       return true;
     default:
       return false;
@@ -617,21 +617,21 @@ void CPc::LoadEquipAction(int slot, const char* name) {
   if (IsMonsterJob(renderRef.accountId)) {
     if (IsObfuscatedMessage(renderRef.accountId)) {
       switch (slot) {
-        case 0:
-          if (this->sex != 0) {
+        case SPRITE_LAYER_BODY:
+          if (this->sex != SEX_FEMALE) {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Act"));
           } else {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Act"));
           }
           break;
-        case 5:
-          if (this->sex != 0) {
+        case SPRITE_LAYER_WEAPON:
+          if (this->sex != SEX_FEMALE) {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Act"));
           } else {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Act"));
           }
           break;
-        case 6:
+        case SPRITE_LAYER_WEAPON_EFFECT:
           this->equipActions[slot] = nullptr;
           break;
         default:
@@ -640,21 +640,21 @@ void CPc::LoadEquipAction(int slot, const char* name) {
       }
     } else {
       switch (slot) {
-        case 0:
-          if (this->sex != 0) {
+        case SPRITE_LAYER_BODY:
+          if (this->sex != SEX_FEMALE) {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Act"));
           } else {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Act"));
           }
           break;
-        case 5:
-          if (this->sex != 0) {
+        case SPRITE_LAYER_WEAPON:
+          if (this->sex != SEX_FEMALE) {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Act"));
           } else {
             this->equipActions[slot] = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Act"));
           }
           break;
-        case 6:
+        case SPRITE_LAYER_WEAPON_EFFECT:
           this->equipActions[slot] = nullptr;
           break;
         default:
@@ -674,7 +674,7 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     return;
   }
 
-  CActRes* baseAction = static_cast<CActRes*>(this->equipActions[1]);
+  CActRes* baseAction = static_cast<CActRes*>(this->equipActions[SPRITE_LAYER_HEAD]);
   if (!baseAction) {
     return;
   }
@@ -722,21 +722,21 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
   if (IsMonsterJob(this->render.accountId)) {
     if (IsObfuscatedMessage(this->render.accountId)) {
       switch (slot) {
-      case 0:
-        if (this->sex) {
+      case SPRITE_LAYER_BODY:
+        if (this->sex != SEX_FEMALE) {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자2_남.Spr"));
         } else {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자2_여.Spr"));
         }
         break;
-      case 5:
-        if (this->sex) {
+      case SPRITE_LAYER_WEAPON:
+        if (this->sex != SEX_FEMALE) {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_남_검.Spr"));
         } else {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자2_여_검.Spr"));
         }
         break;
-      case 6:
+      case SPRITE_LAYER_WEAPON_EFFECT:
         this->equipSprites[slot] = nullptr;
         break;
       default:
@@ -745,21 +745,21 @@ void CPc::LoadEquipSprite(int slot, const char* name) {
       }
     } else {
       switch (slot) {
-      case 0:
-        if (this->sex) {
+      case SPRITE_LAYER_BODY:
+        if (this->sex != SEX_FEMALE) {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\남\\운영자_남.Spr"));
         } else {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\운영자_여.Spr"));
         }
         break;
-      case 5:
-        if (this->sex) {
+      case SPRITE_LAYER_WEAPON:
+        if (this->sex != SEX_FEMALE) {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_남_검.Spr"));
         } else {
           this->equipSprites[slot] = static_cast<CSprRes*>(ResourceMgr::Instance().Load("인간족\\운영자\\운영자_여_검.Spr"));
         }
         break;
-      case 6:
+      case SPRITE_LAYER_WEAPON_EFFECT:
         this->equipSprites[slot] = nullptr;
         break;
       default:
@@ -3931,7 +3931,7 @@ void CPlayer::SendMsg(
     break;
   case AM_REQ_MOVE:
     this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0);
-    if (this->render.state != 0x4B) {
+    if (this->render.state != ST_UNKNOWN_75) {
       if (this->IsSpecialState(this->render.state)) {
         this->isPreengageStateOfMove = 1;
         this->preengageXOfMove = bLow;
@@ -4410,8 +4410,8 @@ void CPc::SetState(int state, int resetPosition) {
 
   if (state == ST_DEAD) {
     const int job = this->GetEffectiveJob(g_session.BaseJob(this->job));
-    this->LoadEquipAction(0, g_session.GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
-    this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    this->LoadEquipAction(SPRITE_LAYER_BODY, g_session.GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    this->LoadEquipSprite(SPRITE_LAYER_BODY, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
     current = this->render.state;
   }
 
@@ -4469,29 +4469,29 @@ void CPc::SetState(int state, int resetPosition) {
     case ST_ATTACK:
     case ST_DAMAGE:
     case ST_BEGIN_SKILL:
-    case 0x34:
-    case 0x35:
-    case 0x36:
-    case 0x3A:
-    case 0x3B:
-    case 0x3E:
-    case 0x3F:
-    case 0x40:
-    case 0x41:
-    case 0x43:
-    case 0x44:
-    case 0x45:
-    case 0x46:
-    case 0x47:
-    case 0x48:
-    case 0x49:
-    case 0x4A:
-    case 0x4B:
-    case 0x4C:
-    case 0x4D:
-    case 0x4E:
-    case 0x4F:
-    case 0x50:
+    case ST_UNKNOWN_52:
+    case ST_UNKNOWN_53:
+    case ST_UNKNOWN_54:
+    case ST_UNKNOWN_58:
+    case ST_UNKNOWN_59:
+    case ST_UNKNOWN_62:
+    case ST_UNKNOWN_63:
+    case ST_UNKNOWN_64:
+    case ST_UNKNOWN_65:
+    case ST_UNKNOWN_67:
+    case ST_UNKNOWN_68:
+    case ST_UNKNOWN_69:
+    case ST_UNKNOWN_70:
+    case ST_UNKNOWN_71:
+    case ST_UNKNOWN_72:
+    case ST_UNKNOWN_73:
+    case ST_UNKNOWN_74:
+    case ST_UNKNOWN_75:
+    case ST_UNKNOWN_76:
+    case ST_UNKNOWN_77:
+    case ST_UNKNOWN_78:
+    case ST_UNKNOWN_79:
+    case ST_UNKNOWN_80:
       this->SetAction(action, 4, 0);
       break;
     default:
@@ -4559,14 +4559,14 @@ void CPc::SetState(int state, int resetPosition) {
     case JT_SKY_EMPEROR2:
       if (std::ranges::max(rand() % 10, 0) < 7) {
         weaponAllowed = true;
-        attackState = 9;
+        attackState = ST_ATTACK2;
       } else {
         weaponAllowed = false;
-        attackState = 2;
+        attackState = ST_ATTACK;
       }
       break;
     default:
-      attackState = weaponAllowed ? 9 : 2;
+      attackState = weaponAllowed ? ST_ATTACK2 : ST_ATTACK;
       break;
     }
 
@@ -5589,24 +5589,24 @@ bool CPc::ProcessState() {
   }
   case ST_SKILL:
   case ST_AB_SPECIAL:
-  case 62:
-  case 63:
-  case 64:
-  case 65:
-  case 67:
-  case 68:
-  case 69:
-  case 70:
-  case 71:
-  case 72:
-  case 73:
-  case 74:
-  case 75:
-  case 76:
-  case 77:
-  case 78:
-  case 79:
-  case 80:
+  case ST_UNKNOWN_62:
+  case ST_UNKNOWN_63:
+  case ST_UNKNOWN_64:
+  case ST_UNKNOWN_65:
+  case ST_UNKNOWN_67:
+  case ST_UNKNOWN_68:
+  case ST_UNKNOWN_69:
+  case ST_UNKNOWN_70:
+  case ST_UNKNOWN_71:
+  case ST_UNKNOWN_72:
+  case ST_UNKNOWN_73:
+  case ST_UNKNOWN_74:
+  case ST_UNKNOWN_75:
+  case ST_UNKNOWN_76:
+  case ST_UNKNOWN_77:
+  case ST_UNKNOWN_78:
+  case ST_UNKNOWN_79:
+  case ST_UNKNOWN_80:
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
       this->SetState(ST_STAND, 1);
@@ -5625,13 +5625,13 @@ bool CPc::ProcessState() {
     this->render.timedSequenceActive = 0;
     this->render.isMotionFreezed = false;
   case ST_SIT:
-  case 60:
-  case 61:
-  case 66:
-  case 81:
+  case ST_UNKNOWN_60:
+  case ST_UNKNOWN_61:
+  case ST_UNKNOWN_66:
+  case ST_NATURE_PROTECTION:
     this->ProcessMotion();
     break;
-  case 51:
+  case ST_SJ_FLASHKICK:
     this->ProcessMotion();
     if (this->render.isMotionFinished == true) {
       this->render.state = ST_ATTACK;

@@ -1585,24 +1585,24 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     this->passwordRetryCount = 0;
     this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
-  case 9: {
+  case PINCODE_UNKNOWN_9: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x0B8745519B1F95D7ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x0B8745519B1F95D7ULL, source), text, 9), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x0B8745519B1F95D7ULL, source), text, PINCODE_UNKNOWN_9), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
-  case 10: {
+  case PINCODE_UNKNOWN_10: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xA597A7E7492B39D5ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xA597A7E7492B39D5ULL, source), text, 10), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xA597A7E7492B39D5ULL, source), text, PINCODE_UNKNOWN_10), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
-  case 11: {
+  case PINCODE_UNKNOWN_11: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xFFABE3D5D1BBEF73ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xFFABE3D5D1BBEF73ULL, source), text, 11), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xFFABE3D5D1BBEF73ULL, source), text, PINCODE_UNKNOWN_11), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
@@ -1667,24 +1667,24 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     this->passwordRetryCount = 0;
     this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
     break;
-  case 9: {
+  case PINCODE_UNKNOWN_9: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x49D33529F1556333ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x49D33529F1556333ULL, source), text, 9), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x49D33529F1556333ULL, source), text, PINCODE_UNKNOWN_9), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
-  case 10: {
+  case PINCODE_UNKNOWN_10: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x01CB4F1DF9D3F931ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x01CB4F1DF9D3F931ULL, source), text, 10), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x01CB4F1DF9D3F931ULL, source), text, PINCODE_UNKNOWN_10), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
-  case 11: {
+  case PINCODE_UNKNOWN_11: {
     const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xC5B1BBCD9BC9C997ULL);
-    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xC5B1BBCD9BC9C997ULL, source), text, 11), 0, true, false, 0, "메시지",
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xC5B1BBCD9BC9C997ULL, source), text, PINCODE_UNKNOWN_11), 0, true, false, 0, "메시지",
                                                           280, 120, 0);
     break;
   }
@@ -1846,12 +1846,12 @@ char g_loginFailCount;
 // FUNCTION: fn_22289
 void CLoginMode::ShowLoginError(int code, int argument) {
   std::string message("");
-  if (code != 0x12) {
+  if (code != REFUSE_WARNING) {
     GetRagConnection().Close();
   }
 
   switch (code) {
-  case 33:
+  case REFUSE_OTPUSER_ONLY:
     message = LookupMessage(MSI_OTPUSER_ONLY);
     break;
   case REFUSE_INVALID_ID:
@@ -1908,7 +1908,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case REFUSE_TEMP_BAN_DELETING_SPOUSE_CHAR:
     message = LookupMessage(MSI_DELETING_SPOUSE_CHAR);
     break;
-  case 7:
+  case REFUSE_BILLING_NOT_READY:
     message = LookupMessage(MSI_ACCOUNT_BUSY);
     break;
   case REFUSE_NONSAKRAY_ID_BLOCKED:
@@ -1939,7 +1939,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_ALREADY_CONNECT), argument));
     break;
   }
-  case 16:
+  case REFUSE_NOT_CHANGED_PASSWD:
     if (g_serviceType == ServiceKorea) {
       constexpr std::array<char, 48> textSource = OBFUSCATE_SOURCE("비밀 번호 변경 후, 다시 접속 해주시기 바랍니다.", 0xF14F79170939C7F1ULL);
       message = std::string(OBFUSCATE_DECRYPT(0xF14F79170939C7F1ULL, textSource));
@@ -1959,7 +1959,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case REFUSE_USER_PHONE_BLOCK:
     message = LookupMessage(MSI_PHONE_BLOCK);
     break;
-  case 17: {
+  case REFUSE_BLOCK_INVALID: {
     message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RE17), argument));
     if (g_windowMgr.Confirm(message.c_str(), 2, true, true, 0, "메시지", 280, 120, 0) == ID_YES) {
       g_modeMgr.Quit();
@@ -1967,51 +1967,51 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message.clear();
     break;
   }
-  case 18:
+  case REFUSE_WARNING:
     message = LookupMessage(MSI_RE18);
     break;
-  case 19:
+  case REFUSE_DB_ERROR:
     message = LookupMessage(MSI_DB_ERROR);
     break;
-  case 20:
+  case REFUSE_OTP_FAILED:
     message = LookupMessage(MSI_OTP_FAILED);
     break;
-  case 108:
+  case REFUSE_MAIN_USER_FREE_SERVER:
     message = LookupMessage(MSI_MAIN_USER_CANONT_LOGIN_FREE_SERVER);
     break;
-  case 109:
+  case REFUSE_INVALID_ONETIMELIMIT:
     message = LookupMessage(MSI_INVALID_ONETIMELIMIT);
     break;
-  case 22:
-  case 23:
-  case 24:
-  case 25:
-  case 26:
-  case 27:
-  case 30:
+  case REFUSE_UNKNOWN_22:
+  case REFUSE_UNKNOWN_23:
+  case REFUSE_UNKNOWN_24:
+  case REFUSE_UNKNOWN_25:
+  case REFUSE_UNKNOWN_26:
+  case REFUSE_UNKNOWN_27:
+  case REFUSE_UNKNOWN_30:
     message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC);
     break;
-  case 28:
+  case REFUSE_AUTHSERVER_CONNECTION:
     message = LookupMessage(MSI_ACCESS_DENIED_BY_AUTHSERVER_CONNECTION);
     break;
-  case 29:
+  case REFUSE_BILLSERVER_CONNECTION:
     message = LookupMessage(MSI_ACCESS_DENIED_BY_BILLSERVER_CONNECTION);
     break;
-  case 21:
+  case REFUSE_SSO_FAILED:
     message = LookupMessage(MSI_SSO_FAILED);
     break;
-  case 0x1393:
+  case REFUSE_SSO_AUTH_INVALID_TOKEN:
     message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
     break;
-  case 0x1394: {
+  case REFUSE_SSO_BLOCKED: {
     message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BLOCKED), argument));
     break;
   }
-  case 0x1395:
-  case 0x13BE:
+  case REFUSE_UNKNOWN_5013:
+  case REFUSE_UNKNOWN_5054:
     message = LookupMessage(MSI_WITHDREW_USERS);
     break;
-  case 0x1397:
+  case REFUSE_SSO_AUTH_INVALID_USER:
     if (g_launchPassCommandLine) {
       std::string url;
       if (g_stoveMgr->m_environment == 1) {
@@ -2027,49 +2027,49 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     }
     message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_USER);
     break;
-  case 0x1399:
+  case REFUSE_SSO_AUTH_INVALID_AGE:
     message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_AGE);
     break;
-  case 0x139A:
+  case REFUSE_SSO_FAILED_5018:
     message = LookupMessage(MSI_SSO_FAILED);
     break;
-  case 0x13C7:
+  case REFUSE_SSO_ACCOUNT_BLOCK:
     message = LookupMessage(MSI_ACCOUNT_BLOCK);
     break;
-  case 0x13C8:
+  case REFUSE_SSO_BUG_BLOCK:
     message = LookupMessage(MSI_BUG_BLOCK);
     break;
-  case 0x13C6:
+  case REFUSE_SSO_EMAIL_CONFIRM_NEEDED:
     message = LookupMessage(MSI_ID_EMAIL_CONFIRM_NEEDED);
     break;
-  case 0x1396:
-  case 0x1398:
-  case 0x139B:
-  case 0x139D:
-  case 0x13BC:
-  case 0x13BD:
-  case 0x13BF:
-  case 0x13C0:
-  case 0x13C1:
-  case 0x13C2:
-  case 0x13C3:
-  case 0x13C4:
-  case 0x13C5:
+  case REFUSE_UNKNOWN_5014:
+  case REFUSE_UNKNOWN_5016:
+  case REFUSE_UNKNOWN_5019:
+  case REFUSE_UNKNOWN_5021:
+  case REFUSE_UNKNOWN_5052:
+  case REFUSE_UNKNOWN_5053:
+  case REFUSE_UNKNOWN_5055:
+  case REFUSE_UNKNOWN_5056:
+  case REFUSE_UNKNOWN_5057:
+  case REFUSE_UNKNOWN_5058:
+  case REFUSE_UNKNOWN_5059:
+  case REFUSE_UNKNOWN_5060:
+  case REFUSE_UNKNOWN_5061:
     message = LookupMessage(MSI_SSO_ERROR_MSG);
     break;
-  case 0x13BA:
+  case REFUSE_SSO_NOT_PAY_USER:
     message = LookupMessage(MSI_REFUSE_SSO_NOT_PAY_USER);
     break;
-  case 0x13BB:
+  case REFUSE_DOUBLE_LOGIN_PROHIBITED:
     message = LookupMessage(MSI_DOUBLE_LOGIN_PROHIBITED);
     break;
-  case 0x14B4:
+  case REFUSE_LOGIN_AUTH:
     message = LookupMessage(MSI_REFUSE_LOGIN_AUTH);
     break;
-  case 0x14B5:
+  case REFUSE_LOGIN_ACCESSTICKET:
     message = LookupMessage(MSI_REFUSE_LOGIN_ACCESSTICKET);
     break;
-  case 110:
+  case REFUSE_CHANGE_PASSWD_FORCE:
     if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_CHANGE_PASSWD_FORCE), 0, true, true, 0, "메시지", 280, 120, 0) == ID_OK) {
       const char* file = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x9B0F234DEFDF7593ULL);
@@ -2078,22 +2078,22 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     }
     message = "";
     break;
-  case 112:
+  case REFUSE_CBT_ACTIVE_USER_CHECK:
     message = LookupMessage(MSI_CBT_ACTIVE_USER_CHECK);
     break;
-  case 242:
+  case REFUSE_RETRY_CONNECT_AC:
     message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_AC);
     break;
-  case 36: {
+  case REFUSE_SECOND_PASSWORD_BLOCK: {
     const std::div_t remaining = std::div(this->remainingLoginSeconds, 3600);
     const int minutes = static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f));
     message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, minutes));
     break;
   }
-  case 243:
+  case REFUSE_VTC_AUTH_FAILED:
     message = LookupMessage(MSI_REFUSE_VTC_AUTH_FAILED);
     break;
-  case 244:
+  case REFUSE_SDK_AUTH_FAILED:
     message = LookupMessage(MSI_REFUSE_SDK_AUTH_FAILED);
     break;
   default: {
@@ -2107,7 +2107,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
   if (!message.empty()) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
-    if (code == 5 || code == 99) {
+    if (code == REFUSE_INVALID_VERSION || code == REFUSE_DELETED_ACCOUNT) {
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
   }
@@ -2711,7 +2711,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case ID_AC_REFUSE_LOGIN3: {
       const LoginErrorTimePacket* packet = reinterpret_cast<const LoginErrorTimePacket*>(g_gameModePacketBuffer);
-      if (packet->code != 0x12) {
+      if (packet->code != REFUSE_WARNING) {
         GetRagConnection().Close();
       }
       this->remainingLoginSeconds = packet->remaining;

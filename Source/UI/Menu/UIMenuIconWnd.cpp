@@ -129,7 +129,7 @@ void UIMenuIconWnd::OnCreate(int width, int height) {
     switch (ids[index]) {
     case MENUICON_BATTLE:
     case ID_SELECT_PARTY_LISTING:
-    case 600:
+    case ID_NO_DEFAULT_PUSH:
       continue;
     }
 

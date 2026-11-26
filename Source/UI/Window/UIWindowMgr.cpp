@@ -3859,7 +3859,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  case WID_HOTKEYWND: case WID_RELOADLUASCRIPTWND: case WID_QUIKSLOTWND: case WID_BATTLEFIELD_DESCRIBEWND: case WID_BATTLEFIELD_STATUSWND: case WID_BATTLEFIELD_HELPWND: case 171: case WID_SEARCH_STORE_INFO: case WID_SHOWINFO_TESTLAYER: case WID_EXMACRO_SETUPWND:
+  case WID_HOTKEYWND: case WID_RELOADLUASCRIPTWND: case WID_QUIKSLOTWND: case WID_BATTLEFIELD_DESCRIBEWND: case WID_BATTLEFIELD_STATUSWND: case WID_BATTLEFIELD_HELPWND: case WID_UNKNOWN_171: case WID_SEARCH_STORE_INFO: case WID_SHOWINFO_TESTLAYER: case WID_EXMACRO_SETUPWND:
     if (this->LookupWindow(windowId)) {
       if (UIWindow* found = this->LookupWindow(windowId)) {
         switch (id) {
@@ -3873,7 +3873,7 @@ bool UIWindowMgr::CloseWindow(int id) {
         case WID_BATTLEFIELD_DESCRIBEWND:
         case WID_BATTLEFIELD_STATUSWND:
         case WID_BATTLEFIELD_HELPWND:
-        case 171:
+        case WID_UNKNOWN_171:
         case WID_SHOWINFO_TESTLAYER:
         case WID_EXMACRO_SETUPWND:
           this->Schedule(found);

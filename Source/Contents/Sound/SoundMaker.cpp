@@ -5,6 +5,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Network/Packets/NoticeEnums.h"
+#include "Client/Mode/GameModeEnums.h"
 
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/EffectActors.h"
@@ -774,7 +775,7 @@ void CNpc::SendMsg(
               [] { return static_cast<std::int64_t>(g_session.homunMaxHunger); }
             );
             this->playerGaugeWindow->SetSize(60, 13);
-            this->playerGaugeWindow->actorKind = 8;
+            this->playerGaugeWindow->actorKind = NPC_HO_TYPE;
             break;
           }
           case NPC_PET_TYPE: {
@@ -783,7 +784,7 @@ void CNpc::SendMsg(
               [] { return static_cast<std::int64_t>(g_session.m_petMaxHunger); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            this->playerGaugeWindow->actorKind = 7;
+            this->playerGaugeWindow->actorKind = NPC_PET_TYPE;
             break;
           }
           case NPC_MERSOL_TYPE: {
@@ -816,7 +817,7 @@ void CNpc::SendMsg(
               [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            this->playerGaugeWindow->actorKind = 13;
+            this->playerGaugeWindow->actorKind = NPC_ABR_TYPE;
             break;
           }
           case NPC_BIONIC_TYPE: {
@@ -825,7 +826,7 @@ void CNpc::SendMsg(
               [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            this->playerGaugeWindow->actorKind = 14;
+            this->playerGaugeWindow->actorKind = NPC_BIONIC_TYPE;
             break;
           }
         }
@@ -1357,7 +1358,9 @@ void CNpc::UpdateMinimapMarker() {
       this->attachedEffectId = 9999;
     }
 
-    CMsgEffect* effect = mode->SpawnMsgEffect((6 > marker->effectType ? 0x24 : 0x36) + marker->effectType, &this->render.position, this->render.accountId, true);
+    CMsgEffect* effect = mode->SpawnMsgEffect(
+      (6 > marker->effectType ? MAKETYPE_QUEST_MARKER_0 : MAKETYPE_QUEST_MARKER_6 - 6) + marker->effectType,
+      &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->attachedEffect = effect;
@@ -1662,7 +1665,7 @@ void CNpc::SetState(int state, int) {
     default: {
       bool isDisguised = false;
       CGameActor* actor = g_session.FindGameActor(this->render.accountId);
-      if (actor && actor->objectType == 12) {
+      if (actor && actor->objectType == NPC_DISGUISED_TYPE) {
         isDisguised = true;
       }
       if (g_session.IsAllyActor(this->render.accountId, this->GetEffectiveJob(-1)) == 1 && this->GetEffectiveJob(-1) != JT_MOB_TOMB &&

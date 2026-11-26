@@ -12,6 +12,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Effects/Core/EffectPrimId.h"
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Resource/Resource.h"
 #include "Client/Mode/CGameMode.h"
@@ -257,7 +258,7 @@ __declspec(safebuffers) void CRagEffect::Endure() {
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\EF_Endure.wav");
 
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 2;
     this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -282,7 +283,7 @@ __declspec(safebuffers) void CRagEffect::Endure() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   const float heading = static_cast<float>(ClampedRandom(360));
   this->state.lastPrim->state.roll = heading;
@@ -314,7 +315,7 @@ void CRagEffect::BloodDrain() {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, origin);
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z);
@@ -356,7 +357,7 @@ void CRagEffect::FireBall() {
   }
 
   PlayEffectWaveInline(*this, "effect\\EF_FireBall.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x120u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -399,7 +400,7 @@ void CRagEffect::FireSparks() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.pattern |= 4u;
   this->state.lastPrim->state.pattern |= 0x80u;
   this->state.lastPrim->state.duration = 140;
@@ -446,7 +447,7 @@ void CRagEffect::FrostDiver2() {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int index = 0; index < 8; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, origin);
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
@@ -513,7 +514,7 @@ void CRagEffect::FrostDiver(char type) {
   }
 
   CopyVector(this->render.position, saved);
-  this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.pattern |= 1u;
   if (type == 3) {
@@ -576,7 +577,7 @@ void CRagEffect::GrimTooth() {
     }
 
     CopyVector(this->render.position, saved);
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.duration = 40;
     const int angle = ClampedRandom(360);
@@ -620,7 +621,7 @@ void CRagEffect::IceWall() {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int offset = -2; offset < 4; offset += 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, origin);
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
@@ -660,7 +661,7 @@ __declspec(safebuffers) void CRagEffect::IncAgiDex() {
 
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\EF_IncAgiDex.wav");
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longitude = 0.0f;
     this->state.lastPrim->state.speed = 1.5f;
@@ -681,7 +682,7 @@ __declspec(safebuffers) void CRagEffect::IncAgiDex() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
@@ -712,7 +713,7 @@ __declspec(safebuffers) void CRagEffect::IncAgility() {
 
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\EF_IncAgility.wav");
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longitude = 0.0f;
     this->state.lastPrim->state.speed = 1.5f;
@@ -732,7 +733,7 @@ __declspec(safebuffers) void CRagEffect::IncAgility() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
@@ -764,7 +765,7 @@ void CRagEffect::Hit1() {
     facing += 360;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 10;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -785,7 +786,7 @@ void CRagEffect::Hit1() {
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing - 40));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -805,7 +806,7 @@ void CRagEffect::Hit1() {
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEGRAVITY, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing + 140));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -846,7 +847,7 @@ __declspec(safebuffers) void CRagEffect::Hit2(int option) {
   int index = 0;
 
   for (float degree = 0.0f; degree < 360.0f; degree += 45.0f, ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.pattern = 1;
     this->state.lastPrim->state.duration = ClampedRandom(20) + 10;
     const float heading = (degree - 15.0f) + static_cast<float>(ClampedRandom(30));
@@ -899,7 +900,7 @@ void CRagEffect::Hit3() {
     facing += 360;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -917,7 +918,7 @@ void CRagEffect::Hit3() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
 
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -936,7 +937,7 @@ void CRagEffect::Hit3() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
 
   for (int count = 0; count < 8; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing - 40));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -978,7 +979,7 @@ __declspec(safebuffers) void CRagEffect::Hit4() {
   if (direction < 0) {
     direction += 360;
   }
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(direction);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -999,7 +1000,7 @@ __declspec(safebuffers) void CRagEffect::Hit4() {
   this->state.lastPrim->state.textures[0] = texture;
 
   for (int count = 0; count < 5; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(direction - 40 + ClampedRandom(80));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -1079,7 +1080,7 @@ void CRagEffect::SoulStrike(char F1) {
 
   const int angle = base + (this->state.stateCnt + delay) / dist * step;
   PlayEffectWaveInline(*this, "effect\\EF_SoulStrike.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
   this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z);
@@ -1122,7 +1123,7 @@ void CRagEffect::SpearBmr() {
   }
 
   PlayEffectWaveInline(*this, "effect\\EF_FireBall.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.pattern |= 0x120u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -1161,7 +1162,7 @@ void CRagEffect::SpearBmr() {
 void CRagEffect::SprayPond() {
   if (this->state.stateCnt == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.pattern = 2;
       this->state.lastPrim->state.duration = 130;
       this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle) + 22.5f)));
@@ -1178,7 +1179,7 @@ void CRagEffect::SprayPond() {
 
   if (this->state.stateCnt % 10 == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 30;
       this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle) + 22.5f)));
       MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{0.0f, 0.0f, 13.8f}, this->state.lastPrim->state.transform.values);
@@ -1194,7 +1195,7 @@ void CRagEffect::SprayPond() {
   }
 
   if (this->state.stateCnt % 20 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 25;
     this->state.lastPrim->state.radius = 13.0f;
     this->state.lastPrim->state.arcAngle = 10.0f;
@@ -1219,7 +1220,7 @@ void CRagEffect::WaterBall2() {
   }
 
   PlayEffectWaveInline(*this, "effect\\wizard_waterball_chulung.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->SetSpriteName("이팩트\\Waterball.spr");
   this->state.lastPrim->SetActionName("이팩트\\Waterball.act");
   this->state.lastPrim->state.duration = 40;
@@ -1253,7 +1254,7 @@ void CRagEffect::Yufitel(char F1) {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 20;
     this->state.lastPrim->state.pattern |= 0x40u;
     this->state.lastPrim->state.pattern |= 0x400u;
@@ -1277,7 +1278,7 @@ void CRagEffect::Yufitel(char F1) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
     }
 
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 20;
     this->state.lastPrim->state.pattern = 0x40u;
     this->state.lastPrim->state.pattern |= 0x400u;
@@ -1326,7 +1327,7 @@ void CRagEffect::AirTexture(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(98, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_AIRTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -1366,7 +1367,7 @@ void CRagEffect::EnergyDrain2() {
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, origin);
     this->state.lastPrim->state.duration = 60;
     const float deltaZ = this->state.deltaPos.z - this->render.position.z;
     EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -1777,7 +1778,7 @@ bool CRagEffect::Aspersio() {
   }
 
   if (this->state.stateCnt % 5 == 0 && this->state.stateCnt > 60 && this->state.stateCnt < 140) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
     this->state.duration = 400;
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.radius = 1.5f;
@@ -1820,7 +1821,7 @@ void CRagEffect::Bash() {
 
   PlayEffectWaveInline(*this, "effect\\EF_Bash.wav");
 
-  this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.pattern |= 1;
   this->state.lastPrim->state.deltaPos2.y = -40.0f;
@@ -1838,7 +1839,7 @@ void CRagEffect::Bash() {
   }
 
   for (int spark = 0; spark < sparkCount; ++spark) {
-    this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.deltaPos2.y = -40.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -1870,7 +1871,7 @@ void CRagEffect::Blessing() {
 
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\EF_Blessing.wav");
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.renderFlag |= 0x200u;
@@ -1889,7 +1890,7 @@ void CRagEffect::Blessing() {
   }
 
   if (this->state.stateCnt % 3 == 0 && this->state.stateCnt < 10) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->state.alpha = static_cast<float>(this->state.stateCnt * -6 + 200);
@@ -1900,7 +1901,7 @@ void CRagEffect::Blessing() {
   }
 
   if (this->state.stateCnt % 4 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 80;
     this->state.lastPrim->state.pattern |= 0x80u;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -1936,7 +1937,7 @@ void CRagEffect::Bottom2() {
     const float widthSize = 2.5f;
 
     for (int i = 1; i >= -1; i -= 2) {
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 9999;
       this->state.lastPrim->state.commonPattern = 1;
       this->state.lastPrim->state.pattern = 40;
@@ -1951,7 +1952,7 @@ void CRagEffect::Bottom2() {
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
 
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 9999;
       this->state.lastPrim->state.commonPattern = 1;
       this->state.lastPrim->state.pattern = 40;
@@ -1988,7 +1989,7 @@ void CRagEffect::Bottom() {
   this->state.duration = 9999;
 
   for (int side = 1; side >= -1; side -= 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 9999;
     this->state.lastPrim->state.commonPattern = 1;
     this->state.lastPrim->state.pattern = 40;
@@ -2005,7 +2006,7 @@ void CRagEffect::Bottom() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_violet.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 9999;
     this->state.lastPrim->state.commonPattern = 1;
     this->state.lastPrim->state.pattern = 40;
@@ -2046,7 +2047,7 @@ void CRagEffect::Steal() {
   PlayEffectWaveInline(*this, "effect\\EF_Steal.wav");
 
   for (int count = 0; count < 10; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEGRAVITY, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -2135,7 +2136,7 @@ void CRagEffect::AttackEnergy2(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(106, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ATTACKENERGY2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -2200,7 +2201,7 @@ void CRagEffect::RemoveTrap() {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int count = 12; count != 0; --count) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, origin);
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.radiusSpeed = 0.2f;
     rand();
@@ -2228,7 +2229,7 @@ void CRagEffect::Sphere() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.duration = 500 - this->state.stateCnt;
   this->state.lastPrim->state.duration = 300;
   this->state.lastPrim->state.radius = 0.1f;
@@ -2259,7 +2260,7 @@ void CRagEffect::GrimToothAtk() {
   }
 
   for (int index = 0; index < 3; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.duration = 1000;
@@ -2326,7 +2327,7 @@ __declspec(safebuffers) bool CRagEffect::Signum() {
       "effect\\EF_Bash.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
     );
 
-    this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.pattern |= 1;
     this->state.lastPrim->state.deltaPos2.y = -40.0f;
@@ -2339,7 +2340,7 @@ __declspec(safebuffers) bool CRagEffect::Signum() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
     for (int ray = 0; ray < 20; ++ray) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 35;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.alpha = 0.0f;
@@ -2369,7 +2370,7 @@ void CRagEffect::Snow() {
 
   if (this->GetDuration() - this->state.stateCnt > 160) {
     for (int i = 0; i < 2; ++i) {
-      this->state.lastPrim = this->LaunchEffectPrim(21, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE_NOMASTER, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.orgPos = this->render.position;
       this->state.lastPrim->state.duration = 320;
       this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -2396,7 +2397,7 @@ void CRagEffect::Snow() {
 // FUNCTION: fn_20042
 void CRagEffect::Entry() {
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 55;
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
     this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -2417,7 +2418,7 @@ void CRagEffect::Entry() {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 55;
     this->state.lastPrim->state.arcAngle = 45.0f;
     this->state.lastPrim->state.longSpeed = 10.0f;
@@ -2440,7 +2441,7 @@ void CRagEffect::Entry() {
 bool CRagEffect::CartRevolution() {
   if (this->state.stateCnt == 7 || this->state.stateCnt == 20) {
     PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 20;
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.lastPrim->state.maxAlpha = 180.0f;
@@ -2456,7 +2457,7 @@ bool CRagEffect::CartRevolution() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(14, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DSPHERE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 20;
     this->state.lastPrim->state.radiusSpeed = 1.35f;
     EffectPrimitiveState& blast = this->state.lastPrim->state;
@@ -2486,7 +2487,7 @@ void CRagEffect::BowlingBash() {
   }
 
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20 - this->state.stateCnt;
   const int angle = facing < 0 ? facing + 360 : facing;
   this->state.lastPrim->state.longitude = static_cast<float>(angle + this->state.stateCnt * 20);
@@ -2506,7 +2507,7 @@ void CRagEffect::BowlingBash() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.lastPrim->state.latitude = 90.0f;
@@ -2542,7 +2543,7 @@ void CRagEffect::SonicBlowHit() {
   const int spreadX = ClampedRandom(10);
   const int spreadY = ClampedRandom(20);
   rand();
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 12;
   this->state.lastPrim->state.longitude = static_cast<float>(facing < 0 ? facing + 360 : facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -2575,7 +2576,7 @@ void CRagEffect::Exit() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.duration = 100;
     this->state.lastPrim->state.duration = 100;
     this->state.lastPrim->state.outerSize = 4.5f;
@@ -2595,7 +2596,7 @@ void CRagEffect::Exit() {
   }
 
   if (this->state.stateCnt % 9 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
     rand();
     this->state.lastPrim->state.radius = 3.0f;
     this->state.lastPrim->state.duration = 50;
@@ -2618,7 +2619,7 @@ void CRagEffect::Exit() {
 // FUNCTION: fn_20118
 void CRagEffect::Warp() {
   if (this->state.stateCnt % 20 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.lastPrim->state.radius = 2.0f;
@@ -2638,7 +2639,7 @@ void CRagEffect::Warp() {
   }
 
   if ((this->state.stateCnt & 1) == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
     const int band = ClampedRandom(200) / 100;
     this->state.lastPrim->state.radius = static_cast<float>(band) * 0.7f + 1.0f;
     this->state.lastPrim->state.duration = 40;
@@ -2663,7 +2664,7 @@ void CRagEffect::Warp() {
 // OFFSET: 0x00C36530
 // FUNCTION: fn_20092
 void CRagEffect::PotionPillar(float heightSpeed, int duration) {
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = duration;
   this->state.lastPrim->state.outerSize = 4.5f;
   this->state.lastPrim->state.innerSize = 4.5f;
@@ -2694,7 +2695,7 @@ bool CRagEffect::Potion_Berserk() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (static_cast<std::uint32_t>(this->state.stateCnt - 13) <= 96 && this->state.stateCnt % 4 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = this->state.lastPrim->state;
@@ -2731,7 +2732,7 @@ void CRagEffect::GROUNDSAMPLE() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(112, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_GROUNDSAMPLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -2750,7 +2751,7 @@ void CRagEffect::GROUNDSAMPLE() {
 void CRagEffect::CALLZONE(const char* name) {
   if (this->state.stateCnt == 100) {
     CopyVector(this->render.position, this->state.parent->render.position);
-    this->state.lastPrim = this->LaunchEffectPrim(74, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_CALLZONE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 1;
@@ -2773,7 +2774,7 @@ void CRagEffect::CALLZONE(const char* name) {
 // FUNCTION: fn_20212
 bool CRagEffect::JobLvUp50_2(short angle) {
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(75, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SLASH1, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -2800,7 +2801,7 @@ bool CRagEffect::RunStop(short angle) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(75, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_SLASH1, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -2828,7 +2829,7 @@ void CRagEffect::SMA(char flag) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(120, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_SMA, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 0;
     this->state.lastPrim->state.size = 0.0f;
@@ -2855,7 +2856,7 @@ bool CRagEffect::JobLvUp50(int angle) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 5) {
-    this->state.lastPrim = this->LaunchEffectPrim(75, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_SLASH1, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -2889,7 +2890,7 @@ void CRagEffect::Map_Pika(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(28, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DAURA, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 0;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -2924,7 +2925,7 @@ void CRagEffect::POISON(char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(72, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_POISON, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag |= 0x200u;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -2953,7 +2954,7 @@ void CRagEffect::Rainbow(const char* name, int unused) {
   if (this->state.stateCnt == 0) {
     const CView* camera = g_modeMgr.GetGameMode()->camera;
     CopyVector(this->render.position, this->state.parent->render.position);
-    this->state.lastPrim = this->LaunchEffectPrim(93, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_RAINBOW, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 1;
@@ -2981,7 +2982,7 @@ void CRagEffect::BLIND(char flag) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(71, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_BLIND, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 2;
@@ -3018,7 +3019,7 @@ void CRagEffect::ShockwaveRing(std::int16_t angle) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(54, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICALPROTECTION, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3044,7 +3045,7 @@ void CRagEffect::TexturedPulse(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(104, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HALFSPHERE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3070,7 +3071,7 @@ void CRagEffect::RingStack(char white) {
   }
 
   for (int i = 0; i < 3; ++i) {
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = -3.0f;
     this->state.lastPrim->state.outerSize = static_cast<float>(i + 4);
@@ -3097,7 +3098,7 @@ void CRagEffect::TexturedBurst(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(105, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ATTACKENERGY, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3127,7 +3128,7 @@ void CRagEffect::TexturedRise(const char* name, char large) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(67, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FOOT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3162,7 +3163,7 @@ void CRagEffect::TexturedSpiral(const char* name, int, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(162, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FAN_SLICE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3194,7 +3195,7 @@ void CRagEffect::TexturedSpin(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(114, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HERMODE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3225,7 +3226,7 @@ void CRagEffect::ColoredFlash(unsigned char flag, unsigned char red, unsigned ch
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(172, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_COLORED_FLASH, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3254,7 +3255,7 @@ void CRagEffect::TexturedBeam(char flag, const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(154, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BLADE_FINS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3286,7 +3287,7 @@ void CRagEffect::TexturedSpiralSmall(const char* name, int, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(163, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FAN_WEDGE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3320,7 +3321,7 @@ void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(164, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FRAME_SCROLL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3355,7 +3356,7 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(165, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CURVED_FAN_TRAIL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3391,7 +3392,7 @@ void CRagEffect::TexturedScatter(const char* name, char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(44, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TEIHIT1, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3421,7 +3422,7 @@ void CRagEffect::TexturedScatterLow(const char* name, char flag) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(44, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TEIHIT1, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3453,7 +3454,7 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(143, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TEXTURE_SPIN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
 
@@ -3522,7 +3523,7 @@ void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(148, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GROUND_SQUARE_BLEND, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -3559,7 +3560,7 @@ void CRagEffect::TexturedDrop(const char* name, char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(156, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HOVER_FOLLOW, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3592,7 +3593,7 @@ void CRagEffect::PurpleSlash(int angle) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(92, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3625,7 +3626,7 @@ void CRagEffect::TexturedPair(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(76, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SAINTWING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -3665,7 +3666,7 @@ void CRagEffect::BlackMaximize(const char* name) {
   }
 
   PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword_bic.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(61, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GUARD, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -3695,7 +3696,7 @@ void CRagEffect::WaterBallBurst() {
   g_modeMgr.GetGameMode();
   g_soundMgr->PlayWave("effect\\wizard_waterball_chulung.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   this->state.lastPrim->state.renderFlag |= 0x200u;
   this->state.lastPrim->state.latitude = 90.0f;
@@ -3710,7 +3711,7 @@ void CRagEffect::WaterBallBurst() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
-  this->state.lastPrim = this->LaunchEffectPrim(14, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DSPHERE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   this->state.lastPrim->state.radiusSpeed = 1.15f;
   EffectPrimitiveState& droplets = this->state.lastPrim->state;
@@ -3722,7 +3723,7 @@ void CRagEffect::WaterBallBurst() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
 
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.renderFlag |= 0x200u;
   this->state.lastPrim->state.latitude = 90.0f;
@@ -3751,7 +3752,7 @@ void CRagEffect::WaterBall() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.pattern = 0x40;
   this->state.lastPrim->state.pattern |= 0x100;
@@ -3782,7 +3783,7 @@ void CRagEffect::TexturedDoubleRing(const char* name, char level) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(28, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DAURA, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -3827,7 +3828,7 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(89, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BASH3D, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -3864,7 +3865,7 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(90, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RECT_UP2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= 5u;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -3983,7 +3984,7 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ASURACASTING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4052,7 +4053,7 @@ void CRagEffect::TrackTarget() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(38, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_LINELINK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4097,7 +4098,7 @@ void CRagEffect::TrackTargetWide() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(38, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_LINELINK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4143,7 +4144,7 @@ void CRagEffect::TrackCloud(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(38, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_LINELINK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4191,7 +4192,7 @@ void CRagEffect::TexturedSlashFan(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(119, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_STIN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4228,7 +4229,7 @@ void CRagEffect::TexturedMark(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(103, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_STORMKICK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4274,7 +4275,7 @@ void CRagEffect::TexturedSpray(const char* name) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(43, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4307,7 +4308,7 @@ void CRagEffect::TexturedLevelRing(const char* name, int process, char level) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(88, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GROUNDSHAKE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -4355,7 +4356,7 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(55, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4398,7 +4399,7 @@ void CRagEffect::FeatherBurst(const char* name, std::int16_t angle, char) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(91, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SPHEREWIND2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4434,7 +4435,7 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(77, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SPHEREWIND, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4475,7 +4476,7 @@ void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(147, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RISING_FAN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4527,7 +4528,7 @@ void CRagEffect::BubbleSpiral(std::int16_t angle, const char*, char flag) {
     this->state.duration = 100;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(158, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GROUND_ARC, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 27;
@@ -4612,7 +4613,7 @@ void CRagEffect::BubbleSpiralKind(std::int16_t angle, const char*, char kind) {
     this->state.duration = 100;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(144, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GROUND_ARC_STEP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
 
@@ -4716,7 +4717,7 @@ void CRagEffect::KyrieGuard(const char* name, char kind) {
   }
 
   PlayEffectWaveInline(*this, "effect\\kyrie_guard.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(61, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GUARD, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -4766,7 +4767,7 @@ void CRagEffect::TexturedColumn(const char* name, char kind) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(160, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GLOW_FOLLOW, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4815,7 +4816,7 @@ void CRagEffect::TexturedSparkle(const char* name) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(81, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_LIGHTSPHERE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -4853,7 +4854,7 @@ void CRagEffect::TexturedSprayKind(const char* name, float spin, char kind) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(43, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4900,7 +4901,7 @@ void CRagEffect::TexturedSlashWave(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(125, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_STIN4, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -4944,7 +4945,7 @@ void CRagEffect::TexturedBeams(const char* name, char flag) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(129, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOBBING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -4984,7 +4985,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(56, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5016,7 +5017,7 @@ void CRagEffect::TexturedFlare(const char* name, char size, float, float) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(36, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_4, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5052,7 +5053,7 @@ void CRagEffect::TexturedHalo(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(39, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_LANDPROTECTOR, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5114,7 +5115,7 @@ void CRagEffect::TexturedSlashCross(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(126, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_STIN5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -5167,7 +5168,7 @@ void CRagEffect::TexturedOrbit(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(109, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SOULLINK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -5205,7 +5206,7 @@ void CRagEffect::TexturedCross(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(41, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_MAPPILLAR, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5245,7 +5246,7 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(122, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_STIN2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -5303,7 +5304,7 @@ void CRagEffect::SaintWing(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(131, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RISING_FAN2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -5341,7 +5342,7 @@ void CRagEffect::FirstAid() {
     "_heal_effect.wav", this->render.position.x - player->render.position.x, 150.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
 
-  this->state.lastPrim = this->LaunchEffectPrim(58, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FIRSTAID, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5376,7 +5377,7 @@ void CRagEffect::GRANDCROSS2(char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(37, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GRANDCROSS2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -5423,7 +5424,7 @@ void CRagEffect::Magnum2(const char* name) {
     if (static_cast<int>(this->state.flag) < 11) {
       const int time = this->state.stateCnt - 25;
 
-      this->state.lastPrim = this->LaunchEffectPrim(73, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_MAGNUM2, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.totalTexture = 1;
@@ -5460,7 +5461,7 @@ void CRagEffect::TexturedCrossLevel(const char* name, char level) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(31, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5497,7 +5498,7 @@ void CRagEffect::TexturedCrossFade(const char* name) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(113, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_EXPLOSION, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5532,7 +5533,7 @@ void CRagEffect::TexturedRain(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(87, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PRESSURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5596,7 +5597,7 @@ void CRagEffect::SonicWave(char sonic) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(86, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SOULBREAKER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   if (sonic == 1) {
@@ -5645,7 +5646,7 @@ void CRagEffect::ThunderSparks() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5684,7 +5685,7 @@ void CRagEffect::TexturedCrossKind(const char* name, char level) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(31, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5731,7 +5732,7 @@ void CRagEffect::TexturedGlow(const char* name, char size) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(50, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5772,7 +5773,7 @@ void CRagEffect::TexturedScatterArc(const char* name, std::int16_t angle, int ph
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(94, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PEONG, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5814,7 +5815,7 @@ void CRagEffect::LineStreak(std::int16_t kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(56, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5856,7 +5857,7 @@ void CRagEffect::LineStreakKind(std::int16_t kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(56, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5906,7 +5907,7 @@ void CRagEffect::TexturedShieldThrow(const char* name) {
   }
 
   PlayEffectWaveInline(*this, "effect\\cru_shield boomerang.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(42, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SHIELDBOOMERANG, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5948,7 +5949,7 @@ void CRagEffect::TexturedCrossStaged(const char* name, char level) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(41, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_MAPPILLAR, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -5998,7 +5999,7 @@ void CRagEffect::ElectricArc(char kind, std::int16_t) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(102, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ELECTRIC2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6042,7 +6043,7 @@ void CRagEffect::BlueRingStack() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(121, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SMA2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6088,7 +6089,7 @@ void CRagEffect::WhiteSpray(char kind) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(43, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6138,7 +6139,7 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -6197,7 +6198,7 @@ void CRagEffect::PokBurst() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(52, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_POKJUK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 3;
@@ -6237,7 +6238,7 @@ void CRagEffect::TexturedTumble(const char* name, char) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(115, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DAURA_3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6280,7 +6281,7 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(56, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6342,7 +6343,7 @@ void CRagEffect::ThunderFreeze(int) {
   const vector3d offset = {0.0f, 0.0f, 0.0f};
 
   for (int bolt = 0; bolt < total; ++bolt) {
-    this->state.lastPrim = this->LaunchEffectPrim(145, vector3d{offset.x, offset.y, offset.z});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_DRIFTING_SPARKS, vector3d{offset.x, offset.y, offset.z});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.slots[0].life = 1;
@@ -6387,7 +6388,7 @@ void CRagEffect::WeddingBurst(const char* name, char silent) {
     PlayEffectWaveInline(*this, "effect\\wedding.wav");
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(78, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_COLORPAPER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6422,7 +6423,7 @@ void CRagEffect::TexturedOrbitDust(const char* name, char rise, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(27, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_MAPPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6473,7 +6474,7 @@ void CRagEffect::TexturedTwinSpin(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(161, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TWIN_SPIN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -6522,7 +6523,7 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(159, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SPIRAL_COLLAPSE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6560,7 +6561,7 @@ void CRagEffect::DigitalSpace(int effectId) {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(168, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_GROUND_SPRITE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
 
     if (effectId == EF_SOUL_REAPER_COLLECT) {
@@ -6597,7 +6598,7 @@ void CRagEffect::TexturedFloatingDust(const char* name, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(157, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ORBIT_FADE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6630,7 +6631,7 @@ void CRagEffect::Mavka(char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(152, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WANDERING_SLOTS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
 
   for (int index = 0; index < 4; ++index) {
@@ -6675,7 +6676,7 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(146, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_DRIFTING_RINGS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6725,7 +6726,7 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(146, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_DRIFTING_RINGS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 13;
@@ -6774,7 +6775,7 @@ void CRagEffect::TexturedDoubleSpiral(const char* name, int, int) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(166, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FOLDING_RIBBON, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6800,7 +6801,7 @@ void CRagEffect::TexturedDoubleSpiral(const char* name, int, int) {
     this->state.lastPrim->state.slots[index].height[3] = 0.0f;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(166, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FOLDING_RIBBON, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6837,7 +6838,7 @@ void CRagEffect::SnowFall(const char*, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -6890,7 +6891,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(135, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TRAIL_SHIFT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6948,7 +6949,7 @@ void CRagEffect::TexturedTumbleOrb(const char* name, char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(151, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SPIRAL_FADE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -6986,7 +6987,7 @@ void CRagEffect::TexturedSpread(const char* name, char kind) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(137, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEIGHT_RAMP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7058,7 +7059,7 @@ void CRagEffect::WhiteRingRipple(char size) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PORTAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7133,7 +7134,7 @@ void CRagEffect::WhiteRingRippleSized(char size) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PORTAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7207,7 +7208,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  this->state.lastPrim = this->LaunchEffectPrim(137, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEIGHT_RAMP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7305,7 +7306,7 @@ __declspec(safebuffers) void CRagEffect::RisingSparkles(char colorMode) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -7344,7 +7345,7 @@ void CRagEffect::TexturedTripleOrbit(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7423,7 +7424,7 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -7490,7 +7491,7 @@ void CRagEffect::TexturedForkBolt(const char* name, char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(155, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WANDERING_FLAMES, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7557,7 +7558,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(153, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SEGMENT_SPRITE_GLOW, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.duration = this->state.duration - this->state.stateCnt;
   for (int i = 0; i < 4; ++i) {
     stored()->state.slots[i].life = 0;
@@ -7751,7 +7752,7 @@ __declspec(safebuffers) bool CRagEffect::AgilityChange(char increase, const std:
   if (this->state.stateCnt == 0) {
     CWorld* world = g_modeMgr.GetGameMode()->scene;
     const auto* player = static_cast<const CRenderObject*>(world->player);
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);
     CTexture* texture = this->state.lastPrim->state.textures[0];
@@ -7792,7 +7793,7 @@ __declspec(safebuffers) bool CRagEffect::AgilityChange(char increase, const std:
     return true;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
   if (this->state.lastPrim->state.textures[0] == nullptr) {
@@ -7841,7 +7842,7 @@ void CRagEffect::TexturedDescendingRings(const char* name, char flag) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(141, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RISE_FOLLOW, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7889,7 +7890,7 @@ void CRagEffect::TexturedQuadSpiral(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(31, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7925,7 +7926,7 @@ void CRagEffect::TexturedRisingPillar(const char* name, char) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(136, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RANDOM_SPIN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -7961,7 +7962,7 @@ void CRagEffect::CloudBurst() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt <= 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_TRIPLEATTACK, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8009,7 +8010,7 @@ void CRagEffect::CloudSpread() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt <= 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_TRIPLEATTACK, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8060,7 +8061,7 @@ void CRagEffect::FrostSplash(int, int) {
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
-  CEffectPrim* particle = this->LaunchEffectPrim(150, vector3d{0.0f, 0.0f, 0.0f});
+  CEffectPrim* particle = this->LaunchEffectPrim(PP_FALLING_PETALS2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -8207,7 +8208,7 @@ __declspec(safebuffers) void CRagEffect::TintedRisingSparkles(char) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -8251,7 +8252,7 @@ void CRagEffect::SpriteRing(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(167, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3D_SLOT_PARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.deltaPos2.y = 0.0f;
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -8304,7 +8305,7 @@ void CRagEffect::RocketPunch() {
   }
 
   CGameMode* gameMode = g_modeMgr.GetGameMode();
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x100u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -8356,7 +8357,7 @@ void CRagEffect::GreenRocketPunch() {
   }
 
   g_modeMgr.GetGameMode();
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x100u;
@@ -8418,7 +8419,7 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
     this->state.duration = 56;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(139, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BREATHING_WAVE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8512,7 +8513,7 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
 
 // INLINED
 static __forceinline void LaunchTwinkleRing(CRagEffect& effect, const char* name, char level) {
-  effect.state.lastPrim = effect.LaunchEffectPrim(132, vector3d{0.0f, 0.0f, 0.0f});
+  effect.state.lastPrim = effect.LaunchEffectPrim(PP_COLOR_PANEL, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = 0;
   effect.state.lastPrim->state.renderFlag |= 1u;
   effect.state.lastPrim->state.renderFlag |= 5u;
@@ -8580,7 +8581,7 @@ void CRagEffect::TetraVortexPillar(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(140, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FRAME_FADE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   if (kind == 4) {
@@ -8647,7 +8648,7 @@ void CRagEffect::TetraVortexPillar(char kind) {
 // INLINED
 static __forceinline void LaunchFireballVolley(CRagEffect& effect, float turn, int shade, int fade) {
   g_modeMgr.GetGameMode();
-  effect.state.lastPrim = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  effect.state.lastPrim = effect.LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
@@ -8732,7 +8733,7 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
 
   CopyVector(this->render.position, this->state.parent->render.position);
   PlayEffectWaveInline(*this, "effect\\EF_Teleportation.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(57, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TELEPORTATION2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8799,7 +8800,7 @@ void CRagEffect::AlphaCenterStream() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TRIPLEATTACK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8839,7 +8840,7 @@ void CRagEffect::CloudDrift() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt <= 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_TRIPLEATTACK, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8905,7 +8906,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(123, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TWILIGHT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -8966,7 +8967,7 @@ void CRagEffect::Vallentine(char kind) {
   }
 
   PlayEffectWaveInline(*this, "effect\\vallentine.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.pattern |= 0x200u;
   stored()->state.duration = this->state.duration;
   stored()->state.deltaPos2.y = 0.0f;
@@ -9006,7 +9007,7 @@ void CRagEffect::TexturedSpinShards(const char* name, char kind) {
     return;
   }
 
-  CEffectPrim* prim = this->LaunchEffectPrim(170, vector3d{0.0f, 0.0f, 0.0f});
+  CEffectPrim* prim = this->LaunchEffectPrim(PP_WANDERING_FLAMES2, vector3d{0.0f, 0.0f, 0.0f});
   if (prim == nullptr) {
     return;
   }
@@ -9080,7 +9081,7 @@ void CRagEffect::HealCloudRings() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WIND, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -9165,7 +9166,7 @@ void CRagEffect::WhiteLightSparkle(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(130, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_DRIFTING_SQUARES, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -9251,7 +9252,7 @@ void CRagEffect::WhiteLightSparkle(char kind) {
 void CRagEffect::FrostScatter(char swapAxes, char narrow) {
   if (this->state.stateCnt == 0) {
     this->render.position = this->state.parent->render.position;
-    this->state.lastPrim = this->LaunchEffectPrim(80, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_FALLING_PETALS, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 1;
@@ -9374,7 +9375,7 @@ static __forceinline void SetupRippleSlot(CRagEffect& effect, int slot, std::int
 static __forceinline void LaunchRippleRings(CRagEffect& effect, const char* name, char kind, float smallSize, int turn, float growth) {
   const RenderObjectState& parent = effect.state.parent->render;
   effect.render.position = parent.position;
-  effect.state.lastPrim = effect.LaunchEffectPrim(65, vector3d{0.0f, 0.0f, 0.0f});
+  effect.state.lastPrim = effect.LaunchEffectPrim(PP_3DCASTING_4, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   effect.state.lastPrim->state.duration = effect.state.duration;
   effect.state.lastPrim->state.textures = new CTexture*[effect.state.lastPrim->state.totalTexture];
@@ -9408,7 +9409,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
 
   if (this->state.stateCnt == 0) {
     g_modeMgr.GetGameMode();
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 99999999;
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.radius = 15.0f;
@@ -9427,7 +9428,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 4.5f;
   this->state.lastPrim->state.radiusSpeed = 0.0005f;
   this->state.lastPrim->state.duration = 70;
@@ -9460,7 +9461,7 @@ bool CRagEffect::Coin() {
     }
 
     for (int coin = 0; coin < coinCount; ++coin) {
-      this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEGRAVITY, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = ClampedRandom(30) + 40;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(12) * 30);
 
@@ -9501,7 +9502,7 @@ __declspec(safebuffers) void CRagEffect::ColdHit() {
     int index = 0;
 
     for (float degree = 0.0f; degree < 360.0f; degree += 40.0f, ++index) {
-      this->state.lastPrim = this->LaunchEffectPrim(2, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DQUAD, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 15;
       const float heading = (degree - 15.0f) + static_cast<float>(ClampedRandom(60));
       this->state.lastPrim->state.roll = heading;
@@ -9548,7 +9549,7 @@ __declspec(safebuffers) void CRagEffect::ColdHit() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 25;
   this->state.lastPrim->state.speed = 0.85f;
   this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(40) - 20);
@@ -9620,7 +9621,7 @@ __declspec(safebuffers) void CRagEffect::TurnUndead() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.radius = 370.0f;
     this->state.lastPrim->state.radiusSpeed = -(this->state.lastPrim->state.radius / 20.0f);
     this->state.lastPrim->state.duration = 20;
@@ -9640,7 +9641,7 @@ __declspec(safebuffers) void CRagEffect::TurnUndead() {
     }
 
     for (int index = 0; index < loopCount; ++index) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 20;
       this->state.lastPrim->state.chCnt = static_cast<std::uint32_t>(-1);
       this->state.lastPrim->state.speed3d.x = this->state.parent->render.position.x;
@@ -9676,7 +9677,7 @@ __declspec(safebuffers) void CRagEffect::TurnUndead() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 50) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 30;
     this->state.lastPrim->state.roll = 90.0f;
     this->state.lastPrim->state.widthSpeed = 1.5f;
@@ -9734,7 +9735,7 @@ void CRagEffect::SakuraFireArrow() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(124, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_KOUENKA, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.duration = this->state.duration;
   stored()->state.slots[0].life = 1;
   stored()->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(3) + 2) * 0.15f;
@@ -9779,7 +9780,7 @@ void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
     this->state.duration = 120;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(149, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WAVE_HEIGHTS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
 
@@ -9871,7 +9872,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
     this->state.duration = 120;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(173, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WAVE_HEIGHTS_SLOW, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 9;
@@ -9956,7 +9957,7 @@ void CRagEffect::LockOnMarker() {
   this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 0x800u;
     this->state.lastPrim->state.longitude = 0.0f;
@@ -9980,7 +9981,7 @@ void CRagEffect::LockOnMarker() {
     this->state.lastPrim->state.greenSpeed = -15;
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 0x800u;
     this->state.lastPrim->state.longitude = 45.0f;
@@ -10016,7 +10017,7 @@ void CRagEffect::MagnumBreak() {
   }
 
   PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.renderFlag |= 0x200u;
   this->state.lastPrim->state.latitude = 90.0f;
@@ -10031,7 +10032,7 @@ void CRagEffect::MagnumBreak() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 
-  this->state.lastPrim = this->LaunchEffectPrim(14, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DSPHERE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.radiusSpeed = 1.15f;
   EffectPrimitiveState& blast = this->state.lastPrim->state;
@@ -10043,7 +10044,7 @@ void CRagEffect::MagnumBreak() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\대폭발.tga", 0, false, true, false);
 
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   this->state.lastPrim->state.renderFlag |= 0x200u;
   this->state.lastPrim->state.latitude = 90.0f;
@@ -10239,7 +10240,7 @@ void CRagEffect::NapalmFragments() {
     PlayEffectWaveInline(*this, "effect\\EF_NapalmBeat.wav");
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   const int distance = ClampedRandomAtZero(50) + 10;
   const float radius = static_cast<float>(distance);
@@ -10602,7 +10603,7 @@ bool CRagEffect::OnProcess2() {
   case EF_DRAGONSMOKE:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      this->state.lastPrim = this->LaunchEffectPrim(5, this->state.deltaPos);
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, this->state.deltaPos);
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.rollSpeed = 0.75f;
       this->state.lastPrim->state.transform.MakeXRotation(GetRadian(ClampedRandom(30) + 75));
@@ -10664,7 +10665,7 @@ __declspec(safebuffers) void CRagEffect::StoneCurseRing() {
 
   this->state.duration = 9999;
   PlayEffectWaveInline(*this, "effect\\EF_StoneCurse.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2.y = -20.0f;
   this->state.lastPrim->state.arcAngle = 10.0f;
@@ -10690,7 +10691,7 @@ void CRagEffect::SkyCloud(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(33, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CLOUD, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -10854,7 +10855,7 @@ void CRagEffect::SnowDrift(char flag) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(134, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BLADE_TRAIL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 4;
@@ -10903,7 +10904,7 @@ void CRagEffect::ElectricRingEarly(char kind, std::int16_t angle) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(101, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ELECTRIC, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -10950,7 +10951,7 @@ void CRagEffect::ElectricRing(char kind, std::int16_t angle) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(101, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ELECTRIC, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -10996,7 +10997,7 @@ void CRagEffect::ElectricRingLate(char kind, std::int16_t angle) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(101, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ELECTRIC, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -11041,7 +11042,7 @@ void CRagEffect::WhiteSparks(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(70, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HITLINE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -11084,7 +11085,7 @@ void CRagEffect::AlphaCenterTrail() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TRIPLEATTACK, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -11123,7 +11124,7 @@ void CRagEffect::AlphaCenterTrail() {
 void CRagEffect::Waterfall(const char* name, char flag, char tall, char variant) {
   if (this->state.stateCnt == 0) {
     this->render.position = this->state.parent->render.position;
-    this->state.lastPrim = this->LaunchEffectPrim(79, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_WATERFALL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 3;
@@ -11179,7 +11180,7 @@ bool CRagEffect::GlassWall() {
 
     rotation.MakeYRotation(GetRadian(angle));
     for (int side = 1; side >= -1; side -= 2) {
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
@@ -11194,7 +11195,7 @@ bool CRagEffect::GlassWall() {
       this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
@@ -11224,7 +11225,7 @@ bool CRagEffect::GlassWall() {
 void CRagEffect::Portal() {
   if (this->state.stateCnt == 0) {
     g_modeMgr.GetGameMode();
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.arcAngle = 36.0f;
     this->state.lastPrim->state.outerSize = 3.5f;
@@ -11237,7 +11238,7 @@ void CRagEffect::Portal() {
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.arcAngle = 36.0f;
     this->state.lastPrim->state.outerSize = 4.0f;
@@ -11253,7 +11254,7 @@ void CRagEffect::Portal() {
   }
 
   if (this->state.stateCnt % 14 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 30;
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.innerSize = 8.0f;
@@ -11277,7 +11278,7 @@ void CRagEffect::YufitelHit(char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt % 20 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 10;
     this->state.lastPrim->state.pattern |= 0x40u;
     this->state.lastPrim->state.renderFlag |= 2u;
@@ -11303,7 +11304,7 @@ void CRagEffect::YufitelHit(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 300;
   this->state.lastPrim->state.pattern |= 0x40u;
   this->state.lastPrim->state.renderFlag |= 0x200u;
@@ -11340,7 +11341,7 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(64, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_RECT_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -11436,7 +11437,7 @@ void CRagEffect::EarthSpike(char type) {
   float blue = 0.2f;
   mode->SendMsg(MM_SETQUAKEINFO, reinterpret_cast<int>(&red), reinterpret_cast<int>(&green), reinterpret_cast<int>(&blue), 0);
 
-  this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 240;
   this->state.lastPrim->state.pattern = 1;
   this->state.lastPrim->state.pattern |= 2u;
@@ -11467,7 +11468,7 @@ void CRagEffect::EarthSpike(char type) {
   const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int step = 60; step < 420; step += 60) {
     const int offset = step == 0 ? 0 : ClampedRandom(step);
-    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, origin);
     this->state.lastPrim->state.duration = 240;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
@@ -11523,7 +11524,7 @@ __declspec(safebuffers) void CRagEffect::Sightrasher() {
       const float sine = ClientSine(angle);
       const float cosine = ClientCosine(angle);
       GetRadian(angle);
-      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 85 - this->state.stateCnt;
       this->state.lastPrim->state.pattern |= 0x400u;
       const float reach = static_cast<float>(this->state.stateCnt / 5) + 5.0f;
@@ -11556,7 +11557,7 @@ __declspec(safebuffers) void CRagEffect::Sightrasher() {
       const float sine = ClientSine(angle);
       const float cosine = ClientCosine(angle);
       GetRadian(angle);
-      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 85 - this->state.stateCnt;
       this->state.lastPrim->state.pattern |= 0x400u;
       const float reach = static_cast<float>(this->state.stateCnt / 5) + 5.0f;
@@ -11584,7 +11585,7 @@ __declspec(safebuffers) void CRagEffect::Sightrasher() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   this->state.lastPrim->state.latitude = 90.0f;
   this->state.lastPrim->state.radiusSpeed = 2.5f;
@@ -11606,7 +11607,7 @@ void CRagEffect::RingBurstSparks() {
 
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
   const int direction = facing < 0 ? facing + 360 : facing;
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(direction);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -11628,7 +11629,7 @@ void CRagEffect::RingBurstSparks() {
   }
 
   for (int count = 0; count < 4; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + direction - 40);
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -11649,7 +11650,7 @@ void CRagEffect::RingBurstSparks() {
   }
 
   for (int count = 0; count < 4; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEGRAVITY, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + direction + 140);
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -11682,7 +11683,7 @@ void CRagEffect::WaterBubble(int) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(142, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WATERFALL_PANELS, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 117;
@@ -11746,7 +11747,7 @@ void CRagEffect::FireArrow() {
 
   const int frame = this->state.stateCnt;
   if (frame >= 12 && (frame - 12) % 10 == 0 && frame - 12 < static_cast<int>(this->state.count)) {
-    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 70;
     this->state.lastPrim->state.pattern = 0x14;
     EffectPrimitiveState& arrow = this->state.lastPrim->state;
@@ -11786,7 +11787,7 @@ void CRagEffect::FireArrow() {
   }
 
   if (this->state.stateCnt > 0 && this->state.stateCnt % 4 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = ClampedRandom(24) + 6;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(40)) + (this->state.longitude - 20.0f);
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(20)) + (this->state.latitude - 10.0f);
@@ -11810,7 +11811,7 @@ void CRagEffect::FireArrow() {
   }
 
   this->state.flag = 0;
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
   this->state.lastPrim->state.latitude = 90.0f;
   this->state.lastPrim->state.radiusSpeed = 1.2f;
@@ -11846,7 +11847,7 @@ void CRagEffect::BlitzBeat() {
   if (this->state.stateCnt == 0) {
     g_blitzBeatCount = 0;
     for (int i = 0; i < 10; ++i) {
-      this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 20;
       this->state.lastPrim->state.renderFlag |= 0x200u;
       this->state.lastPrim->state.longitude = this->state.parent->render.angle;
@@ -11887,7 +11888,7 @@ void CRagEffect::BlitzBeat() {
   const int driftX = ClampedRandom(10);
   const int driftY = ClampedRandom(20);
   rand();
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 12;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -11920,7 +11921,7 @@ void CRagEffect::Map_MagicZone(const char* name, char type) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(26, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_MAPMAGICZONE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -11976,7 +11977,7 @@ void CRagEffect::Demonstration() {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(51, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOTTOMSPR, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
@@ -12008,7 +12009,7 @@ void CRagEffect::NpcStop(char type) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(51, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOTTOMSPR, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
@@ -12054,7 +12055,7 @@ void CRagEffect::Bubble_Drop() {
     count = 50.0f;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(127, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BUBBLE_DROP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12091,7 +12092,7 @@ void CRagEffect::Ghost(char type) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(84, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GHOST, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].life = 1;
@@ -12144,7 +12145,7 @@ void CRagEffect::Bottom_Out(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(49, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOTTOMOUT, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12198,7 +12199,7 @@ void CRagEffect::TANJI2() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(97, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TANJI2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12246,7 +12247,7 @@ void CRagEffect::TEIHIT2() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(45, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_TEIHIT2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12288,7 +12289,7 @@ void CRagEffect::ShieldBoomerang3(const char* name) {
     PlayEffectWaveInline(*this, "effect\\cru_shield boomerang.wav");
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(116, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SHIELDBOOMERANG3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12338,7 +12339,7 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -12398,7 +12399,7 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(53, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_THROWITEM, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12486,7 +12487,7 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(47, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12605,7 +12606,7 @@ void CRagEffect::HitDark() {
     facing += 360;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 10;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -12622,7 +12623,7 @@ void CRagEffect::HitDark() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   for (int count = 0; count < 2; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing - 40));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -12645,7 +12646,7 @@ void CRagEffect::HitDark() {
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEGRAVITY, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing + 140));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -12687,7 +12688,7 @@ void CRagEffect::IceArrow() {
     const int frameOffset = this->state.stateCnt - 12;
     int interval = 10;
     if (frameOffset % interval == 0 && frameOffset < static_cast<int>(this->state.count)) {
-      this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 70;
       this->state.lastPrim->state.pattern = 20;
 
@@ -12731,7 +12732,7 @@ void CRagEffect::IceArrow() {
 
   if (this->state.flag != 0) {
     this->state.flag = 0;
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 30;
     this->state.lastPrim->state.latitude = 90.0f;
     this->state.lastPrim->state.radiusSpeed = 1.2f;
@@ -12761,7 +12762,7 @@ __declspec(safebuffers) void CRagEffect::Flasher() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 70;
     this->state.lastPrim->state.pattern = 65;
     this->state.lastPrim->state.renderFlag |= RSF_ADDITIVE;
@@ -12786,7 +12787,7 @@ __declspec(safebuffers) void CRagEffect::Flasher() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
 
     for (int i = 0; i < 20; ++i) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 70;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -12812,7 +12813,7 @@ __declspec(safebuffers) void CRagEffect::Flasher() {
 void CRagEffect::SuperAngel(char type, int dummy) {
   CopyVector(this->render.position, this->state.parent->render.position);
   if (this->state.stateCnt == 0 || (this->state.stateCnt <= 18 && (type == 1 || type == 11) && this->state.stateCnt % 3 == 0)) {
-    this->state.lastPrim = this->LaunchEffectPrim(85, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_SUPERANGEL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.slots[0].process = 0;
     this->state.lastPrim->state.slots[0].life = 1;
@@ -12868,7 +12869,7 @@ void CRagEffect::SuperAngel(char type, int dummy) {
 
   if (type == 0 || type == 10) {
     if (this->state.stateCnt == 65) {
-      this->state.lastPrim = this->LaunchEffectPrim(75, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_SLASH1, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12888,7 +12889,7 @@ void CRagEffect::SuperAngel(char type, int dummy) {
     }
 
     if (this->state.stateCnt == 66) {
-      this->state.lastPrim = this->LaunchEffectPrim(75, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_SLASH1, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12919,7 +12920,7 @@ void CRagEffect::WarpZone() {
   }
 
   g_modeMgr.GetGameMode();
-  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 158;
   this->state.lastPrim->state.pattern |= 1;
   this->state.lastPrim->state.radius = 15.0f;
@@ -12935,7 +12936,7 @@ void CRagEffect::WarpZone() {
 
 check_cadence:
   if (this->state.stateCnt % 28 == 0 && this->state.stateCnt < 117) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 80;
     this->state.lastPrim->state.innerSize = 4.0f;
     this->state.lastPrim->state.latitude = 90.0f;
@@ -12955,7 +12956,7 @@ check_cadence:
   }
 
   if (this->state.stateCnt % 10 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 5.0f;
     this->state.lastPrim->state.radiusSpeed = 0.0005f;
     this->state.lastPrim->state.duration = 130;
@@ -12979,7 +12980,7 @@ check_cadence:
 // FUNCTION: fn_20041
 void CRagEffect::Enhance() {
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.arcAngle = 22.5f;
     this->state.lastPrim->state.size = 7.0f;
@@ -12991,7 +12992,7 @@ void CRagEffect::Enhance() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.outerSize = 6.0f;
     this->state.lastPrim->state.innerSize = 6.0f;
@@ -13009,7 +13010,7 @@ void CRagEffect::Enhance() {
       return;
     }
 
-    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -13026,7 +13027,7 @@ void CRagEffect::Enhance() {
       return;
     }
 
-    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -13061,7 +13062,7 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
 
   if (this->state.stateCnt == 0) {
     for (int index = 0; index < 20; ++index) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 80;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -13081,7 +13082,7 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
 
   if (this->state.stateCnt == 0) {
     for (int index = 0; index < 4; ++index) {
-      this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 100;
       this->state.lastPrim->state.radius = 7.0f;
       this->state.lastPrim->state.gravSpeed = -0.1f;
@@ -13104,7 +13105,7 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
 void CRagEffect::HealSP() {
   this->render.position = this->state.parent->render.position;
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.duration = 100;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = 5.0f;
@@ -13121,7 +13122,7 @@ void CRagEffect::HealSP() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = 5.0f;
     this->state.lastPrim->state.outerSize = 3.5f;
@@ -13137,7 +13138,7 @@ void CRagEffect::HealSP() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
-    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = 5.0f;
     this->state.lastPrim->state.outerSize = 4.5f;
@@ -13157,7 +13158,7 @@ void CRagEffect::HealSP() {
   }
 
   if ((this->state.stateCnt & 1) == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
     rand();
     this->state.lastPrim->state.radius = 3.0f;
     this->state.lastPrim->state.duration = 30;
@@ -13183,7 +13184,7 @@ void CRagEffect::RedParticleSpray(int count) {
   }
 
   for (int index = 0; index < count; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z);
@@ -13232,7 +13233,7 @@ __declspec(safebuffers) void CRagEffect::Hit5() {
   const int angles[2] = {angle, angle + 90};
 
   for (int index = 0; index < 2; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 17;
     this->state.lastPrim->state.deltaPos2.y = -20.0f;
     this->state.lastPrim->state.roll = static_cast<float>(angles[index]);
@@ -13270,7 +13271,7 @@ __declspec(safebuffers) void CRagEffect::Hit6() {
   const int angles[2] = {angle, angle + 90};
 
   for (int index = 0; index < 2; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 17;
     this->state.lastPrim->state.deltaPos2.y = -20.0f;
     this->state.lastPrim->state.roll = static_cast<float>(angles[index]);
@@ -13302,7 +13303,7 @@ void CRagEffect::StoneWall() {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int offset = -2; offset < 4; offset += 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, origin);
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
@@ -13334,7 +13335,7 @@ void CRagEffect::StoneWall() {
 // INLINED
 static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, float turn, int red, int green, int blue, int fade) {
   g_modeMgr.GetGameMode();
-  effect.state.lastPrim = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  effect.state.lastPrim = effect.LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
   effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -13398,7 +13399,7 @@ void CRagEffect::Detoxication() {
         PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
       }
 
-      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.alpha = 0.0f;
       this->state.lastPrim->state.duration = 40;
       this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -13422,7 +13423,7 @@ void CRagEffect::Detoxication() {
         PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
       }
 
-      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 40;
       this->state.lastPrim->state.alpha = 0.0f;
       this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -13456,7 +13457,7 @@ void CRagEffect::EnchantPoison2() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
 
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -13496,7 +13497,7 @@ void CRagEffect::PoisonAttack(char flag) {
       return;
     }
 
-    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -13524,7 +13525,7 @@ void CRagEffect::PoisonAttack(char flag) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -13559,7 +13560,7 @@ void CRagEffect::StoneSpike() {
 
   for (int z = -10; z < 15; z += 5) {
     for (int x = -10; x < 15; x += 5) {
-      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = ClampedRandom(30) + this->state.duration - 10;
       this->state.lastPrim->state.pattern = 1;
       this->state.lastPrim->state.pattern |= 2u;
@@ -13599,7 +13600,7 @@ void CRagEffect::WhiteSparkRing(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(100, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HITLINE3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -13667,7 +13668,7 @@ void CRagEffect::WhiteLightTrail(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(96, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PEONGUP, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -13739,7 +13740,7 @@ void CRagEffect::ElementalOrbit(char kind) {
   }
 
   for (int index = 0; index < count; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(32, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.slots[0].life = 1;
@@ -13750,13 +13751,13 @@ void CRagEffect::ElementalOrbit(char kind) {
     this->state.lastPrim->state.slots[0].height[4] = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.slots[0].height[5] = static_cast<float>(ClampedRandom(360));
 
-    if (kind == 1) {
+    if (kind == ELEMENTAL_ORBIT_SPIRIT_SPHERE2) {
       this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 72);
       this->state.lastPrim->state.slots[0].height[7] = -14.0f;
       this->state.lastPrim->state.slots[0].distance = 1.3f;
       this->state.lastPrim->state.slots[0].height[10] = 1.0f;
-      this->state.lastPrim->state.slots[0].flag1[0] = 0;
-    } else if (kind == 3 || kind == 4) {
+      this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_DEFAULT;
+    } else if (kind == ELEMENTAL_ORBIT_SPIRIT_SPHERE3 || kind == ELEMENTAL_ORBIT_RICH_COIN) {
       if (this->state.deltaPos.x <= 5.0f) {
         this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 360) / this->state.deltaPos.x;
       } else {
@@ -13772,31 +13773,31 @@ void CRagEffect::ElementalOrbit(char kind) {
       }
 
       this->state.lastPrim->state.slots[0].height[10] = 0.0f;
-      this->state.lastPrim->state.slots[0].flag1[0] = 1;
+      this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_BROWN_GLOW;
     } else {
       this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(index * 72);
       this->state.lastPrim->state.slots[0].height[7] = -15.0f;
       this->state.lastPrim->state.slots[0].distance = 2.0f;
       this->state.lastPrim->state.slots[0].height[10] = 0.0f;
-      this->state.lastPrim->state.slots[0].flag1[0] = 0;
+      this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_DEFAULT;
 
       const float total = this->state.deltaPos.x;
       if (total > 10.0f) {
         if (total - static_cast<float>(index) >= 11.0f) {
           this->state.lastPrim->state.slots[0].distance = 2.0f;
-          this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(21);
+          this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_TWO_EXTRA_GLOWS;
         } else {
           this->state.lastPrim->state.slots[0].distance = 2.0f;
-          this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(20);
+          this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW;
         }
       } else if (total > 5.0f) {
         if (total - static_cast<float>(index) >= 6.0f) {
           this->state.lastPrim->state.slots[0].distance = 2.0f;
-          this->state.lastPrim->state.slots[0].flag1[0] = static_cast<char>(20);
+          this->state.lastPrim->state.slots[0].flag1[0] = DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW;
         }
       }
 
-      if (kind >= 10) {
+      if (kind >= ELEMENTAL_ORBIT_FIRE) {
         this->state.lastPrim->state.slots[0].height[6] += static_cast<float>(rand() % 360);
         if (this->state.lastPrim->state.slots[0].height[6] >= 360.0f) {
           this->state.lastPrim->state.slots[0].height[6] -= 360.0f;
@@ -13813,19 +13814,19 @@ void CRagEffect::ElementalOrbit(char kind) {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
     switch (kind) {
-    case 10:
+    case ELEMENTAL_ORBIT_FIRE:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\fire-1.bmp", 0, false, true, false);
       break;
-    case 11:
+    case ELEMENTAL_ORBIT_LIGHTNING:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lightning-1.bmp", 0, false, true, false);
       break;
-    case 12:
+    case ELEMENTAL_ORBIT_WATER:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\water-1.bmp", 0, false, true, false);
       break;
-    case 13:
+    case ELEMENTAL_ORBIT_STONE:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\stone-1.bmp", 0, false, true, false);
       break;
-    case 4:
+    case ELEMENTAL_ORBIT_RICH_COIN:
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\RL_richs_coin_B\\rcoin1.bmp", 0, false, true, false);
       break;
     default:
@@ -13841,7 +13842,7 @@ void CRagEffect::WhiteRingWave() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PORTAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -13915,7 +13916,7 @@ void CRagEffect::TripleRingStack(const char* name, char large) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(23, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -14022,7 +14023,7 @@ void CRagEffect::WideTripleRingStack(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(23, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -14091,7 +14092,7 @@ void CRagEffect::BeginAsura2(int) {
   int index;
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_ASURACASTING, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -14122,7 +14123,7 @@ void CRagEffect::BeginAsura2(int) {
   }
 
   if (this->state.stateCnt == 21) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_ASURACASTING, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -14168,7 +14169,7 @@ void CRagEffect::WhiteSparkStreak(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(100, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HITLINE3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -14249,7 +14250,7 @@ void CRagEffect::BlueRingWave() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_PORTAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -14317,7 +14318,7 @@ void CRagEffect::QuadRingStack(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(24, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING_2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -14404,7 +14405,7 @@ void CRagEffect::BeginAsura(char kind) {
   }
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_ASURACASTING, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 0;
     this->state.lastPrim->state.renderFlag |= 1u;
     this->state.lastPrim->state.renderFlag |= 5u;
@@ -14452,7 +14453,7 @@ void CRagEffect::BeginAsura(char kind) {
   }
 
   if (this->state.stateCnt == 21) {
-    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_ASURACASTING, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 0;
     this->state.lastPrim->state.renderFlag |= 1u;
     this->state.lastPrim->state.renderFlag |= 5u;
@@ -14510,9 +14511,9 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
 
   if (kind == 33) {
     kind = 0;
-    this->state.lastPrim = this->LaunchEffectPrim(25, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING_3, vector3d{0.0f, 0.0f, 0.0f});
   } else {
-    this->state.lastPrim = this->LaunchEffectPrim(23, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING, vector3d{0.0f, 0.0f, 0.0f});
   }
 
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -14597,7 +14598,7 @@ void CRagEffect::Sakura() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(40, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SAKURA, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(2) + 2) * 0.1f;
@@ -14633,7 +14634,7 @@ void CRagEffect::CHIMTO(char flag) {
     PlayEffectWaveInline(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(46, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHIMTO, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].maxHeight = 0.0f;
@@ -14712,7 +14713,7 @@ void CRagEffect::TANJI() {
   }
 
   PlayEffectWaveInline(*this, "effect\\mon_\ud0c4\uc9c0\uc2e0\ud1b5.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(42, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SHIELDBOOMERANG, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -14760,7 +14761,7 @@ void CRagEffect::Gravitation() {
   for (int z = -10; z < 15; z += 5) {
     for (int x = -10; x < 15; x += 5) {
       for (int i = 0; i < 4; ++i) {
-        this->state.lastPrim = this->LaunchEffectPrim(117, origin);
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN2, origin);
         this->state.lastPrim->state.pattern = 1;
         const int angle = ClampedRandom(360);
         rand();
@@ -14806,7 +14807,7 @@ void CRagEffect::ForestLight(const char* name, char flag) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(66, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FOREST, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15021,7 +15022,7 @@ __declspec(safebuffers) void CRagEffect::SandScatter() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.pattern = 8;
   this->state.lastPrim->state.duration = this->state.duration - ClampedRandom(100);
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(300) + 260) / 100.0f;
@@ -15178,7 +15179,7 @@ __declspec(safebuffers) void CRagEffect::Sight() {
   GetRadian(angle);
   const float radius = 15.0f;
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   vector3d& upper = this->state.lastPrim->state.deltaPos2;
   upper.x = radius * sine;
@@ -15194,7 +15195,7 @@ __declspec(safebuffers) void CRagEffect::Sight() {
   this->state.lastPrim->SetActionName("이팩트\\Sight.act");
   this->state.lastPrim->InitSegment();
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   vector3d& shadow = this->state.lastPrim->state.deltaPos2;
   shadow.x = radius * sine;
@@ -15221,7 +15222,7 @@ __declspec(safebuffers) void CRagEffect::AlphaCenterRise() {
   if (this->state.stateCnt == 0) {
     const vector3d origin{0.0f, 0.0f, 0.0f};
     for (int i = 20; i != 0; --i) {
-      this->state.lastPrim = this->LaunchEffectPrim(3, origin);
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DFLASH, origin);
       this->state.lastPrim->state.duration = 40;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -15261,7 +15262,7 @@ bool CRagEffect::Potion_Awakening() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (static_cast<unsigned int>(this->state.stateCnt - 13) <= 96u && this->state.stateCnt % 4 == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = this->state.lastPrim->state;
@@ -15348,7 +15349,7 @@ void CRagEffect::StatusIconColumn() {
         continue;
       }
 
-      this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
       this->state.lastPrim->state.useRenderFlag[0] = 1;
       this->state.lastPrim->state.pattern = 4;
@@ -15394,7 +15395,7 @@ bool CRagEffect::StormGust() {
     for (int count = 0; count < 2; ++count) {
       const float degree = static_cast<float>(ClampedRandom(360));
       const float radius = static_cast<float>(ClampedRandom(25) + 3);
-      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DQUADHORN, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 215 - this->state.stateCnt;
       this->state.lastPrim->state.pattern |= 1u;
 
@@ -15441,7 +15442,7 @@ __declspec(safebuffers) void CRagEffect::DecAgility() {
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\EF_DecAgility.wav");
 
-    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.deltaPos2.y -= 80.0f;
     this->state.lastPrim->state.longitude = 180.0f;
@@ -15463,7 +15464,7 @@ __declspec(safebuffers) void CRagEffect::DecAgility() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
 
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -15519,7 +15520,7 @@ void CRagEffect::TexturedSkillAura(char type) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 57;
   this->state.lastPrim->state.widthSpeed = 1.5f;
   this->state.lastPrim->state.heightSpeed = 1.5f;
@@ -15574,7 +15575,7 @@ void CRagEffect::VioletRingCloud(char type) {
   int i;
   if (this->state.stateCnt == 0) {
     g_modeMgr.GetGameMode();
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15637,7 +15638,7 @@ void CRagEffect::VioletRingCloud(char type) {
   if (this->state.stateCnt == 1) {
     this->render.position = this->state.parent->render.position;
     g_modeMgr.GetGameMode();
-    this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_PORTAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15700,7 +15701,7 @@ void CRagEffect::VioletRingCloud(char type) {
   }
 
   if (this->state.stateCnt == 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_WIND, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15775,7 +15776,7 @@ void CRagEffect::TexturedMagicRing(char type) {
   int i;
   if (this->state.stateCnt == 0) {
     g_modeMgr.GetGameMode();
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15849,7 +15850,7 @@ void CRagEffect::TexturedMagicRing(char type) {
   }
 
   if (this->state.stateCnt == 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_WIND, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15927,7 +15928,7 @@ void CRagEffect::TexturedRisingRing(const char* name) {
   this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(107, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING_5, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -15992,7 +15993,7 @@ void CRagEffect::TexturedRisingRing(const char* name) {
   }
 
   if (this->state.stateCnt == 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(107, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DCASTING_5, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16064,7 +16065,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     stored()->state.duration = this->state.duration;
     stored()->state.textures = new CTexture*[stored()->state.totalTexture];
@@ -16122,7 +16123,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   if (level == 1) {
     if (this->state.stateCnt == 30) {
       PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
-      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
@@ -16179,7 +16180,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   } else {
     if (this->state.stateCnt == 30) {
       PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
-      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
@@ -16235,7 +16236,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
     }
 
     if (this->state.stateCnt == 60) {
-      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
       stored()->state.duration = this->state.duration;
       stored()->state.textures = new CTexture*[stored()->state.totalTexture];
@@ -16303,7 +16304,7 @@ void CRagEffect::Cloud11Burst(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_WIND, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16369,7 +16370,7 @@ void CRagEffect::White02Burst(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(100, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HITLINE3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -16411,7 +16412,7 @@ void CRagEffect::GrandCrossRings(short angle, char kind) {
   }
 
   PlayEffectWaveInline(*this, "effect\\cru_grand cross.wav");
-  this->state.lastPrim = this->LaunchEffectPrim(34, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -16481,7 +16482,7 @@ void CRagEffect::GrandCrossRings(short angle, char kind) {
 void CRagEffect::WaterfallSheets(char first, char second, char third) {
   if (this->state.stateCnt == 0) {
     CopyVector(this->render.position, this->state.parent->render.position);
-    this->state.lastPrim = this->LaunchEffectPrim(79, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_WATERFALL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 3;
@@ -16541,7 +16542,7 @@ void CRagEffect::TexturedBlueRing(const char* name) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(121, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SMA2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16613,7 +16614,7 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(132, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_COLOR_PANEL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 0;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -16636,7 +16637,7 @@ void CRagEffect::EmpShockBurst(const char* name, char flag) {
   }
 
   if (this->state.stateCnt == 10) {
-    this->state.lastPrim = this->LaunchEffectPrim(132, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_COLOR_PANEL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 0;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
     this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -16674,7 +16675,7 @@ void CRagEffect::TexturedMagicRing(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(48, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_BOTTOM2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16761,7 +16762,7 @@ __declspec(safebuffers) void CRagEffect::IncAgilityCenter(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DCROSSTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& launched = this->state.lastPrim->state;
@@ -16795,7 +16796,7 @@ void CRagEffect::SonicSlashFan(char kind) {
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
+    this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLESPLINE, origin);
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->render.position.x, this->render.position.z);
@@ -16850,7 +16851,7 @@ void CRagEffect::TexturedStorm2(const char* name, char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(111, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_SOULPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16911,7 +16912,7 @@ void CRagEffect::RingRedPulse(const char* name, float x, float z) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(110, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL_LOW, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16968,7 +16969,7 @@ void CRagEffect::LineStreakLayered(short kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(56, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_NO_DEPTH;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17031,7 +17032,7 @@ void CRagEffect::TorchRedRing(char kind) {
 
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  this->state.lastPrim = this->LaunchEffectPrim(133, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ANIMATED_FLASH, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 13;
@@ -17093,7 +17094,7 @@ void CRagEffect::TexturedSlashAir(const char* name, char size, char phase) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(108, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_FLOWERCAST, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17172,7 +17173,7 @@ void CRagEffect::SuperSlashFan(char count, char value) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(35, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GUMGANG, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -17225,7 +17226,7 @@ void CRagEffect::SuperSlashSpread(char count, char value) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(99, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 5;
@@ -17367,7 +17368,7 @@ void CRagEffect::PortalRings() {
     0
   );
 
-  this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17450,7 +17451,7 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
     return;
   }
 
-  CEffectPrim* particle = this->LaunchEffectPrim(169, vector3d{0.0f, 0.0f, 0.0f});
+  CEffectPrim* particle = this->LaunchEffectPrim(PP_GROUND_RING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -17541,7 +17542,7 @@ void CRagEffect::Maple() {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(40, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_SAKURA, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(4) + 2) * 0.03f;
@@ -17571,7 +17572,7 @@ bool CRagEffect::GlassWallRising(const char* name) {
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17652,7 +17653,7 @@ void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name,
     this->state.duration = 56;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(30, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_GI_1, vector3d{0.0f, 0.0f, 0.0f});
 
   if (this->state.lastPrim == nullptr) {
     return;
@@ -17813,7 +17814,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   this->render.position.y = parent.position.y;
   this->render.position.z = parent.position.z;
 
-  this->state.lastPrim = this->LaunchEffectPrim(118, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_ACIDDEMON, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17896,7 +17897,7 @@ void CRagEffect::TeleportSpiral(const char* name) {
 
   PlayEffectWave(*this, "effect\\EF_Teleportation.wav");
 
-  this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -17978,7 +17979,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  this->state.lastPrim = this->LaunchEffectPrim(82, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_EFFECTTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -18202,7 +18203,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -18301,7 +18302,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
       PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
   } else if (this->state.stateCnt <= 50 && this->state.stateCnt % 6 == 0 && type < 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 2;
@@ -18340,7 +18341,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
   }
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -18409,7 +18410,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
   }
 
   if (this->state.stateCnt <= 50 && this->state.stateCnt % 9 == 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 2;
@@ -18448,7 +18449,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
   const int limit = flag != 0 ? 25 : 50;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_HEAL, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -18523,7 +18524,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
   }
 
   if (flag == 0) {
-    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -18554,7 +18555,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
   }
 
   if (flag == 1) {
-    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(PP_PARTICLE_UP, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 2;
@@ -18597,7 +18598,7 @@ void CRagEffect::FreezingCircle(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(29, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DAURA_2, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA;
   this->state.lastPrim->state.renderFlag |= RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -18764,7 +18765,7 @@ void CRagEffect::TorchDust(char kind) {
   }
 
   this->render.position = this->state.parent->render.position;
-  this->state.lastPrim = this->LaunchEffectPrim(128, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_EFFECTTEXTURE_ANI, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
   stored()->state.duration = this->state.duration;
 
@@ -18970,7 +18971,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     return;
   }
 
-  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.deltaPos2.y = 0.0f;
   this->state.lastPrim->state.renderFlag |= 0x200u;
@@ -20884,16 +20885,16 @@ bool CRagEffect::OnProcess3() {
     this->TexturedClassChange(39);
     break;
   case EF_CHOOKGI_FIRE:
-    this->ElementalOrbit(10);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_FIRE);
     break;
   case EF_CHOOKGI_WIND:
-    this->ElementalOrbit(11);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_LIGHTNING);
     break;
   case EF_CHOOKGI_WATER:
-    this->ElementalOrbit(12);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_WATER);
     break;
   case EF_CHOOKGI_GROUND:
-    this->ElementalOrbit(13);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_STONE);
     break;
   case EF_SOULBREAKER4:
     if (this->state.stateCnt == 20) {
@@ -21334,7 +21335,7 @@ bool CRagEffect::OnProcess3() {
     this->TexturedClassChange(20);
     break;
   case EF_CHOOKGI3:
-    this->ElementalOrbit(3);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_SPIRIT_SPHERE3);
     break;
   case EF_BASH3D5:
     if (this->state.stateCnt == 0) {
@@ -21376,7 +21377,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       PlayEffectWaveInline(*this, "effect\\EF_ThunderStorm.wav");
-      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
       this->state.lastPrim->state.pattern |= 0x200;
@@ -21508,7 +21509,7 @@ bool CRagEffect::OnProcess3() {
         const float sine = ClientSine(angle);
         const float cosine = ClientCosine(angle);
         GetRadian(angle);
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 20;
         this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
         this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -21790,7 +21791,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_CHOOKGI2:
-    this->ElementalOrbit(1);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_SPIRIT_SPHERE2);
     break;
   case EF_SLIM:
     this->TexturedRain("유저인터페이스\\item\\레드슬림포션.bmp", 1);
@@ -22314,7 +22315,7 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 0) {
       const vector3d offset = {0.0f, 0.0f, 0.0f};
       for (int angle = 0; angle < 1440; angle += 360) {
-        this->state.lastPrim = this->LaunchEffectPrim(171, vector3d{offset.x, offset.y, offset.z});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_GLOW_DISC, vector3d{offset.x, offset.y, offset.z});
         this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.slots[0].life = 1;
@@ -22438,7 +22439,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_RL_B_TRAP:
-    this->ElementalOrbit(4);
+    this->ElementalOrbit(ELEMENTAL_ORBIT_RICH_COIN);
     break;
   case EF_RL_HAMMER_OF_GOD:
     for (int index = 0; index < 65; ++index) {
@@ -22604,7 +22605,7 @@ bool CRagEffect::OnProcess3() {
         }
       }
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{offset.x, offset.y, offset.z});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{offset.x, offset.y, offset.z});
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.pattern |= 0x800;
         this->state.lastPrim->state.longitude = 0.0f;
@@ -23600,7 +23601,7 @@ bool CRagEffect::OnProcess() {
         float cosine = ClientCosine(angle);
         GetRadian(angle);
 
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 25;
         sine *= 15.0f;
         vector3d& bodyOffset = this->state.lastPrim->state.deltaPos2;
@@ -23617,7 +23618,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
         this->state.lastPrim->InitSegment();
 
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 25;
         vector3d& shadowOffset = this->state.lastPrim->state.deltaPos2;
         shadowOffset.x = sine;
@@ -23637,7 +23638,7 @@ bool CRagEffect::OnProcess() {
     case EF_TELEPORTATION:
       if (this->state.stateCnt == 0) {
         PlayEffectWaveInline(*this, "effect\\EF_Teleportation.wav");
-        this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 60;
         this->state.lastPrim->state.pattern |= 1;
         this->state.lastPrim->state.outerSize = 4.0f;
@@ -23653,7 +23654,7 @@ bool CRagEffect::OnProcess() {
     case EF_READYPORTAL:
       if (this->state.stateCnt % 14 == 0) {
         PlayEffectWaveInline(*this, "effect\\EF_ReadyPortal.wav");
-        this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 30;
         this->state.lastPrim->state.deltaPos2.y = -1.0f;
         this->state.lastPrim->state.innerSize = 8.0f;
@@ -23767,7 +23768,7 @@ bool CRagEffect::OnProcess() {
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
         PlayEffectWaveInline(*this, "effect\\EF_Aqua.wav");
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.deltaPos2.y = -20.0f;
         this->state.lastPrim->state.animSpeed = 2;
@@ -23788,7 +23789,7 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt == 0) {
         const int count = ClampedRandom(4) + 1;
         for (int index = 0; index < count; ++index) {
-          this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+          this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
           this->state.lastPrim->state.duration = this->state.duration;
           this->state.lastPrim->state.transform.MakeXRotation(GetRadian(ClampedRandom(30) + 75));
           this->state.lastPrim->state.transform.AppendYRotation(GetRadian(ClampedRandom(360)));
@@ -23813,7 +23814,7 @@ bool CRagEffect::OnProcess() {
     case EF_TORCH:
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.pattern |= 0x200;
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.deltaPos2.y = -10.0f;
@@ -23836,7 +23837,7 @@ bool CRagEffect::OnProcess() {
     case EF_BANJJAKII:
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.pattern |= 0x200;
         this->state.lastPrim->state.duration = 125;
         this->state.lastPrim->state.deltaPos2.y = -10.0f;
@@ -23922,7 +23923,7 @@ bool CRagEffect::OnProcess() {
       this->state.tlvertY = vertex.y;
       const int roll = rand() % 360;
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_2DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 30;
         this->state.lastPrim->state.deltaPos2.y = -20.0f;
         this->state.lastPrim->state.widthSize = 10.0f;
@@ -23946,7 +23947,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_POISONHIT:
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.size = 1.5f;
         this->state.lastPrim->state.animSpeed = 2;
@@ -24211,7 +24212,7 @@ bool CRagEffect::OnProcess() {
       this->state.tlvertY = vertex.y;
       if (this->state.stateCnt == 0) {
         PlayEffectWaveInline(*this, "effect\\EF_StoneCurse.wav");
-        this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_2DCIRCLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.fadeOutCnt = 0;
         this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -24246,7 +24247,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_BARRIER:
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(14, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DSPHERE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 250;
         this->state.lastPrim->state.radius = 13.5f;
         this->state.lastPrim->state.deltaPos2.y = -10.0f;
@@ -24261,7 +24262,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_CONE:
       if (this->state.stateCnt % 130 == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLEORBIT, vector3d{0.0f, 0.0f, 0.0f});
         this->state.duration = 200;
         this->state.lastPrim->state.duration = 300;
         this->state.lastPrim->state.radius = 0.1f;
@@ -24340,7 +24341,7 @@ bool CRagEffect::OnProcess() {
         PlayEffectWaveInline(*this, "effect\\wizard_fire_ivy.wav");
       }
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.pattern = 0x40;
         this->state.lastPrim->state.pattern |= 0x100;
@@ -24466,7 +24467,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_REVIVE:
       if (this->state.stateCnt % 25 == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DCYLINDER, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 60;
         this->state.lastPrim->state.longSpeed = 1.5f;
         this->state.lastPrim->state.longAccel = 0.03f;
@@ -24505,7 +24506,7 @@ bool CRagEffect::OnProcess() {
         this->state.stateCnt = 0;
       }
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 9999;
         this->state.lastPrim->state.longitude = 0.0f;
         this->state.lastPrim->state.longSpeed = 4.5f;
@@ -24532,7 +24533,7 @@ bool CRagEffect::OnProcess() {
         this->state.stateCnt = 0;
       }
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 9999;
         this->state.lastPrim->state.longitude = 0.0f;
         this->state.lastPrim->state.roll = 90.0f;
@@ -24815,7 +24816,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_CHOOKGI:
-      this->ElementalOrbit(0);
+      this->ElementalOrbit(ELEMENTAL_ORBIT_SPIRIT_SPHERE);
       break;
     case EF_LINELINK:
       this->TrackCloud(0);
@@ -25047,7 +25048,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_VENOMDUST2:
       if (this->state.stateCnt % 5 == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 10;
         this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
         this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
@@ -25111,7 +25112,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_CURSEATTACK:
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DTEXTURE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 9999;
         this->state.lastPrim->state.longitude = 0.0f;
         this->state.lastPrim->state.longSpeed = 4.5f;
@@ -25124,7 +25125,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_DARKBREATH:
       if (this->state.stateCnt == 0) {
-        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 65;
         this->state.lastPrim->state.renderFlag |= RSF_NO_DEPTH;
         this->state.lastPrim->state.deltaPos2.y -= 20.0f;

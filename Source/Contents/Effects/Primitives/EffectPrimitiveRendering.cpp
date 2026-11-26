@@ -269,23 +269,23 @@ void CEffectPrim::Render(int argument) {
     case PP_3DPARTICLESPLINE:
     case PP_3DPARTICLE_NOMASTER:
     case PP_SAKURA:
-    case 46:
-    case 51:
+    case PP_CHIMTO:
+    case PP_BOTTOMSPR:
     case PP_GHOST:
     case PP_SUPERANGEL:
     case PP_KOUENKA:
       this->RenderSegmentSprites2(wtm);
       break;
-    case 167:
+    case PP_3D_SLOT_PARTICLE:
       this->RenderSegmentSprites(wtm);
       break;
-    case 152:
+    case PP_WANDERING_SLOTS:
       this->RenderSegmentSpriteTrail(wtm);
       break;
-    case 153:
+    case PP_SEGMENT_SPRITE_GLOW:
       this->RenderSegmentSpriteGlow(wtm);
       break;
-    case 168:
+    case PP_GROUND_SPRITE:
       this->RenderGroundSprite(wtm);
       break;
     case PP_3DQUADHORN:
@@ -364,22 +364,22 @@ void CEffectPrim::Render(int argument) {
     case PP_HALFSPHERE:
       this->RenderHalfSphere(wtm);
       break;
-    case 146:
+    case PP_DRIFTING_RINGS:
       this->RenderTrailingArc(wtm);
       break;
-    case 144:
+    case PP_GROUND_ARC_STEP:
       this->RenderGroundArcStep(wtm);
       break;
-    case 149:
+    case PP_WAVE_HEIGHTS:
       this->RenderGroundArcGlow(wtm);
       break;
-    case 158:
+    case PP_GROUND_ARC:
       this->RenderGroundArc(wtm);
       break;
-    case 173:
+    case PP_WAVE_HEIGHTS_SLOW:
       this->RenderGroundArc2(wtm);
       break;
-    case 137:
+    case PP_HEIGHT_RAMP:
       this->RenderArcWalls(wtm);
       break;
     case PP_SMA2:
@@ -391,7 +391,7 @@ void CEffectPrim::Render(int argument) {
     case PP_GUARD:
       this->RenderSphereCage(wtm);
       break;
-    case 105:
+    case PP_ATTACKENERGY:
       this->RenderCone(wtm);
       break;
     case PP_ATTACKENERGY2:
@@ -410,28 +410,28 @@ void CEffectPrim::Render(int argument) {
     case PP_WIND:
       this->RenderRiseArc(wtm);
       break;
-    case 26:
-    case 28:
-    case 39:
-    case 67:
-    case 88:
-    case 161:
+    case PP_MAPMAGICZONE:
+    case PP_3DAURA:
+    case PP_LANDPROTECTOR:
+    case PP_FOOT:
+    case PP_GROUNDSHAKE:
+    case PP_TWIN_SPIN:
       this->RenderSizedSquare(wtm);
       break;
-    case 143:
+    case PP_TEXTURE_SPIN:
       this->RenderGroundSquare(wtm);
       break;
-    case 148:
+    case PP_GROUND_SQUARE_BLEND:
       this->RenderGroundSquareBlend(wtm);
       break;
     case PP_HERMODE:
       this->RenderHermode(wtm);
       break;
     case PP_ASURACASTING:
-    case 147:
+    case PP_RISING_FAN:
       this->RenderHaloLayers(wtm);
       break;
-    case 131:
+    case PP_RISING_FAN2:
       this->RenderRipple(wtm);
       break;
     case PP_HITLINE:
@@ -440,13 +440,13 @@ void CEffectPrim::Render(int argument) {
     case PP_HITLINE3:
       this->RenderHitLine3(wtm);
       break;
-    case 103:
+    case PP_STORMKICK:
       this->RenderStackedRings(wtm);
       break;
     case PP_ELECTRIC:
       this->RenderLightningArc(wtm);
       break;
-    case 135:
+    case PP_TRAIL_SHIFT:
       this->RenderJitterSweeps(wtm);
       break;
     case PP_ELECTRIC2:
@@ -455,31 +455,31 @@ void CEffectPrim::Render(int argument) {
     case PP_MAPPARTICLE:
       this->RenderGroundBubbles(wtm);
       break;
-    case 29:
-    case 80:
+    case PP_3DAURA_2:
+    case PP_FALLING_PETALS:
       this->RenderGroundFog(wtm);
       break;
-    case 150:
+    case PP_FALLING_PETALS2:
       this->RenderHoverSquares(wtm);
       break;
-    case 130:
+    case PP_DRIFTING_SQUARES:
       this->RenderFacingQuads(wtm);
       break;
     case PP_SOULPARTICLE:
-    case 115:
+    case PP_3DAURA_3:
       this->RenderSoulParticle(wtm);
       break;
-    case 155:
-    case 170:
+    case PP_WANDERING_FLAMES:
+    case PP_WANDERING_FLAMES2:
       this->RenderTwinGlowSquares(wtm);
       break;
-    case 157:
+    case PP_ORBIT_FADE:
       this->RenderGlowSquare(wtm);
       break;
     case PP_SOULLINK:
       this->RenderSoulLink(wtm);
       break;
-    case 151:
+    case PP_SPIRAL_FADE:
       this->RenderLaunchEffects(wtm);
       break;
     case PP_PEONGUP:
@@ -488,7 +488,7 @@ void CEffectPrim::Render(int argument) {
     case PP_PEONG:
       this->RenderPeong(wtm);
       break;
-    case 35: {
+    case PP_GUMGANG: {
       this->RenderOrbitIcons(wtm, 1.0f, 100, 100, 255);
       break;
     }
@@ -498,24 +498,24 @@ void CEffectPrim::Render(int argument) {
     case PP_3DCASTING:
     case PP_3DCASTING_2:
     case PP_3DCASTING_3:
-    case 30:
-    case 31:
-    case 41:
-    case 50:
-    case 57:
-    case 60:
-    case 63:
+    case PP_GI_1:
+    case PP_GI_2:
+    case PP_MAPPILLAR:
+    case PP_GI_5:
+    case PP_TELEPORTATION2:
+    case PP_HEAL:
+    case PP_PORTAL:
     case PP_3DCASTING_4:
     case PP_3DCASTING_5:
     case PP_FLOWERCAST:
-    case 113:
+    case PP_GI_EXPLOSION:
     case PP_ACIDDEMON:
-    case 139:
+    case PP_BREATHING_WAVE:
       this->Render3DCasting(wtm);
       break;
-    case 36:
+    case PP_GI_4:
     case PP_HEAL_LOW:
-    case 169:
+    case PP_GROUND_RING:
       this->Render3DCasting_LowPolygon(wtm);
       break;
     case PP_GI_3:
@@ -533,43 +533,43 @@ void CEffectPrim::Render(int argument) {
     case PP_RECT_UP2:
       this->RenderRectUp2(wtm);
       break;
-    case 132:
+    case PP_COLOR_PANEL:
       this->RenderColorPanel(wtm);
       break;
     case PP_INTIMIDATE:
       this->RenderOrbitSquare(wtm);
       break;
-    case 44:
+    case PP_TEIHIT1:
       this->RenderRotatedPlate(wtm);
       break;
-    case 86:
-    case 92:
+    case PP_SOULBREAKER:
+    case PP_SOULBREAKER2:
       this->RenderFloorSquare(wtm);
       break;
-    case 119:
-    case 122:
+    case PP_STIN:
+    case PP_STIN2:
     case PP_STIN4:
       this->RenderFloorSquare2(wtm);
       break;
-    case 126:
+    case PP_STIN5:
       this->RenderRotatedRing(wtm);
       break;
     case PP_SMA:
       this->RenderSMA3(wtm);
       break;
-    case 98:
+    case PP_AIRTEXTURE:
       this->RenderRing(wtm);
       break;
-    case 32:
+    case PP_CHOOKGI:
       this->RenderLayeredGlow(wtm);
       break;
-    case 145:
+    case PP_DRIFTING_SPARKS:
       this->RenderPillarSquares(wtm);
       break;
-    case 138:
+    case PP_TWIN_FACING_SQUARES:
       this->RenderTwinFacingSquares(wtm);
       break;
-    case 33:
+    case PP_CLOUD:
     case PP_SHIELDBOOMERANG:
     case PP_TEIHIT2:
     case PP_BOTTOM:
@@ -577,59 +577,59 @@ void CEffectPrim::Render(int argument) {
     case PP_THROWITEM:
     case PP_FIRSTAID:
     case PP_PARTICLE_UP:
-    case 87:
+    case PP_PRESSURE:
     case PP_TANJI2:
     case PP_SHIELDBOOMERANG3:
     case PP_TWILIGHT:
     case PP_BUBBLE_DROP:
       this->RenderFieldPanel(wtm);
       break;
-    case 156:
+    case PP_HOVER_FOLLOW:
       this->RenderJitterQuads(wtm);
       break;
-    case 136:
+    case PP_RANDOM_SPIN:
       this->RenderSpinSquares(wtm);
       break;
-    case 82:
+    case PP_EFFECTTEXTURE:
     case PP_EFFECTTEXTURE2:
     case PP_EFFECTTEXTURE_ANI:
-    case 140:
+    case PP_FRAME_FADE:
       this->RenderTeiFacingSlots(wtm);
       break;
-    case 160:
+    case PP_GLOW_FOLLOW:
       this->RenderPolygonFrames(wtm);
       break;
-    case 141:
+    case PP_RISE_FOLLOW:
       this->RenderTaperedQuad(wtm);
       break;
-    case 133:
+    case PP_ANIMATED_FLASH:
       this->RenderSpiralBlades(wtm);
       break;
-    case 134:
+    case PP_BLADE_TRAIL:
       this->RenderBladeTrail(wtm);
       break;
     case PP_CHEMICALPROTECTION:
       this->RenderChemical(wtm);
       break;
-    case 89:
+    case PP_BASH3D:
       this->RenderFanBeam(wtm);
       break;
-    case 159:
+    case PP_SPIRAL_COLLAPSE:
       this->RenderBladeQuads(wtm);
       break;
-    case 162:
+    case PP_FAN_SLICE:
       this->RenderFanSlice(wtm);
       break;
-    case 163:
+    case PP_FAN_WEDGE:
       this->RenderFanWedge(wtm);
       break;
-    case 164:
+    case PP_FRAME_SCROLL:
       this->RenderFanTrail(wtm);
       break;
-    case 165:
+    case PP_CURVED_FAN_TRAIL:
       this->RenderCurvedFanTrail(wtm);
       break;
-    case 166:
+    case PP_FOLDING_RIBBON:
       this->RenderFoldingRibbon(wtm);
       break;
     case PP_CHEMICAL2:
@@ -638,22 +638,22 @@ void CEffectPrim::Render(int argument) {
     case PP_CHEMICAL3:
       this->RenderGroundBar(wtm);
       break;
-    case 154:
+    case PP_BLADE_FINS:
       this->RenderBladeFins(wtm);
       break;
-    case 112:
+    case PP_GROUNDSAMPLE:
       this->RenderMagicTarget(wtm);
       break;
-    case 74:
+    case PP_CALLZONE:
       this->RenderHalfSphere2(wtm);
       break;
     case PP_BLIND:
       this->RenderBlind(wtm);
       break;
-    case 72:
+    case PP_POISON:
       this->RenderGrid(wtm);
       break;
-    case 172: {
+    case PP_COLORED_FLASH: {
       int rpCnt = 0;
       EffectPrimitiveSlot& slot = this->state.slots[0];
       if (slot.life == 1 && slot.alphaB > 0) {
@@ -690,13 +690,13 @@ void CEffectPrim::Render(int argument) {
     case PP_LINELINK:
       this->RenderTube(wtm);
       break;
-    case 69:
+    case PP_TRIPLEATTACK:
       this->RenderPentaRing(wtm);
       break;
     case PP_FOREST:
       this->RenderPentagon(wtm);
       break;
-    case 129: {
+    case PP_BOBBING: {
       vector3d prevB{};
       vector3d curB{};
       vector3d curT{};
@@ -729,16 +729,16 @@ void CEffectPrim::Render(int argument) {
       }
       break;
     }
-    case 79:
+    case PP_WATERFALL:
       this->RenderScrollColumn(wtm);
       break;
-    case 142:
+    case PP_WATERFALL_PANELS:
       this->RenderStandingPanels(wtm);
       break;
     case PP_RAINBOW:
       this->RenderRainbow(wtm);
       break;
-    case 81:
+    case PP_LIGHTSPHERE:
       this->RenderBeam(wtm);
       break;
     case PP_BOTTOM2:
@@ -814,7 +814,7 @@ void CEffectPrim::Render(int argument) {
       g_renderer->SubmitTriangle(this->state.triangles[0], 5);
       break;
     }
-    case 171:
+    case PP_GLOW_DISC:
       this->RenderGlowDisc(wtm);
       break;
   }
@@ -4817,7 +4817,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
     if (this->state.slots[ec].life == 1) {
       const short alpha = this->state.slots[ec].alphaB;
       if (alpha > 0) {
-      if (this->state.slots[ec].flag1[0] == 21) {
+      if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_TWO_EXTRA_GLOWS) {
         rx = this->state.slots[ec].distance * g_masterReachDistance;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
 
@@ -4867,7 +4867,7 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
         vec4 += this->state.slots[ec].vecBNow;
 
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 20) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
         rx = this->state.slots[ec].distance * g_layeredGlowModeTwentyScale;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
 
@@ -4917,21 +4917,21 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
       vec3 += this->state.slots[ec].vecBNow;
       vec4 += this->state.slots[ec].vecBNow;
 
-      const short pw = this->state.isChangeProcessed == 1 ? 0 : 10;
+      const short pw = this->state.isChangeProcessed == DRIFTING_ORB_DISPERSING ? 0 : 10;
 
-      if (this->state.slots[ec].flag1[0] == 1) {
+      if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_BROWN_GLOW) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 68, 42, 30, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 10) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_FIRE) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 11) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_LIGHTNING) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 12) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_WATER) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 13) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_STONE) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, pw, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 20) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 21) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_TWO_EXTRA_GLOWS) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 40, 40, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -4960,19 +4960,19 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
       vec3 += this->state.slots[ec].vecBNow;
       vec4 += this->state.slots[ec].vecBNow;
 
-      if (this->state.slots[ec].flag1[0] == 1) {
+      if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_BROWN_GLOW) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 10) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_FIRE) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 11) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_LIGHTNING) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 12) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_WATER) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 13) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_STONE) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 150, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 20) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 150, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (this->state.slots[ec].flag1[0] == 21) {
+      } else if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_TWO_EXTRA_GLOWS) {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);

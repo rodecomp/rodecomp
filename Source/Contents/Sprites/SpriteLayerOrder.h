@@ -11,6 +11,7 @@ enum SpriteLayerId : int {
   SPRITE_LAYER_WEAPON_EFFECT = 6,
   SPRITE_LAYER_SHIELD = 7,
   SPRITE_LAYER_ROBE = 8,
+  SPRITE_LAYER_NONE = 9,
 };
 
 class CImfRes;

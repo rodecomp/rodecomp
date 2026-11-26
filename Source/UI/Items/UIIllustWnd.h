@@ -5,6 +5,11 @@
 
 #include <string>
 
+enum IllustrationWindowInfo : int {
+  ILLUSTRATION_INFO_ENABLE_TITLE = -2,
+  ILLUSTRATION_INFO_HIDE_CHROME = 5,
+};
+
 class UIIllustWnd : public UIFrameWnd {
 public:
   UIIllustWnd();

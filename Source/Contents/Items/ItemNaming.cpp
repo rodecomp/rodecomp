@@ -49,7 +49,7 @@ __declspec(noinline) bool ITEM_INFO::IsEquipment() const {
   case TYPE_ARMORMB:
   case TYPE_ARMORTMB:
   case TYPE_GUN:
-  case 21:
+  case TYPE_UNKNOWN_21:
     return true;
   default:
     return false;
@@ -436,7 +436,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
       case TYPE_ARMORMB:
       case TYPE_ARMORTMB:
       case TYPE_GUN:
-      case 21:
+      case TYPE_UNKNOWN_21:
         break;
       default:
         equipment = false;
@@ -537,28 +537,28 @@ static void AppendReplayRecord(std::vector<unsigned char>& records, const std::v
 // FUNCTION: fn_06590
 std::vector<unsigned char> ITEM_INFO::Serialize() const {
   std::vector<unsigned char> result;
-  AppendReplayRecord(result, BuildReplayTaggedRecord(281, nullptr, 0));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(283, &this->identity[0], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(285, &this->identity[1], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(284, &this->identity[2], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(286, &this->identity[3], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(287, &this->quantity, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(288, &this->prices[0], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(289, &this->prices[1], 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(290, this->cards, 16));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_BEGIN, nullptr, 0));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_ITEM_TYPE, &this->identity[0], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_ITEM_INDEX, &this->identity[1], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_LOCATION, &this->identity[2], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_WEAR_LOCATION, &this->identity[3], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_QUANTITY, &this->quantity, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_PRICE, &this->prices[0], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_REAL_PRICE, &this->prices[1], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_CARDS, this->cards, 16));
   const int id = std::atoi(this->itemId.c_str());
-  AppendReplayRecord(result, BuildReplayTaggedRecord(291, &id, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(292, this->displayName.c_str(), static_cast<std::uint32_t>(this->displayName.size())));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(293, &this->identified, 1));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(294, &this->damaged, 1));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(295, &this->refiningLevel, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(296, &this->bindOnEquip, 2));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(297, &this->expireTime, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(298, &this->sprite, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(299, &this->grade, 2));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(300, &this->optionCount, 4));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(301, this->options, 25));
-  AppendReplayRecord(result, BuildReplayTaggedRecord(282, nullptr, 0));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_ITEM_ID, &id, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_DISPLAY_NAME, this->displayName.c_str(), static_cast<std::uint32_t>(this->displayName.size())));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_IDENTIFIED, &this->identified, 1));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_DAMAGED, &this->damaged, 1));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_REFINING_LEVEL, &this->refiningLevel, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_BIND_ON_EQUIP, &this->bindOnEquip, 2));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_EXPIRE_TIME, &this->expireTime, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_SPRITE, &this->sprite, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_GRADE, &this->grade, 2));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_OPTION_COUNT, &this->optionCount, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_OPTIONS, this->options, 25));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(ITEM_INFO_TAG_END, nullptr, 0));
   return result;
 }
 

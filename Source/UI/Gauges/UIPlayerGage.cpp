@@ -1,4 +1,5 @@
 #include "UI/Gauges/UIPcGage.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Utility/Math/Int64Math.h"
 
 #include <algorithm>
@@ -32,7 +33,7 @@ UIRechargeGage::UIRechargeGage() : current(0), maximum(100) {
 
 // OFFSET: 0x0086E210
 // FUNCTION: fn_11067
-UIPlayerGage::UIPlayerGage() : actorKind(0) {
+UIPlayerGage::UIPlayerGage() : actorKind(PC_TYPE) {
 }
 
 // OFFSET: 0x0086DE90
@@ -100,7 +101,7 @@ void UIPlayerGage::Paint() {
   this->ClearSurface(this->colors[0]);
 
   switch (this->actorKind) {
-    case 7:
+    case NPC_PET_TYPE:
       if (this->m_thirdCurrent && this->m_thirdMaximum) {
         const std::int64_t maxVal = MaxIntAndInt64(1, this->m_thirdMaximum());
         const std::int64_t curVal = this->m_thirdCurrent();
@@ -112,8 +113,8 @@ void UIPlayerGage::Paint() {
                          ratio < g_gageThreshold ? this->colors[6] : this->colors[5]);
       }
       return;
-    case 9:
-    case 10:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
         const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
         const std::int64_t curVal1 = this->m_firstCurrent();
@@ -134,8 +135,8 @@ void UIPlayerGage::Paint() {
                          this->colors[3]);
       }
       return;
-    case 13:
-    case 14:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum) {
         const std::int64_t maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
         const std::int64_t curVal = this->m_firstCurrent();
@@ -147,7 +148,7 @@ void UIPlayerGage::Paint() {
                          ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
       }
       return;
-    case 8:
+    case NPC_HO_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum &&
           this->m_thirdCurrent && this->m_thirdMaximum) {
         const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());

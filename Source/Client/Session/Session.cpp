@@ -228,7 +228,7 @@ bool CSession::IsPlayerPerformerJob(int) const {
 // FUNCTION: fn_24183
 bool CSession::IsSpecialMonsterJob(int job) const {
   switch (job) {
-  case 331:
+  case JT_IMPERIAL_GUARD_CHICKEN_SPRITE:
   case JT_WISH_MAIDEN:
   case JT_I_G_RAKE_SCARABA:
   case JT_GM_HINALLE:
@@ -3718,7 +3718,7 @@ void CSession::InitJobKeyNames() {
   names[330] = "DRAGON_KNIGHT_CHICKEN";
   names[308] = "IMPERIAL_GUARD";
   names[321] = "IMPERIAL_GUARD_RIDING";
-  names[331] = "IMPERIAL_GUARD_CHICKEN";
+  names[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = "IMPERIAL_GUARD_CHICKEN";
   names[352] = "SKY_EMPEROR";
   names[366] = "SKY_EMPEROR2";
   names[359] = "SKY_EMPEROR_RIDING";
@@ -4631,7 +4631,7 @@ void CSession::InitResourceNameTables() {
   bodyJobNames[330] = "DRAGON_KNIGHT_CHICKEN";
   bodyJobNames[308] = "IMPERIAL_GUARD";
   bodyJobNames[321] = "IMPERIAL_GUARD_RIDING";
-  bodyJobNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  bodyJobNames[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = "IMPERIAL_GUARD_CHICKEN";
   bodyJobNames[305] = "ARCH_MAGE";
   bodyJobNames[318] = "ARCH_MAGE_RIDING";
   bodyJobNames[311] = "ELEMETAL_MASTER";
@@ -4985,7 +4985,7 @@ void CSession::InitResourceNameTables() {
   imfNames[330] = "DRAGON_KNIGHT_CHICKEN";
   imfNames[308] = "IMPERIAL_GUARD";
   imfNames[321] = "IMPERIAL_GUARD_RIDING";
-  imfNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  imfNames[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = "IMPERIAL_GUARD_CHICKEN";
   imfNames[304] = "SHADOW_CROSS";
   imfNames[317] = "SHADOW_CROSS_RIDING";
   imfNames[310] = "ABYSS_CHASER";
@@ -5450,7 +5450,7 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[330] = DragonKnightChickenBodyPath1().Text();
   shieldJobNames[308] = ImperialGuardBodyPath1().Text();
   shieldJobNames[321] = ImperialGuardRidingBodyPath1().Text();
-  shieldJobNames[331] = ImperialGuardChickenBodyPath1().Text();
+  shieldJobNames[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = ImperialGuardChickenBodyPath1().Text();
   shieldJobNames[304] = ShadowCrossBodyPath1().Text();
   shieldJobNames[317] = ShadowCrossRidingBodyPath1().Text();
   shieldJobNames[310] = AbyssChaserBodyPath1().Text();
@@ -5913,7 +5913,7 @@ void CSession::InitResourceNameTables() {
   palJobNames[330] = "DRAGON_KNIGHT_CHICKEN";
   palJobNames[308] = "IMPERIAL_GUARD";
   palJobNames[321] = "IMPERIAL_GUARD_RIDING";
-  palJobNames[331] = "IMPERIAL_GUARD_CHICKEN";
+  palJobNames[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = "IMPERIAL_GUARD_CHICKEN";
   palJobNames[307] = "WINDHAWK";
   palJobNames[328] = "WOLF_WINDHAWK";
   palJobNames[320] = "WINDHAWK_RIDING";
@@ -6369,7 +6369,7 @@ void CSession::InitJobSpriteNames() {
   jobSpriteNames[330] = OBFUSCATE_ARRAY("DRAGON_KNIGHT_CHICKEN\\DRAGON_KNIGHT_CHICKEN", 0xB70319D3A78D39CDULL, char).Text();
   jobSpriteNames[308] = OBFUSCATE_ARRAY("IMPERIAL_GUARD\\IMPERIAL_GUARD", 0xA5C5D1A3B9457B53ULL, char).Text();
   jobSpriteNames[321] = OBFUSCATE_ARRAY("IMPERIAL_GUARD_RIDING\\IMPERIAL_GUARD_RIDING", 0x8F61434F0F79DDD7ULL, char).Text();
-  jobSpriteNames[331] = OBFUSCATE_ARRAY("IMPERIAL_GUARD_CHICKEN\\IMPERIAL_GUARD_CHICKEN", 0x4B670715D543C1C3ULL, char).Text();
+  jobSpriteNames[JT_IMPERIAL_GUARD_CHICKEN_SPRITE] = OBFUSCATE_ARRAY("IMPERIAL_GUARD_CHICKEN\\IMPERIAL_GUARD_CHICKEN", 0x4B670715D543C1C3ULL, char).Text();
   jobSpriteNames[352] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR", 0x61F59D5D41E76519ULL, char).Text();
   jobSpriteNames[366] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR", 0x4B1D078937DB892BULL, char).Text();
   jobSpriteNames[359] = OBFUSCATE_ARRAY("SKY_EMPEROR\\SKY_EMPEROR_RIDING", 0x7155E5EF0DFB0D03ULL, char).Text();

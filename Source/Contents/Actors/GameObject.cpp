@@ -104,8 +104,20 @@ float g_cotangent = 0.16f;
 namespace {
 // GLOBAL: gl_26036
 const int s_cartEffectIds[14][2] = {
-  {0x15, 0x1E}, {0x01, 0x19}, {0x10, 0x1A}, {0x11, 0x1B}, {0x12, 0x1C}, {0x13, 0x1D}, {0x2D, 0x2E},
-  {0x2F, 0x30}, {0x31, 0x32}, {0x33, 0x34}, {0x36, 0x37}, {0x38, 0x39}, {0x3A, 0x3B}, {0x41, 0x42},
+  {MAKETYPE_CART_EFFECT6, MAKETYPE_CART_EFFECT16},
+  {MAKETYPE_CART_EFFECT, MAKETYPE_CART_EFFECT11},
+  {MAKETYPE_CART_EFFECT2, MAKETYPE_CART_EFFECT12},
+  {MAKETYPE_CART_EFFECT3, MAKETYPE_CART_EFFECT13},
+  {MAKETYPE_CART_EFFECT4, MAKETYPE_CART_EFFECT14},
+  {MAKETYPE_CART_EFFECT5, MAKETYPE_CART_EFFECT15},
+  {MAKETYPE_CART_EFFECT7, MAKETYPE_CART_EFFECT17},
+  {MAKETYPE_CART_EFFECT8, MAKETYPE_CART_EFFECT18},
+  {MAKETYPE_CART_EFFECT9, MAKETYPE_CART_EFFECT19},
+  {MAKETYPE_CART_EFFECT10, MAKETYPE_CART_EFFECT20},
+  {MAKETYPE_GIFT_BOX_CART_EFFECT, MAKETYPE_GIFT_BOX_CART_MINI_EFFECT},
+  {MAKETYPE_PORING_LOADED_CART_EFFECT, MAKETYPE_PORING_LOADED_CART_MINI_EFFECT},
+  {MAKETYPE_PORING_CART_EFFECT, MAKETYPE_PORING_CART_MINI_EFFECT},
+  {MAKETYPE_MADO_CART_EFFECT, MAKETYPE_MADO_CART_MINI_EFFECT},
 };
 
 struct PrimitivePoolAccess : RenderPrimitivePool {
@@ -1277,7 +1289,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   }
 
   switch (message) {
-  case 21:
+  case AM_EMOTION:
     break;
   case AM_DELETE_PROHIBITEFFECT:
     if (this->statusEffects[10] != 0) {
@@ -1744,7 +1756,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_ATTACKED_MANYTIMES:
   case AM_ATTACKED_MANYTIMES2:
   case AM_ATTACKED_MANYTIMES2DASH:
-  case 148: {
+  case AM_ATTACKED_MANYTIMES_CRITICAL: {
     const std::int64_t id = message;
     const ActorDamageMessage* damageMessage = reinterpret_cast<const ActorDamageMessage*>(static_cast<std::intptr_t>(b));
     const int hitEffect = damageMessage->hitEffect;
@@ -1773,7 +1785,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       weapon = attacker->GetWeapon();
     }
 
-    if (id == 94) {
+    if (id == AM_ATTACKED_LUCKY) {
       this->SendMsg(nullptr, AM_MAKE_LUCKY, 0, 0, 0, 0, 0, 0);
     } else {
       bool negative = false;
@@ -1810,7 +1822,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->render.isSingleColor = true;
           const vector3d* playerPosition = &mode->scene->player->render.position;
           const char* wave;
-          if (id == 96 || id == 97) {
+          if (id == AM_ATTACKED_SKILL || id == AM_ATTACKEDNOMOTION_SKILL) {
             wave = g_session.GetWeaponHitWaveName(-1);
           } else if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
             wave = g_session.GetHitWaveName(this->GetEffectiveJob(-1));
@@ -1909,41 +1921,41 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         std::int64_t kind;
         std::int64_t preMessage;
         if (negative) {
-          kind = 0;
+          kind = MET_JUST_ANIMATE;
           preMessage = 0;
           color = 0x72;
-        } else if (id == 93) {
-          preMessage = 92;
-          kind = 16;
+        } else if (id == AM_ATTACKED_CRITICAL) {
+          preMessage = AM_MAKE_CRITICAL_EFFECT;
+          kind = MET_NUMBER_CRITICAL;
           color = 0xFFFFFF00;
         } else if ((this->GetEffectiveJob(-1) >= JT_WARPNPC && this->GetEffectiveJob(-1) < JT_MON_BEGIN) || g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
           value = monsterValue;
-          if (id == 129) {
-            preMessage = 131;
-            kind = 22;
+          if (id == AM_ATTACKED_MANYTIMES2) {
+            preMessage = AM_MAKE_BLUE_EFFECT;
+            kind = MET_NUMBER_TOTAL;
             color = 0xFFFFFFFF;
           } else {
             color = 0xFFFFFFFF;
-            kind = 22;
+            kind = MET_NUMBER_TOTAL;
             preMessage = 0;
-            if (id == 132) {
-            } else if (id == 111) {
-              this->SendMsg(nullptr, AM_MAKE_NUMBER, damage, damageMessage->blueDamage != 0 ? 0xFF1E90FFu : 0xFFFFFFFFu, 21, 0, 0, 0);
-              kind = 22;
+            if (id == AM_ATTACKED_MANYTIMES2DASH) {
+            } else if (id == AM_ATTACKED_MANYTIMES) {
+              this->SendMsg(nullptr, AM_MAKE_NUMBER, damage, damageMessage->blueDamage != 0 ? 0xFF1E90FFu : 0xFFFFFFFFu, MET_NUMBER_HALF, 0, 0, 0);
+              kind = MET_NUMBER_TOTAL;
               color = 0xFFFFFF00;
-            } else if (id == 148) {
+            } else if (id == AM_ATTACKED_MANYTIMES_CRITICAL) {
               this->SendMsg(nullptr, AM_MAKE_CRITICAL_EFFECT, 0, 0, 0, 0, 0, 0);
-              this->SendMsg(nullptr, AM_MAKE_NUMBER, damage, 0xFFFFFF00u, 16, 0, 0, 0);
-              kind = 22;
+              this->SendMsg(nullptr, AM_MAKE_NUMBER, damage, 0xFFFFFF00u, MET_NUMBER_CRITICAL, 0, 0, 0);
+              kind = MET_NUMBER_TOTAL;
               color = 0xFFFFFF00;
             } else {
               value = damage;
               color = 0xFFFFFFFF;
-              kind = 14;
+              kind = MET_NUMBER;
             }
           }
         } else {
-          kind = 14;
+          kind = MET_NUMBER;
           preMessage = 0;
           color = 0xFFFF0000;
         }
@@ -1960,7 +1972,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           const auto isPlayer = g_session.IsPlayerJob(this->GetEffectiveJob(-1));
           if (this->render.state != ST_DEAD) {
             if (isPlayer) {
-              if (this->render.state != ST_ATTACK && id != 39 && id != 97) {
+              if (this->render.state != ST_ATTACK && id != AM_ATTACKEDNOMOTION && id != AM_ATTACKEDNOMOTION_SKILL) {
                 this->SetState(ST_DAMAGE, 1);
                 if (motionSpeed > 1.0f) {
                   this->render.motionFinishThreshold = motionSpeed;
@@ -1968,7 +1980,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
                   this->SetAnimationSpeed(motionSpeed * this->render.speed);
                 }
               }
-            } else if (id != 39 && id != 97) {
+            } else if (id != AM_ATTACKEDNOMOTION && id != AM_ATTACKEDNOMOTION_SKILL) {
               if (!g_session.IsMonsterActor(this) || !(motionSpeed < -0.00001f)) {
                 this->SetState(ST_DAMAGE, 1);
                 if (motionSpeed > 1.0f) {
@@ -2003,8 +2015,8 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_WILL_BE_ATTACKED: {
     ActorDamageMessage* damage = reinterpret_cast<ActorDamageMessage*>(static_cast<std::intptr_t>(b));
     if (c != 0) {
-      if (damage->action != 0x94) {
-        damage->action = 0x6F;
+      if (damage->action != AM_ATTACKED_MANYTIMES_CRITICAL) {
+        damage->action = AM_ATTACKED_MANYTIMES;
       }
       damage->monsterValue = static_cast<int>(c);
     }
@@ -2015,7 +2027,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     ActorDamageMessage* damage = reinterpret_cast<ActorDamageMessage*>(static_cast<std::intptr_t>(b));
     if (c != 0) {
       damage->monsterValue = static_cast<int>(c);
-      damage->action = 0x81;
+      damage->action = AM_ATTACKED_MANYTIMES2;
     }
     this->willBeAttackedList.push_back(*damage);
     break;
@@ -2024,7 +2036,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     ActorDamageMessage* damage = reinterpret_cast<ActorDamageMessage*>(static_cast<std::intptr_t>(b));
     if (c != 0) {
       damage->monsterValue = static_cast<int>(c);
-      damage->action = 0x84;
+      damage->action = AM_ATTACKED_MANYTIMES2DASH;
     }
     this->willBeAttackedList.push_back(*damage);
     break;

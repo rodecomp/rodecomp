@@ -68,7 +68,7 @@ void CSession::GetPetTalkText(int job, int hungerState, int action, char* text) 
   case PET_FULL:
     hunger = "so_full";
     break;
-  case 0:
+  case PET_HUNGER:
   default:
     hunger = "hungry";
     break;

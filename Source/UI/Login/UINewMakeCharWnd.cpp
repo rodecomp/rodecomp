@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Jobs/JobId.h"
 #include "UI/Window/UIEnums.h"
@@ -205,8 +206,8 @@ void UINewMakeCharWnd::Paint() {
     const ActionFrame& frame = action->Frame(this->m_action, this->m_frame);
     POINT offset = offsets->GetLongPoint(i, this->m_action, this->m_frame);
 
-    if (i == 1) {
-      CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_preview.actions[0].c_str()));
+    if (i == SPRITE_LAYER_HEAD) {
+      CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_preview.actions[SPRITE_LAYER_BODY].c_str()));
       const ActionFrame& firstFrame = first->Frame(this->m_action, this->m_frame);
       if (frame.anchorCount != 0 && firstFrame.anchorCount != 0 && frame.anchors[0].attachmentId == firstFrame.anchors[0].attachmentId) {
         offset.x += firstFrame.anchors[0].x - frame.anchors[0].x;
@@ -216,12 +217,12 @@ void UINewMakeCharWnd::Paint() {
 
     const std::uint32_t* palette = sprite->palette;
     switch (i) {
-    case 0:
+    case SPRITE_LAYER_BODY:
       if (this->m_preview.paletteEnabled[1] > 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_preview.bodyPalette.c_str()))->palette;
       }
       break;
-    case 1:
+    case SPRITE_LAYER_HEAD:
       if (this->m_preview.paletteEnabled[0] > 0) {
         palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_preview.headPalette.c_str()))->palette;
       }

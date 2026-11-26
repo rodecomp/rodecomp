@@ -59,5 +59,5 @@ int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, 
     break;
   }
 
-  return 9;
+  return SPRITE_LAYER_NONE;
 }
