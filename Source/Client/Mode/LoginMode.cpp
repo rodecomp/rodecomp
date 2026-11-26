@@ -1223,9 +1223,9 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), blockDate);
     break;
   }
-  case 8:
-  case 100:
-  case 102:
+  case TAREN_LOGIN_UNKNOWN_8:
+  case TAREN_LOGIN_UNKNOWN_100:
+  case TAREN_LOGIN_UNKNOWN_102:
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xAD075B8DB599F1CDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
     break;
   case TAREN_LOGIN_TEENAGER_BLOCKED:
