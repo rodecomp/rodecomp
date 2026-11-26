@@ -99,14 +99,16 @@ void CThemidaMgr::Destroy() {
 
 // OFFSET: 0x0076EEB0
 // FUNCTION: fn_08242
+// VIRTUALIZED: emulated 0x027F8A2A
 void CThemidaMgr::Check() {
   unsigned int value = 0;
   s_themidaKeyA.Generate(reinterpret_cast<const unsigned char*>(&value));
 
-  value = reinterpret_cast<unsigned int>(CreateThread(nullptr, 0, &ThemidaWatchThread, nullptr, 0, nullptr));
+  HANDLE thread = CreateThread(nullptr, 0, &ThemidaWatchThread, nullptr, 0, nullptr);
+  value = reinterpret_cast<unsigned int>(thread);
   s_themidaThreadHandle.Generate(reinterpret_cast<const unsigned char*>(&value));
   s_themidaThreadStarted.wait(false);
-  s_themidaThreadStarted = false;
+  s_themidaThreadStarted.store(false);
 }
 
 // OFFSET: 0x0076F050
