@@ -9,6 +9,11 @@
 #include <cstring>
 
 namespace {
+  struct BoundingBox {
+    vector3d minimum;
+    vector3d maximum;
+  };
+
   // INLINED
   float Absolute(float value) {
     return std::fabs(value);
@@ -234,31 +239,31 @@ __forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool
 // OFFSET: 0x00AB9660
 // FUNCTION: fn_17512
 void C3dActorV1::UpdateBounds() {
-  std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
+  BoundingBox bounds = {{100000, 100000, 100000}, {-100000, -100000, -100000}};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
-  this->root->AccumulateBounds(&bounds[0], identity);
-  this->offset.z = -(bounds[5] + bounds[2]) * g_depthAverageHalf;
-  this->offset.x = -(bounds[3] + bounds[0]) * g_depthAverageHalf;
-  this->offset.y = -bounds[4];
+  this->root->AccumulateBounds(&bounds.minimum.x, identity);
+  this->offset.z = -(bounds.maximum.z + bounds.minimum.z) * g_depthAverageHalf;
+  this->offset.x = -(bounds.maximum.x + bounds.minimum.x) * g_depthAverageHalf;
+  this->offset.y = -bounds.maximum.y;
   this->transform.MakeTranslate(this->offset.x, this->offset.y, this->offset.z);
   this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
   this->transform.AppendYRotation(Radians(this->rotation.y));
   this->transform.AppendXRotation(Radians(this->rotation.x));
   this->transform.AppendZRotation(Radians(this->rotation.z));
   this->transform.AppendTranslate(&this->position.x);
-  this->FinishBounds(&bounds[0], false);
+  this->FinishBounds(&bounds.minimum.x, false);
 }
 
 // OFFSET: 0x00ABA520
 // FUNCTION: fn_17513
 void C3dActorV2::UpdateBounds() {
-  std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
+  BoundingBox bounds = {{100000, 100000, 100000}, {-100000, -100000, -100000}};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
 
   for (std::list<C3dNodeV2*>::iterator it = this->roots.begin(); it != this->roots.end(); ++it) {
-    (*it)->AccumulateBounds(bounds.data(), identity);
+    (*it)->AccumulateBounds(&bounds.minimum.x, identity);
   }
 
   this->UpdateMatrix();
@@ -272,14 +277,14 @@ void C3dActorV2::UpdateBounds() {
   }
 
   BoundsCorner points[8];
-  points[0].Set(bounds[0], bounds[1], bounds[2]);
-  points[1].Set(bounds[3], bounds[1], bounds[2]);
-  points[2].Set(bounds[0], bounds[4], bounds[2]);
-  points[3].Set(bounds[3], bounds[4], bounds[2]);
-  points[4].Set(bounds[0], bounds[1], bounds[5]);
-  points[5].Set(bounds[3], bounds[1], bounds[5]);
-  points[6].Set(bounds[0], bounds[4], bounds[5]);
-  points[7].Set(bounds[3], bounds[4], bounds[5]);
+  points[0].Set(bounds.minimum.x, bounds.minimum.y, bounds.minimum.z);
+  points[1].Set(bounds.maximum.x, bounds.minimum.y, bounds.minimum.z);
+  points[2].Set(bounds.minimum.x, bounds.maximum.y, bounds.minimum.z);
+  points[3].Set(bounds.maximum.x, bounds.maximum.y, bounds.minimum.z);
+  points[4].Set(bounds.minimum.x, bounds.minimum.y, bounds.maximum.z);
+  points[5].Set(bounds.maximum.x, bounds.minimum.y, bounds.maximum.z);
+  points[6].Set(bounds.minimum.x, bounds.maximum.y, bounds.maximum.z);
+  points[7].Set(bounds.maximum.x, bounds.maximum.y, bounds.maximum.z);
 
   BoundsCorner* output = this->corners;
   const BoundsCorner* point = points;
@@ -305,17 +310,17 @@ void C3dActorV2::UpdateBounds() {
   }
 
   BoundsCorner high;
-  TransformCorner(high.values, bounds[3], bounds[4], bounds[5], this->transform.values);
+  TransformCorner(high.values, bounds.maximum.x, bounds.maximum.y, bounds.maximum.z, this->transform.values);
   BoundsCorner low;
-  TransformCorner(low.values, bounds[0], bounds[1], bounds[2], this->transform.values);
+  TransformCorner(low.values, bounds.minimum.x, bounds.minimum.y, bounds.minimum.z, this->transform.values);
 
   for (unsigned axis = 0; axis < 3; ++axis) {
     this->oriented.center[axis] = (high.values[axis] + low.values[axis]) * 0.5f;
   }
 
-  this->oriented.halfSize[2] = Absolute((bounds[5] - bounds[2]) * this->scale.z) * 0.5f;
-  this->oriented.halfSize[1] = Absolute((bounds[4] - bounds[1]) * this->scale.y) * 0.5f;
-  this->oriented.halfSize[0] = Absolute((bounds[3] - bounds[0]) * this->scale.x) * 0.5f;
+  this->oriented.halfSize[2] = Absolute((bounds.maximum.z - bounds.minimum.z) * this->scale.z) * 0.5f;
+  this->oriented.halfSize[1] = Absolute((bounds.maximum.y - bounds.minimum.y) * this->scale.y) * 0.5f;
+  this->oriented.halfSize[0] = Absolute((bounds.maximum.x - bounds.minimum.x) * this->scale.x) * 0.5f;
 
   matrix axes;
   axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
