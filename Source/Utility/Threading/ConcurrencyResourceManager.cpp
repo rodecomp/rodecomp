@@ -35,14 +35,20 @@ DWORD g_logTextThreadIds[20];
 
 // OFFSET: 0x00E87CE0
 // FUNCTION: fn_25441
-Concurrency::details::ResourceManager::ResourceManager() {
+__declspec(noinline) Concurrency::details::ResourceManager::ResourceManager() {
   this->timer = timeSetEvent(10000, 0, fptc, 0, TIME_PERIODIC);
-  this->lock = new TimerLock;
+
+  TimerLock* lock = new TimerLock;
+  if (lock == nullptr) {
+    this->lock = nullptr;
+    return;
+  }
+  this->lock = lock;
 }
 
 // OFFSET: 0x00E87DB0
 // FUNCTION: fn_25442
-Concurrency::details::Resource::Resource(int mode) {
+__declspec(noinline) Concurrency::details::Resource::Resource(int mode) {
   this->mode = mode;
   srand(GetTickCount());
   this->seed = rand();

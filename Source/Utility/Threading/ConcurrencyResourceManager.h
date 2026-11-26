@@ -9,12 +9,12 @@
 struct TimerLock : CRITICAL_SECTION {
   /* 0018 */ std::uint32_t initialized;
 
-  TimerLock();
+  TimerLock() noexcept;
   ~TimerLock();
 };
 
 // INLINED
-inline TimerLock::TimerLock() {
+inline TimerLock::TimerLock() noexcept {
   this->initialized = 0;
   InitializeCriticalSection(this);
   this->initialized = 1;
