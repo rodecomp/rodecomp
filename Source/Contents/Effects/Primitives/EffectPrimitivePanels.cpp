@@ -97,10 +97,7 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
     vec[2] = mid2;
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec[1], vec[0], vec[3], vec[2], wtm, 0, static_cast<char>(slot.height[1]), 0, shade, shade, 255, 0.0f, 1.0f, 0.0f, slot.height[9], 0);
 
-    bend -= 20;
-    if (bend < 0) {
-      bend += 360;
-    }
+    bend += (bend - 20 < 0 ? 360 : 0);
 
     rest = 1.0f - slot.height[9];
     vec[1] = vec[0];
