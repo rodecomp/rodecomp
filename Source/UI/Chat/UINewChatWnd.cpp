@@ -343,8 +343,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       bool hasLink = false;
-      NavigationLinkParser* parser = g_navigationLinkParser;
       std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
+      NavigationLinkParser* parser = g_navigationLinkParser;
       if (parser->HasLink(plain)) {
         hasLink = true;
         lines.push_back(plain);
