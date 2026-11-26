@@ -3713,17 +3713,17 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
   this->hitTargetAid = info->targetAid;
   int damage = info->damage;
   int hitCount = info->hitCount;
-  const int attackSpeed = info->attackSpeed;
   const int extraDamage = info->extraDamage;
   const int cellX = info->cellX;
   const int cellY = info->cellY;
+  const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
 
   CGameActor* target;
-  if (g_session.m_aid == info->targetAid) {
+  if (g_session.m_aid == this->hitTargetAid) {
     target = static_cast<CGameActor*>(mode->scene->player);
   } else {
-    target = mode->scene->GetGameActorByAID(info->targetAid);
+    target = mode->scene->GetGameActorByAID(this->hitTargetAid);
     if (target == nullptr) {
       target = mode->scene->GetSkillByAID(this->hitTargetAid);
     }
