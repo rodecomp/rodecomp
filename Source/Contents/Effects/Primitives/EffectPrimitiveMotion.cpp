@@ -6157,7 +6157,7 @@ void CEffectPrim::PrimSpiralCollapse() {
       }
     }
 
-    const vector3d& pos = this->state.slots[index].vecBNow;
+    vector3d& pos = this->state.slots[index].vecBNow;
     const float length = SquareRoot(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
 
     if (this->state.slots[index].flag1[0] == 0 && length < 12.0f) {
@@ -6223,9 +6223,9 @@ void CEffectPrim::PrimSpiralCollapse() {
 
     const float horizontal = this->state.slots[index].height[1] * g_cosTable[this->state.slots[index].riseAngle];
     const float sinRise = g_sinTable[this->state.slots[index].riseAngle];
-    this->state.slots[index].vecBNow.x -= horizontal * g_cosTable[this->state.slots[index].rotStart];
-    this->state.slots[index].vecBNow.y -= g_sinTable[this->state.slots[index].rotStart] * horizontal + 0.0f;
-    this->state.slots[index].vecBNow.z -= sinRise * this->state.slots[index].height[1];
+    pos.x -= horizontal * g_cosTable[this->state.slots[index].rotStart];
+    pos.y -= g_sinTable[this->state.slots[index].rotStart] * horizontal + 0.0f;
+    pos.z -= sinRise * this->state.slots[index].height[1];
   }
 }
 
