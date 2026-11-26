@@ -2092,10 +2092,10 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
 // FUNCTION: fn_22598
 void CPc::RenderOverlaySprite(const float* matrix, int) {
   const float* origin = &this->render.position.x;
-  float position[3];
-  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
-  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
-  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+  vector3d position;
+  position.x = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position.y = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position.z = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
 
   float x;
   float y;
@@ -2116,21 +2116,30 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
   ResourceMgr::Instance().Load(this->imfName.c_str());
   int drawn = 0;
   int count = 0;
-  if (std::strlen(this->equipActions[0] ? this->equipActions[0]->GetName() : "") == 0) {
+  int layer = 0;
+  if (std::strlen(this->equipActions[layer] ? this->equipActions[layer]->GetName() : "") == 0) {
     return;
   }
 
-  if (std::strlen(this->equipSprites[0] ? this->equipSprites[0]->GetName() : "") == 0) {
+  if (std::strlen(this->equipSprites[layer] ? this->equipSprites[layer]->GetName() : "") == 0) {
     return;
   }
 
-  CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
-  CSprRes* sprite = static_cast<CSprRes*>(this->equipSprites[0]);
+  CActRes* action = static_cast<CActRes*>(this->GetEquipAction(layer));
+  CSprRes* sprite = static_cast<CSprRes*>(this->equipSprites[layer]);
   if (this->render.curMotion >= static_cast<int>(action->FrameCount(this->render.previousAnimation))) {
     return;
   }
 
   const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
+  if (layer == 6 && frame.sound != -1) {
+    std::string sound = action->Sound(frame.sound);
+    if (sound.find(".wav") != std::string::npos) {
+      std::strcpy(this->hitWaveName, sound.c_str());
+    }
+    this->isPlayHitWave = 1;
+  }
+
   for (int index = 0; index < frame.cellCount; ++index) {
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
@@ -2143,7 +2152,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t color;
-    if (!this->PrepareSprite(0, count, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0)) {
+    if (!this->PrepareSprite(0, count, distanceScale, cell, x, y, &position.x, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0)) {
       continue;
     }
 
