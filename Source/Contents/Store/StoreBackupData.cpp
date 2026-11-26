@@ -76,7 +76,7 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
     Json::Value value;
     value["ID"] = std::atoi(item.itemId.c_str());
     value["Count"] = item.quantity;
-    value["Identified"] = item.identified != 0;
+    value["Identified"] = *reinterpret_cast<const bool*>(&item.identified);
     value["RefiningLevel"] = item.refiningLevel;
     value["GradeLevel"] = item.grade;
     value["Slot_1"] = static_cast<std::int32_t>(item.cards[0]);
