@@ -9831,7 +9831,7 @@ void UIItemCollectionWnd::Paint() {
     int offset = 0;
     if (this->m_item.identified == 1 && this->m_optionCount > 0) {
       for (std::map<int, std::list<std::string>>::iterator card = this->m_cardTexts.begin(); card != this->m_cardTexts.end(); ++card) {
-        const char* box = this->m_kind == 234 ? "유저인터페이스\\basic_interface\\sysbox_comparison_" : "유저인터페이스\\sysbox_";
+        const char* box = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
         this->DrawSkinBox(box, 0, bottom + offset, this->geometry.width, static_cast<int>(card->second.size()) * 15 + 14, true);
         offset += 8;
         for (std::list<std::string>::iterator line = card->second.begin();;) {
@@ -9853,7 +9853,7 @@ void UIItemCollectionWnd::Paint() {
 
     if (!this->m_item.HasSpecialCard()) {
       const int top = bottom + offset;
-      const char* box = this->m_kind == 234 ? "유저인터페이스\\basic_interface\\sysbox_comparison_" : "유저인터페이스\\sysbox_";
+      const char* box = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
       this->DrawSkinBox(box, 0, top, this->geometry.width, 29, true);
       const int y = top + 2;
       int slot = 0;
