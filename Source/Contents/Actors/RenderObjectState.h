@@ -25,8 +25,7 @@ struct ActorTintColor {
 static_assert(sizeof(ActorTintColor) == 4);
 
 struct RenderObjectState {
-  RenderObjectState();
-  ~RenderObjectState();
+  RenderObjectState() = default;
   RenderObjectState(const RenderObjectState&) = delete;
   RenderObjectState& operator=(const RenderObjectState&) = delete;
 
@@ -151,23 +150,6 @@ struct RenderObjectState {
   /* 0128 */ std::int64_t hoverOffset;
   /* 0130 */ unsigned char translucentOther[8];
 };
-
-// INLINED
-inline RenderObjectState::RenderObjectState() : position() {
-  this->sprite = nullptr;
-  this->action = nullptr;
-}
-
-// INLINED
-__forceinline RenderObjectState::~RenderObjectState() {
-  if (this->sprite) {
-    this->sprite->Unlock();
-  }
-
-  if (this->action) {
-    this->action->Unlock();
-  }
-}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderObjectState) == 296);

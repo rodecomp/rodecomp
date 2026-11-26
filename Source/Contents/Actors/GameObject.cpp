@@ -134,6 +134,8 @@ CGameObject::CGameObject() : identity(++s_nextIdentity) {
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
 CRenderObject::CRenderObject() {
+  this->render.sprite = nullptr;
+  this->render.action = nullptr;
   this->Reset();
 }
 
@@ -152,7 +154,15 @@ CInstantVar::~CInstantVar() = default;
 
 // OFFSET: 0x00CA8F90
 // FUNCTION: fn_20998
-__declspec(noinline) CRenderObject::~CRenderObject() = default;
+__declspec(noinline) CRenderObject::~CRenderObject() {
+  if (this->render.sprite) {
+    this->render.sprite->Unlock();
+  }
+
+  if (this->render.action) {
+    this->render.action->Unlock();
+  }
+}
 
 // OFFSET: 0x00CAFD20
 // FUNCTION: fn_21087
