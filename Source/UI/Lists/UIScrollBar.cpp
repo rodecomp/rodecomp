@@ -187,7 +187,19 @@ int UIScrollBar::ThumbOffset() {
 // OFFSET: 0x008806E0
 // FUNCTION: fn_11278
 int UIScrollBar::Part(int x, int y) {
-  if (this->maximum == 0 || x < 0 || x >= this->geometry.width || y < 0 || y >= this->geometry.height) {
+  if (this->maximum == 0) {
+    return -1;
+  }
+  if (x < 0) {
+    return -1;
+  }
+  if (x >= this->geometry.width) {
+    return -1;
+  }
+  if (y < 0) {
+    return -1;
+  }
+  if (y >= this->geometry.height) {
     return -1;
   }
 
@@ -220,9 +232,9 @@ int UIScrollBar::Part(int x, int y) {
       return 3;
     }
     return 4;
-  default:
-    return -1;
   }
+
+  return -1;
 }
 
 // OFFSET: 0x00890720
@@ -401,57 +413,73 @@ void UIScrollBar::Paint() {
 
   switch (this->vertical) {
   case 0: {
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp")));
-    this->DrawBitmap(1, 0, bitmap, false);
-    CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1mid.bmp")));
-    const int interior = this->geometry.width - this->arrowLength - 14;
-    const int count = interior / 13 + (interior % 13 != 0);
-
-    for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(this->arrowLength + index * 13, 0, middle, false);
+    if (this->state == 1) {
+      this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
+    } else if (this->state == 4) {
+      this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
+    } else {
+      this->DrawBitmap(1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1left.bmp"))), false);
     }
-
-    this->DrawBitmap(this->geometry.width - this->arrowLength - 13, 0, middle, false);
+    {
+      CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1mid.bmp")));
+      const int count = (this->geometry.width - this->arrowLength - 14) / 13 + ((this->geometry.width - this->arrowLength - 14) % 13 != 0);
+      for (int index = 0; index < count; ++index) {
+        this->DrawBitmap(this->arrowLength + index * 13, 0, middle, false);
+      }
+      this->DrawBitmap(this->geometry.width - this->arrowLength - 13, 0, middle, false);
+    }
     this->FillRegion(this->geometry.width - this->arrowLength, 0, 13, this->geometry.height, 0xFFFF00FFu);
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp")));
-    this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, bitmap, true);
-
-    const int thumb = this->arrowLength + this->ThumbOffset();
-    this->DrawBitmap(thumb, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_left.bmp"))), true);
-    const int end = thumb + this->ThumbLength() - 4;
-
-    for (int offset = thumb + 4; offset < end; offset += 4) {
-      this->DrawBitmap(offset, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_mid.bmp"))), true);
+    if (this->state == 2) {
+      this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
+    } else if (this->state == 5) {
+      this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
+    } else {
+      this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1right.bmp"))), true);
     }
-
-    this->DrawBitmap(end, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_right.bmp"))), true);
+    {
+      const int thumb = this->arrowLength + this->ThumbOffset();
+      this->DrawBitmap(thumb, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_left.bmp"))), true);
+      const int length = this->ThumbLength();
+      for (int offset = thumb + 4; offset < thumb + length - 4; offset += 4) {
+        this->DrawBitmap(offset, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_mid.bmp"))), true);
+      }
+      this->DrawBitmap(thumb + length - 4, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_right.bmp"))), true);
+    }
     break;
   }
   case 1: {
-    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp")));
-    this->DrawBitmap(0, 1, bitmap, false);
-    CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0mid.bmp")));
-    const int interior = this->geometry.height - this->arrowLength - 14;
-    const int count = interior / 13 + (interior % 13 != 0);
-
-    for (int index = 0; index < count; ++index) {
-      this->DrawBitmap(0, this->arrowLength + index * 13, middle, false);
+    if (this->state == 1) {
+      this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
+    } else if (this->state == 4) {
+      this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
+    } else {
+      this->DrawBitmap(0, 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0up.bmp"))), false);
     }
-
-    this->DrawBitmap(0, this->geometry.height - this->arrowLength - 13, middle, false);
+    {
+      CBitmapRes* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0mid.bmp")));
+      const int count = (this->geometry.height - this->arrowLength - 14) / 13 + ((this->geometry.height - this->arrowLength - 14) % 13 != 0);
+      for (int index = 0; index < count; ++index) {
+        this->DrawBitmap(0, this->arrowLength + index * 13, middle, false);
+      }
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 13, middle, false);
+    }
     this->FillRegion(0, this->geometry.height - this->arrowLength, this->geometry.width, 13, 0xFFFF00FFu);
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp")));
-    this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, bitmap, true);
-
-    const int thumb = this->arrowLength + this->ThumbOffset();
-    this->DrawBitmap(0, thumb, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_up.bmp"))), true);
-    const int end = thumb + this->ThumbLength() - 4;
-
-    for (int offset = thumb + 4; offset < end; offset += 4) {
-      this->DrawBitmap(0, offset, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_mid.bmp"))), true);
+    if (this->state == 2) {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);
+    } else if (this->state == 5) {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);
+    } else {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0down.bmp"))), true);
     }
-
-    this->DrawBitmap(0, end, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_down.bmp"))), true);
+    {
+      const int thumb = this->arrowLength + this->ThumbOffset();
+      this->DrawBitmap(0, thumb, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_up.bmp"))), true);
+      const int length = this->ThumbLength();
+      for (int offset = thumb + 4; offset < thumb + length - 4; offset += 4) {
+        this->DrawBitmap(0, offset, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_mid.bmp"))), true);
+      }
+      this->DrawBitmap(0, thumb + length - 4, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_down.bmp"))), true);
+    }
     break;
   }
   }
