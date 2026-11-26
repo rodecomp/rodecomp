@@ -120,4 +120,4 @@
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
 template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
-template __forceinline std::unordered_set<int>::size_type std::_Hash<std::_Uset_traits<int, std::_Uhash_compare<int, std::hash<int>, std::equal_to<int>>, std::allocator<int>, false>>::erase(const int&) noexcept;
+template __forceinline std::unordered_set<std::uint32_t>::size_type std::_Hash<std::_Uset_traits<std::uint32_t, std::_Uhash_compare<std::uint32_t, std::hash<std::uint32_t>, std::equal_to<std::uint32_t>>, std::allocator<std::uint32_t>, false>>::erase(const std::uint32_t&) noexcept;

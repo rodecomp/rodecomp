@@ -252,7 +252,7 @@ public:
   /* 0620 */ UIBroadcastBalloon* noticeBalloon;
   /* 0624 */ unsigned char isInitializing;
   /* 0625 */ unsigned char padding_0625[0x3];
-  /* 0628 */ std::unordered_set<int> petFriendlyNoticeIds;
+  /* 0628 */ std::unordered_set<std::uint32_t> petFriendlyNoticeIds;
   /* 0648 */ unsigned char recordItemPickups;
   /* 0649 */ unsigned char padding_0649[0x3];
   /* 064C */ std::unordered_map<int, int> itemPickupCounts;
@@ -524,7 +524,7 @@ public:
   void ReceiveDdukddakBoxTest(const unsigned char* packet);
   void ReceiveDeferredReset(const unsigned char* packet);
   void ReceiveGradeEnchantResult(const unsigned char* packet);
-  void UpdatePetFriendlyNoticeIds(int id, bool add);
+  void UpdatePetFriendlyNoticeIds(std::uint32_t id, bool add);
   void ClearGroundAlphaCheck();
   void SetDragIds(int source, int id);
   void EnsureNameBalloon(UINameBalloonText*& balloon);

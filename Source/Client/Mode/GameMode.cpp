@@ -1168,7 +1168,7 @@ void CGameMode::SetDragIds(int source, int id) {
 
 // OFFSET: 0x00CED190
 // FUNCTION: fn_21363
-__declspec(noinline) void CGameMode::UpdatePetFriendlyNoticeIds(int id, bool add) {
+__declspec(noinline) void CGameMode::UpdatePetFriendlyNoticeIds(std::uint32_t id, bool add) {
   if (add == true) {
     this->petFriendlyNoticeIds.insert(id);
   } else {
@@ -5927,7 +5927,7 @@ void CGameMode::UpdatePetFriendlyWindow(int previousFriendly) {
   }
 
   if (g_session.GetPetFriendlyState(g_session.m_petFriendly) == 0 && g_session.m_petFriendly <= 100) {
-    const int petId = g_session.petGid;
+    const std::uint32_t petId = g_session.petGid;
     if (this->petFriendlyNoticeIds.end() == this->petFriendlyNoticeIds.find(petId)) {
       if (g_windowMgr.petInfoWnd == nullptr) {
         g_windowMgr.EnsureWindow(WID_PETINFOWND);
@@ -5938,8 +5938,7 @@ void CGameMode::UpdatePetFriendlyWindow(int previousFriendly) {
   }
 
   if (previousFriendly < g_session.m_petFriendly && g_session.m_petFriendly > 99) {
-    const int petId = g_session.petGid;
-    this->petFriendlyNoticeIds.erase(petId);
+    this->petFriendlyNoticeIds.erase(g_session.petGid);
   }
 }
 
