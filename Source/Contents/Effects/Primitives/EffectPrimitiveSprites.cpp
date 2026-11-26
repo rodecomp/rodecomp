@@ -264,8 +264,9 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
           sprite->palette, 5, g_effectIconOuterRadius
         );
 
-        const std::uint8_t halfAlphaByte = static_cast<unsigned char>(static_cast<short>(alpha) / 2);
-        const std::uint32_t halfColor = (((((halfAlphaByte << 8) + red) << 8) + green) << 8) + blue;
+        const short signedAlpha = static_cast<short>(alpha);
+        const int halfAlpha = signedAlpha / 2;
+        const std::uint32_t halfColor = (((((static_cast<std::uint32_t>(halfAlpha) << 8) + red) << 8) + green) << 8) + blue;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0001f, angle, halfColor, image, sprite->palette, 0x101);
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecBNow, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
