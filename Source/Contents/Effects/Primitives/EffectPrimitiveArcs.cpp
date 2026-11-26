@@ -1084,7 +1084,7 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
       vector3d bend0{};
-      if (dist > 20.0f) {
+      if (dist > g_fireflyGroundOffset) {
         remain = dist - g_fireflyGroundOffset;
         bend0.x = g_cosTable[dir] * g_fireflyGroundOffset;
         bend0.z = g_sinTable[dir] * g_fireflyGroundOffset;
