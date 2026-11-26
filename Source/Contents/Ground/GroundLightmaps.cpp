@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <functional>
 
 // OFFSET: 0x00AC3040
 // FUNCTION: fn_17597
@@ -21,7 +22,8 @@ void GroundLightmapSet::Clear() {
 // FUNCTION: fn_17565
 void GroundLightmapSet::Build(CGndRes& resource) {
   this->Clear();
-  this->lightmapCount = resource.lightmapCount;
+  const int lightmapCount = resource.lightmapCount;
+  this->lightmapCount = lightmapCount;
   this->lightmaps.resize(static_cast<unsigned>(this->lightmapCount));
   this->atlasCount = (this->lightmapCount + 1023) / 1024;
   this->lightmapTextures.reserve(this->atlasCount);
@@ -30,10 +32,10 @@ void GroundLightmapSet::Build(CGndRes& resource) {
   for (int first = 0; first < this->lightmapCount; first += 1024) {
     const int atlas = first / 1024;
     for (int index = 0; index < 1024 && first + index < this->lightmapCount; ++index) {
+      const int tile = index + first - atlas * 1024;
       std::array<unsigned char, 256> decoded;
       resource.Lightmap(first + index, decoded.data());
       GroundLightmap& map = this->lightmaps[first + index];
-      const int tile = first + index - atlas * 1024;
       const unsigned column = tile % 32;
       const unsigned row = tile / 32;
 
@@ -47,16 +49,16 @@ void GroundLightmapSet::Build(CGndRes& resource) {
 
       const float left = static_cast<float>(8 * column + 1) / 256.0f;
       const float top = static_cast<float>(8 * row + 1) / 256.0f;
-      map.uv[0][0] = std::clamp(left, 0.0f, 1.0f);
-      map.uv[0][1] = std::clamp(top, 0.0f, 1.0f);
+      map.uv[0][0] = std::clamp(left, 1.0f, 0.0f, std::greater<float>());
+      map.uv[0][1] = std::clamp(top, 1.0f, 0.0f, std::greater<float>());
       const float right = static_cast<float>(8 * column + 7) / 256.0f;
-      map.uv[1][0] = std::clamp(right, 0.0f, 1.0f);
-      map.uv[1][1] = std::clamp(top, 0.0f, 1.0f);
+      map.uv[1][0] = std::clamp(right, 1.0f, 0.0f, std::greater<float>());
+      map.uv[1][1] = std::clamp(top, 1.0f, 0.0f, std::greater<float>());
       const float bottom = static_cast<float>(8 * row + 7) / 256.0f;
-      map.uv[2][0] = std::clamp(left, 0.0f, 1.0f);
-      map.uv[2][1] = std::clamp(bottom, 0.0f, 1.0f);
-      map.uv[3][0] = std::clamp(right, 0.0f, 1.0f);
-      map.uv[3][1] = std::clamp(bottom, 0.0f, 1.0f);
+      map.uv[2][0] = std::clamp(left, 1.0f, 0.0f, std::greater<float>());
+      map.uv[2][1] = std::clamp(bottom, 1.0f, 0.0f, std::greater<float>());
+      map.uv[3][0] = std::clamp(right, 1.0f, 0.0f, std::greater<float>());
+      map.uv[3][1] = std::clamp(bottom, 1.0f, 0.0f, std::greater<float>());
       map.color[0] = decoded[172];
       map.color[1] = decoded[173];
       map.color[2] = decoded[174];
