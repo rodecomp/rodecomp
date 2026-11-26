@@ -1569,7 +1569,7 @@ void UIMakeCharWnd::InitHairControls() {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   const char* tooltips[2] = {"", ""};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{57, 262}, {104, 262}};
 
   for (int index = 0; index < 2; ++index) {
@@ -1696,7 +1696,7 @@ void UIChatRoomWnd::OnCreate(int, int) {
 void UINoticeWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}};
-  int ids[3] = {184, 246, 218};
+  int ids[3] = {ID_OK, ID_PREV, ID_NEXT};
   int positions[3][2] = {{534, 376}, {244, 376}, {294, 376}};
 
   for (int index = 0; index < 3; ++index) {
@@ -1869,7 +1869,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
     LookupMessage(MSI_REPLAY_TIME), LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_EQUIPED_ITEM),  LookupMessage(MSI_ITEM),  LookupMessage(MSI_SKILLLIST), LookupMessage(MSI_REPLAY_PARTYFRIEND),
     LookupMessage(MSI_REPLAY_CHAT), LookupMessage(MSI_REPLAY_SHORTCUTS), LookupMessage(MSI_REPLAY_AUTOMATICFILENAME), LookupMessage(MSI_REPLAY_CHECKINGFILE),
   };
-  int ids[6] = {420, 421, 422, 423, 424, 425};
+  int ids[6] = {ID_START_REPLAY_RECORDING, ID_STOP_REPLAY_RECORDING, ID_CONFIRM_REPLAY_RECORDING_PATH, ID_REPLAY_RECORDING_OPTIONS, ID_CANCEL_REPLAY_RECORDING_OPTIONS, ID_CLOSE_REPLAY_RECORDING};
 
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIReplayButton();
@@ -1980,7 +1980,7 @@ void UISelectReplayDataWnd::OnCreate(int width, int height) {
     {"login_interface\\btn_exit", "login_interface\\btn_exit_a", "login_interface\\btn_exit_b"},
     {"replay_interface\\btn_selectserver", "replay_interface\\btn_selectserver_a", "replay_interface\\btn_selectserver_b"},
   };
-  int ids[4] = {184, 185, 221, 400};
+  int ids[4] = {ID_OK, ID_CANCEL, ID_EXIT, ID_SELECT_REPLAY};
   int positions[4][2] = {{189, height - 25}, {-100, -100}, {234, height - 25}, {100, height - 25}};
 
   for (int index = 0; index < 4; ++index) {
@@ -2024,7 +2024,7 @@ void UITalkboxTrapInputWnd::OnCreate(int, int) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int index = 0; index < 2; ++index) {
@@ -2646,14 +2646,14 @@ UINoticeWnd::UINoticeWnd() : UIFrameWnd(0) {
 // FUNCTION: fn_11737
 void UIBank_NewWnd::OnCreate(int, int) {
   this->AddCloseButton("닫기", 0);
-  this->AddBitmapButton(462, 209, 77, "bank\\btn_deposit", LookupMessage(MSI_BANK_4));
-  this->AddBitmapButton(463, 209, 102, "bank\\btn_withdraw", LookupMessage(MSI_BANK_5));
-  this->AddBitmapButton(279, 177, 89, "bank\\btn_upper", LookupMessage(MSI_BANK_6));
-  this->AddBitmapButton(280, 177, 99, "bank\\btn_buttom", LookupMessage(MSI_BANK_7));
-  this->AddBitmapButton(392, 189, 132, "bank\\btn_10mil", "+ 100,000");
-  this->AddBitmapButton(391, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
-  this->AddBitmapButton(390, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
-  this->AddBitmapButton(389, 45, 132, "bank\\btn_max", LookupMessage(MSI_BANK_MAX));
+  this->AddBitmapButton(ID_BANK_DEPOSIT, 209, 77, "bank\\btn_deposit", LookupMessage(MSI_BANK_4));
+  this->AddBitmapButton(ID_BANK_WITHDRAW, 209, 102, "bank\\btn_withdraw", LookupMessage(MSI_BANK_5));
+  this->AddBitmapButton(ID_UP, 177, 89, "bank\\btn_upper", LookupMessage(MSI_BANK_6));
+  this->AddBitmapButton(ID_DOWN, 177, 99, "bank\\btn_buttom", LookupMessage(MSI_BANK_7));
+  this->AddBitmapButton(ID_BANK_ADD_100K, 189, 132, "bank\\btn_10mil", "+ 100,000");
+  this->AddBitmapButton(ID_BANK_ADD_1M, 141, 132, "bank\\btn_100mil", "+ 1,000,000");
+  this->AddBitmapButton(ID_BANK_ADD_10M, 93, 132, "bank\\btn_1000mil", "+ 10,000,000");
+  this->AddBitmapButton(ID_BANK_MAX, 45, 132, "bank\\btn_max", LookupMessage(MSI_BANK_MAX));
 
   this->m_amountEdit = new UIEditCtrl();
   this->m_amountEdit->SetSize(99, 17);
@@ -3949,7 +3949,7 @@ void UISelectServerWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_serverList);
 
   const std::string prefix("유저인터페이스\\");
-  const int ids[4] = {184, 185, 221, 400};
+  const int ids[4] = {ID_OK, ID_CANCEL, ID_EXIT, ID_SELECT_REPLAY};
   const char* const names[4][3] = {
       {"btn_ok", "btn_ok_a", "btn_ok_b"},
       {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
@@ -3988,7 +3988,7 @@ void UISelectServerWnd::OnCreate(int width, int height) {
 void UIReplayControlWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\replay_interface\\");
   const char* const names[6] = {"replay_stop_", "replay_end_", "replay_speedadd_", "replay_speedmin_", "replay_start_", "replay_pause_"};
-  const int ids[6] = {403, 404, 405, 406, 401, 402};
+  const int ids[6] = {ID_RESTART_REPLAY, ID_EXIT_REPLAY, ID_INCREASE_REPLAY_SPEED, ID_DECREASE_REPLAY_SPEED, ID_PAUSE_REPLAY, ID_RESUME_REPLAY};
   const int positions[6][2] = {{101, 89}, {149, 89}, {53, 89}, {53, 111}, {5, 89}, {-100, -100}};
 
   for (int i = 0; i < 4; ++i) {

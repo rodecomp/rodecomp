@@ -592,14 +592,14 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case BANK_BUTTON_MAX:
+  case ID_BANK_MAX:
     if (!this->m_amountEdit) {
       return 0;
     }
     this->m_amountEdit->SetText(LookupMessage(MSI_BANK_MAX));
     g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
-  case BANK_BUTTON_DEPOSIT: {
+  case ID_BANK_DEPOSIT: {
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
@@ -623,7 +623,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->m_status.clear();
     return 0;
   }
-  case BANK_BUTTON_WITHDRAW: {
+  case ID_BANK_WITHDRAW: {
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
@@ -647,7 +647,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->m_status.clear();
     return 0;
   }
-  case BANK_BUTTON_10MIL: {
+  case ID_BANK_ADD_10M: {
     const long long amount = this->AdjustAmount(10000000);
     char text[260];
     std::memset(text, 0, sizeof(text));
@@ -658,7 +658,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case BANK_BUTTON_1MIL: {
+  case ID_BANK_ADD_1M: {
     const long long amount = this->AdjustAmount(1000000);
     char text[260];
     std::memset(text, 0, sizeof(text));
@@ -669,7 +669,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case BANK_BUTTON_100K: {
+  case ID_BANK_ADD_100K: {
     const long long amount = this->AdjustAmount(100000);
     char text[260];
     std::memset(text, 0, sizeof(text));

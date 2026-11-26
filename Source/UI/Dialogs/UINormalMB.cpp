@@ -111,20 +111,20 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
 
   switch (type) {
   case MESSAGE_BOX_CANCEL:
-    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 185);
+    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, ID_CANCEL);
     this->m_message0 = ID_CANCEL;
     break;
 
   case MESSAGE_BOX_OK:
-    this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 46, height - 24, 184);
+    this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 46, height - 24, ID_OK);
     this->m_message0 = ID_OK;
     break;
 
   case MESSAGE_BOX_YES_NO:
-    this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 91, height - 24, 187);
-    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, 188);
-    this->m_message1 = 188;
-    this->m_message0 = defaultAccept ? 187 : 188;
+    this->AddButton("유저인터페이스\\btn_ok.bmp", "유저인터페이스\\btn_ok_a.bmp", "유저인터페이스\\btn_ok_b.bmp", width - 91, height - 24, ID_YES);
+    this->AddButton("유저인터페이스\\btn_cancel.bmp", "유저인터페이스\\btn_cancel_a.bmp", "유저인터페이스\\btn_cancel_b.bmp", width - 46, height - 24, ID_NO);
+    this->m_message1 = ID_NO;
+    this->m_message0 = defaultAccept ? ID_YES : ID_NO;
     break;
 
   default:

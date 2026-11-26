@@ -192,7 +192,7 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->FitMapToWindow();
 
   this->questCheckBox = this->AddCheckBox(ID_QUEST, 100, 12, LookupMessage(MSI_MINIMAP_MSG_02), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_03));
-  this->townCheckBox = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_04), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_05));
+  this->townCheckBox = this->AddCheckBox(ID_TOGGLE_MINIMAP_TOWNS, 100, 12, LookupMessage(MSI_MINIMAP_MSG_04), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_05));
   this->guildCheckBox = this->AddCheckBox(ID_GUILD, 100, 12, LookupMessage(MSI_MINIMAP_MSG_06), 220, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_07));
   this->AddCloseButton(LookupMessage(MSI_MINIMAP_MSG_01), 0);
   this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(MSI_MINIMAP_MSG_08), true);
@@ -211,7 +211,7 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->m_playerHead->frameIndex = 0;
   this->m_playerHead->animate = 0;
   this->m_playerHead->SetTooltip(LookupMessage(MSI_MINIMAP_MSG_10));
-  this->m_playerHead->SetId(200);
+  this->m_playerHead->SetId(ID_BASE);
   this->AddChild(this->m_playerHead);
 }
 
@@ -418,7 +418,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case ID_ITEMS:
+    case ID_TOGGLE_MINIMAP_TOWNS:
       this->UpdateTownButtons();
       return 0;
     case ID_BASE:

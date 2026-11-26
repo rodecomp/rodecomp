@@ -2554,7 +2554,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   {
     const std::string prefix("유저인터페이스\\");
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     for (int index = 0; index < 2; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
@@ -4928,7 +4928,7 @@ void UIItemSellWnd2::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_exchange", "btn_exchange_a", "btn_exchange_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
@@ -4979,7 +4979,7 @@ void UIItemSellWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
@@ -6079,7 +6079,7 @@ void UISkillListWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_use", "btn_use_a", "btn_use_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
-  int ids[2] = {184, 201};
+  int ids[2] = {ID_OK, ID_CLOSE};
   int positions[2][2] = {{this->geometry.width - 107, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
@@ -7152,7 +7152,7 @@ void UIMerchantItemPurchaseWnd::OnCreate(int width, int height) {
   names[1][0] = "btn_cancel";
   names[1][1] = "btn_cancel_a";
   names[1][2] = "btn_cancel_b";
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   if (this->buyingStore) {
     names[0][0] = "btn_sell";
@@ -7237,7 +7237,7 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[1][3] = {{"btn_close", "btn_close_a", "btn_close_b"}};
-  int ids[1] = {201};
+  int ids[1] = {ID_CLOSE};
   int positions[1][2] = {{this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 1; ++index) {
     this->buttons[index] = new UIBitmapButton();
@@ -11622,7 +11622,7 @@ void UIItemPurchaseWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();

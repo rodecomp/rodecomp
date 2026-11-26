@@ -2427,8 +2427,8 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
 
   this->m_backButton = this->CreateButton(36, 22, 20, 18, ID_BUTTON1, "유저인터페이스\\cashemotion\\btn_arrowback_%s.bmp", false);
   this->m_searchButton = this->CreateButton(221, 22, 26, 18, ID_BUTTON2, "유저인터페이스\\cashemotion\\btn_search_%s.bmp", true);
-  this->m_shortcutButton = this->CreateButton(252, 22, 37, 18, 191, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
-  this->m_buyButton = this->CreateButton(247, 355, 42, 20, 526, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
+  this->m_shortcutButton = this->CreateButton(252, 22, 37, 18, ID_CASHEMOTION_SHORTCUT, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
+  this->m_buyButton = this->CreateButton(247, 355, 42, 20, ID_CASHEMOTION_BUY, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
 
   this->m_searchEdit = new (std::nothrow) UIEditCtrl2();
   if (this->m_searchEdit) {
@@ -2627,7 +2627,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->RefreshCurrentList();
       return 0;
 
-    case 191:
+    case ID_CASHEMOTION_SHORTCUT:
       if (!g_windowMgr.LookupWindow(WID_EMOTIONWND)) {
         g_windowMgr.EnsureWindow(WID_EMOTIONWND);
       } else {
@@ -2661,7 +2661,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
 
-    case 526: {
+    case ID_CASHEMOTION_BUY: {
       const int packId = g_cashEmotionMgr->selectedPackId;
       if (packId <= 0) {
         return 0;

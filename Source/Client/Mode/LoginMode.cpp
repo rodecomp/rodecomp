@@ -2916,12 +2916,12 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     switch (this->noticeCommands[argument1]) {
     case LOGIN_NOTICE_RESERVE_CHANGE_CHARACTER_SLOT:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
-        window->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+        window->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN, 0, 0, 0);
       }
       return 0;
     case LOGIN_NOTICE_CHARACTER_SLOT_CHANGE:
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_NEWSELECTCHARWND)) {
-        window->SendMsg(nullptr, UM_COMMAND, 0x1B1, 0, 0, 0);
+        window->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_CONFIRM, 0, 0, 0);
       }
       return 0;
     case LOGIN_NOTICE_CHANGE_CHARACTER_NAME:

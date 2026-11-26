@@ -1,4 +1,5 @@
 #include "UI/Lists/UIComboBoxV2Wnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Lists/UIComboBoxEx.h"
@@ -21,7 +22,7 @@ void UIComboBoxV2Wnd::Initialize(int width, int height, std::string prefix) {
   const int buttonHeight = this->auxiliaryWindow->BitmapHeight();
   this->auxiliaryWindow->SetSize(buttonWidth, buttonHeight);
   this->auxiliaryWindow->Move(width - buttonWidth, 0);
-  this->auxiliaryWindow->SetId(273);
+  this->auxiliaryWindow->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->auxiliaryWindow);
 
   this->list = new UIComboBoxEx();

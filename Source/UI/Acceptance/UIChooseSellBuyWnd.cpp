@@ -337,7 +337,7 @@ UIChooseWarpWnd::UIChooseWarpWnd()
 void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   const std::string buttonPrefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[3] = {224, 223, 185};
+  int ids[3] = {ID_BUY, ID_SELL, ID_CANCEL};
   int positions[3][2] = {{144, 96}, {189, 96}, {234, 96}};
 
   for (int i = 0; i < 3; ++i) {
@@ -392,7 +392,7 @@ void UIChooseWarpWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();
@@ -4017,7 +4017,7 @@ void UIBookWnd::OnCreate(int width, int height) {
     int x;
     int y;
   } positions[4] = {{10, 25}, {width - 57, 25}, {width - 35, 25}, {width - 25, height - 25}};
-  const int ids[4] = {356, 354, 355, 201};
+  const int ids[4] = {ID_BOOKMARK, ID_PREVIEW, ID_NEXTVIEW, ID_CLOSE};
   const char* tooltips[4] = {LookupMessage(MSI_BOOK_KEEP), LookupMessage(MSI_BOOK_PREV), LookupMessage(MSI_BOOK_NEXT), LookupMessage(MSI_BOOK_CLOSE)};
 
   for (int index = 0; index < 4; ++index) {
@@ -4062,7 +4062,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
 
   const std::string prefix = "book\\";
   const char* names[2] = {"책읽기", "책읽기"};
-  const int ids[2] = {287, 288};
+  const int ids[2] = {ID_BOOKITEM, ID_AUTOBOOKITEM};
   const char* tooltips[2] = {LookupMessage(MSI_BOOK_READ), LookupMessage(MSI_BOOK_AUTOREAD)};
   for (int index = 0; index < 2; ++index) {
     this->m_readButtons[index] = new UISpriteButton();
@@ -4250,7 +4250,7 @@ void UIStatusWnd::OnCreate(int, int) {
   this->AddMinimizeButton("Ctrl+A", 0);
 
   {
-    const int ids[12] = {205, 206, 207, 208, 209, 210};
+    const int ids[12] = {ID_STR, ID_AGI, ID_VIT, ID_INT, ID_DEX, ID_LUK};
     const std::string arrow = "유저인터페이스\\basic_interface\\arw_right.bmp";
     for (int i = 0; i < 6; ++i) {
       this->m_statButtons[i] = new UIBitmapButton();
@@ -4344,7 +4344,7 @@ void UIToolTipWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{this->geometry.width - 91, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
 
   for (int i = 0; i < 2; ++i) {
@@ -5750,7 +5750,7 @@ void UIExchangeWnd::OnCreate(int, int) {
   this->localAccepted = 0;
   this->remoteAccepted = 0;
 
-  const int ids[3] = {0xB8, 0xE6, 0xB9};
+  const int ids[3] = {ID_OK, ID_EXCHANGE, ID_CANCEL};
   const char* const names[3] = {"ok", "exchange", "cancel"};
   const std::string path("유저인터페이스\\btn_");
   int x[3] = {3, 260, 510};
@@ -5855,7 +5855,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   {
     const std::string prefix("유저인터페이스\\");
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
     int positions[2][2] = {{189, 96}, {234, 96}};
     for (int index = 0; index < 2; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
@@ -5873,7 +5873,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   {
     const std::string prefix("유저인터페이스\\basic_interface\\");
     const char* names[2][3] = {{"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}, {"txtbox_btn_a", "txtbox_btn_b", "txtbox_btn_c"}};
-    int ids[2] = {228, 229};
+    int ids[2] = {ID_NUMCOMBO, ID_CLASSCOMBO};
     int positions[2][2] = {{119, 46}, {256, 46}};
     for (int index = 0; index < 2; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
@@ -6443,7 +6443,7 @@ void UInCashWnd::OnCreate(int width, int height) {
     {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
     {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
     {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
-  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, ID_FIRST_PAGE, ID_PREV_PAGE, ID_NEXT_PAGE, ID_LAST_PAGE, ID_BUY, ID_RESET_CART, ID_CLOSE, ID_FIND, ID_REFRESH};
+  const int ids[19] = {ID_CASHSHOP_TAB_NEW, ID_CASHSHOP_TAB_POPULAR, ID_CASHSHOP_TAB_LIMITED, ID_CASHSHOP_TAB_RENTAL_EQUIP, ID_CASHSHOP_TAB_PERMANENT_EQUIP, ID_CASHSHOP_TAB_BUFF, ID_CASHSHOP_TAB_RECOVERY, ID_CASHSHOP_TAB_ETC, ID_CASHSHOP_TAB_BARGAIN, ID_CASHSHOP_TAB_SEARCH, ID_FIRST_PAGE, ID_PREV_PAGE, ID_NEXT_PAGE, ID_LAST_PAGE, ID_BUY, ID_RESET_CART, ID_CLOSE, ID_FIND, ID_REFRESH};
   int positions[19][2] = {
     {4, this->m_listHeight + 42}, {4, this->m_listHeight + 87}, {4, this->m_listHeight + 132}, {4, this->m_listHeight + 177},
     {4, this->m_listHeight + 222}, {4, this->m_listHeight + 267}, {4, this->m_listHeight + 312}, {4, this->m_listHeight + 357},
@@ -6744,7 +6744,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "메시지", 280, 120, 0);
         }
         this->m_searchEdit->SetText("");
-        this->SendMsg(this, UM_COMMAND, 398, 0, 0, 0);
+        this->SendMsg(this, UM_COMMAND, ID_CASHSHOP_TAB_SEARCH, 0, 0, 0);
       }
       return 0;
     }
@@ -6783,16 +6783,16 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         return 0;
       }
       break;
-    case 389:
-    case 390:
-    case 391:
-    case 392:
-    case 393:
-    case 394:
-    case 395:
-    case 396:
-    case 397:
-    case 398:
+    case ID_CASHSHOP_TAB_NEW:
+    case ID_CASHSHOP_TAB_POPULAR:
+    case ID_CASHSHOP_TAB_LIMITED:
+    case ID_CASHSHOP_TAB_RENTAL_EQUIP:
+    case ID_CASHSHOP_TAB_PERMANENT_EQUIP:
+    case ID_CASHSHOP_TAB_BUFF:
+    case ID_CASHSHOP_TAB_RECOVERY:
+    case ID_CASHSHOP_TAB_ETC:
+    case ID_CASHSHOP_TAB_BARGAIN:
+    case ID_CASHSHOP_TAB_SEARCH:
     case 477: {
       if (static_cast<unsigned int>(this->m_tab) <= 10 && this->m_buttons[this->m_tab] != nullptr) {
         {
@@ -7727,7 +7727,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   {
     const std::string prefix("유저인터페이스\\");
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
 
     for (int i = 0; i < 2; ++i) {
@@ -7895,7 +7895,7 @@ UISayDialogWnd::UISayDialogWnd()
 void UINoticeConfirmWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int i = 0; i < 2; ++i) {
@@ -8026,7 +8026,7 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
 void UIQuitWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"esc_01a", "esc_01b", "esc_01c"}, {"esc_03a", "esc_03b", "esc_03c"}, {"esc_02a", "esc_02b", "esc_02c"}};
-  int ids[3] = {220, 221, 185};
+  int ids[3] = {ID_RESTART, ID_EXIT, ID_CANCEL};
   int positions[3][3] = {{29, 30}, {29, 61}, {29, 96}};
 
   for (int i = 0; i < 3; ++i) {
@@ -8047,7 +8047,7 @@ void UIQuitWnd::OnCreate(int, int) {
 // FUNCTION: fn_12196
 void UIRestartWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\");
-  int ids[4] = {220, 252, 251, 185};
+  int ids[4] = {ID_RESTART, ID_TO_CHARACTER_SELECT, ID_QUIT, ID_CANCEL};
   const char* names[4][4] = {
       {"esc_04a", "esc_04b", "esc_04c", nullptr}, {"esc_01a", "esc_01b", "esc_01c", nullptr}, {"esc_03a", "esc_03b", "esc_03c", nullptr}, {"esc_02a", "esc_02b", "esc_02c", nullptr}};
   int positions[4][4] = {{29, 22, 0, 0}, {29, 45, 0, 0}, {29, 68, 0, 0}, {29, 96, 0, 0}};
@@ -8113,7 +8113,7 @@ void UIPartyInvitationToWnd::OnCreate(int, int) {
     const std::string prefix("유저인터페이스\\");
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
 
     for (int i = 0; i < 2; ++i) {
       auto* button = new UIBitmapButton();
@@ -10661,7 +10661,7 @@ void UITipboxWnd::Paint() {
 void UITipOfTheDayWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
-  int ids[3] = {246, 218, 201};
+  int ids[3] = {ID_PREV, ID_NEXT, ID_CLOSE};
   int positions[3][2] = {{144, this->geometry.height - 24}, {189, this->geometry.height - 24}, {234, this->geometry.height - 24}};
   const char* tooltips[3] = {"", "", "/tip"};
 
@@ -10864,7 +10864,7 @@ void UIStorePasswordInputWnd::Paint() {
   std::string prefix("유저인터페이스\\");
   {
     const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_change", "btn_change_a", "btn_change_b"}};
-    int ids[3] = {184, 185, 292};
+    int ids[3] = {ID_OK, ID_CANCEL, ID_CHANGE_STORE_PASSWORD};
     int positions[3][2] = {{this->geometry.width - 91, 146}, {this->geometry.width - 46, 146}, {this->geometry.width - 210, 146}};
     const int count = g_session.m_passwordInputAlternate ? 2 : 3;
 
@@ -10888,7 +10888,7 @@ void UIStorePasswordInputWnd::Paint() {
       {"btn_num7", "btn_num7_a", "btn_num7_b"}, {"btn_num8", "btn_num8_a", "btn_num8_b"}, {"btn_num9", "btn_num9_a", "btn_num9_b"},
       {"btn_num0", "btn_num0_a", "btn_num0_b"}, {"btn_numR", "btn_numR_a", "btn_numR_b"}
     };
-    int ids[11] = {294, 295, 296, 297, 298, 299, 300, 301, 302, 293, 303};
+    int ids[11] = {ID_STORE_PASSWORD_NUM1, ID_STORE_PASSWORD_NUM2, ID_STORE_PASSWORD_NUM3, ID_STORE_PASSWORD_NUM4, ID_STORE_PASSWORD_NUM5, ID_STORE_PASSWORD_NUM6, ID_STORE_PASSWORD_NUM7, ID_STORE_PASSWORD_NUM8, ID_STORE_PASSWORD_NUM9, ID_STORE_PASSWORD_NUM0, ID_STORE_PASSWORD_NUM_RESET};
     int positions[11][2] = {{10, 25}, {40, 25}, {70, 25}, {10, 55}, {40, 55}, {70, 55}, {10, 85}, {40, 85}, {70, 85}, {10, 115}, {40, 115}};
     int used[10];
     for (int i = 0; i < 10; ++i) {

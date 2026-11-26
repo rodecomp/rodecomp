@@ -20,7 +20,7 @@ void UIGraffiStrboxWnd::OnCreate(int, int) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{189, 96}, {234, 96}};
 
   for (int index = 0; index < 2; ++index) {

@@ -1,4 +1,5 @@
 #include "UI/Login/UIPasswordWnd.h"
+#include "UI/Window/UIEnums.h"
 
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
@@ -50,7 +51,7 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
   };
   std::string prefix = "유저인터페이스\\";
   {
-    const int commandIds[5] = {184, 292, 419, 218, 185};
+    const int commandIds[5] = {ID_OK, ID_CHANGE_STORE_PASSWORD, ID_SECOND_PASSWORD_NOT_USED, ID_NEXT, ID_CANCEL};
     const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
 
     for (int i = 0; i < 5; ++i) {
@@ -68,7 +69,7 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
 
   prefix = "유저인터페이스\\basic_interface\\";
   {
-    const int keyIds[11] = {293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303};
+    const int keyIds[11] = {ID_STORE_PASSWORD_NUM0, ID_STORE_PASSWORD_NUM1, ID_STORE_PASSWORD_NUM2, ID_STORE_PASSWORD_NUM3, ID_STORE_PASSWORD_NUM4, ID_STORE_PASSWORD_NUM5, ID_STORE_PASSWORD_NUM6, ID_STORE_PASSWORD_NUM7, ID_STORE_PASSWORD_NUM8, ID_STORE_PASSWORD_NUM9, ID_STORE_PASSWORD_NUM_RESET};
     const char* const keyNames[11][3] = {
       {"0-a", "0-b", "0-c"}, {"1-a", "1-b", "1-c"}, {"2-a", "2-b", "2-c"}, {"3-a", "3-b", "3-c"},
       {"4-a", "4-b", "4-c"}, {"5-a", "5-b", "5-c"}, {"6-a", "6-b", "6-c"}, {"7-a", "7-b", "7-c"},

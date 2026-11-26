@@ -24,7 +24,7 @@ void UIRebirthWnd::OnCreate(int width, int height) {
     {"esc_03a", "esc_03b", "esc_03c"},
     {"esc_02a", "esc_02b", "esc_02c"},
   };
-  const int ids[5] = {353, 220, 252, 251, 185};
+  const int ids[5] = {ID_REBIRTH, ID_RESTART, ID_TO_CHARACTER_SELECT, ID_QUIT, ID_CANCEL};
   const RECT positions[5] = {{29, 22}, {29, 45}, {29, 68}, {29, 91}, {29, 119}};
 
   for (int index = 0; index < 5; ++index) {

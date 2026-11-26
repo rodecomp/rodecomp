@@ -834,7 +834,7 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
 
   {
     std::string prefix = "유저인터페이스\\basic_interface\\mesbtn_0";
-    int ids[11] = {544, 232, 233, 234, 235, 377, 377, 445, 446, 447, 364};
+    int ids[11] = {ID_TOGGLE_PARTY_BOARD, ID_TALK, ID_FRIEND_INFO, ID_PARTY_SETTING, ID_DELETE_FRIEND, ID_TOGGLE_PARTY_MOUSE_LOCK, ID_TOGGLE_PARTY_MOUSE_LOCK, ID_OPEN_PARTY_SETTINGS, ID_LEAVE_PARTY, ID_OPEN_PARTY_INVITATION, ID_SORT_MINIPARTY};
     const char* friendTooltips[10] = {
       LookupMessage(MSI_MSG),  LookupMessage(MSI_1ON1),  LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_FRIEND_SETTING), LookupMessage(MSI_DELETE),
       LookupMessage(MSI_LOCK_MOUSE), LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY),

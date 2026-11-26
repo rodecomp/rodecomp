@@ -537,7 +537,7 @@ void UIEditCtrl3::PaintText() {
     }
 
     int tagOffset = 0;
-    if (this->geometry.id == 0x1F8 || this->geometry.id == 0x1EB) {
+    if (this->geometry.id == ID_RODEX_READ_CONTENTS || this->geometry.id == ID_RODEX_COMPOSE_EDIT) {
       tagOffset = 1;
     }
 

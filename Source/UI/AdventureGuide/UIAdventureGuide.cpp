@@ -12,6 +12,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Lists/UIListBoxTemplate.h"
 #include "Render/Renderer.h"
 #include "UI/Lists/UIVScrollBar.h"
@@ -1664,7 +1665,7 @@ void CUIItem::SearchNavigation() {
   if (!window) {
     window = g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
-  window->SendMsg(nullptr, UM_COMMAND, 499, 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, NAVI_BUTTON_PRIVATE_AIRPLANE, 0, 0, 0);
 }
 
 // OFFSET: 0x009DBCB0
@@ -1691,7 +1692,7 @@ void CUIQuest::SearchNavigation() {
     window = g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
   }
   window->Invalidate();
-  window->SendMsg(nullptr, UM_COMMAND, 499, 0, 0, 0);
+  window->SendMsg(nullptr, UM_COMMAND, NAVI_BUTTON_PRIVATE_AIRPLANE, 0, 0, 0);
 }
 
 }

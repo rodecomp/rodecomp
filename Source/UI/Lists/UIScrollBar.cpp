@@ -1177,7 +1177,7 @@ void UIChatHisBox::ShiftNaviLinks() {
     bool removed = false;
     for (unsigned int index = 0; index < row->size(); ++index) {
       UINaviLinkButton* button = (*row)[index];
-      if (button->geometry.id == 438) {
+      if (button->geometry.id == ID_NAVI_LINK) {
         button->line -= half;
         if (button->line < 0) {
           removed = true;

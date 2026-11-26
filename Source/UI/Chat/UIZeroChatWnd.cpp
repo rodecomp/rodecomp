@@ -20,7 +20,7 @@ void UIBalloonOpenBtn::OnCreate(int width, int height) {
   this->m_button->SetBitmap("유저인터페이스\\basic_interface\\combo_btn_c.bmp", 2, 0);
   this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
   this->m_button->Move(0, 0);
-  this->m_button->SetId(0x1FE);
+  this->m_button->SetId(ID_OPEN_BALLOON);
   this->AddChild(this->m_button);
 }
 
@@ -37,7 +37,7 @@ void UIDebuffRemoveWnd::OnCreate(int width, int height) {
 // OFFSET: 0x0094B5C0
 // FUNCTION: fn_12893
 void UIGuild_Storage_Log::OnCreate(int width, int height) {
-  const int ids[3] = {246, 218, 184};
+  const int ids[3] = {ID_PREV, ID_NEXT, ID_OK};
   const char* const bitmaps[3][3] = {
     {"stickon", "stickon_a", "stickon_b"},
     {"stickoff", "stickoff_a", "stickoff_b"},

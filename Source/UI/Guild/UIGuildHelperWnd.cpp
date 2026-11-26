@@ -296,7 +296,7 @@ void UICreateGuildWnd::OnCreate(int, int) {
     const std::string prefix("유저인터페이스\\");
     int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
     for (unsigned int i = 0; i < 2; ++i) {
       UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
@@ -369,7 +369,7 @@ void UIGuildLeaveReasonDescWnd::OnCreate(int, int) {
     const std::string prefix("유저인터페이스\\");
     int positions[2][2] = {{this->geometry.width - 101, this->geometry.height - 32}, {this->geometry.width - 55, this->geometry.height - 32}};
     const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int ids[2] = {184, 185};
+    int ids[2] = {ID_OK, ID_CANCEL};
 
     for (int i = 0; i < 2; ++i) {
       UIBitmapButton* button = new UIBitmapButton();

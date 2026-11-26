@@ -117,7 +117,7 @@ void UIItemRepairWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();
@@ -149,7 +149,7 @@ void UIMakeTargetListWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();
@@ -170,7 +170,7 @@ void UIMakeTargetListWnd::OnCreate(int width, int height) {
 void UIMakeTargetProcessWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
   int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
 
   for (int i = 0; i < 2; ++i) {
@@ -222,7 +222,7 @@ void UIWeaponRefineWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {184, 185};
+  int ids[2] = {ID_OK, ID_CANCEL};
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();

@@ -4572,9 +4572,9 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     if (g_replayAnimationScaling != 0 && this->replayControlWnd) {
       const int state = Replay::Instance().state;
       if (state == 6) {
-        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, 0x191, 0, 0, 0);
+        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, ID_PAUSE_REPLAY, 0, 0, 0);
       } else {
-        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, 0x192, 0, 0, 0);
+        this->replayControlWnd->SendMsg(nullptr, UM_COMMAND, ID_RESUME_REPLAY, 0, 0, 0);
       }
       this->replayControlWnd->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     }

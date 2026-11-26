@@ -42,7 +42,7 @@ void UISlotBitmap::OnCreate(int, int) {
       static_cast<int>((this->geometry.width - this->addButton->geometry.width) * 0.5),
       static_cast<int>((this->geometry.height - this->addButton->geometry.height) * 0.5)
     );
-    this->addButton->SetId(203);
+    this->addButton->SetId(ID_MAKE);
     this->AddChild(this->addButton);
   }
 }

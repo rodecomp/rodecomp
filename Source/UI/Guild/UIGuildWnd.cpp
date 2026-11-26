@@ -1825,7 +1825,7 @@ void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int hei
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int ids[2] = {187, 188};
+  int ids[2] = {ID_YES, ID_NO};
 
   for (int index = 0; index < 2; ++index) {
     UIBitmapButton* button = new UIBitmapButton();
@@ -2313,7 +2313,7 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
   this->m_visibleRows = (height - 62) / 32;
 
   {
-    int ids[7] = {239, 240, 241, 242, 243, 244, 245};
+    int ids[7] = {ID_LVLUP1, ID_LVLUP2, ID_LVLUP3, ID_LVLUP4, ID_LVLUP5, ID_LVLUP6, ID_LVLUP7};
     std::string normal("유저인터페이스\\basic_interface\\skill_up_a.bmp");
     std::string hover("유저인터페이스\\basic_interface\\skill_up_b.bmp");
     std::string pressed("유저인터페이스\\basic_interface\\skill_up_c.bmp");
@@ -2330,7 +2330,7 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
   }
 
   {
-    int ids[7] = {253, 254, 255, 256, 257, 258, 259};
+    int ids[7] = {ID_LVLSELECTDN1, ID_LVLSELECTDN2, ID_LVLSELECTDN3, ID_LVLSELECTDN4, ID_LVLSELECTDN5, ID_LVLSELECTDN6, ID_LVLSELECTDN7};
     std::string bitmap("유저인터페이스\\basic_interface\\arw_left.bmp");
     for (int index = 0; index < 7; ++index) {
       this->m_previousButtons[index] = new UIBitmapButton();
@@ -2345,7 +2345,7 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
   }
 
   {
-    int ids[7] = {260, 261, 262, 263, 264, 265, 266};
+    int ids[7] = {ID_LVLSELECTUP1, ID_LVLSELECTUP2, ID_LVLSELECTUP3, ID_LVLSELECTUP4, ID_LVLSELECTUP5, ID_LVLSELECTUP6, ID_LVLSELECTUP7};
     std::string bitmap("유저인터페이스\\basic_interface\\arw_right.bmp");
     for (int index = 0; index < 7; ++index) {
       this->m_nextButtons[index] = new UIBitmapButton();
@@ -2365,7 +2365,7 @@ void UIGuildSkillWnd::OnCreate(int, int height) {
         {"btn_use", "btn_use_a", "btn_use_b"},
         {"btn_close", "btn_close_a", "btn_close_b"},
     };
-    int ids[2] = {184, 201};
+    int ids[2] = {ID_OK, ID_CLOSE};
     int positions[2][2] = {
         {46, this->geometry.height - 24},
         {92, this->geometry.height - 24},

@@ -4738,7 +4738,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
     break;
   case 1:
     if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(WID_BALLOONOPENBTN)) {
-      popupWindow->SendMsg(nullptr, UM_COMMAND, 510, popupId, 0, 0);
+      popupWindow->SendMsg(nullptr, UM_COMMAND, ID_OPEN_BALLOON, popupId, 0, 0);
     }
     [[fallthrough]];
   case 2:
@@ -4747,7 +4747,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(WID_BALLOONOPENBTN)) {
-      popupWindow->SendMsg(nullptr, UM_COMMAND, 510, popupId, 0, 0);
+      popupWindow->SendMsg(nullptr, UM_COMMAND, ID_OPEN_BALLOON, popupId, 0, 0);
     }
     break;
   }

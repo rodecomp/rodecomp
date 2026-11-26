@@ -69,7 +69,7 @@ void UIMacroBlackListCheckWnd::OnCreate(int width, int height) {
 
   directory = "유저인터페이스\\basic_interface\\";
 
-  const int ids[11] = {293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303};
+  const int ids[11] = {ID_STORE_PASSWORD_NUM0, ID_STORE_PASSWORD_NUM1, ID_STORE_PASSWORD_NUM2, ID_STORE_PASSWORD_NUM3, ID_STORE_PASSWORD_NUM4, ID_STORE_PASSWORD_NUM5, ID_STORE_PASSWORD_NUM6, ID_STORE_PASSWORD_NUM7, ID_STORE_PASSWORD_NUM8, ID_STORE_PASSWORD_NUM9, ID_STORE_PASSWORD_NUM_RESET};
   const char* const names[11][3] = {
     {"0-a", "0-b", "0-c"}, {"1-a", "1-b", "1-c"}, {"2-a", "2-b", "2-c"}, {"3-a", "3-b", "3-c"},
     {"4-a", "4-b", "4-c"}, {"5-a", "5-b", "5-c"}, {"6-a", "6-b", "6-c"}, {"7-a", "7-b", "7-c"},

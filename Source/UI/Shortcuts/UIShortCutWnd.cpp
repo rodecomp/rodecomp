@@ -1084,7 +1084,7 @@ void UIMemorialDunWnd::ArrangeButtons() {
 
   if (g_session.memorialDungeonState == 0 || g_session.memorialDungeonState == 1 || g_session.memorialDungeonState == 2) {
     this->m_actionButton->Move(-100, -100);
-    this->m_message0 = 600;
+    this->m_message0 = ID_NO_DEFAULT_PUSH;
     if (g_session.partyLeader && this->m_partyButton && g_session.memorialDungeonState == 1) {
       this->m_partyButton->Move(41, 115);
     }
