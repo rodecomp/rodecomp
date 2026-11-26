@@ -154,7 +154,7 @@ struct CRagEffect : CRenderObject {
   bool FlashCombo();
   bool Thunderstorm();
   __declspec(noinline) void Fireworks();
-  bool ProcessEZ2STRC10830();
+  bool EZ2STROnlyEffect();
   bool ProcessEZ2STRC153A0();
   __declspec(noinline) bool ProcessEZ2STRC3CC40();
   bool ProcessEZ2STRC3FE00();

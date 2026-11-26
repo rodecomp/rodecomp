@@ -340,7 +340,7 @@ public:
   void OnChangeState(int value) override;
 
   void SubD8D4F0(int);
-  void SubD8D500(const char* packet);
+  void Hc_Ack_Change_CharName(const char* packet);
   void SubD90C90(const PasswordModePacket* packet);
   void SubD911C0(const PasswordModePacket* packet);
   int GetMaxCharacterSlot();

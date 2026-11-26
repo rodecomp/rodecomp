@@ -351,7 +351,7 @@ void CLoginMode::SubD8D4F0(int) {
 
 // OFFSET: 0x00D8D500
 // FUNCTION: fn_22266
-void CLoginMode::SubD8D500(const char* packet) {
+void CLoginMode::Hc_Ack_Change_CharName(const char* packet) {
   UIWindow* window = g_windowMgr.newSelectCharWnd;
   switch (*reinterpret_cast<const int*>(packet + 2)) {
   case CHARACTER_RENAME_SUCCESS:
@@ -2680,7 +2680,7 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_CH_ACK_CHANGE_CHARACTERNAME:
-      this->SubD8D500(reinterpret_cast<const char*>(g_gameModePacketBuffer));
+      this->Hc_Ack_Change_CharName(reinterpret_cast<const char*>(g_gameModePacketBuffer));
       break;
     case ID_AC_SHUTDOWN_NOTIFY: {
       const ShutdownNoticePacket* packet = reinterpret_cast<const ShutdownNoticePacket*>(g_gameModePacketBuffer);

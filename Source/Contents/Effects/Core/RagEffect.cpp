@@ -2026,7 +2026,7 @@ void CRagEffect::Bottom() {
 
 // OFFSET: 0x00C10830
 // FUNCTION: fn_20034
-bool CRagEffect::ProcessEZ2STRC10830() {
+bool CRagEffect::EZ2STROnlyEffect() {
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
@@ -10282,7 +10282,7 @@ bool CRagEffect::OnProcess2() {
       const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
       g_soundMgr->PlayWave("effect\\p_success.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -10292,7 +10292,7 @@ bool CRagEffect::OnProcess2() {
       const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
       g_soundMgr->PlayWave("effect\\p_failed.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -10373,7 +10373,7 @@ bool CRagEffect::OnProcess2() {
       const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
       g_soundMgr->PlayWave("effect\\고성방가.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0);
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -10595,7 +10595,7 @@ bool CRagEffect::OnProcess2() {
     break;
   case EF_ANGEL:
   case EF_DEVIL:
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -21435,7 +21435,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -21456,7 +21456,7 @@ bool CRagEffect::OnProcess3() {
   case EF_INVINCIBLEOFF2:
   case EF_DEATHSUMMON:
   case EF_NPC_CHILL:
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -21465,7 +21465,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "caramel_die.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22083,7 +22083,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\h_moonlight_1.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22092,7 +22092,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\h_moonlight_2.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22101,7 +22101,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\h_moonlight_3.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22110,7 +22110,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "levelup.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22127,7 +22127,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22225,7 +22225,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\p_success.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -22235,7 +22235,7 @@ bool CRagEffect::OnProcess3() {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\p_failed.wav");
     }
-    if (!this->ProcessEZ2STRC10830()) {
+    if (!this->EZ2STROnlyEffect()) {
       return false;
     }
     break;
@@ -24810,7 +24810,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\mon_연환.wav");
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25510,7 +25510,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveAt(*this, "_heal_effect.wav", -80.0f);
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25521,7 +25521,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveAt(*this, "effect\\흡기.wav", -80.0f);
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25555,7 +25555,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\sage_spell breake.wav");
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25563,7 +25563,7 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt == 0) {
         g_soundMgr->PlayWave("effect\\cru_holy cross.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25614,7 +25614,7 @@ bool CRagEffect::OnProcess() {
     case EF_KEEPING:
     case EF_DISPELL:
     case EF_STEALCOIN:
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25626,7 +25626,7 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveInline(*this, "effect\\복호격.wav");
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
@@ -25652,12 +25652,12 @@ bool CRagEffect::OnProcess() {
         this->render.position = this->state.parent->render.position;
         PlayEffectWaveAt(*this, "_enemy_hit_wind1.wav", -150.0f);
       }
-      if (!this->ProcessEZ2STRC10830()) {
+      if (!this->EZ2STROnlyEffect()) {
         return false;
       }
       break;
     case EF_MAGICROD:
-      this->ProcessEZ2STRC10830();
+      this->EZ2STROnlyEffect();
       this->SageMagicRod();
       break;
     default:
