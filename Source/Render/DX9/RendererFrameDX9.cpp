@@ -23,6 +23,7 @@ void CRenderer::ClearFrame() {
 
 // OFFSET: 0x00565970
 // FUNCTION: fn_02222
+// VIRTUALIZED: emulated 0x02772E52
 bool CRendererDX9::Draw() {
   // STRING: st_00823
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dLib\\RendererDX9.cpp";
