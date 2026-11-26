@@ -6785,45 +6785,45 @@ namespace {
 // FUNCTION: fn_19828
 void CEffectPrim::PrimFadingColumns() {
   for (int index = 0; index < 2; ++index) {
-    if (this->state.slots[index].life != 1) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
       continue;
     }
 
-    ++this->state.slots[index].process;
-
-    if (this->state.slots[index].process > 29000) {
-      this->state.slots[index].process = 29000;
+    if (++slot.process > 29000) {
+      slot.process = 29000;
     }
 
-    if (this->state.slots[index].process <= 0) {
+    if (slot.process <= 0) {
       continue;
     }
 
-    FadeColumnHeight(*this, this->state.slots[index]);
+    FadeColumnHeight(*this, slot);
   }
 
   for (int index = 2; index < 4; ++index) {
-    if (this->state.slots[index].life != 1) {
+    EffectPrimitiveSlot& slot = this->state.slots[index];
+
+    if (slot.life != 1) {
       continue;
     }
 
-    ++this->state.slots[index].process;
-
-    if (this->state.slots[index].process > 29000) {
-      this->state.slots[index].process = 29000;
+    if (++slot.process > 29000) {
+      slot.process = 29000;
     }
 
-    if (this->state.slots[index].process <= 0) {
+    if (slot.process <= 0) {
       continue;
     }
 
-    this->state.slots[index].distance += 0.5f;
+    slot.distance += 0.5f;
 
-    if (this->state.slots[index].distance > this->state.slots[index].height[0] * 8.0f) {
-      this->state.slots[index].distance -= this->state.slots[index].height[0] * 8.0f;
+    if (slot.distance > slot.height[0] * 8.0f) {
+      slot.distance -= slot.height[0] * 8.0f;
     }
 
-    FadeColumnHeight(*this, this->state.slots[index]);
+    FadeColumnHeight(*this, slot);
   }
 
   const CRagEffect* master = this->state.master;
