@@ -38,6 +38,8 @@ ULONG AES::Decrypt(std::span<UCHAR> input, std::span<UCHAR> output, UCHAR flags)
 // OFFSET: 0x0061B1A0
 // FUNCTION: fn_04419
 bool AES::Initialize(std::span<UCHAR> secret, std::span<UCHAR> iv, int mode) {
+  UCHAR* ivData = iv.data();
+  volatile ULONG ivSize = iv.size();
   if (m_key != nullptr) {
     BCryptDestroyKey(m_key);
     m_key = nullptr;
@@ -47,7 +49,7 @@ bool AES::Initialize(std::span<UCHAR> secret, std::span<UCHAR> iv, int mode) {
     m_algorithm = nullptr;
   }
 
-  if (!SetIV(iv)) {
+  if (ivSize != 16 || !SetIV(std::span<UCHAR>(ivData, ivSize))) {
     return false;
   }
   if (BCryptOpenAlgorithmProvider(&m_algorithm, BCRYPT_AES_ALGORITHM, nullptr, 0) < 0) {
