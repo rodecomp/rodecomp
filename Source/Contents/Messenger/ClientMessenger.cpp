@@ -6205,6 +6205,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
   if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);
     while (lua_next(state, -2) != 0) {
+      CLuaInstance* script = &this->script;
       unsigned int category;
       int result;
       int type = lua_type(this->script.GetState(), -2);
@@ -6220,7 +6221,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
       }
       if (this->loadValid) {
         std::string categoryName;
-        result = this->script.GetFieldString(categoryName, "name");
+        result = script->GetFieldString(categoryName, "name");
         this->loadValid &= result == 0;
         if (result != 0) {
           ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, static_cast<int>(result)), 0);
@@ -6256,7 +6257,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               definitions.emplace(order, definition);
 
               std::string orderName;
-              result = this->script.GetFieldString(orderName, "name");
+              result = script->GetFieldString(orderName, "name");
               this->loadValid &= result == 0;
               if (result != 0) {
                 ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, static_cast<int>(result)), 0);
@@ -6279,7 +6280,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
               ReplaceAll(definition->formatText, "{sym}", symbol);
 
-              result = this->script.GetFieldStringArray(definition->functions, "func");
+              result = script->GetFieldStringArray(definition->functions, "func");
               this->loadValid &= result == 0;
               if (result != 0) {
                 ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, static_cast<int>(result)), 0);
@@ -6305,7 +6306,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
 
               std::map<unsigned int, unsigned int> values;
-              result = this->script.GetFieldUIntMap(values, "val");
+              result = script->GetFieldUIntMap(values, "val");
               this->loadValid &= result == 0;
               if (result != 0) {
                 ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, static_cast<int>(result)), 0);
@@ -6337,7 +6338,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
 
               std::map<unsigned int, unsigned int> conditions;
-              result = this->script.GetFieldUIntMap(conditions, "cond");
+              result = script->GetFieldUIntMap(conditions, "cond");
               bool valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6372,7 +6373,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 break;
               }
 
-              result = this->script.GetFieldStringArray(definition->signLabels, "sym");
+              result = script->GetFieldStringArray(definition->signLabels, "sym");
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6388,7 +6389,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
 
               std::map<unsigned int, std::string> separators;
-              result = this->script.GetFieldStringMap(separators, "sep");
+              result = script->GetFieldStringMap(separators, "sep");
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6413,7 +6414,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
 
               int randomOption;
-              result = this->script.GetFieldInt(randomOption, "rndOpt");
+              result = script->GetFieldInt(randomOption, "rndOpt");
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6437,7 +6438,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 this->randomOptionDefinitions[randomOption] = definition;
               }
 
-              result = this->script.GetFieldString(definition->uniqueGroup, "uniq1");
+              result = script->GetFieldString(definition->uniqueGroup, "uniq1");
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6447,7 +6448,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 break;
               }
 
-              result = this->script.GetFieldInt(definition->uniqueKeyMode, "uniq2");
+              result = script->GetFieldInt(definition->uniqueKeyMode, "uniq2");
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
@@ -6467,11 +6468,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 while (lua_next(this->script.GetState(), -2) != 0) {
                   int optionKey;
                   int optionValue;
-                  result = this->script.GetInt(optionKey, -2);
+                  result = script->GetInt(optionKey, -2);
                   if (result != 0) {
                     break;
                   }
-                  result = this->script.GetInt(optionValue, -1);
+                  result = script->GetInt(optionValue, -1);
                   if (result != 0) {
                     break;
                   }
