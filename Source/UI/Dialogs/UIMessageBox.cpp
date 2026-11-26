@@ -602,7 +602,7 @@ void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
     bitmap = load("유저인터페이스\\sysbox_rm.bmp");
     this->DrawBitmap(x + width - bitmap->image.width, y + 14 + i * 14, bitmap, false);
   }
-  for (int i = 0; i < columns; ++i) {
+  for (int i = 0; i < TileCount(innerWidth, 14); ++i) {
     bitmap = load("유저인터페이스\\sysbox_md.bmp");
     this->DrawBitmap(x + 14 + i * 14, y + height - bitmap->image.height, bitmap, false);
   }
