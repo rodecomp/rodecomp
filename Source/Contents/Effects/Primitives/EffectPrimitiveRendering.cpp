@@ -206,7 +206,7 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
     RenderTriangle& triangle = this->state.triangles[index];
 
     if (triangle.Visible()) {
-      g_renderer->SubmitTriangle(triangle, static_cast<std::uint16_t>(this->state.renderFlag));
+      g_renderer->SubmitTriangle(triangle, this->state.renderFlag);
     }
   }
 }
