@@ -1593,7 +1593,7 @@ bool CRagEffect::ShieldCharge() {
 // FUNCTION: fn_46634
 inline bool CRagEffect::Offertorium() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\ab_offertorium.wav");
+    PlayEffectWaveInline(*this, "effect\\ab_offertorium.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -1602,7 +1602,7 @@ inline bool CRagEffect::Offertorium() {
 // FUNCTION: fn_46635
 inline bool CRagEffect::FullThrottle() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\all_full_throttle.wav");
+    PlayEffectWaveInline(*this, "effect\\all_full_throttle.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -1656,7 +1656,7 @@ inline bool CRagEffect::FreezingTrap() {
 // FUNCTION: fn_46641
 inline bool CRagEffect::IllusionDoping() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\gn_illusiondoping.wav");
+    PlayEffectWaveInline(*this, "effect\\gn_illusiondoping.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -1719,7 +1719,7 @@ inline bool CRagEffect::Resurrection() {
 // FUNCTION: fn_46648
 inline bool CRagEffect::LuxAnima() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\rk_luxanima.wav");
+    PlayEffectWaveInline(*this, "effect\\rk_luxanima.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -1737,7 +1737,7 @@ inline bool CRagEffect::Sanctuary() {
 // FUNCTION: fn_46650
 inline bool CRagEffect::ElementalShield() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\so_elemental_shield.wav");
+    PlayEffectWaveInline(*this, "effect\\so_elemental_shield.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -1755,7 +1755,7 @@ inline bool CRagEffect::SpringTrap() {
 // FUNCTION: fn_46652
 inline bool CRagEffect::FlashCombo() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\sr_flashcombo.wav");
+    PlayEffectWaveInline(*this, "effect\\sr_flashcombo.wav");
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -20663,15 +20663,24 @@ bool CRagEffect::OnProcess3() {
     if (this->state.parent->render.state == 0 || this->state.parent->render.state == 2) {
       if (this->state.stateCnt <= 15) {
         this->state.parent->render.angle += 12.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else if (this->state.stateCnt <= 30) {
         this->state.parent->render.angle += 18.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else if (this->state.stateCnt <= 40) {
         this->state.parent->render.angle += 24.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else {
         this->state.parent->render.angle += 48.0f;
-      }
-      if (this->state.parent->render.angle > 360.0f) {
-        this->state.parent->render.angle -= 360.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       }
     }
     break;
@@ -21844,15 +21853,24 @@ bool CRagEffect::OnProcess3() {
     if (this->state.parent->render.state == 0) {
       if (this->state.stateCnt <= 15) {
         this->state.parent->render.angle += 12.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else if (this->state.stateCnt <= 30) {
         this->state.parent->render.angle += 18.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else if (this->state.stateCnt <= 40) {
         this->state.parent->render.angle += 24.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       } else {
         this->state.parent->render.angle += 48.0f;
-      }
-      if (this->state.parent->render.angle > 360.0f) {
-        this->state.parent->render.angle -= 360.0f;
+        if (this->state.parent->render.angle > 360.0f) {
+          this->state.parent->render.angle -= 360.0f;
+        }
       }
     }
     break;
