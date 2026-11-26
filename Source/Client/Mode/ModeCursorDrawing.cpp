@@ -122,19 +122,18 @@ void CMode::DrawCursor() {
       continue;
     }
 
-    const float scaleX = cell.scaleX;
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    const float scaleX = cell.scaleX;
     const float left = static_cast<float>(cell.x);
-    const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
     const float top = static_cast<float>(cell.y) * cell.scaleY;
+    const float right = static_cast<float>(image->width * (image->doubleWidth + 1) - 1 + cell.x);
     const float bottom = static_cast<float>(image->height * (image->doubleHeight + 1) - 1 + cell.y) * cell.scaleY;
 
     CTexture* texture;
     if (cell.imageType == 0) {
-      auto& atlasRef = g_renderer->atlas;
-      texture = atlasRef.Find(image, sprite->palette, record);
+      texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = atlasRef.Insert(image, sprite->palette, record);
+        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
