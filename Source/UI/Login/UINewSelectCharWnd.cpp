@@ -1129,7 +1129,11 @@ void UINewSelectCharWnd::UpdateSlotButtons() {
     }
 
     static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->SetSlot(this->m_slotStatus[slot] ? -1 : slot, slot);
-    if (slot < g_session.m_producibleSlotCount && this->m_slotStatus[slot] == 1 && slot < g_session.m_validSlotCount) {
+    if (slot >= g_session.m_producibleSlotCount) {
+      this->m_slotButtons2[index]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
+    } else if (this->m_slotStatus[slot] != 1) {
+      this->m_slotButtons2[index]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
+    } else if (slot < g_session.m_validSlotCount) {
       this->m_slotButtons2[index]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 0, 0, 0, 0);
     } else {
       this->m_slotButtons2[index]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
@@ -1171,11 +1175,10 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
   auto* button = this->m_windowFC;
   if (disabled) {
     button->SetDisabled(1);
-    button->Invalidate();
   } else {
     button->SetDisabled(0);
-    button->Invalidate();
   }
+  button->Invalidate();
 
   this->UpdateSlotButtons();
   this->UpdateDeleteButtons();
