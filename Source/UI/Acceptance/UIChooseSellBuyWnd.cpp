@@ -4582,7 +4582,9 @@ void UIFrameWnd::FitLastTextLine(int width, unsigned lineCount, int family, int 
       const std::string fitted = this->FitDisplayText(width - total + segment, it->second.c_str(), family, height, 0);
       it->second = fitted;
       ++it;
-      last.erase(it, last.end());
+      if (last.end() != it) {
+        last.erase(it, last.end());
+      }
       break;
     }
   }
