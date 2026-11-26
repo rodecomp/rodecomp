@@ -28,7 +28,19 @@ namespace details {
 
 class Resource {
 public:
-  void* sub_E87DB0(int mode);
+  /* 0000 */ void* lock;
+  /* 0004 */ void* unknown_0004;
+  /* 0008 */ void* allocation;
+  /* 000C */ unsigned int size;
+  /* 0010 */ unsigned int pages;
+  /* 0014 */ void* unknown_0014;
+  /* 0018 */ unsigned int initialized;
+  /* 001C */ unsigned int seed;
+  /* 0020 */ int mode;
+  /* 0024 */ unsigned int regionSize;
+  /* 0028 */ MEMORY_BASIC_INFORMATION regionInfo;
+
+  Resource(int mode);
 };
 
 class ResourceManager {
@@ -38,7 +50,7 @@ public:
   /* 0008 */ void* unknown_0008;
   /* 000C */ MMRESULT timer;
 
-  __declspec(noinline) ResourceManager* RetrieveSystemVersionInformation();
+  ResourceManager();
   void sub_E903F0(int key, void* result);
 };
 
@@ -56,24 +68,14 @@ void sub_E916F0(void* writer, const char* message);
 // FUNCTION: fn_25504
 int sub_E90470(int key, int mode) {
   if (g_resourceState == nullptr) {
-    void* memory = ::operator new(0x10);
-    Concurrency::details::ResourceManager* state = nullptr;
-    if (memory != nullptr) {
-      state = static_cast<Concurrency::details::ResourceManager*>(memory)->RetrieveSystemVersionInformation();
-    }
-    g_resourceState = state;
-    if (state == nullptr) {
+    g_resourceState = new Concurrency::details::ResourceManager;
+    if (g_resourceState == nullptr) {
       return 0;
     }
   }
 
-  void* memory = ::operator new(0x44);
-  void* result = nullptr;
-  if (memory != nullptr) {
-    result = static_cast<Concurrency::details::Resource*>(memory)->sub_E87DB0(mode);
-  }
-
-  if (result == nullptr) {
+  Concurrency::details::Resource* resource = new Concurrency::details::Resource(mode);
+  if (resource == nullptr) {
     if (g_logContext != nullptr) {
       char* message = sub_E939D0(g_versionLogMessage);
       sub_E916F0(g_logContext + 0x24, message);
@@ -81,6 +83,6 @@ int sub_E90470(int key, int mode) {
     return 0;
   }
 
-  static_cast<Concurrency::details::ResourceManager*>(g_resourceState)->sub_E903F0(key, result);
+  static_cast<Concurrency::details::ResourceManager*>(g_resourceState)->sub_E903F0(key, resource);
   return 1;
 }
