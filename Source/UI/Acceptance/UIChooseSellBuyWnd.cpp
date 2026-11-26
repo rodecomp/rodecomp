@@ -597,7 +597,7 @@ void UIEquipWnd::Paint() {
 
     this->DrawEquipSlots();
     this->RefreshLook();
-    const short job = static_cast<short>(this->appearance[0]);
+    const int job = this->appearance[0];
     const unsigned char sex = static_cast<unsigned char>(this->appearance[1]);
     const short head = static_cast<short>(this->appearance[2]);
     const short weapon = static_cast<short>(this->appearance[3]);
@@ -951,7 +951,8 @@ void UIMonsterDisplayWnd::Paint() {
   int offsetX = 0;
   int offsetY = 0;
   int left = 0;
-  for (int index = 0; index < frame.cellCount; ++index) {
+  int index;
+  for (index = 0; index < frame.cellCount; ++index) {
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
       continue;
@@ -968,7 +969,7 @@ void UIMonsterDisplayWnd::Paint() {
     }
   }
 
-  for (int index = 0; index < frame.cellCount; ++index) {
+  for (index = 0; index < frame.cellCount; ++index) {
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
       continue;
