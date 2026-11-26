@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/WindEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -19,7 +20,7 @@ static EffectPoint TransformPoint(const matrix& transform, const EffectPoint& po
 
 // OFFSET: 0x00730210
 // FUNCTION: fn_07537
-CWindEffect::CWindEffect() : CEffect(2343) {
+CWindEffect::CWindEffect() : CEffect(EF_WIND_EFFECT) {
 }
 
 // OFFSET: 0x00730410

@@ -60,7 +60,7 @@ __forceinline void CMeteorEffect::CreateMeteor() {
   sprite->frameDelay = 4.0f;
   sprite->depthOffset = 0.00015f;
   sprite->loopMode = 1;
-  if (this->id == EF_UNK_1106) {
+  if (this->id == EF_SU_CN_METEOR_FALL) {
     sprite->alpha = 100;
   }
 
@@ -98,7 +98,7 @@ __forceinline void CMeteorEffect::CreateMeteorShower() {
     sprite->frameDelay = 4.0f;
     sprite->depthOffset = 0.00015f;
     sprite->loopMode = 1;
-    if (this->id == EF_UNK_1099) {
+    if (this->id == EF_SU_LUNATIC_CARROT_BEAT_METEOR_SHOWER) {
       sprite->alpha = 100;
     }
 
@@ -110,12 +110,12 @@ __forceinline void CMeteorEffect::CreateMeteorShower() {
 // FUNCTION: fn_07056
 void CMeteorEffect::Open() {
   switch (this->id) {
-    case EF_UNK_1099:
-    case EF_UNK_1111:
+    case EF_SU_LUNATIC_CARROT_BEAT_METEOR_SHOWER:
+    case EF_SU_LUNATIC_CARROT_BEAT_METEOR_SHOWER2:
       this->CreateMeteorShower();
       break;
-    case EF_UNK_1106:
-    case EF_UNK_1112:
+    case EF_SU_CN_METEOR_FALL:
+    case EF_SU_CN_METEOR_FALL2:
       this->CreateMeteor();
       break;
   }

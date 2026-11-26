@@ -5,6 +5,7 @@
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <windows.h>
 #include <timeapi.h>
@@ -39,7 +40,7 @@ static __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 
 // OFFSET: 0x006F7360
 // FUNCTION: fn_06858
-CBlastForge::CBlastForge() : CEffect(-1), openToggle(0), startTime(timeGetTime()) {
+CBlastForge::CBlastForge() : CEffect(EF_NONE), openToggle(0), startTime(timeGetTime()) {
   this->loopParticle = nullptr;
   this->loopBottomParticle = nullptr;
   this->blastParticle = nullptr;

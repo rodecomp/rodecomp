@@ -17,7 +17,7 @@
 
 // OFFSET: 0x006F5820
 // FUNCTION: fn_06837
-CAxeBoomerang::CAxeBoomerang() : CEffect(-1) {
+CAxeBoomerang::CAxeBoomerang() : CEffect(EF_NONE) {
   this->particlePosition.x = 0.0f;
   this->particlePosition.y = 0.0f;
   this->particlePosition.z = 0.0f;

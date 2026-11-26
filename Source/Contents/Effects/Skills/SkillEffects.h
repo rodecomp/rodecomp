@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_SKILLEFFECTS_H
 
 #include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <cstddef>
 #include <list>
@@ -13,7 +14,7 @@ class CSpriteParticle;
 
 class CMeteorEffect : public CEffect {
 public:
-  CMeteorEffect() : CEffect(-1), quakeFrame(12) {}
+  CMeteorEffect() : CEffect(EF_NONE), quakeFrame(12) {}
 
   void Open() override;
   void OnProcess() override;
@@ -34,7 +35,7 @@ private:
 
 class CShadowExceedNew : public CEffect {
 public:
-  CShadowExceedNew() : CEffect(2467), drawBackEmitters(0) {}
+  CShadowExceedNew() : CEffect(EF_SHC_SHADOW_EXCEED), drawBackEmitters(0) {}
 
   void Open() override;
   void OnProcess() override;
@@ -51,7 +52,7 @@ public:
 class CSprArrowEffect : public CEffect {
 public:
   CSprArrowEffect()
-      : CEffect(2404), spriteParticle(nullptr), startTick(0), startX(0), startY(0), startZ(0), velocityX(0),
+      : CEffect(EF_SPR_ARROW), spriteParticle(nullptr), startTick(0), startX(0), startY(0), startZ(0), velocityX(0),
         velocityY(0), velocityZ(0), travelSpeedScale(1.0f), heading(0), delayFrames(0), spriteFrame(0), launched(0),
         alive(1) {}
 

@@ -18,7 +18,7 @@
 // OFFSET: 0x00B7CB10
 // FUNCTION: fn_19227
 CThrowItemEffect::CThrowItemEffect()
-    : CEffect(-1), travelFrames(0), launchDelay(0), projectileCount(1), trailCount(4), heightDelta(0), arcHeight(0),
+    : CEffect(EF_NONE), travelFrames(0), launchDelay(0), projectileCount(1), trailCount(4), heightDelta(0), arcHeight(0),
       trail{0.0f, 0.0f, 0.0f} {
 }
 
@@ -87,7 +87,7 @@ void CThrowItemEffect::InitStoneParticle(CParticle* particle) {
 short CThrowItemEffect::CalculateTrajectoryOffset(CParticle* particle) {
   short offset = 0;
 
-  if (this->id == 981) {
+  if (this->id == EF_THROW_HAPPOKUNAI) {
     offset = static_cast<short>(static_cast<short>(360 / this->projectileCount) * particle->rowIndex);
   }
 
@@ -546,7 +546,7 @@ void CThrowItemEffect::OnProcess() {
         transform.Compose(rotationMatrix, translate);
         target->transform = transform;
 
-        if (this->id == 0x3D5 && target->rowIndex == 0 && target->columnIndex == 0) {
+        if (this->id == EF_THROW_HAPPOKUNAI && target->rowIndex == 0 && target->columnIndex == 0) {
           CRenderObject* object = FindRenderObject(this->actor);
 
           if (object != nullptr) {
@@ -580,7 +580,7 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
 
   const unsigned short heading = static_cast<unsigned short>(static_cast<int>(DirectionAngle(deltaX, deltaZ)));
   int offset = 0;
-  if (this->id == 981) {
+  if (this->id == EF_THROW_HAPPOKUNAI) {
     offset = static_cast<unsigned short>(static_cast<short>(360 / this->projectileCount) * static_cast<short>(particle->rowIndex));
   }
 

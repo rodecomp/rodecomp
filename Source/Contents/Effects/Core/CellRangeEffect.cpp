@@ -26,7 +26,7 @@ static void SetParticleIndices(CParticle& particle, int effectId, int group, int
 
 // OFFSET: 0x00B43050
 // FUNCTION: fn_18874
-CCellRangeEffect::CCellRangeEffect() : CEffect(-1), cellSize(5.0f) {
+CCellRangeEffect::CCellRangeEffect() : CEffect(EF_NONE), cellSize(5.0f) {
 }
 
 // OFFSET: 0x00B430D0

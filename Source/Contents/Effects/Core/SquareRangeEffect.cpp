@@ -9,7 +9,7 @@
 
 // OFFSET: 0x00B4C5E0
 // FUNCTION: fn_18960
-CSquareRangeEffect::CSquareRangeEffect() : CEffect(-1), size(1.0f), resize(0), particles() {
+CSquareRangeEffect::CSquareRangeEffect() : CEffect(EF_NONE), size(1.0f), resize(0), particles() {
 }
 
 // OFFSET: 0x00B4C670
@@ -67,7 +67,7 @@ void CSquareRangeEffect::Open() {
 // OFFSET: 0x00B4C8C0
 // FUNCTION: fn_18964
 bool CSquareRangeEffect::IsAlive() {
-  if (this->id == 991) {
+  if (this->id == EF_KG_KAGEHUMI) {
     return !this->IsFinished();
   }
 

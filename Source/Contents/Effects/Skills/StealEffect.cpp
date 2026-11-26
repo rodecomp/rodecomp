@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/StealEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -15,7 +16,7 @@
 
 // OFFSET: 0x00B4CBE0
 // FUNCTION: fn_45992
-CSteal::CSteal() : CEffect(18), particles() {
+CSteal::CSteal() : CEffect(EF_STEAL), particles() {
   this->effectLifetime = 50;
 }
 

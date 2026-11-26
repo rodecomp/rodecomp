@@ -24,7 +24,7 @@ namespace {
 
 // OFFSET: 0x00B78840
 // FUNCTION: fn_19194
-CSpriteEffect::CSpriteEffect() : CEffect(-1) {
+CSpriteEffect::CSpriteEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B788C0

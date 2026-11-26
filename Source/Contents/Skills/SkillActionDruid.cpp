@@ -963,7 +963,7 @@ void CSkillAction_DR_WIND_BOMB::OnSkillEffect(int level, CGameActor* source, CGa
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, EF_UNK_2468, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(source->render.accountId, EF_DR_WIND_BOMB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(effect)->SetTarget(target->render.position);
   }
 

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CresciveBolt.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -12,7 +13,7 @@
 
 // OFFSET: 0x0070AAD0
 // FUNCTION: fn_07106
-CCresciveBolt::CCresciveBolt() : CEffect(1951), particle(nullptr) {
+CCresciveBolt::CCresciveBolt() : CEffect(EF_CRESCIVEBOLT), particle(nullptr) {
 }
 
 // OFFSET: 0x0070AB40

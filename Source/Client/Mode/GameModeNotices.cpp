@@ -4090,7 +4090,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       const float y = mode->scene->terrain->Height(x, z);
       vector3d position = {x, y, z};
-      this->LaunchDummyEffect(&position, 0x26E, 200, 0);
+      this->LaunchDummyEffect(&position, EF_THUNDERSTORM2, 200, 0);
       break;
     }
     case NPC_CLOUD_KILL:
@@ -4105,7 +4105,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       const float y = mode->scene->terrain->Height(x, z);
       vector3d position = {x, y, z};
-      this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
+      this->LaunchDummyEffect(&position, EF_FROSTMYSTY, EffectLifetime(EF_FROSTMYSTY) + 10, 0);
       break;
     }
     case NPC_PSYCHIC_WAVE:
@@ -4183,7 +4183,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       const float y = mode->scene->terrain->Height(x, z);
       vector3d position = {x, y, z};
-      this->LaunchDummyEffect(&position, 0x393, 150, 0);
+      this->LaunchDummyEffect(&position, EF_SPR_PLANT9, 150, 0);
       break;
     }
     case LG_OVERBRAND: {
@@ -4227,9 +4227,9 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
       const float y = mode->scene->terrain->Height(x, z);
       vector3d position = {x, y, z};
-      this->LaunchDummyEffect(&position, 0x376, 300, 0);
-      this->LaunchDummyEffect(&position, 0x375, 200, 0);
-      this->LaunchDummyEffect(&position, 0x383, 999, 0);
+      this->LaunchDummyEffect(&position, EF_GUMGANG5, 300, 0);
+      this->LaunchDummyEffect(&position, EF_BASH3D6, 200, 0);
+      this->LaunchDummyEffect(&position, EF_BLUELINE, 999, 0);
       g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
@@ -6510,8 +6510,8 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         for (int i = 0; i < 10; ++i) {
-          g_effectMgr->Retire(player->render.accountId, 1300 + i);
-          g_effectMgr->Retire(player->render.accountId, 1467 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_NEW_ROLLINGCUTTER_COUNT_01 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_01 + i);
         }
       }
       std::sprintf(message, "");

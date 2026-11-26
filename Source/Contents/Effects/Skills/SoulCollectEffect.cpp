@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SoulCollectEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -14,7 +15,7 @@
 
 // OFFSET: 0x0072A210
 // FUNCTION: fn_07455
-CSoulCollectEffect::CSoulCollectEffect() : CEffect(-1) {
+CSoulCollectEffect::CSoulCollectEffect() : CEffect(EF_NONE) {
   this->rotationParameter = 0;
 }
 

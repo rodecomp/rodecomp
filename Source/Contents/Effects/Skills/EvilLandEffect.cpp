@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/EvilLandEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -9,7 +10,7 @@
 
 // OFFSET: 0x006FE300
 // FUNCTION: fn_06944
-CEvilLandEffect::CEvilLandEffect() : CEffect(1555), particles() {
+CEvilLandEffect::CEvilLandEffect() : CEffect(EF_EVILLAND), particles() {
 }
 
 // OFFSET: 0x006FE410

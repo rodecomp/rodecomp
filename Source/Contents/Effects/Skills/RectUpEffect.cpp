@@ -5,6 +5,7 @@
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -20,7 +21,7 @@ __forceinline int ClampedRandom(int range) {
 
 // OFFSET: 0x00709F50
 // FUNCTION: fn_07096
-CRectUpEffect::CRectUpEffect() : CEffect(1088) {
+CRectUpEffect::CRectUpEffect() : CEffect(EF_POWER_OF_GAIA) {
 }
 
 // OFFSET: 0x00709FF0
@@ -31,7 +32,7 @@ __declspec(noinline) CRectUpEffect::~CRectUpEffect() {
 // OFFSET: 0x0070A410
 // FUNCTION: fn_07100
 void CRectUpEffect::InitEvents() {
-  if (this->id == 1088) {
+  if (this->id == EF_POWER_OF_GAIA) {
     this->AddEvent(EFFECT_EVENT_SOUND, "effect\\EF_FireWall.wav", 0, 0);
   }
 }
@@ -127,7 +128,7 @@ void CRectUpEffect::Render() {
 // OFFSET: 0x0070AA30
 // FUNCTION: fn_07104
 void CRectUpEffect::ProcessParticle(CParticle* particle) {
-  if (particle && this->id == 1088) {
+  if (particle && this->id == EF_POWER_OF_GAIA) {
     particle->phaseParameter += particle->phaseParameter + 1 < 360 ? 1 : -359;
     const int base = particle->effectParameter;
     particle->SetColor(255, 255, static_cast<short>(g_sinTable[particle->phaseParameter] * 100.0f + static_cast<float>(base)));
@@ -137,7 +138,7 @@ void CRectUpEffect::ProcessParticle(CParticle* particle) {
 // OFFSET: 0x0070AAA0
 // FUNCTION: fn_07105
 void CRectUpEffect::InitParticle(CParticle* particle) {
-  if (particle && this->id == 1088) {
+  if (particle && this->id == EF_POWER_OF_GAIA) {
     particle->SetTexture("effect\\ring_yellow.tga");
   }
 }
@@ -154,7 +155,7 @@ void CRectUpEffect::Close() {
 // OFFSET: 0x0070A260
 // FUNCTION: fn_07099
 void CRectUpEffect::Open() {
-  if (this->id != 1088) {
+  if (this->id != EF_POWER_OF_GAIA) {
     return;
   }
 
@@ -178,7 +179,7 @@ void CRectUpEffect::Open() {
         particle->angleParameter = ClampedRandom(360);
         particle->angle = static_cast<float>(angle);
         particle->animationParameter = 0.0f;
-        if (this->id == 1088) {
+        if (this->id == EF_POWER_OF_GAIA) {
           particle->speedParameter = 16.0f;
           particle->alpha = 120;
           particle->scale = 3.5f;
@@ -292,7 +293,7 @@ void CRectUpEffect::UpdateParticlePositions(float x, float y, float z) {
     particle->angleParameter = ClampedRandom(360);
     particle->angle = static_cast<float>(angle);
     particle->animationParameter = 0.0f;
-    if (this->id == 1088) {
+    if (this->id == EF_POWER_OF_GAIA) {
       particle->speedParameter = 16.0f;
       particle->alpha = 120;
       particle->scale = 3.5f;

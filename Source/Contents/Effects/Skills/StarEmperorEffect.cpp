@@ -18,7 +18,7 @@ static void SetParticleIndices(CParticle& particle, int group, int column, int r
 
 // OFFSET: 0x0072BBE0
 // FUNCTION: fn_07474
-CStarEmperorEffect::CStarEmperorEffect() : CEffect(-1), sphere(), rings() {
+CStarEmperorEffect::CStarEmperorEffect() : CEffect(EF_NONE), sphere(), rings() {
 }
 
 // OFFSET: 0x0072BC80

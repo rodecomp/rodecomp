@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SoulUnityEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -22,7 +23,7 @@ static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
 
 // OFFSET: 0x0072B050
 // FUNCTION: fn_07465
-CSoulUnityEffect::CSoulUnityEffect() : CEffect(1222) {
+CSoulUnityEffect::CSoulUnityEffect() : CEffect(EF_SOUL_UNITY) {
 }
 
 // OFFSET: 0x0072B0E0

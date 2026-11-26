@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/AMachineEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -39,7 +40,7 @@ static __forceinline vector3d TransformPoint(const matrix& transform, const vect
 
 // OFFSET: 0x006F6510
 // FUNCTION: fn_06846
-CAMachineEffect::CAMachineEffect() : CEffect(-1), state(0) {
+CAMachineEffect::CAMachineEffect() : CEffect(EF_NONE), state(0) {
 }
 
 // OFFSET: 0x006F6770

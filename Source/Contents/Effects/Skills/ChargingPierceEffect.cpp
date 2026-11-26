@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/ChargingPierceEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -38,12 +39,12 @@ static __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 
 // OFFSET: 0x00703060
 // FUNCTION: fn_07017
-CChargingPierceEffect::CChargingPierceEffect() : CEffect(-1) {
+CChargingPierceEffect::CChargingPierceEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x007030F0
 // FUNCTION: fn_07018
-CChargingPierceNewEffect::CChargingPierceNewEffect() : CEffect(-1) {
+CChargingPierceNewEffect::CChargingPierceNewEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x007032D0

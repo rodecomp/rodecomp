@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SmokeEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/SpriteParticle.h"
@@ -10,7 +11,7 @@
 
 // OFFSET: 0x00B763E0
 // FUNCTION: fn_19174
-CSmokeEffect::CSmokeEffect() : CEffect(44), visibleCount(1) {
+CSmokeEffect::CSmokeEffect() : CEffect(EF_SMOKE), visibleCount(1) {
 }
 
 // OFFSET: 0x00B76460

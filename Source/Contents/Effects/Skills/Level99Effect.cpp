@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/Level99Effect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -9,7 +10,7 @@
 
 // OFFSET: 0x00B6A0A0
 // FUNCTION: fn_19079
-CLevel99Effect::CLevel99Effect() : CEffect(200) {
+CLevel99Effect::CLevel99Effect() : CEffect(EF_LEVEL99) {
 }
 
 // OFFSET: 0x00B6A150

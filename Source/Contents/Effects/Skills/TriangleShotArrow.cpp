@@ -1,5 +1,6 @@
 #include "Contents/Effects/Skills/TriangleShotArrow.h"
 #include "UI/GameSettings/TalkType.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -13,7 +14,7 @@
 
 // OFFSET: 0x0072ED00
 // FUNCTION: fn_07521
-CTriangleShotArrow::CTriangleShotArrow() : CEffect(-1) {
+CTriangleShotArrow::CTriangleShotArrow() : CEffect(EF_NONE) {
   this->current.x = 0.0f;
   this->current.y = 0.0f;
   this->current.z = 0.0f;

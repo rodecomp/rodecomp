@@ -4,6 +4,7 @@
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -25,7 +26,7 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 
 // OFFSET: 0x006F4830
 // FUNCTION: fn_06828
-CAstralStrikeEffect::CAstralStrikeEffect() : CEffect(1768) {
+CAstralStrikeEffect::CAstralStrikeEffect() : CEffect(EF_ASTRAL_STRIKE) {
 }
 
 // OFFSET: 0x006F48D0

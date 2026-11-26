@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/ScatterEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/SpriteParticle.h"
@@ -10,7 +11,7 @@
 
 // OFFSET: 0x00B75D10
 // FUNCTION: fn_19167
-CScatterEffect::CScatterEffect() : CEffect(-1) {
+CScatterEffect::CScatterEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B75D90
@@ -31,7 +32,7 @@ void CScatterEffect::Close() {
 // OFFSET: 0x00B76020
 // FUNCTION: fn_46190
 __forceinline void CScatterEffect::InitializeParticle(CSpriteParticle* particle) {
-  if (particle && this->id == 1002) {
+  if (particle && this->id == EF_KO_HUUMARANKA) {
     this->effectLifetime = 300;
     particle->SetSprite("이팩트\\sakura01.spr");
     particle->SetAction("이팩트\\sakura01.act");

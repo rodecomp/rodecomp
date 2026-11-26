@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/BezierArcThrowEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -62,7 +63,7 @@ static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
 
 // OFFSET: 0x007AAE10
 // FUNCTION: fn_46533
-__forceinline CBezierArcThrowEffect::CBezierArcThrowEffect(const std::string& name) : CEffect(-1), m_name(name) {
+__forceinline CBezierArcThrowEffect::CBezierArcThrowEffect(const std::string& name) : CEffect(EF_NONE), m_name(name) {
   this->m_target.x = 0.0f;
   this->m_target.y = 0.0f;
   this->m_target.z = 0.0f;

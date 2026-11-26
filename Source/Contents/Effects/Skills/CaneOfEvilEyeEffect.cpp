@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CaneOfEvilEyeEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -30,7 +31,7 @@ vector3d Add(const vector3d& left, const vector3d& right) {
 
 // OFFSET: 0x006F86B0
 // FUNCTION: fn_06869
-CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(-1) {
+CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(EF_NONE) {
   this->startTime = timeGetTime();
 }
 

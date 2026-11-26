@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/StormCannonEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -12,7 +13,7 @@
 
 // OFFSET: 0x0072CDC0
 // FUNCTION: fn_07484
-CStormCannonEffect::CStormCannonEffect() : CEffect(1755), direction({0.0f, 0.0f, 0.0f}), origin({0.0f, 0.0f, 0.0f}) {
+CStormCannonEffect::CStormCannonEffect() : CEffect(EF_STORM_CANNON), direction({0.0f, 0.0f, 0.0f}), origin({0.0f, 0.0f, 0.0f}) {
 }
 
 // OFFSET: 0x0072CE80

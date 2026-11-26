@@ -2221,7 +2221,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       effect->SetWindowOffset(vector3d{784.0f, 161.0f, 0.0f}, 1, 361);
     } else {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? EF_RUNE_ACTIVE_FINISH : EF_RUNESET_ACTIVE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       effect->SetWindowOffset(type == 0 ? vector3d{473.0f, 286.0f, 0.0f} : vector3d{598.0f, 271.0f, 0.0f}, 1, 361);
     }
 

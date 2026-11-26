@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/FlowerCastingEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -14,7 +15,7 @@
 
 // OFFSET: 0x00B666F0
 // FUNCTION: fn_46001
-CFlowerCastingEffect::CFlowerCastingEffect() : CEffect(-1) {
+CFlowerCastingEffect::CFlowerCastingEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B66790

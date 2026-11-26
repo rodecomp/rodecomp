@@ -34,7 +34,7 @@ __forceinline vector3d TransformPoint(const matrix& transform, const vector3d po
 
 // OFFSET: 0x00727CF0
 // FUNCTION: fn_07427
-CShadowExceed::CShadowExceed() : CEffect(1867), finishSpawned(0) {
+CShadowExceed::CShadowExceed() : CEffect(EF_SHADOW_EXCEED), finishSpawned(0) {
 }
 
 // OFFSET: 0x00727D80

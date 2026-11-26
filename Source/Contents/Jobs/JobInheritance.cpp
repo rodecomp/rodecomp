@@ -2223,7 +2223,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AM_ACIDTERROR:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x12A, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM, source, target, -1);
     }
     break;
   case TF_SPRINKLESAND:
@@ -2231,7 +2231,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case TF_THROWSTONE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x134, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM3, source, target, -1);
     }
     break;
   case RG_INTIMIDATE:
@@ -2314,22 +2314,22 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   }
   case NJ_SYURIKEN:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x265, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM7, source, target, -1);
     }
     break;
   case NJ_KUNAI:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x266, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM8, source, target, -1);
     }
     break;
   case NJ_HUUMA:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x267, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM9, source, target, -1);
     }
     break;
   case NJ_ZENYNAGE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x268, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM10, source, target, -1);
     }
     break;
   case NJ_KOUENKA:
@@ -2577,7 +2577,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AS_VENOMKNIFE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x258, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(EF_THROWITEM6, source, target, -1);
     }
     break;
   case RK_HUNDREDSPEAR:
@@ -2638,7 +2638,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effectId += 0xA3;
     }
     g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5C5 : 0x522, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_CROSSRIPPERSLASHER : EF_NEW_CROSSRIPPERSLASHER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effect = source->LaunchEffect(EF_STIN6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = vector3d{0.0f, static_cast<float>(target->render.accountId), 0.0f};
@@ -3169,7 +3169,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\SR_DRAGONCOMBO.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SR_TIGERCANNON:
-    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5FC : 0x52B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_TIGERCANNON : EF_NEW_TIGERCANNON, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     target->LaunchEffect(EF_TEIHIT1T, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_TIGERCANNON.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -3225,7 +3225,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case SU_SV_STEMSPEAR:
     g_effectMgr->Spawn(0, EF_SU_SV_STEMSPEAR, source->render.position, 0, -1, 0, 0);
     g_effectMgr->Spawn(
-      source->render.accountId, 0x44C, source->render.position, target->render.accountId, -1, 0, 0
+      source->render.accountId, EF_SU_SV_STEMSPEAR_EFFECT, source->render.position, target->render.accountId, -1, 0, 0
     );
     break;
   case MT_A_MACHINE: {
@@ -3242,7 +3242,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   }
   case SU_SVG_SPIRIT:
     g_effectMgr->Spawn(
-      source->render.accountId, 0x468, source->render.position, target->render.accountId, -1, 0, 0
+      source->render.accountId, EF_SU_SVG_SPIRIT_EFFECT, source->render.position, target->render.accountId, -1, 0, 0
     );
     g_effectMgr->Spawn(
       target->render.accountId, EF_SU_SVG_SPIRIT, target->render.position, target->render.accountId, -1, 0, 0

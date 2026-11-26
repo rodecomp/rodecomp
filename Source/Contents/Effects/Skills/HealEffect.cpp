@@ -20,7 +20,7 @@ static int ClampedRandom(int range) {
 
 // OFFSET: 0x00B67310
 // FUNCTION: fn_19065
-CHealEffect::CHealEffect() : CEffect(-1) {
+CHealEffect::CHealEffect() : CEffect(EF_NONE) {
   this->spawnTick = 0;
 }
 
@@ -403,7 +403,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(HEAL_PARTICLE_HEAL4_DOWN);
     }
     break;
-  case EF_UNK_1113:
+  case EF_HEAL_PURPLE:
     if (this->spawnTick == 0) {
       this->AddColumn(HEAL_PARTICLE_PURPLE);
     }
@@ -411,7 +411,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(HEAL_PARTICLE_PURPLE);
     }
     break;
-  case EF_UNK_1143:
+  case EF_HEAL_CYAN:
     if (this->spawnTick == 0) {
       this->AddColumn(HEAL_PARTICLE_CYAN);
     }
@@ -419,7 +419,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(HEAL_PARTICLE_CYAN);
     }
     break;
-  case EF_UNK_1144:
+  case EF_HEAL_YELLOW:
     if (this->spawnTick == 0) {
       this->AddColumn(HEAL_PARTICLE_YELLOW);
     }
@@ -588,7 +588,7 @@ static __forceinline void UpdateSparkParticle(CParticle* particle, int effectId)
   int alpha = particle->alpha;
   if ((kCacheFrames ? cachedFrames : particle->elapsedFrames) <= 10) {
     alpha += 15;
-  } else if (effectId != 312) {
+  } else if (effectId != EF_HEAL) {
     const int segment = particle->columnIndex;
     if ((5 - segment) * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames) ||
         36 - segment * 7 == (kCacheFrames ? cachedFrames : particle->elapsedFrames)) {

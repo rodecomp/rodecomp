@@ -14,7 +14,7 @@
 
 // OFFSET: 0x00B73840
 // FUNCTION: fn_19146
-CRotateItemEffect::CRotateItemEffect() : CEffect(-1), alpha(0), angle(0) {
+CRotateItemEffect::CRotateItemEffect() : CEffect(EF_NONE), alpha(0), angle(0) {
 }
 
 // OFFSET: 0x00B738D0

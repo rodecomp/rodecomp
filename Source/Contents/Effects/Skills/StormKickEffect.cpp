@@ -34,7 +34,7 @@ void SetCloudSegment(CParticle* particle, int effectId, int column, int row, int
 
 // OFFSET: 0x00B7B340
 // FUNCTION: fn_19216
-CStormKickEffect::CStormKickEffect() : CEffect(-1) {
+CStormKickEffect::CStormKickEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B7B3F0

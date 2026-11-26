@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/MapMagicZoneEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -28,7 +29,7 @@ static inline void SetIdentity(CParticle* particle, int id, int group, int colum
 
 // OFFSET: 0x00B6DAC0
 // FUNCTION: fn_46117
-CMapMagicZoneEffect::CMapMagicZoneEffect() : CEffect(0x28A), spinners(), petals(), ribbon() {
+CMapMagicZoneEffect::CMapMagicZoneEffect() : CEffect(EF_MAP_MAGICZONE), spinners(), petals(), ribbon() {
 }
 
 // OFFSET: 0x00B6DB90

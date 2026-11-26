@@ -254,8 +254,8 @@ void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillEffect(int level, CGameAct
 // FUNCTION: fn_08884
 void CEfstAction_T_FIRST_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2355, actor->render.position, 0, 1, 0, 0);
+    g_effectMgr->Retire(actor->render.accountId, EF_TALISMAN_MARK);
+    g_effectMgr->Spawn(actor->render.accountId, EF_TALISMAN_MARK, actor->render.position, 0, 1, 0, 0);
   }
 }
 
@@ -263,7 +263,7 @@ void CEfstAction_T_FIRST_GOD::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_08885
 void CEfstAction_T_FIRST_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_TALISMAN_MARK)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -296,8 +296,8 @@ void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillEffect(int level, CGameAct
 // FUNCTION: fn_08889
 void CEfstAction_T_SECOND_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2355, actor->render.position, 0, 2, 0, 0);
+    g_effectMgr->Retire(actor->render.accountId, EF_TALISMAN_MARK);
+    g_effectMgr->Spawn(actor->render.accountId, EF_TALISMAN_MARK, actor->render.position, 0, 2, 0, 0);
   }
 }
 
@@ -305,7 +305,7 @@ void CEfstAction_T_SECOND_GOD::OnEfstBegin(int efstId, int value, int argument3,
 // FUNCTION: fn_08890
 void CEfstAction_T_SECOND_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_TALISMAN_MARK)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -340,8 +340,8 @@ void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillEffect(int level, CGameAct
 // FUNCTION: fn_08894
 void CEfstAction_T_THIRD_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2355, actor->render.position, 0, 3, 0, 0);
+    g_effectMgr->Retire(actor->render.accountId, EF_TALISMAN_MARK);
+    g_effectMgr->Spawn(actor->render.accountId, EF_TALISMAN_MARK, actor->render.position, 0, 3, 0, 0);
   }
 }
 
@@ -349,7 +349,7 @@ void CEfstAction_T_THIRD_GOD::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_08895
 void CEfstAction_T_THIRD_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_TALISMAN_MARK)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -398,8 +398,8 @@ int CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::GetSkillScopeType() {
 // FUNCTION: fn_08900
 void CEfstAction_T_FOURTH_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2355, actor->render.position, 0, 4, 0, 0);
+    g_effectMgr->Retire(actor->render.accountId, EF_TALISMAN_MARK);
+    g_effectMgr->Spawn(actor->render.accountId, EF_TALISMAN_MARK, actor->render.position, 0, 4, 0, 0);
   }
 }
 
@@ -407,7 +407,7 @@ void CEfstAction_T_FOURTH_GOD::OnEfstBegin(int efstId, int value, int argument3,
 // FUNCTION: fn_08901
 void CEfstAction_T_FOURTH_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_TALISMAN_MARK)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }

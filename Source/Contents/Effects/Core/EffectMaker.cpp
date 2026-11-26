@@ -1,5 +1,6 @@
 #include "Contents/Effects/Core/EffectMaker.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -25,7 +26,7 @@ namespace {
 // OFFSET: 0x00E4A2B0
 // FUNCTION: fn_24251
 CEffectMaker::CEffectMaker() {
-  this->effectId = -1;
+  this->effectId = EF_NONE;
   this->spawnInterval = 360;
   this->elapsedFrames = 360;
   this->parameter1 = 0;
@@ -37,7 +38,7 @@ CEffectMaker::CEffectMaker() {
 // OFFSET: 0x00E4BA80
 // FUNCTION: fn_24278
 void CEffectMaker::Reset() {
-  this->effectId = -1;
+  this->effectId = EF_NONE;
   this->spawnInterval = 360;
   this->elapsedFrames = 360;
   this->parameter1 = 0;
@@ -78,7 +79,7 @@ void CEffectMaker::SendMsg(CGameObject* sender, std::int64_t message, std::int64
 
   const WorldEffectRecord* record = reinterpret_cast<const WorldEffectRecord*>(static_cast<std::intptr_t>(b));
   this->effectId = record->id;
-  if (this->effectId != 45) {
+  if (this->effectId != EF_FIREFLY) {
     this->spawnInterval = static_cast<unsigned>(record->delay);
     this->elapsedFrames = static_cast<unsigned>(record->delay - static_cast<float>(RandomBelow(24)));
   } else {

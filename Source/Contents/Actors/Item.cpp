@@ -147,7 +147,8 @@ static inline vector3d DropEffectPosition(float x, float y, float z) {
 // OFFSET: 0x00D8B530
 // FUNCTION: fn_46711
 int CItem::GetGradeDropEffect(int grade) const {
-  int gradeEffectId = 2485;
+  constexpr int noGradeDropEffect = 2485;
+  int gradeEffectId = noGradeDropEffect;
   switch (grade) {
   case ITEM_DROP_GRADE_BLUE:
     gradeEffectId = EF_DROPITEM_BLUE;

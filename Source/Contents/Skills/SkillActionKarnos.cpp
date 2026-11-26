@@ -487,7 +487,7 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_KR_THUNDERING_ORB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -511,7 +511,7 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_UNK_2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = effects->Spawn(target->render.accountId, EF_KR_THUNDERING_ORB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -562,12 +562,12 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectCreate(int argument, CRender
   effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ice_pillar_start_bottom", 0x8B3FEB5B8BD5C3C3ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, 0x9A8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, EF_KR_ICE_PILLAR_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames(OBFUSCATE_TEXT("ice_pillar_loop", 0x0BEB63A5C905B3A7ULL), OBFUSCATE_TEXT("ice_pillar_end", 0x078333BB9725B7C9ULL));
     effect->SetDelay(990);
   }
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, 0x9A9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, EF_KR_ICE_PILLAR_LOOP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames(OBFUSCATE_TEXT("ice_pillar_loop_bottom", 0x8F1B5BFD5F6175B5ULL), OBFUSCATE_TEXT("ice_pillar_end_bottom", 0x5B8F49AF09390D1BULL));
     effect->SetDelay(990);
   }
@@ -580,10 +580,10 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectRemove(CRenderObject* object
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_UNK_2472)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_KR_ICE_PILLAR_LOOP)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_UNK_2473)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, EF_KR_ICE_PILLAR_LOOP_BOTTOM)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
 }
@@ -875,7 +875,7 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
   while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_KR_CHOP_CHOP)) {
     g_effectMgr->Retire(effect, 1);
   }
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_UNK_2444)) {
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_KR_CHOP_CHOP_WHIRLWIND)) {
     g_effectMgr->Retire(effect, 1);
   }
   for (;;) {
@@ -891,7 +891,7 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
 // OFFSET: 0x005B6A70
 // FUNCTION: fn_03403
 void CWhirlwindEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
-  if (parent && !parent->HasId(0x98C)) {
+  if (parent && !parent->HasId(EF_KR_CHOP_CHOP_WHIRLWIND)) {
     const std::int64_t angle = static_cast<std::int64_t>(parent->render.angle * 1000.0f);
     parent->render.instant.Values()[25] = angle;
   }
@@ -1012,7 +1012,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     effect->SetAngle(static_cast<float>(std::ranges::max(rand() % 360, 0)));
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(EF_UNK_2444, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_KR_CHOP_CHOP_WHIRLWIND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     static_cast<CWhirlwindEffect*>(effect)->SetLifetime(1000);
     static_cast<CWhirlwindEffect*>(effect)->SetDuration(500);
   }

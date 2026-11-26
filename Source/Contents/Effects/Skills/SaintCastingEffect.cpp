@@ -14,7 +14,7 @@
 
 // OFFSET: 0x00B74DD0
 // FUNCTION: fn_46163
-CSaintCastingEffect::CSaintCastingEffect() : CEffect(-1) {
+CSaintCastingEffect::CSaintCastingEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B74E70
@@ -291,7 +291,7 @@ __forceinline void CSaintCastingEffect::RenderParticle(CParticle* particle) {
     return;
   }
 
-  if (this->id == 454 || this->id == 826) {
+  if (this->id == EF_DARKCASTING || this->id == EF_DARKCASTING2) {
     particle->destinationBlend = 6;
   }
 

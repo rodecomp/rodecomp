@@ -20,8 +20,8 @@ static void SetIndices(CParticle* particle, int effectId, int column, int row, i
 
 // OFFSET: 0x00701BB0
 // FUNCTION: fn_06999
-CFriggSongEffect::CFriggSongEffect() : CEffect(0x423) {
-  this->effectLifetime = EffectLifetime(0x423);
+CFriggSongEffect::CFriggSongEffect() : CEffect(EF_WM_FRIGG_SONG) {
+  this->effectLifetime = EffectLifetime(EF_WM_FRIGG_SONG);
 }
 
 // OFFSET: 0x00701C60

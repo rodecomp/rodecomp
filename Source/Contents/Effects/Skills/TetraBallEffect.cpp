@@ -9,7 +9,7 @@
 
 // OFFSET: 0x0072E680
 // FUNCTION: fn_07509
-CTetraBallEffect::CTetraBallEffect() : CEffect(-1) {
+CTetraBallEffect::CTetraBallEffect() : CEffect(EF_NONE) {
   this->rotationParameter = 0;
   for (int index = 0; index < 5; ++index) {
     this->balls[index] = nullptr;

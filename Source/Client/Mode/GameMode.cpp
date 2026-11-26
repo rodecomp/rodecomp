@@ -5620,7 +5620,7 @@ void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, f
   }
 
   EffectLists* effects = g_effectMgr;
-  CSprArrowEffect* effect = static_cast<CSprArrowEffect*>(effects->Spawn(0, 0x964, *position, actorId, -1, 0, 0));
+  CSprArrowEffect* effect = static_cast<CSprArrowEffect*>(effects->Spawn(0, EF_SPR_ARROW, *position, actorId, -1, 0, 0));
   if (effect != nullptr) {
     effect->delayFrames = scale;
     effect->SetBulletSprite(job);
@@ -6727,7 +6727,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       GameModeStoredRecord0191 record;
       record.packetType = 0;
       record.aid = (*it)->render.accountId;
-      record.statusType = 0x47D;
+      record.statusType = EFST_MADOGEAR_TYPE;
       record.remaining = 9999;
       record.count = count;
       record.value2 = 0;
@@ -8715,9 +8715,9 @@ void CGameMode::Initialize(const char* name) {
 
   if (g_screenShakeMode == 2) {
     if (g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0) {
-      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, 1, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_ILLUSION, 1, 0, 0, 0, 0);
     } else {
-      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_ILLUSION, 0, 0, 0, 0, 0);
     }
   }
 

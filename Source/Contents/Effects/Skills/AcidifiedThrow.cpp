@@ -27,7 +27,7 @@ __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
 
 // OFFSET: 0x006F3540
 // FUNCTION: fn_06821
-CAcidifiedThrow::CAcidifiedThrow() : CEffect(-1) {
+CAcidifiedThrow::CAcidifiedThrow() : CEffect(EF_NONE) {
   this->impactPosition.x = 0.0f;
   this->impactPosition.y = 0.0f;
   this->impactPosition.z = 0.0f;

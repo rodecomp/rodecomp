@@ -711,45 +711,45 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       g_effectMgr->Spawn(this->render.accountId, EF_PNEUMATICUS_PROCELLA, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_RAIN_OF_CRYSTAL:
-      if (!g_effectMgr->Has(this->render.accountId, EF_UNK_1752)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6D8);
+      if (!g_effectMgr->Has(this->render.accountId, EF_RAIN_OF_CRYSTAL_PARTICLES)) {
+        g_effectMgr->Retire(this->render.accountId, EF_RAIN_OF_CRYSTAL_PARTICLES);
       }
-      g_effectMgr->Spawn(this->render.accountId, EF_UNK_1752, this->render.position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_RAIN_OF_CRYSTAL_PARTICLES, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_VIOLENT_QUAKE:
-      g_effectMgr->Retire(this->render.accountId, 0x701);
+      g_effectMgr->Retire(this->render.accountId, EF_VIOLENT_QUAKE_BOTTOM);
       g_effectMgr->Spawn(this->render.accountId, EF_VIOLENT_QUAKE_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_ASTRAL_STRIKE:
       if (!g_effectMgr->Has(this->render.accountId, EF_ASTRAL_STRIKE)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6E8);
+        g_effectMgr->Retire(this->render.accountId, EF_ASTRAL_STRIKE);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_ASTRAL_STRIKE, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_MYSTERY_ILLUSION:
       if (!g_effectMgr->Has(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6EC);
+        g_effectMgr->Retire(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_MYSTERY_ILLUSION_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_TORNADO_STORM:
       if (!g_effectMgr->Has(this->render.accountId, EF_TORNADO_STORM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6F0);
+        g_effectMgr->Retire(this->render.accountId, EF_TORNADO_STORM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM, this->render.position, 0, unit->level, 0, 0);
       if (!g_effectMgr->Has(this->render.accountId, EF_TORNADO_STORM_BOTTOM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x6F1);
+        g_effectMgr->Retire(this->render.accountId, EF_TORNADO_STORM_BOTTOM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_TORNADO_STORM_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_ALL_BLOOM:
-      g_effectMgr->Retire(this->render.accountId, 0x702);
+      g_effectMgr->Retire(this->render.accountId, EF_ALL_BLOOM);
       g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM, this->render.position, 0, unit->level, 0, 0);
-      g_effectMgr->Retire(this->render.accountId, 0x703);
+      g_effectMgr->Retire(this->render.accountId, EF_ALL_BLOOM_BOTTOM);
       g_effectMgr->Spawn(this->render.accountId, EF_ALL_BLOOM_BOTTOM, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_FLORAL_FLARE_ROAD:
-      g_effectMgr->Retire(this->render.accountId, 0x70C);
+      g_effectMgr->Retire(this->render.accountId, EF_FLORAL_FLARE_ROAD);
       g_effectMgr->Spawn(this->render.accountId, EF_FLORAL_FLARE_ROAD, this->render.position, 0, unit->level, 0, 0);
       break;
     case UNT_STRANTUM_TREMOR:
@@ -767,27 +767,27 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       break;
     case UNT_VENOM_SWAMP:
       if (!g_effectMgr->Has(this->render.accountId, EF_VENOM_SWAMP_BOTTOM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7EF);
+        g_effectMgr->Retire(this->render.accountId, EF_VENOM_SWAMP_BOTTOM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_VENOM_SWAMP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       break;
     case UNT_LIGHTNING_LAND:
       if (!g_effectMgr->Has(this->render.accountId, EF_LIGHTNING_LAND_BOTTOM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7FA);
+        g_effectMgr->Retire(this->render.accountId, EF_LIGHTNING_LAND_BOTTOM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_LIGHTNING_LAND_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (!g_effectMgr->Has(this->render.accountId, EF_LIGHTNING_LAND)) {
-        g_effectMgr->Retire(this->render.accountId, 0x7F9);
+        g_effectMgr->Retire(this->render.accountId, EF_LIGHTNING_LAND);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_LIGHTNING_LAND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       break;
     case UNT_CONFLAGRATION:
       if (!g_effectMgr->Has(this->render.accountId, EF_CONFLAGRATION_BOTTOM)) {
-        g_effectMgr->Retire(this->render.accountId, 0x808);
+        g_effectMgr->Retire(this->render.accountId, EF_CONFLAGRATION_BOTTOM);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_CONFLAGRATION_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (!g_effectMgr->Has(this->render.accountId, EF_CONFLAGRATION)) {
-        g_effectMgr->Retire(this->render.accountId, 0x807);
+        g_effectMgr->Retire(this->render.accountId, EF_CONFLAGRATION);
       }
       g_effectMgr->Spawn(this->render.accountId, EF_CONFLAGRATION, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       break;
@@ -848,7 +848,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       break;
     }
     case UNT_CANE_OF_EVIL_EYE:
-      g_effectMgr->Spawn(this->render.accountId, EF_UNK_2307, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_CANE_OF_EVIL_EYE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       break;
     case UNT_DEEPBLINDTRAP:
       this->render.trackBounds = 1;
@@ -944,7 +944,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       const int job = this->GetEffectiveJob(-1);
       actions->OnSkillObjectRemove(job, this);
     } else {
-      CEffect* effect = g_effectMgr->Find(this->render.accountId, EF_UNK_2307);
+      CEffect* effect = g_effectMgr->Find(this->render.accountId, EF_CANE_OF_EVIL_EYE);
       if (effect != nullptr) {
         static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
       }

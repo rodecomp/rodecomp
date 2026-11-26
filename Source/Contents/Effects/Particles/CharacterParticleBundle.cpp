@@ -2,6 +2,7 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -39,7 +40,7 @@ std::unordered_map<int, std::vector<RadialGridPoint>> g_clawMarkRings;
 
 // OFFSET: 0x005A2E50
 // FUNCTION: fn_03122
-CharacterParticleBundle::CharacterParticleBundle() : CEffect(-1), startTime(0), elapsedFrames(0), particles() {
+CharacterParticleBundle::CharacterParticleBundle() : CEffect(EF_NONE), startTime(0), elapsedFrames(0), particles() {
 }
 
 // OFFSET: 0x005A31F0

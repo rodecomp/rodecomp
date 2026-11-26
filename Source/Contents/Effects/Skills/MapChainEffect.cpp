@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/MapChainEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -12,7 +13,7 @@
 // OFFSET: 0x00B4A9E0
 // FUNCTION: fn_18945
 CMapChainEffect::CMapChainEffect()
-    : CEffect(1024), particles(), chainModeA(2), chainModeB(2), chainModeC(2), chainModeD(2), chainModeE(2) {
+    : CEffect(EF_MAPCHAIN), particles(), chainModeA(2), chainModeB(2), chainModeC(2), chainModeD(2), chainModeE(2) {
 }
 
 // OFFSET: 0x00B4AAC0

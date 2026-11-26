@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/RotateBgEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Core/EffectPoint.h"
@@ -19,7 +20,7 @@ static inline void SetIndices(CParticle* particle, int group, int column, int ro
 // OFFSET: 0x00B72330
 // FUNCTION: fn_46060
 CRotateBgEffect::CRotateBgEffect()
-    : CEffect(-1), height(0.0f), radius(0.0f), segmentScale(0.0f), angle(0), segmentAngle(0), segmentSpan(0), segmentAlpha(0), segmentReady(0) {
+    : CEffect(EF_NONE), height(0.0f), radius(0.0f), segmentScale(0.0f), angle(0), segmentAngle(0), segmentSpan(0), segmentAlpha(0), segmentReady(0) {
 }
 
 // OFFSET: 0x00B72430

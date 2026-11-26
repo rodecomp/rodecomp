@@ -17327,12 +17327,12 @@ void CPc::UpdateFootprints(int kind) {
   }
 
   if (kind == 1) {
-    mode->LaunchDummyEffect(&this->footprintPosition, (this->footprintCounter != interval) + 326, 333, angle);
+    mode->LaunchDummyEffect(&this->footprintPosition, (this->footprintCounter != interval) + EF_FOOT, 333, angle);
   } else if (kind == 2 && this->render.runStartTick > static_cast<unsigned>(interval)) {
     if (this->footprintCounter == interval) {
-      mode->LaunchDummyEffect(&this->footprintPosition, 447, 333, angle);
+      mode->LaunchDummyEffect(&this->footprintPosition, EF_FOOT3, 333, angle);
     } else {
-      mode->LaunchDummyEffect(&this->footprintPosition, 448, 333, angle);
+      mode->LaunchDummyEffect(&this->footprintPosition, EF_FOOT4, 333, angle);
     }
   }
 }
@@ -22041,7 +22041,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_REDLIGHTBODY:
-  case EF_UNK_1398:
+  case EF_EARTHSHAKER_BODY:
     if ((this->state.parent->render.flags & 0x40000) == 0) {
       this->state.parent->render.flags += 0x40000;
       if (this->state.stateCnt <= 200) {
@@ -22416,14 +22416,14 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_SU_SOUL_ATTACK:
-    if (this->state.stateCnt >= EffectLifetime(1122) - 1) {
+    if (this->state.stateCnt >= EffectLifetime(EF_SU_SOUL_ATTACK) - 1) {
       this->state.stateCnt = 0;
     }
   case EF_CIRCLEPOWER:
     this->EmpShockBurst("effect\\emp shock.tga", 0);
     break;
   case EF_SU_SPIRIT_OF_LIFE:
-    if (EffectLifetime(1131) - 1 <= this->state.stateCnt) {
+    if (EffectLifetime(EF_SU_SPIRIT_OF_LIFE) - 1 <= this->state.stateCnt) {
       this->state.stateCnt = 0;
     }
     if ((this->state.parent->render.flags & 1) == 0) {
@@ -22535,7 +22535,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_SEVERERAINSTORM_HIT:
     if (this->state.stateCnt % 30 == 0) {
       const vector3d& position = this->state.parent->render.position;
-      g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1533 : 1285, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_SEVERERAINSTORM_CAST : EF_NEW_SEVERERAINSTORM_CAST, position, 0, -1, 0, 0);
     }
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
@@ -22600,7 +22600,7 @@ bool CRagEffect::OnProcess3() {
           const float x = m[0] * static_cast<float>(distance) + m[3] * offset.x + m[6] * offset.x + m[9] + this->render.position.x;
           const float y = m[1] * static_cast<float>(distance) + m[4] * offset.x + m[7] * offset.x + m[10] + this->render.position.y;
           const float z = m[2] * static_cast<float>(distance) + m[5] * offset.x + m[8] * offset.x + m[11] + this->render.position.z;
-          g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1544 : 1447, vector3d{x, y, z}, 0, -1, 0, 0);
+          g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_JACKFROST_RUNE : EF_NEW_JACKFROST_RUNE, vector3d{x, y, z}, 0, -1, 0, 0);
         }
       }
       if (this->state.stateCnt == 0) {
@@ -22973,10 +22973,10 @@ bool CRagEffect::OnProcess3() {
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 50);
     }
     break;
-  case EF_UNK_2277:
+  case EF_CLOUD_POISON_BODY:
     this->state.parent->SetColor(-1, 105, 105, 105);
     break;
-  case EF_UNK_2278:
+  case EF_SPORE_EXPLOSION_DEBUFF_BODY:
     this->state.parent->SetColor(-1, 251, 200, 4);
     break;
   case EF_STATUS_CRATE_UP:
@@ -24886,7 +24886,7 @@ bool CRagEffect::OnProcess() {
       }
       break;
     case EF_BABYBODY2:
-      if (this->state.stateCnt >= EffectLifetime(421) - 1) {
+      if (this->state.stateCnt >= EffectLifetime(EF_BABYBODY2) - 1) {
         this->state.stateCnt = 0;
       }
       if ((this->state.parent->render.flags & 0x10) == 0) {

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SphereWindEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -15,7 +16,7 @@
 // OFFSET: 0x00B77C80
 // FUNCTION: fn_46047
 CSphereWindEffect::CSphereWindEffect()
-    : CEffect(-1), particles() {
+    : CEffect(EF_NONE), particles() {
 }
 
 // OFFSET: 0x00B77D20

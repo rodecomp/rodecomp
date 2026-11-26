@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CloudKillEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -27,7 +28,7 @@ __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
 
 // OFFSET: 0x006FC410
 // FUNCTION: fn_06923
-CCloudKillEffect::CCloudKillEffect() : CEffect(1080) {
+CCloudKillEffect::CCloudKillEffect() : CEffect(EF_CLOUD_KILL) {
   this->effectLifetime = 9999;
   this->emitting = 1;
   this->particleLifetimeFrames = 10;

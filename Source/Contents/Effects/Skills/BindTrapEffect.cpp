@@ -12,7 +12,7 @@
 
 // OFFSET: 0x006FB2F0
 // FUNCTION: fn_06903
-CBindTrapEffect::CBindTrapEffect() : CEffect(-1), particles() {
+CBindTrapEffect::CBindTrapEffect() : CEffect(EF_NONE), particles() {
   this->effectLifetime = 8000;
 }
 

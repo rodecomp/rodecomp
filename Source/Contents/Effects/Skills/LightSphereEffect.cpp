@@ -16,7 +16,7 @@
 
 // OFFSET: 0x00B6C9F0
 // FUNCTION: fn_19103
-CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
+CLightSphereEffect::CLightSphereEffect() : CEffect(EF_NONE), spheres(), rays() {
 }
 
 // OFFSET: 0x00B6CA90

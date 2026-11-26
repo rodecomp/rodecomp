@@ -9,6 +9,7 @@
 #include "Render/Primitives/AuxiliarySubmission.h"
 #include "Render/Projection/RendererViewport.h"
 #include "Render/Renderer.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 // OFFSET: 0x00707D70
 // FUNCTION: fn_07062
@@ -129,7 +130,7 @@ void CMultiTexParticle::Render(int column, int row) {
 
 // OFFSET: 0x00708260
 // FUNCTION: fn_07070
-CNyanggrassEffect::CNyanggrassEffect() : CEffect(-1), gridSize(0) {
+CNyanggrassEffect::CNyanggrassEffect() : CEffect(EF_NONE), gridSize(0) {
 }
 
 // OFFSET: 0x007082F0

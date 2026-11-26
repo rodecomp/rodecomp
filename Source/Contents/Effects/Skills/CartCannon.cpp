@@ -1,5 +1,6 @@
 #include "Contents/Effects/Skills/CartCannon.h"
 #include "UI/GameSettings/TalkType.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -12,7 +13,7 @@
 
 // OFFSET: 0x006FA900
 // FUNCTION: fn_06894
-CCartCannon::CCartCannon() : CEffect(-1) {
+CCartCannon::CCartCannon() : CEffect(EF_NONE) {
   this->currentPosition.x = 0.0f;
   this->currentPosition.y = 0.0f;
   this->currentPosition.z = 0.0f;

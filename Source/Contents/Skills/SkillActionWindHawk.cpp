@@ -256,7 +256,7 @@ CEfstAction* NewAction<CEfstAction_CALAMITYGALE, CEfstAction>() {
 
 // OFFSET: 0x00463230
 // FUNCTION: fn_45568
-static EfstActionRegistration s_efstActionRegistered1252(1252, NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
+static EfstActionRegistration s_efstActionRegistered1252(EFST_CALAMITYGALE, NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
 
 // GLOBAL: gl_25951
 static SkillActionRegistrar s_skillActionWhCalamitygale{WH_CALAMITYGALE, NewAction<CSkillAction_WH_CALAMITYGALE, CSkillAction>};

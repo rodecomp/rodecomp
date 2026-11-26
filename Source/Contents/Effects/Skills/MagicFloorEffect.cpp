@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/MagicFloorEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -12,7 +13,7 @@
 
 // OFFSET: 0x00B48220
 // FUNCTION: fn_18927
-CMagicFloorEffect::CMagicFloorEffect() : CEffect(0x401) {
+CMagicFloorEffect::CMagicFloorEffect() : CEffect(EF_MAGIC_FLOOR) {
 }
 
 // OFFSET: 0x00B48300

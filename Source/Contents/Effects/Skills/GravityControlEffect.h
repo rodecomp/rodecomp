@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_GRAVITYCONTROLEFFECT_H
 
 #include "Contents/Effects/Core/Effect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <cstddef>
 
@@ -9,7 +10,7 @@ class CEZ2STRParticle;
 
 class CGravityControlEffect : public CEffect {
 public:
-  CGravityControlEffect() : CEffect(-1), target(nullptr), heightOffset(0), minimumHeightOffset(-20.0f) {}
+  CGravityControlEffect() : CEffect(EF_NONE), target(nullptr), heightOffset(0), minimumHeightOffset(-20.0f) {}
 
   void Open() override;
   void OnProcess() override;

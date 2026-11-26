@@ -29,7 +29,7 @@
 // OFFSET: 0x00B51810
 // FUNCTION: fn_19030
 CEZ2STRScreenEffect::CEZ2STRScreenEffect()
-    : CEffect(-1), particle(nullptr), name("빨간포션.str"), fadePulse(0), overlayColor(0), followCamera(0), cameraAngle(0.0), jobScaled(0) {
+    : CEffect(EF_NONE), particle(nullptr), name("빨간포션.str"), fadePulse(0), overlayColor(0), followCamera(0), cameraAngle(0.0), jobScaled(0) {
 }
 
 // OFFSET: 0x00B51D60
@@ -94,9 +94,9 @@ float GetHatEffectOffsetX(int id, const char* name) {
     result = offset;
   }
 
-  if (id >= 0x9B5) {
+  if (id >= EF_HAT_EFFECT_BASE) {
     double position = 0.0;
-    g_session.m_hotkeyScript->Call("GetHatEfPosX", "d>l", id - 0x9B5, &position);
+    g_session.m_hotkeyScript->Call("GetHatEfPosX", "d>l", id - EF_HAT_EFFECT_BASE, &position);
     result = static_cast<float>(offset + position);
   }
 
@@ -107,8 +107,8 @@ float GetHatEffectOffsetX(int id, const char* name) {
 // FUNCTION: fn_19037
 int GetHatEffectOffsetY(int id, CGameActor* actor) {
   bool ignored = false;
-  if (id >= 0x9B5) {
-    g_session.m_hotkeyScript->Call("IsIgnoredRidingState_Include_AttachedToHead", "d>b", id - 0x9B5, &ignored);
+  if (id >= EF_HAT_EFFECT_BASE) {
+    g_session.m_hotkeyScript->Call("IsIgnoredRidingState_Include_AttachedToHead", "d>b", id - EF_HAT_EFFECT_BASE, &ignored);
   } else if (id == EF_NEW_D_MACHINE) {
     ignored = true;
   }
@@ -857,9 +857,9 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
     break;
   }
 
-  if (id >= 0x9B5) {
+  if (id >= EF_HAT_EFFECT_BASE) {
     int position = 0;
-    g_session.m_hotkeyScript->Call("GetHatEfPos", "d>d", id - 0x9B5, &position);
+    g_session.m_hotkeyScript->Call("GetHatEfPos", "d>d", id - EF_HAT_EFFECT_BASE, &position);
     offset += position;
   }
 
@@ -5398,9 +5398,9 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     break;
   }
 
-  if (id >= 0x9B5) {
+  if (id >= EF_HAT_EFFECT_BASE) {
     const char* name = nullptr;
-    g_session.m_hotkeyScript->Call("GetHatEfResName", "d>s", id - 0x9B5, &name);
+    g_session.m_hotkeyScript->Call("GetHatEfResName", "d>s", id - EF_HAT_EFFECT_BASE, &name);
     if (name != nullptr) {
       particle->Open(name);
     }
@@ -5567,7 +5567,7 @@ void CEZ2STRScreenEffect::SetId(int id) {
     this->headAttached = 1;
     break;
   default:
-    if (id >= 0x9B5) {
+    if (id >= EF_HAT_EFFECT_BASE) {
       this->headAttached = 1;
     }
     break;
@@ -5676,10 +5676,10 @@ void CEZ2STRScreenEffect::Open() {
     this->retained = 1;
     particle->m_loop = true;
     bool adjustSize = false;
-    g_session.m_hotkeyScript->Call("IsAdjustSizeWhenShrinkState", "d>b", this->id - 0x9B5, &adjustSize);
+    g_session.m_hotkeyScript->Call("IsAdjustSizeWhenShrinkState", "d>b", this->id - EF_HAT_EFFECT_BASE, &adjustSize);
     particle->m_followActor = adjustSize;
     bool adjustPosition = false;
-    g_session.m_hotkeyScript->Call("IsAdjustPositionWhenShrinkState", "d>b", this->id - 0x9B5, &adjustPosition);
+    g_session.m_hotkeyScript->Call("IsAdjustPositionWhenShrinkState", "d>b", this->id - EF_HAT_EFFECT_BASE, &adjustPosition);
     this->fadePulse = adjustPosition;
   }
 
@@ -5828,8 +5828,8 @@ void CEZ2STRScreenEffect::Open() {
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->cameraAngle = static_cast<double>(mode->camera->camera.yaw);
 
-  if (this->id >= 0x9B5) {
-    g_session.m_hotkeyScript->Call("IsAttachedToHead", "d>b", this->id - 0x9B5, &this->jobScaled);
+  if (this->id >= EF_HAT_EFFECT_BASE) {
+    g_session.m_hotkeyScript->Call("IsAttachedToHead", "d>b", this->id - EF_HAT_EFFECT_BASE, &this->jobScaled);
   }
 }
 
@@ -7587,9 +7587,9 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   default:
-    if (id >= 0x9B5) {
+    if (id >= EF_HAT_EFFECT_BASE) {
       bool renderBefore = false;
-      g_session.m_hotkeyScript->Call("IsRenderBeforeCharacter", "d>b", id - 0x9B5, &renderBefore);
+      g_session.m_hotkeyScript->Call("IsRenderBeforeCharacter", "d>b", id - EF_HAT_EFFECT_BASE, &renderBefore);
       if (renderBefore) {
         this->particle->flags = RSF_ALPHA | RSF_CUSTOM_BLEND | RSF_TOPMOST;
       }

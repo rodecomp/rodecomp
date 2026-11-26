@@ -652,7 +652,7 @@ void CSkillAction_SKE_TWINKLING_GALAXY::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08865
 void CSkillObjectAction_SKE_TWINKLING_GALAXY::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, EF_UNK_2349, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_SKE_TWINKLING_GALAXY_STAR, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -682,7 +682,7 @@ void CEfstAction_STAR_BURST::OnEfstBegin(int efstId, int value, int argument3, i
 // FUNCTION: fn_08869
 void CEfstAction_STAR_BURST::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2348);
+    g_effectMgr->Retire(actor->render.accountId, EF_SKE_TWINKLING_GALAXY);
   }
 }
 

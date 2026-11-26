@@ -929,9 +929,9 @@ void CEfstAction_ChangeSize::OnEfstBegin(int, int value, int, int, CRenderObject
   }
 
   const std::uint32_t aid = actor->render.accountId;
-  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), 2374);
+  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), EF_CHANGE_SIZE);
   if (!effect) {
-    effect = g_effectMgr->Spawn(static_cast<int>(aid), 2374, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(static_cast<int>(aid), EF_CHANGE_SIZE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -953,7 +953,7 @@ void CSkillAction_CD_DIVINUS_FLOS::OnSkillDamage(CGameActor* source, CGameActor*
 // FUNCTION: fn_08327
 void CEfstAction_ChangeSize::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2374);
+    g_effectMgr->Retire(actor->render.accountId, EF_CHANGE_SIZE);
   }
 }
 
@@ -977,9 +977,9 @@ void CEfstAction_ShowEffect::OnEfstBegin(int efstId, int value, int argument3, i
   }
 
   const std::uint32_t aid = actor->render.accountId;
-  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), 2375);
+  CEffect* effect = g_effectMgr->Find(static_cast<int>(aid), EF_SHOW_EFFECT);
   if (!effect) {
-    effect = g_effectMgr->Spawn(static_cast<int>(aid), 2375, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(static_cast<int>(aid), EF_SHOW_EFFECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -996,10 +996,10 @@ void CEfstAction_ShowEffect::OnEfstEnd(int efstId, int argument2, int argument3,
   }
 
   const std::uint32_t aid = actor->render.accountId;
-  if (CShowEffect* effect = static_cast<CShowEffect*>(g_effectMgr->Find(static_cast<int>(aid), 2375))) {
+  if (CShowEffect* effect = static_cast<CShowEffect*>(g_effectMgr->Find(static_cast<int>(aid), EF_SHOW_EFFECT))) {
     effect->Remove(efstId);
     if (static_cast<int>(effect->Count()) <= 0) {
-      g_effectMgr->Retire(static_cast<int>(aid), 2375);
+      g_effectMgr->Retire(static_cast<int>(aid), EF_SHOW_EFFECT);
     }
   }
 }
@@ -1073,7 +1073,7 @@ void CEfstAction_DANCING_KNIFE::OnEfstUpdate(int efstId, int value, int argument
 // FUNCTION: fn_08364
 void CSkillAction_SHC_SHADOW_EXCEED::OnSkillEffect(int, CGameActor* source, CGameActor*) {
   if (source) {
-    g_effectMgr->Spawn(static_cast<int>(source->render.accountId), 2467, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(static_cast<int>(source->render.accountId), EF_SHC_SHADOW_EXCEED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2136,7 +2136,7 @@ void CSkillAction_DK_SERVANTWEAPON_ATK::OnSkillDamage(CGameActor* source, CGameA
 // FUNCTION: fn_08458
 void CEfstAction_SERVANTWEAPON::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2460);
+    g_effectMgr->Retire(actor->render.accountId, EF_DK_SERVANTWEAPON);
   }
 }
 
@@ -2517,7 +2517,7 @@ void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int ar
 // FUNCTION: fn_08491
 void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2461);
+    g_effectMgr->Retire(actor->render.accountId, EF_DK_CHARGINGPIERCE);
   }
 }
 
@@ -2618,7 +2618,7 @@ void CEfstAction_FROST_STORM::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_08503
 void CEfstAction_FROST_STORM::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2403);
+    g_effectMgr->Retire(actor->render.accountId, EF_NEW_BATTLE_W_HIT_2);
   }
 }
 
@@ -2831,7 +2831,7 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
 // FUNCTION: fn_08507
 void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, EF_UNK_1256, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_NPC_LIGHTNING_JUDGEMENT_HIT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2962,7 +2962,7 @@ void CEfstAction_BLOCK_SEAL::OnEfstBegin(int efstId, int value, int argument3, i
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2400, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_BLOCK_SEAL_GRAVITY_CONTROL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2970,7 +2970,7 @@ void CEfstAction_BLOCK_SEAL::OnEfstBegin(int efstId, int value, int argument3, i
 // FUNCTION: fn_08523
 void CEfstAction_BLOCK_SEAL::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    g_effectMgr->Retire(actor->render.accountId, 2400);
+    g_effectMgr->Retire(actor->render.accountId, EF_BLOCK_SEAL_GRAVITY_CONTROL);
     EffectLists* effects = g_effectMgr;
     effects->Retire(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"));
     effects = g_effectMgr;
@@ -3178,7 +3178,7 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
 
   static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_FROSTMISTY, level / 16);
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1543 : 1446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_JACKFROST_CAST : EF_NEW_JACKFROST_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }
@@ -3189,7 +3189,7 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
 void CSkillAction_HN_JACK_FROST_NOVA::OnGroundSkillCast(int level, CGameActor* source, vector3d position) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
-    g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, 0x5A8, level / 24, 0);
+    g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, EF_NEW_JACKFROST_ART, level / 24, 0);
   }
 }
 
@@ -3510,7 +3510,7 @@ struct SkillActionRegistration {
 
 // OFFSET: 0x00453F10
 // FUNCTION: fn_45562
-static EfstActionRegistration s_efstActionRegistered722(722, NewAction<CEfstAction_UNLIMIT, CEfstAction>);
+static EfstActionRegistration s_efstActionRegistered722(EFST_UNLIMIT, NewAction<CEfstAction_UNLIMIT, CEfstAction>);
 // OFFSET: 0x00453FE0
 // FUNCTION: fn_45563
 static SkillActionRegistration s_skillActionRegistered5002(5002, NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>);
@@ -3554,7 +3554,7 @@ static SkillActionRegistrar s_skillActionIqBlazingFlameBlast{IQ_BLAZING_FLAME_BL
 
 // OFFSET: 0x00457500
 // FUNCTION: fn_45564
-static EfstActionRegistration s_efstActionRegistered1665(1665, NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>);
+static EfstActionRegistration s_efstActionRegistered1665(EFST_MYSTERY_POWDER, NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>);
 
 // GLOBAL: gl_25745
 static SkillActionRegistrar s_skillActionBoDustExplosion{BO_DUST_EXPLOSION, NewAction<CSkillAction_BO_DUST_EXPLOSION, CSkillAction>};

@@ -12,7 +12,7 @@
 
 // OFFSET: 0x0072D5C0
 // FUNCTION: fn_07491
-CSunStanceEffect::CSunStanceEffect() : CEffect(-1) {
+CSunStanceEffect::CSunStanceEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x0072D640

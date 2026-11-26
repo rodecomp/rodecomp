@@ -21,7 +21,7 @@ static void SetIndices(CParticle* particle, int effectId, int row, int column, i
 
 // OFFSET: 0x00B50D10
 // FUNCTION: fn_19022
-CEnergyOrbEffect::CEnergyOrbEffect() : CEffect(-1), count(0), mode(2), particles() {
+CEnergyOrbEffect::CEnergyOrbEffect() : CEffect(EF_NONE), count(0), mode(2), particles() {
 }
 
 // OFFSET: 0x00B50DA0

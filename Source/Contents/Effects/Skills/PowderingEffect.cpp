@@ -7,6 +7,7 @@
 #include "Contents/Effects/Particles/SpriteParticle.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -32,7 +33,7 @@ __forceinline int RandomSpan(int range) {
 
 // OFFSET: 0x00708E70
 // FUNCTION: fn_07085
-CPowderingEffect::CPowderingEffect() : CEffect(-1), particleGridSize(0) {
+CPowderingEffect::CPowderingEffect() : CEffect(EF_NONE), particleGridSize(0) {
 }
 
 // OFFSET: 0x00708FB0
@@ -227,7 +228,7 @@ void CPowderingEffect::InitSpriteParticle(CParticle* particle) {
 // OFFSET: 0x00709690
 // FUNCTION: fn_07091
 void CPowderingEffect::InitEvents() {
-  if (this->id == 1104) {
+  if (this->id == EF_SU_CN_POWDERING) {
     this->AddEvent(EFFECT_EVENT_SOUND, "effect\\su_cn_powdering.wav", 0, 0);
   }
 }

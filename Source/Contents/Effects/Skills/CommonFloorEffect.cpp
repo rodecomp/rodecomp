@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CommonFloorEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -17,7 +18,7 @@ __forceinline void RenderCommonFloorParticle(CParticle* particle) {
 
 // OFFSET: 0x006FD760
 // FUNCTION: fn_06933
-CCommonFloorEffect::CCommonFloorEffect() : CEffect(1056) {
+CCommonFloorEffect::CCommonFloorEffect() : CEffect(EF_RA_UNLIMIT) {
 }
 
 // OFFSET: 0x006FD7E0

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/EvilsPawEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -13,7 +14,7 @@
 // OFFSET: 0x006FEA20
 // FUNCTION: fn_06954
 CEvilsPawEffect::CEvilsPawEffect()
-    : CEffect(1039), particles(), frameDelay(5), size(50), delayCounter(5), offset{0.0f, -40.0f, 0.0f}, textures(), textureIndex(0) {
+    : CEffect(EF_EVILS_PAW), particles(), frameDelay(5), size(50), delayCounter(5), offset{0.0f, -40.0f, 0.0f}, textures(), textureIndex(0) {
 }
 
 // OFFSET: 0x006FEB10

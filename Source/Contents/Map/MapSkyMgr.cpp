@@ -423,7 +423,7 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       const float z = static_cast<float>((1 - 2 * signZ) * offsetZ);
       const float y = static_cast<float>(posY);
 
-      CEffect* spawned = g_effectMgr->Spawn(0, EF_UNK_1146, x, y, z, 0, -1, 0, 0);
+      CEffect* spawned = g_effectMgr->Spawn(0, EF_MAP_CLOUD, x, y, z, 0, -1, 0, 0);
       if (!spawned) {
         continue;
       }

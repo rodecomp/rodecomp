@@ -406,7 +406,7 @@ void CSpriteMableEffect::Render() {
 
 // OFFSET: 0x0070D300
 // FUNCTION: fn_07148
-CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
+CStemSpearEffect::CStemSpearEffect() : CEffect(EF_SU_SV_STEMSPEAR_EFFECT) {
 }
 
 // OFFSET: 0x0070D380
@@ -476,7 +476,7 @@ bool CStemSpearEffect::IsAlive() {
 
 // OFFSET: 0x0070D850
 // FUNCTION: fn_07156
-CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(1128), emitter(nullptr) {
+CSvgSpiritEffect::CSvgSpiritEffect() : CEffect(EF_SU_SVG_SPIRIT_EFFECT), emitter(nullptr) {
 }
 
 // OFFSET: 0x0070D8C0
@@ -599,7 +599,7 @@ void CTunaPartyEffect::Render() {
 // OFFSET: 0x0070E0C0
 // FUNCTION: fn_07170
 CCurseOfCubeEffect::CCurseOfCubeEffect()
-    : CEffect(-1), spawnPhase(0), viewOffsetX(0), viewOffsetY(-10.0f), viewOffsetZ(0) {
+    : CEffect(EF_NONE), spawnPhase(0), viewOffsetX(0), viewOffsetY(-10.0f), viewOffsetZ(0) {
 }
 
 // OFFSET: 0x0070E160
@@ -718,7 +718,7 @@ bool CCylinderEffect::IsAlive() {
 
 // OFFSET: 0x0070F720
 // FUNCTION: fn_07189
-CCylinderEffect::CCylinderEffect() : CEffect(-1) {
+CCylinderEffect::CCylinderEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x0070FB50
@@ -738,7 +738,7 @@ void CCylinderEffect::Open() {
     particle->groupIndex = 1;
     particle->InitParticleQuad(particle->vertices);
     particle->angle = 0;
-    if (this->id == EF_UNK_2077) {
+    if (this->id == EF_NIFLHEIM_CAST_CYLINDER) {
       particle->SetTexture("effect\\nipelheim\\nipelheim_cast\\nip_cast.tga");
       particle->scale = 4.5f;
       particle->phaseParameter = 70;
@@ -874,7 +874,7 @@ void CDancingKnifeEffect::Render() {
 
 // OFFSET: 0x00710AE0
 // FUNCTION: fn_07206
-CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
+CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00710B60
@@ -1481,7 +1481,7 @@ void CFootprintStrEffect::Render() {
 
 // OFFSET: 0x00714250
 // FUNCTION: fn_07259
-CFromTheAbyssEffect::CFromTheAbyssEffect() : CEffect(-1), maxLevel(5), level(0) {
+CFromTheAbyssEffect::CFromTheAbyssEffect() : CEffect(EF_NONE), maxLevel(5), level(0) {
   this->waves[0] = AbyssWave(0.8f, vector3d{-4.8f, -9.1f, 0.0f});
   this->waves[1] = AbyssWave(0.6f, vector3d{-3.4f, -12.8f, 0.0f});
   this->waves[2] = AbyssWave(0.5f, vector3d{-0.7f, -14.0f, 0.0f});
@@ -1654,7 +1654,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
 
 // OFFSET: 0x00716800
 // FUNCTION: fn_07274
-CFullScreenEffect::CFullScreenEffect() : CEffect(-1), loaded(1) {
+CFullScreenEffect::CFullScreenEffect() : CEffect(EF_NONE), loaded(1) {
 }
 
 // OFFSET: 0x007169A0
@@ -1889,7 +1889,7 @@ void CHawkVumerangEffect::Render() {
 // OFFSET: 0x00719030
 // FUNCTION: fn_07303
 CDropItemEffect::CDropItemEffect()
-    : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\") {
+    : CEffect(EF_NONE), emitterCount(2), soundPath("wav\\effect\\") {
   this->position = vector3d{};
   this->emitters.reserve(this->emitterCount);
 }
@@ -2012,7 +2012,7 @@ void CDropItemEffect::Render() {
 
 // OFFSET: 0x0071B8C0
 // FUNCTION: fn_07318
-CJupitelThunderHit::CJupitelThunderHit() : CEffect(-1) {
+CJupitelThunderHit::CJupitelThunderHit() : CEffect(EF_NONE) {
   this->effectLifetime = 250;
 }
 
@@ -2605,7 +2605,7 @@ void CPneumaticusProcellaEffect::OnProcess() {
 
 // OFFSET: 0x00720480
 // FUNCTION: fn_07357
-CRandomHitEffect::CRandomHitEffect() : CEffect(-1), active(true) {
+CRandomHitEffect::CRandomHitEffect() : CEffect(EF_NONE), active(true) {
 }
 
 // GLOBAL: gl_24963
@@ -2681,7 +2681,7 @@ void CRandomHitEffect::Render() {
 
 // OFFSET: 0x00720970
 // FUNCTION: fn_07364
-CRandomOptEffect::CRandomOptEffect() : CEffect(-1) {
+CRandomOptEffect::CRandomOptEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00720AF0
@@ -2735,10 +2735,10 @@ void CRandomOptEffect::Init() {
         particle->speedParameter = 120.0f - level * 12.0f;
         particle->scale = level * 0.24f + 0.6f;
         break;
-      case EF_UNK_1187:
+      case EF_RANDOMOPT_SILVER:
         particle->SetColor(192, 192, 192);
         break;
-      case EF_UNK_1188:
+      case EF_RANDOMOPT_BLUE:
         particle->SetColor(0, 100, 150);
         break;
       case EF_DROPITEM_YELLOW:
@@ -2747,7 +2747,7 @@ void CRandomOptEffect::Init() {
       case EF_DROPITEM_PURPLE:
         particle->SetColor(128, 0, 255);
         break;
-      case EF_UNK_1191:
+      case EF_RANDOMOPT_ORANGE:
         particle->SetColor(255, 128, 0);
         break;
       }
@@ -2993,7 +2993,7 @@ void CSavageImpactEffect::Render() {
 
 // OFFSET: 0x007226A0
 // FUNCTION: fn_07389
-CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1) {
+CServantWeaponEffect::CServantWeaponEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00722730
@@ -3324,7 +3324,7 @@ void CServantWeaponNewEffect::Shoot(int skill) {
 
 // OFFSET: 0x00725130
 // FUNCTION: fn_07410
-CSevereRainStorm::CSevereRainStorm() : CEffect(-1) {
+CSevereRainStorm::CSevereRainStorm() : CEffect(EF_NONE) {
   this->rotationParameter = 0;
 }
 
@@ -3745,7 +3745,7 @@ void CRichsCoinEffect::Close() {
 // FUNCTION: fn_07413
 void CSevereRainStorm::SpawnParticles() {
   switch (this->id) {
-  case EF_UNK_1752:
+  case EF_RAIN_OF_CRYSTAL_PARTICLES:
     if (this->elapsedFrames % (4 - (this->effectLevel + 1) / 2) == 0) {
       this->SpawnCrystalRain();
     }
@@ -3794,7 +3794,7 @@ void CSevereRainStorm::SpawnParticles() {
       this->SpawnCrossRain();
     }
     break;
-  case EF_UNK_2349:
+  case EF_SKE_TWINKLING_GALAXY_STAR:
     if (this->ActorExists() && this->elapsedFrames % 18 == 0) {
       this->SpawnGalaxyStar();
     }
@@ -4042,7 +4042,7 @@ void CSevereRainStorm::Open() {
 // FUNCTION: fn_07424
 bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
-  case EF_UNK_1752:
+  case EF_RAIN_OF_CRYSTAL_PARTICLES:
     return this->ActorExists();
   case EF_CROSS_RAIN:
   case EF_IG_CROSS_RAIN:
@@ -4053,12 +4053,12 @@ bool CSevereRainStorm::IsAlive() {
     }
     break;
   case EF_DIAMOND_STORM:
-    if (EffectLifetime(2026) < this->elapsedFrames) {
+    if (EffectLifetime(EF_DIAMOND_STORM) < this->elapsedFrames) {
       return false;
     }
     break;
   case EF_SKE_TWINKLING_GALAXY:
-  case EF_UNK_2349:
+  case EF_SKE_TWINKLING_GALAXY_STAR:
   case EF_SKE_STAR_CANNON:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
       return false;
@@ -4132,7 +4132,7 @@ void CSevereRainStorm::Render() {
 
 // OFFSET: 0x0070B820
 // FUNCTION: fn_07119
-CCrimsonArrowEffect::CCrimsonArrowEffect() : CEffect(-1), emitter(nullptr) {
+CCrimsonArrowEffect::CCrimsonArrowEffect() : CEffect(EF_NONE), emitter(nullptr) {
 }
 
 // OFFSET: 0x0070B880
@@ -4750,7 +4750,7 @@ void CGravityControlEffect::Close() {
   actor->positionDelta.y = 0.0f;
   actor->positionDelta.z = 0.0f;
 
-  if (this->id == EF_UNK_1201) {
+  if (this->id == EF_GRAVITY_CONTROL) {
     CRenderObject* player = g_modeMgr.GetGameMode()->scene->player;
     const vector3d playerPosition = player->render.position;
     g_soundMgr->PlayWave("effect\\t_공격력.wav", this->position[0] - playerPosition.x, 0.0f, this->position[2] - playerPosition.z, 250, 40, 1.0f, 0);
@@ -4860,7 +4860,7 @@ void CGaleStorm::OnProcess() {
 // FUNCTION: fn_07290
 void CGravityControlEffect::Open() {
   switch (this->id) {
-  case EF_UNK_1201: {
+  case EF_GRAVITY_CONTROL: {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->m_loop = true;
@@ -4870,7 +4870,7 @@ void CGravityControlEffect::Open() {
     }
     break;
   }
-  case EF_UNK_2400:
+  case EF_BLOCK_SEAL_GRAVITY_CONTROL:
     this->retained = 1;
     break;
   }

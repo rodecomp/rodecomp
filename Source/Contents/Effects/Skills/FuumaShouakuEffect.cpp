@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/FuumaShouakuEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -19,7 +20,7 @@ __declspec(noinline) CFuumaShouakuEffect::~CFuumaShouakuEffect() {
 // OFFSET: 0x007028C0
 // FUNCTION: fn_07007
 CFuumaShouakuEffect::CFuumaShouakuEffect()
-    : CEffect(0x930), first(nullptr), second(nullptr), velocityX(0), velocityY(0), velocityZ(0), travelFrames(0) {
+    : CEffect(EF_SS_FUUMASHOUAKU), first(nullptr), second(nullptr), velocityX(0), velocityY(0), velocityZ(0), travelFrames(0) {
 }
 
 // OFFSET: 0x00702A20

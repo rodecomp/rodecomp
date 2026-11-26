@@ -17,7 +17,7 @@
 
 // OFFSET: 0x00B463F0
 // FUNCTION: fn_18906
-CLevel150Effect::CLevel150Effect() : CEffect(-1) {
+CLevel150Effect::CLevel150Effect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B464A0
@@ -368,7 +368,7 @@ void CLevel150Effect::Render() {
 
 // OFFSET: 0x00B47670
 // FUNCTION: fn_18917
-CLevel150SubEffect::CLevel150SubEffect() : CEffect(-1) {
+CLevel150SubEffect::CLevel150SubEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x00B476F0

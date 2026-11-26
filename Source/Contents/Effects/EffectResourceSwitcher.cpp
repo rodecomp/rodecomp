@@ -14,6 +14,7 @@
 #include "Render/Primitives/RenderQueues.h"
 #include "Resource/World/TerrainResource.h"
 #include "Resource/Json/JsonCppLoader.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <algorithm>
 #include <cctype>
@@ -28,7 +29,7 @@ CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
 
 // OFFSET: 0x005A1B70
 // FUNCTION: fn_03077
-EffectResourceSwitcher::EffectResourceSwitcher() : CEffect(-1), active(0), effect(nullptr), spawnPosition{0.0f, 0.0f, 0.0f} {
+EffectResourceSwitcher::EffectResourceSwitcher() : CEffect(EF_NONE), active(0), effect(nullptr), spawnPosition{0.0f, 0.0f, 0.0f} {
 }
 
 // OFFSET: 0x005A2090

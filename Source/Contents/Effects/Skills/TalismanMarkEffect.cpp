@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/TalismanMarkEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -62,7 +63,7 @@ static const std::array<std::string, 4> s_talismanLoopEffects = {
 
 // OFFSET: 0x0072DE70
 // FUNCTION: fn_07499
-CTalismanMarkEffect::CTalismanMarkEffect() : CEffect(-1) {
+CTalismanMarkEffect::CTalismanMarkEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x0072DEF0

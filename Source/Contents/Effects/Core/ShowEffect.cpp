@@ -32,7 +32,7 @@ namespace {
 
 // OFFSET: 0x00729400
 // FUNCTION: fn_07441
-CShowEffect::CShowEffect() : CEffect(0x947), effects() {
+CShowEffect::CShowEffect() : CEffect(EF_SHOW_EFFECT), effects() {
 }
 
 // OFFSET: 0x00729810

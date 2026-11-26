@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CloudEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -55,7 +56,7 @@ namespace {
 // OFFSET: 0x006FB9A0
 // FUNCTION: fn_06914
 CCloud::CCloud()
-    : CEffect(-1), driftX(0), driftTargetX(0), driftZ(0), driftTargetZ(0), phase(0), baseScale(0), alpha(0), fadeInEnd(0), fadeOutStart(0),
+    : CEffect(EF_NONE), driftX(0), driftTargetX(0), driftZ(0), driftTargetZ(0), phase(0), baseScale(0), alpha(0), fadeInEnd(0), fadeOutStart(0),
       red(255), green(255), blue(255), scaleBase(0), scaleRange(0), scaleAmplitude(0), fadeInStep(0), fadeOutStep(0), fadeInBase(0),
       fadeInRange(0), fadeOutBase(0), fadeOutRange(0), offsetRangeY(0), offsetRangeX(0), offsetRangeZ(0), renderFlag(1) {
 }

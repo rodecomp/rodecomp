@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/Competentia.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -39,7 +40,7 @@ __forceinline void CNyanggrassEffect::RenderParticle(CEZ2STRParticle* particle) 
 
 // OFFSET: 0x00708930
 // FUNCTION: fn_07077
-CCompetentia::CCompetentia() : CEffect(1851) {
+CCompetentia::CCompetentia() : CEffect(EF_COMPETENTIA_EFFECT) {
 }
 
 // OFFSET: 0x007089B0

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/HitLineEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -11,7 +12,7 @@
 
 // OFFSET: 0x00704D60
 // FUNCTION: fn_46201
-CHitLineEffect::CHitLineEffect() : CEffect(330) {
+CHitLineEffect::CHitLineEffect() : CEffect(EF_HITLINE) {
   this->effectLifetime = 200;
 }
 

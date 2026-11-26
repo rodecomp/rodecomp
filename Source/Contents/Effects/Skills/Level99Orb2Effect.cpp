@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/Level99Orb2Effect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -25,7 +26,7 @@ namespace {
 
 // OFFSET: 0x00B6BE00
 // FUNCTION: fn_19096
-CLevel99Orb2Effect::CLevel99Orb2Effect() : CEffect(977) {
+CLevel99Orb2Effect::CLevel99Orb2Effect() : CEffect(EF_LEVEL99_ORB2) {
 }
 
 // OFFSET: 0x00B6BEA0

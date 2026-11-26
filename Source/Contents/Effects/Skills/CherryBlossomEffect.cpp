@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CherryBlossomEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -25,7 +26,7 @@ namespace {
 
 // OFFSET: 0x00B439D0
 // FUNCTION: fn_18882
-CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(1013) {
+CCherryBlossomEffect::CCherryBlossomEffect() : CEffect(EF_CHERRYBLOSSOM) {
 }
 
 // OFFSET: 0x00B43A70

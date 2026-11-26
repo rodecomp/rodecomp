@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
@@ -9,7 +10,7 @@
 
 // OFFSET: 0x006FF480
 // FUNCTION: fn_06962
-CEZ2STREffectEx::CEZ2STREffectEx() : CEffect(-1), emitter(nullptr), timed(0), frameStep(0), alternateRender(0) {
+CEZ2STREffectEx::CEZ2STREffectEx() : CEffect(EF_NONE), emitter(nullptr), timed(0), frameStep(0), alternateRender(0) {
 }
 
 // OFFSET: 0x006FF740

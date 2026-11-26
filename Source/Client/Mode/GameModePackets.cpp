@@ -3499,7 +3499,7 @@ __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data
   }
 
   if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
-    g_effectMgr->Retire(actor->render.accountId, 1225);
+    g_effectMgr->Retire(actor->render.accountId, EF_SOUL_COLLECT);
   }
 
   CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_SOUL_COLLECT);
@@ -4419,7 +4419,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
   actor->SendMsg(nullptr, AM_DELETE_BEGIN_SPELL, 0, 0, 0, 0, 0, 0);
   actor->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
   actor->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
-  g_effectMgr->Retire(dispel->aid, 1114);
+  g_effectMgr->Retire(dispel->aid, EF_WARNING_PLANE);
   if (actor->render.state == ST_BEGIN_SKILL) {
     actor->SetState(ST_STAND, 1);
   }
@@ -4844,7 +4844,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   case JT_ABYSS_CHASER:
     if (0 == count) {
-      g_effectMgr->Retire(actor->render.accountId, 2109);
+      g_effectMgr->Retire(actor->render.accountId, EF_FROM_THE_ABYSS_EFFECT);
       return;
     }
     break;
@@ -4864,7 +4864,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
   case JT_REBELLION:
   case JT_REBELLION_B:
   case JT_NIGHT_WATCH:
-    g_effectMgr->Retire(actor->render.accountId, 1135);
+    g_effectMgr->Retire(actor->render.accountId, EF_RL_B_TRAP);
     if (count == 0) {
       return;
     }
@@ -4885,7 +4885,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
       g_effectMgr->Retire(g_effectMgr->Find(actor->render.accountId, EF_DK_SERVANTWEAPON), 1);
       return;
     case JT_ABYSS_CHASER:
-      g_effectMgr->Retire(actor->render.accountId, 2109);
+      g_effectMgr->Retire(actor->render.accountId, EF_FROM_THE_ABYSS_EFFECT);
       break;
     }
   }
@@ -4932,9 +4932,9 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     return;
   }
   case JT_ABYSS_CHASER: {
-    CEffect* abyss = g_effectMgr->Find(actor->render.accountId, EF_UNK_2109);
+    CEffect* abyss = g_effectMgr->Find(actor->render.accountId, EF_FROM_THE_ABYSS_EFFECT);
     if (!abyss) {
-      abyss = g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2109, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      abyss = g_effectMgr->Spawn(actor->render.accountId, EF_FROM_THE_ABYSS_EFFECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     if (abyss) {
       static_cast<CFromTheAbyssEffect*>(abyss)->SetLevel(count);
@@ -6140,11 +6140,11 @@ void CGameMode::ApplyStatusChange(
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         for (int i = 0; i < 10; ++i) {
-          g_effectMgr->Retire(player->render.accountId, 1300 + i);
-          g_effectMgr->Retire(player->render.accountId, 1467 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_NEW_ROLLINGCUTTER_COUNT_01 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_01 + i);
         }
         g_effectMgr->Spawn(
-          player->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? value1 + 1466 : value1 + 1299, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
+          player->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? value1 + (EF_MINEFFECT_ROLLINGCUTTER_01 - 1) : value1 + (EF_NEW_ROLLINGCUTTER_COUNT_01 - 1), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         );
         std::sprintf(message, "");
       }
@@ -6669,19 +6669,19 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_FLOWER_LEAF:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 675, on, value1, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_FLOWER_LEAF, on, value1, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       return;
     case EFST_RAY_OF_PROTECTION:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 676, on, value1, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_RAY_OF_PROTECTION, on, value1, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       break;
     case EFST_HANDICAPSTATE_ICEEXPLO:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 710, on, value1, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_HANDICAPSTATE_ICEEXPLO, on, value1, 0, 0, 0);
         this->RefreshStatusStateEffect(aid);
       }
       break;
@@ -7259,8 +7259,8 @@ void CGameMode::ApplyStatusChange(
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
         for (int i = 0; i < 10; ++i) {
-          g_effectMgr->Retire(player->render.accountId, 1300 + i);
-          g_effectMgr->Retire(player->render.accountId, 1467 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_NEW_ROLLINGCUTTER_COUNT_01 + i);
+          g_effectMgr->Retire(player->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_01 + i);
         }
       }
       std::sprintf(message, "");
@@ -10562,10 +10562,10 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL:
     if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2DF, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E1, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E2, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_FIRE, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_WIND, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_WATER, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_GROUND, 0, 0, 0, 0, 0);
     }
     if (!showMessage) {
       return;
@@ -11734,7 +11734,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
   }
   case CLR_RESPAWN:
     if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
-      this->LaunchDummyEffect(&actor->render.position, 0x13A, 600, 0);
+      this->LaunchDummyEffect(&actor->render.position, EF_EXIT2, 600, 0);
     }
     if (g_windowMgr.merchantItemShopWnd && g_windowMgr.merchantItemShopWnd->ownerAid == static_cast<int>(packet->aid)) {
       this->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
@@ -11747,7 +11747,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
   case CLR_TELEPORT:
     if (CGameActor* actor = this->scene->GetGameActorByAID(packet->aid)) {
       if (!IsInvisible(actor->GetStateFlags())) {
-        this->LaunchDummyEffect(&actor->render.position, 0x130, 300, 0);
+        this->LaunchDummyEffect(&actor->render.position, EF_TELEPORTATION2, 300, 0);
       }
     }
     if (this->scene->RemoveItem(packet->aid) == true) {
@@ -12507,7 +12507,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 
   switch (skillId) {
   case CR_ACIDDEMONSTRATION:
-    mode->LaunchTargetEffect(0x21B, source, target, -1);
+    mode->LaunchTargetEffect(EF_THROWITEM4, source, target, -1);
     return;
   case WL_SOULEXPANSION: {
     const float speed = target->render.speed;
@@ -12666,10 +12666,10 @@ void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration
     actor->LaunchEffect(EF_PORTAL5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case WL_TETRAVORTEX:
-    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2DF, 1, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E1, 1, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E0, 1, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E2, 1, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_FIRE, 1, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_WATER, 1, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_WIND, 1, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, EF_CHOOKGI_GROUND, 1, 0, 0, 0, 0);
     break;
   case ABC_CHAIN_REACTION_SHOT:
     actor->SetFrameSequence(88, 0, 0, 88, 0, 0, 0, 0);
@@ -17893,7 +17893,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case CD_COMPETENTIA: {
     if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, EF_UNK_1851, actor->render.position, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_COMPETENTIA_EFFECT, actor->render.position, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
@@ -18094,7 +18094,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, EF_UNK_2077, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NIFLHEIM_CAST_CYLINDER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->effectLifetime = delay;
     }
@@ -18623,7 +18623,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case AM_POTIONPITCHER:
-    this->LaunchTargetEffect(0x12B, source, target, effectLevel);
+    this->LaunchTargetEffect(EF_THROWITEM2, source, target, effectLevel);
     break;
   case MG_SRECOVERY:
     if (target != nullptr) {
@@ -19073,7 +19073,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case AM_BERSERKPITCHER:
     if (source != nullptr && target != nullptr) {
-      this->LaunchTargetEffect(0x21D, source, target, 4);
+      this->LaunchTargetEffect(EF_THROWITEM5, source, target, 4);
       target->LaunchEffect(EF_POTION_BERSERK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -19373,10 +19373,10 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_LEASH:
   case NPC_WIDELEASH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, EF_UNK_1113, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HEAL_PURPLE, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, EF_UNK_1113, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HEAL_PURPLE, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
     break;
   case NPC_RELIEVE_ON:
@@ -19918,7 +19918,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case GN_SPORE_EXPLOSION:
-    this->LaunchTargetEffect(0x392, source, target, 4);
+    this->LaunchTargetEffect(EF_THROWITEM11, source, target, 4);
     break;
   case GN_WALLOFTHORN:
     g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -20493,7 +20493,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case WM_FRIGG_SONG:
-    if (source != nullptr && g_effectMgr->HasAllocator(0x423)) {
+    if (source != nullptr && g_effectMgr->HasAllocator(EF_WM_FRIGG_SONG)) {
       const float spacing = static_cast<float>(this->scene->terrain->cellSize) * static_cast<float>(level + 2);
       for (int row = 1; row >= -1; --row) {
         for (int column = -1; column <= 1; ++column) {
@@ -20556,12 +20556,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SU_LUNATICCARROTBEAT:
     if (target != nullptr) {
-      g_effectMgr->Spawn(0, EF_UNK_1099, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_SU_LUNATIC_CARROT_BEAT_METEOR_SHOWER, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
     }
     break;
   case SU_LUNATICCARROTBEAT2:
     if (target != nullptr) {
-      g_effectMgr->Spawn(0, EF_UNK_1111, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_SU_LUNATIC_CARROT_BEAT_METEOR_SHOWER2, target->render.position.x, target->render.position.y, target->render.position.z, 0, level, 0, 0);
     }
     break;
   case SU_LOPE:
@@ -20823,7 +20823,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       );
       for (int i = 0; i < 8; ++i) {
         g_effectMgr->Spawn(
-          source->render.accountId, i + 0x6F9, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
+          source->render.accountId, i + EF_FROZEN_SLASH_ICE_01, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
         );
       }
     }
@@ -20900,7 +20900,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         effect->SetScale(scale);
       }
       g_effectMgr->Spawn(
-        source->render.accountId, source->render.previousAnimation - source->render.animation + 0x796, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
+        source->render.accountId, source->render.previousAnimation - source->render.animation + EF_NEW_AXE_STOMP_12, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0
       );
     }
     break;
@@ -21215,7 +21215,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       } else if (level >= 200) {
         effectId = EF_HEAL;
       } else {
-        effectId = 7;
+        effectId = EF_EXIT;
       }
       target->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF00FF00u, MET_NUMBER_HEAL, 0, 0, 0);

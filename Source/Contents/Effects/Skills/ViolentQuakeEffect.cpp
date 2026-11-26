@@ -32,7 +32,7 @@ __forceinline vector3d TransformPoint(const matrix& transform, const vector3d po
 
 // OFFSET: 0x0072F4E0
 // FUNCTION: fn_07529
-CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(-1) {
+CViolentQuakeEffect::CViolentQuakeEffect() : CEffect(EF_NONE) {
 }
 
 // OFFSET: 0x0072F560
@@ -102,7 +102,7 @@ void CViolentQuakeEffect::Open() {
   case EF_VIOLENTQUAKE:
     this->InitViolentQuake();
     break;
-  case EF_UNK_1798:
+  case EF_ALL_BLOOM_GROUND:
     this->InitAllBloom();
     break;
   }

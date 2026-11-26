@@ -8,6 +8,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -37,7 +38,7 @@ static vector3d Sum(const vector3d& left, const vector3d& right) {
 
 // OFFSET: 0x00705F80
 // FUNCTION: fn_07040
-CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
+CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(EF_HN_JUPITEL_THUNDER_STORM), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
 }
 
 // OFFSET: 0x00706030

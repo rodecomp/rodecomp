@@ -619,7 +619,7 @@ int SetEZ2STRInfo(lua_State* state) {
   EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
   const int key = static_cast<int>(luaL_checknumber(state, 2));
-  CEffect* effect = effects->At(1412, static_cast<unsigned>(index));
+  CEffect* effect = effects->At(EF_NEW_RANGEDATTACK, static_cast<unsigned>(index));
   if (!effect) {
     return 0;
   }
@@ -657,7 +657,7 @@ int SetWindEffectInfo(lua_State* state) {
   EffectLists* effects = g_effectMgr;
   const int index = static_cast<int>(luaL_checknumber(state, 1));
   const double key = luaL_checknumber(state, 2);
-  CWindEffect* effect = static_cast<CWindEffect*>(effects->At(EF_UNK_2343, static_cast<unsigned>(index)));
+  CWindEffect* effect = static_cast<CWindEffect*>(effects->At(EF_WIND_EFFECT, static_cast<unsigned>(index)));
   if (!effect) {
     return 0;
   }

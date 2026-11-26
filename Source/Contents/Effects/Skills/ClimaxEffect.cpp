@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/ClimaxEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -9,7 +10,7 @@
 
 // OFFSET: 0x00706840
 // FUNCTION: fn_07047
-CClimaxEffect::CClimaxEffect() : CEffect(-1) {
+CClimaxEffect::CClimaxEffect() : CEffect(EF_NONE) {
   this->particles[0] = nullptr;
   this->particles[1] = nullptr;
 }

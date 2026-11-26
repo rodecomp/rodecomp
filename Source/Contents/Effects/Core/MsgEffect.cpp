@@ -604,7 +604,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_BENEDICTIO: {
-    const unsigned interval = EffectLifetime(0x5B) - 8;
+    const unsigned interval = EffectLifetime(EF_BENEDICTIO) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BENEDICTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -839,7 +839,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_FIREPILLAR_ACTIVE: {
-    const unsigned interval = EffectLifetime(0x61) - 8;
+    const unsigned interval = EffectLifetime(EF_FIREPILLARBOMB) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREPILLARBOMB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -871,7 +871,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_QUAGMIRE: {
-    const unsigned interval = EffectLifetime(0x5F) - 20;
+    const unsigned interval = EffectLifetime(EF_QUAGMIRE) - 20;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
@@ -884,7 +884,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_WARP_ACTIVE: {
-    const unsigned interval = EffectLifetime(0x13C) - 8;
+    const unsigned interval = EffectLifetime(EF_READYPORTAL2) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_READYPORTAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -893,7 +893,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_WARP_WAITING: {
-    const unsigned interval = EffectLifetime(0x13D) - 8;
+    const unsigned interval = EffectLifetime(EF_PORTAL2) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_PORTAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -902,7 +902,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_DIMENSIONDOOR: {
-    const unsigned interval = EffectLifetime(0x339) - 8;
+    const unsigned interval = EffectLifetime(EF_FORESTLIGHT6) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FORESTLIGHT6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -911,7 +911,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_CHAOSPANIC: {
-    const unsigned interval = EffectLifetime(0x33B) - 8;
+    const unsigned interval = EffectLifetime(EF_BOTTOM_ANI) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_ANI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -920,7 +920,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_MAELSTROM: {
-    const unsigned interval = EffectLifetime(0x33C) - 8;
+    const unsigned interval = EffectLifetime(EF_BOTTOM_MAELSTROM) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_MAELSTROM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -929,7 +929,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_REVERBERATION: {
-    const unsigned interval = EffectLifetime(0x358) - 8;
+    const unsigned interval = EffectLifetime(EF_BOT_REVERB) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOT_REVERB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -939,7 +939,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_NETHERWORLD: {
-    const unsigned interval = EffectLifetime(0x35C) - 8;
+    const unsigned interval = EffectLifetime(EF_BOT_REVERB2) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOT_REVERB2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -949,7 +949,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_SEVERE_RAINSTORM: {
-    const unsigned interval = EffectLifetime(0x359) - 8;
+    const unsigned interval = EffectLifetime(EF_RAIN_PARTICLE) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       g_effectMgr->Spawn(0, EF_NEW_SEVERERAINSTORM, this->render.position, 0, -1, 0, 0);
@@ -959,7 +959,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_BLOODYLUST: {
-    const unsigned interval = EffectLifetime(0x33D) - 8;
+    const unsigned interval = EffectLifetime(EF_BOTTOM_BLOODYLUST) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_BLOODYLUST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -968,7 +968,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_CALLFAMILY: {
-    const unsigned interval = EffectLifetime(0x155) - 8;
+    const unsigned interval = EffectLifetime(EF_PORTAL3) - 8;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_PORTAL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -977,7 +977,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_SAFETYWALL: {
-    const unsigned interval = EffectLifetime(0x13B) - 7;
+    const unsigned interval = EffectLifetime(EF_GLASSWALL2) - 7;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_GLASSWALL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -987,7 +987,7 @@ bool CSkill::OnProcess() {
 
   case UNT_FIREWALL:
   case UNT_FIRE_MANTLE: {
-    const unsigned interval = EffectLifetime(0x19) - 7;
+    const unsigned interval = EffectLifetime(EF_FIREWALL) - 7;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -996,7 +996,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_FIREWALK: {
-    const unsigned interval = EffectLifetime(0x398) - 7;
+    const unsigned interval = EffectLifetime(EF_FIREWALL2) - 7;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREWALL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1005,7 +1005,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_ELECTRICWALK: {
-    const unsigned interval = EffectLifetime(0x39E) - 7;
+    const unsigned interval = EffectLifetime(EF_SHOCKWAVE2) - 7;
     if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_SHOCKWAVE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1014,7 +1014,7 @@ bool CSkill::OnProcess() {
   }
 
   case UNT_VACUUM_EXTREME:
-    if (this->m_effectTimer >= EffectLifetime(0x399) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_VACUUM) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_VACUUM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\S스펠피스트.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1022,7 +1022,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_HELLS_PLANT:
-    if (this->m_effectTimer >= EffectLifetime(0x397) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_HELLSPLANT) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_HELLSPLANT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1040,32 +1040,32 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_KAEN:
-    if (this->m_effectTimer >= EffectLifetime(0x27A) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_KAEN) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_KAEN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_MAGENTATRAP:
-    if (this->m_effectTimer >= EffectLifetime(0x2E3) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_MAGENTA_TRAP) - 1u) {
       this->m_effectTimer = 0;
     }
     break;
 
   case UNT_COBALTTRAP:
-    if (this->m_effectTimer >= EffectLifetime(0x2E4) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_COBALT_TRAP) - 1u) {
       this->m_effectTimer = 0;
     }
     break;
 
   case UNT_MAIZETRAP:
-    if (this->m_effectTimer >= EffectLifetime(0x2E5) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_MAIZE_TRAP) - 1u) {
       this->m_effectTimer = 0;
     }
     break;
 
   case UNT_VERDURETRAP:
-    if (this->m_effectTimer >= EffectLifetime(0x2E6) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_VERDURE_TRAP) - 1u) {
       this->m_effectTimer = 0;
     }
     break;
@@ -1074,55 +1074,55 @@ bool CSkill::OnProcess() {
   case UNT_ICEBOUNDTRAP:
   case UNT_ELECTRICSHOCKER:
   case UNT_CLUSTERBOMB:
-    if (this->m_effectTimer >= EffectLifetime(0x2E7) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_NORMAL_TRAP) - 1u) {
       this->m_effectTimer = 0;
     }
     break;
 
   case UNT_GROUNDDRIFT_WIND:
-    if (this->m_effectTimer >= EffectLifetime(0x27E) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_LIGHTNING_S) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_LIGHTNING_S, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_GROUNDDRIFT_DARK:
-    if (this->m_effectTimer >= EffectLifetime(0x27F) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_BLIND_S) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BLIND_S, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_GROUNDDRIFT_POISON:
-    if (this->m_effectTimer >= EffectLifetime(0x280) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_POISON_S) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_POISON_S, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_GROUNDDRIFT_WATER:
-    if (this->m_effectTimer >= EffectLifetime(0x281) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_FREEZING_S) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FREEZING_S, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_GROUNDDRIFT_FIRE:
-    if (this->m_effectTimer >= EffectLifetime(0x282) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_FLARE_S) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FLARE_S, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_GROUNDDRIFT_NEUTRAL:
-    if (this->m_effectTimer >= EffectLifetime(0x460) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_SU_LUNATIC_CARROT_BEAT) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_SU_LUNATIC_CARROT_BEAT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_WALLOFTHORN:
-    if (this->m_effectTimer >= EffectLifetime(0x390) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_WALLOFTHORN) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_WALLOFTHORN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -1139,34 +1139,34 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_ZEPHYR:
-    if (this->m_effectTimer >= EffectLifetime(0x1D1) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_STORMKICK7) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_STORMKICK7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_POWER_OF_GAIA:
-    if (this->m_effectTimer >= EffectLifetime(0x440) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_POWER_OF_GAIA) - 1u) {
       this->m_effectTimer = 0;
       g_effectMgr->Spawn(this->render.accountId, EF_POWER_OF_GAIA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     break;
 
   case UNT_POISON_MIST:
-    this->LaunchGroundEffects(0x3BF, 3, 0);
+    this->LaunchGroundEffects(EF_POISON_MIST, 3, 0);
     break;
 
   case UNT_LAVA_SLIDE:
-    this->LaunchGroundEffects(0x3C4, 0, 0);
+    this->LaunchGroundEffects(EF_LAVA_SLIDE, 0, 0);
     break;
 
   case UNT_VOLCANIC_ASH:
-    this->LaunchGroundEffects(0x3CF, 0, 0);
+    this->LaunchGroundEffects(EF_VOLCANIC_ASH, 0, 0);
     break;
 
   case UNT_DEMONIC_FIRE:
   case UNT_FIRE_INSIGNIA:
-    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_DEMONICFIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1174,7 +1174,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_WATER_INSIGNIA:
-    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE) - 1u) {
       this->m_effectTimer = 0;
       CRagEffect* effect = this->LaunchEffect(EF_DEMONICFIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1187,7 +1187,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_WIND_INSIGNIA:
-    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE) - 1u) {
       this->m_effectTimer = 0;
       CRagEffect* effect = this->LaunchEffect(EF_DEMONICFIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1200,7 +1200,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_EARTH_INSIGNIA:
-    if (this->m_effectTimer >= EffectLifetime(0x394) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE) - 1u) {
       this->m_effectTimer = 0;
       CRagEffect* effect = this->LaunchEffect(EF_DEMONICFIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1213,7 +1213,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_FIRE_EXPANSION_SMOKE_POWDER:
-    if (this->m_effectTimer >= EffectLifetime(0x395) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE2) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_DEMONICFIRE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1221,7 +1221,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_FIRE_EXPANSION_TEAR_GAS:
-    if (this->m_effectTimer >= EffectLifetime(0x396) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE3) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_DEMONICFIRE3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1229,7 +1229,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_WARMER:
-    if (this->m_effectTimer >= EffectLifetime(0x3A1) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_DEMONICFIRE4) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_DEMONICFIRE4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\S워머.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1237,31 +1237,31 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_ZENKAI_WATER:
-    this->LaunchGroundEffects(0x3E0, 0, 0);
+    this->LaunchGroundEffects(EF_KO_ZENKAI_WATER, 0, 0);
     break;
 
   case UNT_ZENKAI_LAND:
-    this->LaunchGroundEffects(0x3E1, 0, 0);
+    this->LaunchGroundEffects(EF_KO_ZENKAI_LAND, 0, 0);
     break;
 
   case UNT_ZENKAI_FIRE:
-    this->LaunchGroundEffects(0x3E2, 0, 0);
+    this->LaunchGroundEffects(EF_KO_ZENKAI_FIRE, 0, 0);
     break;
 
   case UNT_ZENKAI_WIND:
-    this->LaunchGroundEffects(0x3E3, 0, 0);
+    this->LaunchGroundEffects(EF_KO_ZENKAI_WIND, 0, 0);
     break;
 
   case UNT_MAKIBISHI:
-    this->LaunchGroundEffects(0x3EF, 0, 0);
+    this->LaunchGroundEffects(EF_KO_MAKIBISHI, 0, 0);
     break;
 
   case UNT_VENOMFOG:
-    this->LaunchGroundEffects(0x3FC, 0, 0);
+    this->LaunchGroundEffects(EF_VENOMFOG, 0, 0);
     break;
 
   case UNT_ICEMINE:
-    if (this->m_effectTimer >= EffectLifetime(0x402) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_ICEMINE) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_ICEMINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -1269,28 +1269,28 @@ bool CSkill::OnProcess() {
 
   case UNT_FLAMECROSS:
   case UNT_HELLBURNING:
-    if (this->m_effectTimer >= EffectLifetime(0x19) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_FIREWALL) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_KINGS_GRACE:
-    if (this->m_effectTimer >= EffectLifetime(0x41B) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_LG_KINGS_GRACE) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_LG_KINGS_GRACE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_MAGMA_ERUPTION:
-    if (this->m_effectTimer >= EffectLifetime(0x41A) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_NC_MAGMA_ERUPTION) - 1u) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_NC_MAGMA_ERUPTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
 
   case UNT_FIRE_RAIN:
-    if (this->m_effectTimer >= EffectLifetime(0x428) - 1u) {
+    if (this->m_effectTimer >= EffectLifetime(EF_FIRE_RAIN) - 1u) {
       this->m_effectTimer = 0;
       g_effectMgr->Spawn(0, EF_FIRE_RAIN, this->render.position, 0, -1, 0, 0);
     }

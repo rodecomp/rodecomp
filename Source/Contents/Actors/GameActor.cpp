@@ -692,7 +692,7 @@ void CGameActor::UpdateStateEffects() {
   }
 
   const std::uint64_t now = timeGetTime();
-  if (IsSightActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(22))) {
+  if (IsSightActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(EF_SIGHT))) {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(EF_SIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -700,7 +700,7 @@ void CGameActor::UpdateStateEffects() {
     }
   }
 
-  if (IsRuwachActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(33))) {
+  if (IsRuwachActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(EF_RUWACH))) {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(EF_RUWACH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {

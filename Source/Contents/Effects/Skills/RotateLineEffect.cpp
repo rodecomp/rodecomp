@@ -10,7 +10,7 @@
 
 // OFFSET: 0x00B741B0
 // FUNCTION: fn_19153
-CRotateLineEffect::CRotateLineEffect() : CEffect(-1), scale(0), angle(0), spread(0), alpha(0), started(false) {
+CRotateLineEffect::CRotateLineEffect() : CEffect(EF_NONE), scale(0), angle(0), spread(0), alpha(0), started(false) {
 }
 
 // OFFSET: 0x00B74280
