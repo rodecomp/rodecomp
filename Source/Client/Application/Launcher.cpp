@@ -476,6 +476,7 @@ EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() co
 // FUNCTION: fn_24359
 int RemovePath(std::string path, int depth, bool file) {
   std::string pattern = path;
+  const int childDepth = depth + 1;
 
   if (file == true) {
     DeleteFileA(pattern.c_str());
@@ -506,7 +507,7 @@ int RemovePath(std::string path, int depth, bool file) {
 
     if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
       if (std::strcmp(data.cFileName, ".") != 0 && std::strcmp(data.cFileName, "..") != 0) {
-        RemovePath(child, depth + 1, false);
+        RemovePath(child, childDepth, false);
       }
     } else {
       DeleteFileA(child.c_str());
