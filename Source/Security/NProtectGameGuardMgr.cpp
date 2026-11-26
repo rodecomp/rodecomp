@@ -111,7 +111,7 @@ void CNProtectGameGuardMgr::Stop() {
 void CNProtectGameGuardMgr::Tick() {
   NSyncObject lock(&this->m_lock);
   if (CheckNPGameMon() != NPGAMEMON_SUCCESS) {
-    this->SetError(g_nprotectSource, 0x1E4, std::string());
+    this->SetError(g_nprotectSource, 0x1E4, "");
   }
 }
 
