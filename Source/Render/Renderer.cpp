@@ -145,18 +145,17 @@ void CRenderer::DrawHourlyBanner() {
     rect.left = width - texture->Width() - 140;
     rect.top = 45;
     rect.right = width - 140;
-    int alpha = s_hourlyBannerAlpha;
     if (s_hourlyBannerState == 1) {
-      if (alpha < 220) {
-        s_hourlyBannerAlpha = ++alpha;
+      if (s_hourlyBannerAlpha < 220) {
+        ++s_hourlyBannerAlpha;
       }
-    } else if (alpha > 0) {
-      s_hourlyBannerAlpha = --alpha;
+    } else if (s_hourlyBannerAlpha > 0) {
+      --s_hourlyBannerAlpha;
     } else {
       s_hourlyBannerState = 0;
     }
 
-    const std::uint32_t color = (alpha << 24) + 0xFFFFFF;
+    const std::uint32_t color = (s_hourlyBannerAlpha << 24) + 0xFFFFFF;
     g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, color, texture, UnitTextureRegion());
   }
 }
