@@ -40,6 +40,7 @@
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Resource/World/TerrainResource.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Contents/Camera/Camera.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include "UI/Items/UIItemParamChangeDisplayWnd.h"
@@ -2272,7 +2273,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(EF_HEAL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case MO_EXTREMITYFIST:
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\mon_아수라 패황권.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     target->LaunchEffect(EF_TEIHIT1X, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
@@ -2733,7 +2734,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     source->LaunchEffect(EF_CONCENTRATION2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case RK_CRUSHSTRIKE:
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     target->LaunchEffect(EF_M07, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("_enemy_hit_wind2.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -2898,7 +2899,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     source->LaunchEffect(EF_PRESSURE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case LG_TRAMPLE:
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     source->LaunchEffect(EF_GROUNDSHAKE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_TRAMPLE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -3034,7 +3035,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     target->LaunchEffect(EF_SPINEDBODY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\LG_EARTHDRIVE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -3119,7 +3120,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   }
   case NC_PILEBUNKER:
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NC_AXETORNADO: {
@@ -3391,7 +3392,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case EL_UPHEAVAL:
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(EF_GUMGANG9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     target->LaunchEffect(EF_EL_UPHEAVAL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case EL_GUST:
@@ -3407,7 +3408,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case EL_WILD_STORM:
     g_soundMgr->PlayWave("effect\\EF_LightBolt3.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(EF_GUMGANG8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     target->LaunchEffect(EF_EL_WILD_STORM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case EL_PYROTECHNIC:
@@ -3423,7 +3424,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case EL_TROPIC:
     g_soundMgr->PlayWave("effect\\EF_FireArrow1.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     source->LaunchEffect(EF_GUMGANG7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     target->LaunchEffect(EF_EL_TROPIC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }

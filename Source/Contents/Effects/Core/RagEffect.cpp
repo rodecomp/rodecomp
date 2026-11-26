@@ -2687,7 +2687,7 @@ bool CRagEffect::Potion_Berserk() {
   }
 
   if (this->state.stateCnt == 18) {
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_SHORT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\ac_concentration.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 
@@ -9583,7 +9583,7 @@ bool CRagEffect::FirePillarBomb() {
   }
 
   if (this->state.stateCnt == 35) {
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
   }
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
@@ -10629,7 +10629,7 @@ bool CRagEffect::OnProcess2() {
     this->SlashFan(0);
     this->SlashFan(1);
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\연주붕격.wav");
     }
@@ -11430,7 +11430,7 @@ void CRagEffect::EarthSpike(char type) {
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  mode->SendMsg(MM_QUAKE, 1, 0, 0, 0);
+  mode->SendMsg(MM_QUAKE, CAMERA_SHAKE_SHORT, 0, 0, 0);
   float red = 1.0f;
   float green = 0.24f;
   float blue = 0.2f;
@@ -13554,7 +13554,7 @@ void CRagEffect::StoneSpike() {
   }
 
   PlayEffectWaveInline(*this, "effect\\wizard_earthspike.wav");
-  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
   this->state.duration += 50;
 
   for (int z = -10; z < 15; z += 5) {
@@ -14754,7 +14754,7 @@ void CRagEffect::Gravitation() {
     return;
   }
 
-  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+  g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
   for (int z = -10; z < 15; z += 5) {
@@ -15255,7 +15255,7 @@ bool CRagEffect::Potion_Awakening() {
   }
 
   if (this->state.stateCnt == 18) {
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_SHORT, 0, 0, 0);
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
@@ -20082,7 +20082,7 @@ bool CRagEffect::OnProcess3() {
       this->LineStreakLayered(11);
     }
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     if (this->state.stateCnt >= 20 && this->state.stateCnt <= 100) {
       if ((this->state.parent->render.flags & 8) == 0) {
@@ -20423,13 +20423,13 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt != 0) {
       if (this->state.stateCnt != 40) {
         if (this->state.stateCnt == 80) {
-          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
         }
       } else {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       }
     } else {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     this->TetraVortexPillar(4);
     for (int index = 0; index < 7; ++index) {
@@ -21177,13 +21177,13 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt != 0) {
       if (this->state.stateCnt != 35) {
         if (this->state.stateCnt == 70) {
-          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
         }
       } else {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       }
     } else {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     break;
   case EF_BUBBLE_DROP:
@@ -21636,7 +21636,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_ACIDDEMON:
     if (this->state.stateCnt == 5) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     this->TexturedFireWall("effect\\ring_black.tga", 33);
     break;
@@ -21733,7 +21733,7 @@ bool CRagEffect::OnProcess3() {
       this->LineStreakLayered(11);
     }
     if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\연주붕격.wav");
     }
@@ -21985,7 +21985,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_SCREEN_QUAKE:
     if (this->state.stateCnt < 100 && this->state.stateCnt % 5 == 0) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     break;
   case EF_HITTEXTURE:
@@ -22188,7 +22188,7 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 1) {
       this->render.position = this->state.parent->render.position;
       PlayEffectWaveInline(*this, "effect\\dragonfear.wav");
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
     break;
@@ -23324,7 +23324,7 @@ inline bool CRagEffect::MeteorStorm() {
     PlayEffectWaveInline(*this, "effect\\wizard_meteor.wav");
   }
   if (this->state.stateCnt == 40) {
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
   }
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
@@ -24165,7 +24165,7 @@ bool CRagEffect::OnProcess() {
         PlayEffectWaveInline(*this, "effect\\매직 크래쉬.wav");
       }
       if (this->state.stateCnt == 30) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       }
       if (this->state.stateCnt >= 30 && this->state.stateCnt <= 60) {
         if ((this->state.parent->render.flags & 1) == 0) {
@@ -24185,7 +24185,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_FALCONASSAULT:
       if (this->state.stateCnt == 30) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       }
       if (this->state.stateCnt >= 30 && this->state.stateCnt <= 54) {
         this->state.parent->render.angle += 30.0f;
@@ -25293,7 +25293,7 @@ bool CRagEffect::OnProcess() {
         break;
       }
       if (this->state.stateCnt >= 50 && this->state.stateCnt % 50 == 0 && this->state.stateCnt < 300) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
         return false;
@@ -25477,7 +25477,7 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt == 0) {
         this->Hit2(1);
       } else if (this->state.stateCnt == 3 || this->state.stateCnt == 7 || this->state.stateCnt == 9) {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 1, 0, 0, 0);
+        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_SHORT, 0, 0, 0);
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
         return false;

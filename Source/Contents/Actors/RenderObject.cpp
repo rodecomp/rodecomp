@@ -5871,21 +5871,21 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case MO_COMBOFINISH:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(EF_HITLINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case CH_PALMSTRIKE:
     this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1, 0);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     static_cast<EffectActor*>(target)->LaunchEffect(EF_HITLINE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case CH_TIGERFIST:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     this->LaunchEffect(EF_BASH3D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
@@ -5911,7 +5911,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     if (!this->HasId(EF_ELECTRIC4)) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_EARTHSHAKER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       this->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->LaunchEffect(EF_ELECTRIC4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -5920,7 +5920,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case SR_FALLENEMPIRE:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
-    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\SR_FALLENEMPIRE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

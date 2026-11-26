@@ -8028,7 +8028,7 @@ __declspec(noinline) void CGameMode::ReceiveItemConsumed(const unsigned char* pa
     g_session.ResetPetEggAndJob();
     EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
     int itemId = -1;
-    int kind = 0;
+    int kind = EQUIP_EXPANSION_PET;
     properties->RemoveExpansion(kind, itemId);
   }
 }
@@ -9307,7 +9307,7 @@ namespace {
       }
 
       const int itemId = std::atoi(item.itemId.c_str());
-      const int kind = 0;
+      const int kind = EQUIP_EXPANSION_PET;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -9477,7 +9477,7 @@ namespace {
       }
 
       const int itemId = std::atoi(item.itemId.c_str());
-      const int kind = 0;
+      const int kind = EQUIP_EXPANSION_PET;
       manager->AddExpansion(kind, itemId, false);
     }
   }
@@ -10402,7 +10402,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     if (friendlyState != g_session.GetPetFriendlyState(g_session.m_petFriendly)) {
       EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
       const int itemId = -1;
-      const int kind = 0;
+      const int kind = EQUIP_EXPANSION_PET;
       properties->RefreshExpansion(kind, itemId);
     }
     this->UpdatePetFriendlyWindow(previousFriendly);
@@ -10455,7 +10455,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       }
       EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
       const int itemId = -1;
-      const int kind = 0;
+      const int kind = EQUIP_EXPANSION_PET;
       properties->RemoveExpansion(kind, itemId);
       g_windowMgr.CloseWindow(WID_PETINFOWND);
       break;
@@ -10473,7 +10473,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
           }
           EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
           const int itemId = item.GetItemId();
-          const int kind = 0;
+          const int kind = EQUIP_EXPANSION_PET;
           properties->AddExpansion(kind, itemId, true);
         }
         g_windowMgr.CloseWindow(WID_PETEGGLISTWND);
@@ -18699,7 +18699,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MO_EXPLOSIONSPIRITS:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_폭기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
       source->LaunchEffect(EF_GUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -18711,7 +18711,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case MO_STEELBODY:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       source->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 20, 0);
     }
@@ -19093,7 +19093,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SG_FUSION:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\T_변신.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     break;
   case AM_BERSERKPITCHER:
@@ -19147,7 +19147,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SL_SKA:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_방어형.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
       target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
       target->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -19374,7 +19374,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_MANDRAGORA:
     if (source != nullptr) {
       source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -19475,7 +19475,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GC_COUNTERSLASH:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
@@ -19727,7 +19727,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RK_DRAGONHOWLING:
     if (source != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       source->LaunchEffect(EF_DHOWL_STR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("dragon_h.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -19756,7 +19756,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->LaunchEffect(EF_MAGNUMBREAK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       target->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->LaunchEffect(EF_HITLINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -19952,7 +19952,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -21302,7 +21302,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_REDBODY, 0, 0, 0, 0, 0);
       source->LaunchEffect(EF_REDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\버서크.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;

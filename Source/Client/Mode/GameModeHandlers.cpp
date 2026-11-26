@@ -2229,7 +2229,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
       const int slots = runeSet->CountActiveSlots();
       if (previousSlots != slots) {
         g_runeSystemMgr->SetCurSlotCount(slots);
-        EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshExpansion(1, -1);
+        EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshExpansion(EQUIP_EXPANSION_RUNE, -1);
       }
     }
   }

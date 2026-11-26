@@ -1,6 +1,7 @@
 #include "Contents/Effects/Skills/SkillEffects.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Camera/Camera.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -133,7 +134,7 @@ __forceinline void CMeteorEffect::UpdateParticle(CSpriteParticle* particle) {
   if (particle) {
     particle->UpdateFrame();
     if (this->quakeFrame == static_cast<long long>(particle->frame)) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     ++particle->elapsedFrames;
   }

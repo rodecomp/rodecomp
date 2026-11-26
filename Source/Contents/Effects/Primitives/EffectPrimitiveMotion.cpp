@@ -7032,7 +7032,7 @@ void CEffectPrim::PrimBubbleSwirl() {
           if (this->state.slots[ec].vecBPre.y >= -60.0f && this->state.slots[ec].fullDisplayAngle >= 250 && this->state.slots[ec].fullDisplayAngle <= 280) {
             this->state.slots[ec].flag1[4] = 0;
             CGameMode* mode = g_modeMgr.GetGameMode();
-            mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+            mode->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
           }
         } else if (this->state.slots[ec].process <= 32) {
           if (this->state.slots[ec].flag1[4] == 0 || this->state.slots[ec].process <= 24) {
@@ -7049,7 +7049,7 @@ void CEffectPrim::PrimBubbleSwirl() {
         } else {
           if (this->state.slots[ec].flag1[4] == 0 && this->state.slots[ec].process == 33) {
             CGameMode* mode = g_modeMgr.GetGameMode();
-            mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+            mode->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
           }
 
           this->state.slots[ec].alphaB -= 5;

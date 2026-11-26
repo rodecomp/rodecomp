@@ -1,6 +1,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/Effect.h"
+#include "Contents/Camera/Camera.h"
 
 #include "Client/Session/Session.h"
 #include "Contents/Actors/RenderObject.h"
@@ -150,7 +151,7 @@ void CEffect::Update(std::uint32_t aid) {
       }
       break;
     case EFFECT_EVENT_QUAKE:
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       break;
     }
   }

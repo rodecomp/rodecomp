@@ -108,6 +108,7 @@
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Models/ModelAnimation.h"
 #include "Utility/Math/ClientAngles.h"
+#include "Contents/Camera/Camera.h"
 
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
@@ -4261,7 +4262,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       const float y = mode->scene->terrain->Height(x, z);
       vector3d position = {x, y, z};
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }

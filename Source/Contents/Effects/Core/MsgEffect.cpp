@@ -591,7 +591,7 @@ bool CSkill::OnProcess() {
     if (this->m_effect) {
       int duration = this->m_effect->GetDuration();
       this->m_effect->SetStateDuration(duration + 21);
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     break;
 

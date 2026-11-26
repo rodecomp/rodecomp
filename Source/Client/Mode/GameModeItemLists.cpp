@@ -159,7 +159,7 @@ namespace {
       }
 
       const int itemId = std::atoi(item.itemId.c_str());
-      const int kind = 0;
+      const int kind = EQUIP_EXPANSION_PET;
       manager->AddExpansion(kind, itemId, false);
     }
   }
