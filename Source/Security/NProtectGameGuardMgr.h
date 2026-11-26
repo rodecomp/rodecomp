@@ -24,6 +24,15 @@ public:
     /* 0008 */ std::vector<unsigned char> bytes;
   };
 
+  // INLINED
+  CNProtectGameGuardMgr() : unknown_0008(0), m_gameLib(nullptr), m_hasError(false) {
+    this->m_initialized = false;
+    InitializeCriticalSection(&this->m_lock);
+    if (this->Initialize()) {
+      this->m_initialized = true;
+    }
+  }
+
   static int Create();
   static void Destroy();
   static const char* GameName();

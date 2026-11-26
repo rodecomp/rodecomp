@@ -128,26 +128,18 @@ int CNProtectGameGuardMgr::Create() {
   }
 
   CNProtectGameGuardMgr* manager = new (std::nothrow) CNProtectGameGuardMgr;
-  if (manager != nullptr) {
-    manager->m_initialized = false;
-    manager->unknown_0008 = 0;
-    manager->m_gameLib = nullptr;
-    manager->m_hasError = false;
-    InitializeCriticalSection(&manager->m_lock);
-    if (manager->Initialize()) {
-      manager->m_initialized = true;
-    }
+  g_nProtectGameGuardMgr = manager;
+  if (manager == nullptr) {
+    return 0;
   }
 
-  g_nProtectGameGuardMgr = manager;
-  if (manager != nullptr) {
-    if (manager->m_initialized) {
-      return 1;
-    }
+  if (!manager->m_initialized) {
     delete manager;
     g_nProtectGameGuardMgr = nullptr;
+    return 0;
   }
-  return 0;
+
+  return 1;
 }
 
 // OFFSET: 0x0076CEA0
