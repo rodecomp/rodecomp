@@ -28,7 +28,7 @@ int CGuildTip::Load() {
     FILE* file = std::fopen("GuildTip.txt", "r");
 
     if (file == nullptr) {
-      return 0;
+      goto fail;
     }
 
     std::fseek(file, 0, SEEK_END);
@@ -41,13 +41,13 @@ int CGuildTip::Load() {
     const char* fName = g_serverLanguage->ServiceName("GuildTip.txt");
 
     if (!ResourceExists(fName, 0)) {
-      return 0;
+      goto fail;
     }
 
     CFile fp;
 
     if (!fp.Open(fName, 0, true, false)) {
-      return 0;
+      goto fail;
     }
 
     fileSize = static_cast<int>(fp.GetSize());
@@ -56,6 +56,12 @@ int CGuildTip::Load() {
     fp.Close();
   }
 
+  goto parse;
+
+fail:
+  return 0;
+
+parse:
   fileBuf[fileSize] = 0;
 
   char* baseBuf = fileBuf;
