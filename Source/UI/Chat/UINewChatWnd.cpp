@@ -336,8 +336,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_ADDCHAT:
   case UM_ADDCHAT2:
     if (message != UM_ADDCHAT2) {
-      char name[25] = {};
       std::vector<std::string> lines;
+      char name[25] = {};
       if (d != 0) {
         std::strcpy(name, reinterpret_cast<const char*>(d));
       }
@@ -370,8 +370,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       }
 
-      const std::size_t nameLength = std::strlen(name);
-      if (g_serviceType == ServiceGermany && nameLength > 24) {
+      if (g_serviceType == ServiceGermany && std::strlen(name) > 24) {
         return 0;
       }
 
