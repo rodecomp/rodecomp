@@ -466,16 +466,16 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
           result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
-        } else if (g_serviceType == ServiceRussia) {
+        } else if (g_serviceType != ServiceRussia) {
           result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
-          result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
-          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += this->Creator(text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+          result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
         } else {
           result += InlineStar(*this, text, capacity, 0) > 0 ? text : "";
-          result += this->Creator(text, capacity, 0) > 0 ? text : "";
-          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
           result += IdentifiedName(*this, text, capacity, 0) > 0 ? text : "";
+          result += InlineElement(*this, text, capacity, 0) > 0 ? text : "";
+          result += this->Creator(text, capacity, 0) > 0 ? text : "";
         }
       }
     }
