@@ -1176,6 +1176,7 @@
   "Source/Utility/Text/TextEscapes.cpp": 0,
   "Source/Utility/Text/TextTokens.cpp": 0,
   "Source/Utility/Text/Tokenizer.cpp": 0,
+  "Source/Utility/Threading/ConcurrencyResourceManager.cpp": 0,
   "Source/Utility/Threading/NSyncObject.cpp": 0,
   "Source/Utility/Threading/NThread.cpp": 0,
   "Source/Utility/Timestamp.cpp": 0,
