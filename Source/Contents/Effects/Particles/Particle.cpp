@@ -571,7 +571,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
     }
   }
 
-  for (int i = 0; i <= 3; ++i) {
+  for (int i = 0; i != 4; ++i) {
     const float rotated = vertices[i].y * cosine + vertices[i].x * sine;
     auto& screen = this->m_screen;
     vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + screen.x;
