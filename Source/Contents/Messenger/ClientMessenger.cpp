@@ -6224,7 +6224,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
           lua_gettable(state, -2);
           if (lua_type(state, -1) == LUA_TTABLE) {
             lua_pushnil(state);
-            while (lua_next(state, -2) != 0) {
+            for (; lua_next(state, -2) != 0; lua_settop(state, -2)) {
               unsigned int order;
               type = lua_type(this->script.GetState(), -2);
               if (type == LUA_TNUMBER) {
@@ -6423,7 +6423,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                                   0);
                 }
                 if (!this->loadValid) {
-                  lua_settop(state, -2);
                   continue;
                 }
                 this->randomOptionDefinitions[randomOption] = definition;
@@ -6480,7 +6479,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               if (!this->loadValid) {
                 break;
               }
-              lua_settop(state, -2);
             }
           } else {
             ShowErrorDialog(fmt::format("Category({0})'s has invaild 'order' table", categoryName), 0);
