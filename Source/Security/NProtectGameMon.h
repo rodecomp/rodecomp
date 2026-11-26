@@ -15,6 +15,7 @@ enum NPGAMEMON_MESSAGE : int {
   NPGAMEMON_SUCCESS = 0x755,
 };
 
+int CheckNPGameMon();
 void CloseNPGameMon();
 void PreInitNPGameMonA(const char* name);
 int InitNPGameMon();

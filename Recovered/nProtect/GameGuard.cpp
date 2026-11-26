@@ -50,3 +50,9 @@ int SendUserIDToGameMon(const char*) {
 // STUB: fn_25544
 void SetHwndToGameMon(unsigned long) {
 }
+
+// OFFSET: 0x00E92400
+// STUB: fn_25532
+int CheckNPGameMon() {
+  return kGameGuardSuccess;
+}
