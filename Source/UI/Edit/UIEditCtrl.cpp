@@ -4656,7 +4656,7 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
   std::string result("");
   int position = 0;
   int previous = 0;
-  for (;;) {
+  while (true) {
     std::string link("");
     if (!this->ExtractItemLink(remaining, link, position, source.c_str())) {
       break;
