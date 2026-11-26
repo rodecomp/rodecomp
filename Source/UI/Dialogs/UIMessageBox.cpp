@@ -1348,6 +1348,25 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 0;
   case UM_COMMAND:
     switch (a) {
+    case ID_PREV:
+      --this->m_index;
+      if (this->m_index < 0) {
+        this->m_index = 0;
+        return 0;
+      }
+      this->m_scroll = this->m_scrollPositions[this->m_index];
+      this->LoadNotice();
+      return 0;
+    case ID_NEXT: {
+      const int index = ++this->m_index;
+      if (index > this->m_noticeCount) {
+        this->m_index = this->m_noticeCount;
+        return 0;
+      }
+      this->m_scroll = this->m_scrollPositions[index];
+      this->LoadNotice();
+      return 0;
+    }
     case ID_OK: {
       g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       FILE* file = std::fopen("notice_read.txt", "wb");
@@ -1375,33 +1394,10 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       std::fwrite(&position, 1, 1, file);
       std::fclose(file);
       g_windowMgr.CloseWindow(WID_NOTICEWND);
-      break;
+      return 0;
     }
-    case ID_NEXT:
-      ++this->m_index;
-
-      if (this->m_index > this->m_noticeCount) {
-        this->m_index = this->m_noticeCount;
-        return 0;
-      }
-
-      this->m_scroll = this->m_scrollPositions[this->m_index];
-      this->LoadNotice();
-      break;
-    case ID_PREV:
-      --this->m_index;
-
-      if (this->m_index < 0) {
-        this->m_index = 0;
-        return 0;
-      }
-
-      this->m_scroll = this->m_scrollPositions[this->m_index];
-      this->LoadNotice();
-      break;
     }
-
-    return 0;
+    break;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
@@ -1428,6 +1424,8 @@ int UINoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008BB070
