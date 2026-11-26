@@ -214,6 +214,126 @@ struct SaktestexeProcessName {
   EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& operator()() const;
 };
 
+// INLINED
+static void ToUpperName(char* name) {
+  for (char* cursor = name; *cursor; ++cursor) {
+    if (islower(*cursor)) {
+      *cursor -= 'a' - 'A';
+    }
+  }
+}
+
+// OFFSET: 0x00E599D0
+// FUNCTION: fn_46733
+static bool CheckClientProcess9x() {
+  using CreateSnapshotFunction = HANDLE(WINAPI*)(DWORD, DWORD);
+  using ProcessWalkFunction = BOOL(WINAPI*)(HANDLE, PROCESSENTRY32*);
+
+  HMODULE kernel = LoadLibraryA(Kernel32LibraryName()().Text());
+  __try {
+    if (kernel) {
+      auto createSnapshot = reinterpret_cast<CreateSnapshotFunction>(GetProcAddress(kernel, CreateToolhelp32SnapshotName()().Text()));
+      auto processFirst = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32FirstName()().Text()));
+      auto processNext = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32NextName()().Text()));
+      if (!createSnapshot || !processFirst || !processNext) {
+        return false;
+      }
+
+      HANDLE snapshot = createSnapshot(TH32CS_SNAPPROCESS, 0);
+      if (snapshot == INVALID_HANDLE_VALUE) {
+        FreeLibrary(kernel);
+        return false;
+      }
+
+      char name[MAX_PATH];
+      std::memset(name, 0, sizeof(name));
+      PROCESSENTRY32 entry;
+      if (processFirst(snapshot, &entry)) {
+        BOOL more;
+        do {
+          more = processNext(snapshot, &entry);
+
+          int start;
+          for (start = static_cast<int>(std::strlen(entry.szExeFile)) - 1; start > 0; --start) {
+            if (entry.szExeFile[start] == '\\') {
+              ++start;
+              break;
+            }
+          }
+
+          std::strcpy(name, &entry.szExeFile[start]);
+          ToUpperName(name);
+          puts(name);
+
+          if (std::strcmp(name, RagexeProcessName()().Text()) == 0 || std::strcmp(name, SakexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, RagexereProcessName()().Text()) == 0 || std::strcmp(name, RagtestexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, SaktestexeProcessName()().Text()) == 0 || std::strcmp(name, AdtestexeProcessName()().Text()) == 0 ||
+              std::strcmp(name, RagexeMProcessName()().Text()) == 0 || std::strcmp(name, SakexeMProcessName()().Text()) == 0) {
+            return true;
+          }
+        } while (more);
+      }
+
+      CloseHandle(snapshot);
+    }
+  } __finally {
+    if (kernel) {
+      FreeLibrary(kernel);
+    }
+  }
+
+  return false;
+}
+
+// OFFSET: 0x00E59E60
+// FUNCTION: fn_46734
+static bool CheckClientProcessNT() {
+  using EnumProcessesFunction = BOOL(WINAPI*)(DWORD*, DWORD, DWORD*);
+  using EnumProcessModulesFunction = BOOL(WINAPI*)(HANDLE, HMODULE*, DWORD, DWORD*);
+  using GetModuleBaseNameFunction = DWORD(WINAPI*)(HANDLE, HMODULE, LPSTR, DWORD);
+
+  HMODULE psapi = LoadLibraryA(PsapiLibraryName()().Text());
+  __try {
+    if (psapi) {
+      char name[MAX_PATH];
+      std::memset(name, 0, sizeof(name));
+      auto enumProcesses = reinterpret_cast<EnumProcessesFunction>(GetProcAddress(psapi, EnumProcessesName()().Text()));
+      auto enumProcessModules = reinterpret_cast<EnumProcessModulesFunction>(GetProcAddress(psapi, EnumProcessModulesName()().Text()));
+      auto getModuleBaseName = reinterpret_cast<GetModuleBaseNameFunction>(GetProcAddress(psapi, GetModuleBaseNameAName()().Text()));
+
+      DWORD processes[1024];
+      DWORD needed;
+      if (!enumProcesses || !enumProcessModules || !getModuleBaseName || !enumProcesses(processes, sizeof(processes), &needed)) {
+        __leave;
+      }
+
+      const DWORD count = needed / sizeof(DWORD);
+      for (DWORD index = 0; index < count; ++index) {
+        HANDLE process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processes[index]);
+        HMODULE module;
+        if (process && enumProcessModules(process, &module, sizeof(module), &needed)) {
+          getModuleBaseName(process, module, name, MAX_PATH);
+          ToUpperName(name);
+          puts(name);
+
+          if (std::strcmp(name, RagexeModuleName()().Text()) == 0 || std::strcmp(name, SakexeModuleName()().Text()) == 0 ||
+              std::strcmp(name, RagexereModuleName()().Text()) == 0) {
+            return true;
+          }
+        }
+
+        CloseHandle(process);
+      }
+    }
+  } __finally {
+    if (psapi) {
+      FreeLibrary(psapi);
+    }
+  }
+
+  return false;
+}
+
 // OFFSET: 0x00E55EC0
 // FUNCTION: fn_24331
 EncryptedName<14, 0xD98F03A52D35636DULL>& AdtestexeProcessName::operator()() const {
@@ -350,126 +470,6 @@ EncryptedName<15, 0xD3755DD95F47A909ULL>& RagtestexeProcessName::operator()() co
 // FUNCTION: fn_24353
 EncryptedName<15, 0x0F0F8B6B8F9D19D1ULL>& SaktestexeProcessName::operator()() const {
   OBFUSCATE_ARRAY_BODY("SAKTESTEXE.EXE", 0x0F0F8B6B8F9D19D1ULL, std::uint8_t);
-}
-
-// INLINED
-static void ToUpperName(char* name) {
-  for (char* cursor = name; *cursor; ++cursor) {
-    if (islower(*cursor)) {
-      *cursor -= 'a' - 'A';
-    }
-  }
-}
-
-// OFFSET: 0x00E599D0
-// FUNCTION: fn_46733
-static bool CheckClientProcess9x() {
-  using CreateSnapshotFunction = HANDLE(WINAPI*)(DWORD, DWORD);
-  using ProcessWalkFunction = BOOL(WINAPI*)(HANDLE, PROCESSENTRY32*);
-
-  HMODULE kernel = LoadLibraryA(Kernel32LibraryName()().Text());
-  __try {
-    if (kernel) {
-      auto createSnapshot = reinterpret_cast<CreateSnapshotFunction>(GetProcAddress(kernel, CreateToolhelp32SnapshotName()().Text()));
-      auto processFirst = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32FirstName()().Text()));
-      auto processNext = reinterpret_cast<ProcessWalkFunction>(GetProcAddress(kernel, Process32NextName()().Text()));
-      if (!createSnapshot || !processFirst || !processNext) {
-        return false;
-      }
-
-      HANDLE snapshot = createSnapshot(TH32CS_SNAPPROCESS, 0);
-      if (snapshot == INVALID_HANDLE_VALUE) {
-        FreeLibrary(kernel);
-        return false;
-      }
-
-      char name[MAX_PATH];
-      std::memset(name, 0, sizeof(name));
-      PROCESSENTRY32 entry;
-      if (processFirst(snapshot, &entry)) {
-        BOOL more;
-        do {
-          more = processNext(snapshot, &entry);
-
-          int start;
-          for (start = static_cast<int>(std::strlen(entry.szExeFile)) - 1; start > 0; --start) {
-            if (entry.szExeFile[start] == '\\') {
-              ++start;
-              break;
-            }
-          }
-
-          std::strcpy(name, &entry.szExeFile[start]);
-          ToUpperName(name);
-          puts(name);
-
-          if (std::strcmp(name, RagexeProcessName()().Text()) == 0 || std::strcmp(name, SakexeProcessName()().Text()) == 0 ||
-              std::strcmp(name, RagexereProcessName()().Text()) == 0 || std::strcmp(name, RagtestexeProcessName()().Text()) == 0 ||
-              std::strcmp(name, SaktestexeProcessName()().Text()) == 0 || std::strcmp(name, AdtestexeProcessName()().Text()) == 0 ||
-              std::strcmp(name, RagexeMProcessName()().Text()) == 0 || std::strcmp(name, SakexeMProcessName()().Text()) == 0) {
-            return true;
-          }
-        } while (more);
-      }
-
-      CloseHandle(snapshot);
-    }
-  } __finally {
-    if (kernel) {
-      FreeLibrary(kernel);
-    }
-  }
-
-  return false;
-}
-
-// OFFSET: 0x00E59E60
-// FUNCTION: fn_46734
-static bool CheckClientProcessNT() {
-  using EnumProcessesFunction = BOOL(WINAPI*)(DWORD*, DWORD, DWORD*);
-  using EnumProcessModulesFunction = BOOL(WINAPI*)(HANDLE, HMODULE*, DWORD, DWORD*);
-  using GetModuleBaseNameFunction = DWORD(WINAPI*)(HANDLE, HMODULE, LPSTR, DWORD);
-
-  HMODULE psapi = LoadLibraryA(PsapiLibraryName()().Text());
-  __try {
-    if (psapi) {
-      char name[MAX_PATH];
-      std::memset(name, 0, sizeof(name));
-      auto enumProcesses = reinterpret_cast<EnumProcessesFunction>(GetProcAddress(psapi, EnumProcessesName()().Text()));
-      auto enumProcessModules = reinterpret_cast<EnumProcessModulesFunction>(GetProcAddress(psapi, EnumProcessModulesName()().Text()));
-      auto getModuleBaseName = reinterpret_cast<GetModuleBaseNameFunction>(GetProcAddress(psapi, GetModuleBaseNameAName()().Text()));
-
-      DWORD processes[1024];
-      DWORD needed;
-      if (!enumProcesses || !enumProcessModules || !getModuleBaseName || !enumProcesses(processes, sizeof(processes), &needed)) {
-        return false;
-      }
-
-      const DWORD count = needed / sizeof(DWORD);
-      for (DWORD index = 0; index < count; ++index) {
-        HANDLE process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processes[index]);
-        HMODULE module;
-        if (process && enumProcessModules(process, &module, sizeof(module), &needed)) {
-          getModuleBaseName(process, module, name, MAX_PATH);
-          ToUpperName(name);
-          puts(name);
-
-          if (std::strcmp(name, RagexeModuleName()().Text()) == 0 || std::strcmp(name, SakexeModuleName()().Text()) == 0 ||
-              std::strcmp(name, RagexereModuleName()().Text()) == 0) {
-            return true;
-          }
-        }
-
-        CloseHandle(process);
-      }
-    }
-  } __finally {
-    if (psapi) {
-      FreeLibrary(psapi);
-    }
-  }
-
-  return false;
 }
 
 // OFFSET: 0x00E57B50
