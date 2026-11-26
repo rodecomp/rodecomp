@@ -175,10 +175,13 @@ void UIRodexScrollBar::Paint() {
   switch (this->vertical) {
   case 1: {
     this->FillRegion(0, 0, 5, this->geometry.height, 0xFFFFFF);
-    auto* upper = static_cast<CBitmapRes*>(
-      ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))
-    );
-    this->DrawBitmap(0, 0, upper, false);
+    if (this->state == 1) {
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
+    } else if (this->state == 4) {
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
+    } else {
+      this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))), false);
+    }
 
     int offset = this->ThumbOffset() + this->arrowLength;
     if (offset < 5) {
@@ -191,10 +194,13 @@ void UIRodexScrollBar::Paint() {
     }
 
     this->FillRegion(0, offset, 5, length, 0xE9E9E9);
-    auto* lower = static_cast<CBitmapRes*>(
-      ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))
-    );
-    this->DrawBitmap(0, this->geometry.height - this->arrowLength, lower, false);
+    if (this->state == 2) {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);
+    } else if (this->state == 5) {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);
+    } else {
+      this->DrawBitmap(0, this->geometry.height - this->arrowLength, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))), false);
+    }
     break;
   }
   }
