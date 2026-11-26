@@ -27,7 +27,7 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
     return;
   }
 
-  const char* eventName = g_session.GetMonsterTalkEventName(event);
+  const char* eventName = g_session.GetStateName(event);
   if (eventName == nullptr) {
     return;
   }
@@ -74,7 +74,7 @@ void CSession::GetMonsterTalkText(int job, int event, int skill, char* text, std
 
 // OFFSET: 0x00E19090
 // FUNCTION: fn_23834
-const char* CSession::GetMonsterTalkEventName(int event) {
+const char* CSession::GetStateName(int event) {
   switch (event) {
   case MONSTER_TALK_ATTACK:
     return "attack";

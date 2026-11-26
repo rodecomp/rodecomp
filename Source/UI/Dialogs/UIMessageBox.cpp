@@ -2501,7 +2501,7 @@ password:
 
 // OFFSET: 0x008C36F0
 // FUNCTION: fn_11830
-void UIChatRoomWnd::SaveChatLog() {
+void UIChatRoomWnd::WriteChatToFile() {
   int index = 0;
   char path[2048];
   std::sprintf(path, "%s\\Chat", g_applicationDirectory);

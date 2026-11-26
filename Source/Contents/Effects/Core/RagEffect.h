@@ -182,7 +182,7 @@ struct CRagEffect : CRenderObject {
   void BloodDrain();
   void FireBall();
   void FireSparks();
-  void AsuraStrike(char kind);
+  void BeginAsura(char kind);
   void SkyCloud(char kind);
   void TexturedClassChange(char kind);
   void FrostDiver(char type);
@@ -253,7 +253,7 @@ struct CRagEffect : CRenderObject {
   void TexturedFourRing(const char* name, char kind);
   void TexturedSkillIcon(const char* name, std::int16_t level, std::int16_t mode);
   void TexturedDoubleRing(const char* name, char level);
-  __declspec(noinline) void WaterOut();
+  __declspec(noinline) void WaterBall();
   void BlackMaximize(const char* name);
   __declspec(noinline) void TexturedPair(const char* name);
   __declspec(noinline) void PurpleSlash(int angle);
@@ -432,7 +432,7 @@ struct CRagEffect : CRenderObject {
   void QuadRingStackSized(const char* name, char kind);
   void TripleRingStack(const char* name, char large);
   void WideTripleRingStack(const char* name);
-  void SoulLink(int);
+  void BeginAsura2(int);
   void WhiteSparkStreak(char kind);
   void WhiteSparkRing(char kind);
   void WhiteLightTrail(const char* name, char kind);

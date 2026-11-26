@@ -4743,7 +4743,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (talkType == 24) {
         g_windowMgr.Schedule(this);
       } else if (talkType == 51) {
-        this->SaveChatLog();
+        this->WriteChatToFile();
       } else {
         g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
@@ -4756,7 +4756,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     break;
   case UM_MENU_SELECTED:
     if (this->m_log[a].value == 11) {
-      this->SaveChatLog();
+      this->WriteChatToFile();
     }
     break;
   case UM_MAKEMENU: {
@@ -4857,7 +4857,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
 // OFFSET: 0x0090B080
 // FUNCTION: fn_12419
-void UIWhisperWnd::SaveChatLog() {
+void UIWhisperWnd::WriteChatToFile() {
   char path[2048];
   int index = 0;
   std::sprintf(path, "%s\\Whisper", g_applicationDirectory);

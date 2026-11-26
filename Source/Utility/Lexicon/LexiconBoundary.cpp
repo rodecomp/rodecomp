@@ -118,7 +118,7 @@ LexiconBoundary::~LexiconBoundary() {
 
 // OFFSET: 0x00AC4A40
 // FUNCTION: fn_17632
-bool LexiconBoundary::Load() {
+bool LexiconBoundary::InitializeLexicon() {
   delete this->serializer;
   this->serializer = new LexiconSerializer;
   this->serializer->Load("..\\ftwrk.lex");

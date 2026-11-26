@@ -473,7 +473,7 @@ LexiconBoundary g_lexiconBoundary;
 
 // OFFSET: 0x00ACCF00
 // FUNCTION: fn_17753
-CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.Load()) {
+CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.InitializeLexicon()) {
 }
 
 // OFFSET: 0x00ACD140

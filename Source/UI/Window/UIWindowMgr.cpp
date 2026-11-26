@@ -1938,7 +1938,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
   }
   case UIM_SAVE_CHAT_TO_FILE_FROM_CHATROOM:
     if (this->chatRoomWnd != nullptr) {
-      this->chatRoomWnd->SaveChatLog();
+      this->chatRoomWnd->WriteChatToFile();
     }
     break;
   case UIM_SAVE_CHAT_TO_FILE:

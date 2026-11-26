@@ -29,6 +29,6 @@ void __cdecl InvalidParameterHandler(const wchar_t* expression, const wchar_t* f
 
 void __cdecl PurecallHandler();
 
-LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo);
+LONG WINAPI ExceptionFilter(EXCEPTION_POINTERS* exceptionInfo);
 
 #endif

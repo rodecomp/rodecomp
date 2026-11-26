@@ -862,7 +862,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "메시지", 280, 120, 0);
       break;
     case MENUID_WRITE_CHAT_TO_FILE:
-      this->SaveChatLog();
+      this->WriteChatToFile();
       break;
     case MENUID_ADD_TO_FRIEND_CHAR_LIST_FROM_WINDOW: {
       if (this->memberList->selected == -1) {

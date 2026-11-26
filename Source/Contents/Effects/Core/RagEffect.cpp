@@ -3740,7 +3740,7 @@ void CRagEffect::WaterBallBurst() {
 
 // OFFSET: 0x00C3FBD0
 // FUNCTION: fn_20122
-void CRagEffect::WaterOut() {
+void CRagEffect::WaterBall() {
   switch (this->state.stateCnt) {
   case 0:
     PlayEffectWaveInline(*this, "effect\\wizard_waterball_chulung.wav");
@@ -10419,7 +10419,7 @@ bool CRagEffect::OnProcess2() {
     this->TexturedRise("effect\\foot_r_b.tga", 0);
     break;
   case EF_BEGINASURA:
-    this->AsuraStrike(0);
+    this->BeginAsura(0);
     break;
   case EF_TRIPLEATTACK:
     this->CloudDrift();
@@ -14084,7 +14084,7 @@ void CRagEffect::WideTripleRingStack(const char* name) {
 }
 // OFFSET: 0x00C42E80
 // FUNCTION: fn_20140
-void CRagEffect::SoulLink(int) {
+void CRagEffect::BeginAsura2(int) {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
 
@@ -14390,7 +14390,7 @@ void CRagEffect::QuadRingStack(const char* name) {
 
 // OFFSET: 0x00C43430
 // FUNCTION: fn_20141
-void CRagEffect::AsuraStrike(char kind) {
+void CRagEffect::BeginAsura(char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
@@ -21751,7 +21751,7 @@ bool CRagEffect::OnProcess3() {
     this->TexturedCrossFade("effect\\ring_blue.tga");
     break;
   case EF_BEGINASURA11:
-    this->AsuraStrike(1);
+    this->BeginAsura(1);
     break;
   case EF_05VAL:
     this->Vallentine(2);
@@ -21820,7 +21820,7 @@ bool CRagEffect::OnProcess3() {
       }
     }
     this->TexturedOrbit("effect\\whitelight.tga");
-    this->SoulLink(0);
+    this->BeginAsura2(0);
     break;
   case EF_SOULLIGHT:
     this->TexturedStorm2("effect\\whitelight.tga", 0);
@@ -24330,7 +24330,7 @@ bool CRagEffect::OnProcess() {
       this->BlitzBeat();
       break;
     case EF_WATERBALL:
-      this->WaterOut();
+      this->WaterBall();
       break;
     case EF_WATERBALL2:
       this->WaterBall2();
@@ -25418,7 +25418,7 @@ bool CRagEffect::OnProcess() {
         const vector3d& player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
         CSoundMgr* soundMgr = g_soundMgr;
         soundMgr->PlayWave(
-          g_session.GetEnemyHitWaveName(3), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+          g_session.GetAttrWaveName(3), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
         );
       }
       if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {

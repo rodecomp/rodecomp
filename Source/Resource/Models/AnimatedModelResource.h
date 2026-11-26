@@ -52,7 +52,7 @@ struct AnimatedModelNode {
   AnimatedModelNode(const AnimatedModelNode&) = delete;
   AnimatedModelNode& operator=(const AnimatedModelNode&) = delete;
   void ReleaseGeometry();
-  void Shade(const float* matrix, int frame, const float* light, const float* diffuse, const float* ambient, int shadeType, int alpha);
+  void CalcFaceLight(const float* matrix, int frame, const float* light, const float* diffuse, const float* ambient, int shadeType, int alpha);
 
   /* 0000 */ std::string name;
   /* 0018 */ std::string parentName;

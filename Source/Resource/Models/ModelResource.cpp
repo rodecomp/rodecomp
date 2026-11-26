@@ -840,7 +840,7 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
 
 // OFFSET: 0x00757850
 // FUNCTION: fn_08007
-void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light, const float* diffuse, const float* ambient, int shadeType, int alpha) {
+void AnimatedModelNode::CalcFaceLight(const float* matrix, int frame, const float* light, const float* diffuse, const float* ambient, int shadeType, int alpha) {
   // GLOBAL: gl_24735
   static ShadeVector faceNormals[30000];
   // GLOBAL: gl_24736
@@ -978,7 +978,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   }
 
   for (AnimatedModelNode* child : this->children) {
-    child->Shade(matrix, frame, light, diffuse, ambient, shadeType, alpha);
+    child->CalcFaceLight(matrix, frame, light, diffuse, ambient, shadeType, alpha);
   }
 }
 

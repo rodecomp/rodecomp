@@ -73,7 +73,7 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
 
 // OFFSET: 0x00DE5BD0
 // FUNCTION: fn_23494
-void CSession::InitJobHitWaveNames() {
+void CSession::InitJobHitWaveName() {
   std::vector<std::string>& jobWaves = this->m_jobHitWaves;
   jobWaves.clear();
   jobWaves.resize(28053, "player_clothes.wav");

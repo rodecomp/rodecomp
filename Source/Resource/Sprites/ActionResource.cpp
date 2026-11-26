@@ -37,7 +37,7 @@ CActRes* CActRes::Create() {
 
 // OFFSET: 0x007474A0
 // FUNCTION: fn_45820
-__forceinline void CActRes::AdjustCellPosition(SpriteFrameCell* cell, int width, int height, int doubleWidth,
+__forceinline void CActRes::ReCalcClipXY(SpriteFrameCell* cell, int width, int height, int doubleWidth,
                                                int doubleHeight) {
   if (!cell) {
     this->Unload();
@@ -155,7 +155,7 @@ bool CActRes::Load(const char* name) {
               const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
               if (image) {
-                this->AdjustCellPosition(&cell, image->width, image->height, image->doubleWidth, image->doubleHeight);
+                this->ReCalcClipXY(&cell, image->width, image->height, image->doubleWidth, image->doubleHeight);
               }
             }
           }
@@ -169,7 +169,7 @@ bool CActRes::Load(const char* name) {
             file.Read(&imageHeight, sizeof(imageHeight));
 
             if (cell.image != -1) {
-              this->AdjustCellPosition(&cell, imageWidth, imageHeight, 0, 0);
+              this->ReCalcClipXY(&cell, imageWidth, imageHeight, 0, 0);
             }
           } else if (cell.image != -1) {
             auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName.c_str()));
@@ -178,7 +178,7 @@ bool CActRes::Load(const char* name) {
               const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
 
               if (image) {
-                this->AdjustCellPosition(&cell, image->width, image->height, image->doubleWidth, image->doubleHeight);
+                this->ReCalcClipXY(&cell, image->width, image->height, image->doubleWidth, image->doubleHeight);
               }
             }
           }

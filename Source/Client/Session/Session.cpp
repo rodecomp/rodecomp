@@ -730,7 +730,7 @@ int CSession::FindSkillFollowEffect(int key) const {
 
 // OFFSET: 0x00DDC0F0
 // FUNCTION: fn_23363
-const char* CSession::GetEnemyHitWaveName(int element) {
+const char* CSession::GetAttrWaveName(int element) {
   switch (element) {
   case ELE_FIRE: {
     int roll = std::rand() % 2;
@@ -3255,7 +3255,7 @@ void CSession::Init() {
 
 // OFFSET: 0x00DF7C40
 // FUNCTION: fn_23508
-void CSession::ResetCharacterState() {
+void CSession::InitVariables() {
   this->unknown_1620[1] = SquareRoot(50.0f);
 
   const int roll = std::rand() % 1024;
@@ -5987,7 +5987,7 @@ void CSession::ReloadLanguageTables() {
 void CSession::LoadSessionTables() {
   CSession* session = this;
   ++g_sessionTableLoadCount;
-  session->InitJobHitWaveNames();
+  session->InitJobHitWaveName();
 
   {
     std::vector<char*> tokens;
@@ -6024,7 +6024,7 @@ void CSession::LoadSessionTables() {
     SendMessageA(window, WM_CLOSE, 0, 0);
   }
 
-  session->LoadFogParameters();
+  session->InitFogParameterTable();
   session->LoadLuaDataFiles();
   session->InitWeaponHitWaveNames();
   session->InitResourceNameTables();
@@ -6032,7 +6032,7 @@ void CSession::LoadSessionTables() {
   session->InitJobNameTable();
   session->InitNpcLocationRadius();
   session->InitCommandTables();
-  session->ResetCharacterState();
+  session->InitVariables();
   session->ClearItemContainers();
   session->m_inventoryItems.erase(session->m_inventoryItems.begin(), session->m_inventoryItems.end());
   session->m_pingSamples.erase(session->m_pingSamples.begin(), session->m_pingSamples.end());

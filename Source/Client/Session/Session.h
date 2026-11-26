@@ -859,7 +859,7 @@ public:
   BOOL LoadMapNameTable();
   BOOL LoadMapPosTable();
   BOOL ScaleMapPositions();
-  bool LoadFogParameters();
+  bool InitFogParameterTable();
   void SetCostumeItem(unsigned int index, const ITEM_INFO& item);
   void SetEquippedItem(unsigned int index, const ITEM_INFO& item);
   void ClearHomunStatus();
@@ -945,7 +945,7 @@ public:
   const char* GetPetTalkName(int job);
   __declspec(noinline) const char* GetPetTalkActionName(int action);
   void GetPetTalkText(int job, int hungerState, int action, char* text);
-  __declspec(noinline) const char* GetMonsterTalkEventName(int event);
+  __declspec(noinline) const char* GetStateName(int event);
   void GetMonsterTalkText(int job, int event, int skill, char* text, std::uint32_t aid);
   void FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, int feminine);
   bool UpdateHomunSkill(const CSkillInfo& value, unsigned char notify);
@@ -1083,7 +1083,7 @@ public:
   void UpdateBodyStyle(int job, int style, int renderJob);
   std::string GetBodyJobName(int job);
   char* ConvertTooltipText(const char* source, char* output) const;
-  void StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version);
+  void SetCompressedEmblemImage(const void* data, std::size_t size, std::uint32_t guildId, int version);
   int MercSkillLevel(int skillId) const;
   __declspec(noinline) int HomunSkillLevel(int skillId) const;
   __declspec(noinline) int UseLevel(int id) const;
@@ -1253,7 +1253,7 @@ public:
   int GetDisplayJob();
   const char* GetHitWaveName(int job);
   const char* GetWeaponHitWaveName(int weapon);
-  void InitJobHitWaveNames();
+  void InitJobHitWaveName();
   void InitWeaponHitWaveNames();
   const std::vector<std::string>* GetMapViewParameters(const char* rswName, int* found);
   void LoadLuaDataFiles();
@@ -1293,7 +1293,7 @@ public:
   int GetPlayerSkillMode() const;
   int FindSkillEffectId(int key) const;
   int FindSkillFollowEffect(int key) const;
-  const char* GetEnemyHitWaveName(int element);
+  const char* GetAttrWaveName(int element);
   ITEM_INFO* GetEquippedItem(const ITEM_INFO* item);
   ITEM_INFO FindCostumeItem(std::uint32_t id, int* index) const;
   ITEM_INFO FindEquippedItem(std::uint32_t id, int* index) const;
@@ -1369,7 +1369,7 @@ public:
   void RefreshHpSpWindows();
   CSession();
   void Init();
-  void ResetCharacterState();
+  void InitVariables();
   void ClearItemContainers();
   void RefreshHomunculusInfo();
   void RefreshMercenaryInfo();

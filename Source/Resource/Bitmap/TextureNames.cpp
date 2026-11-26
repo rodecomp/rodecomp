@@ -52,7 +52,7 @@ const char* Resolve(const char* name) {
         selectedPath.push_back(path[index + 15]);
       }
 
-      g_skinInfo.Prepare();
+      g_skinInfo.ExtractFilesIfZipSkin();
       selectedPath = prefix + selectedPath;
       path = selectedPath;
       if (ResourceMgr::Instance().Exists(path.c_str())) {

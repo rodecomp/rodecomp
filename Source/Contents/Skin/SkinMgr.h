@@ -30,7 +30,7 @@ public:
   const char* Prefix() const;
   const char* Name() const;
   const char* Name(int index) const;
-  void Prepare();
+  void ExtractFilesIfZipSkin();
   void Refresh();
 };
 

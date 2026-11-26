@@ -13,7 +13,7 @@
 
 // OFFSET: 0x00DFF600
 // FUNCTION: fn_23620
-void CSession::StoreEmblem(const void* data, std::size_t size, std::uint32_t guildId, int version) {
+void CSession::SetCompressedEmblemImage(const void* data, std::size_t size, std::uint32_t guildId, int version) {
   char directory[256];
   char path[256];
   char filename[256];

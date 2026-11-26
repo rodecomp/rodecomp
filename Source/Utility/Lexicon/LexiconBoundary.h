@@ -11,7 +11,7 @@ struct LexiconBoundary {
   /* 0000 */ LexiconSerializer* serializer;
   /* 0004 */ std::uint32_t flags[256];
 
-  bool Load();
+  bool InitializeLexicon();
   bool Matches(unsigned char previous, unsigned char current, unsigned char options) const;
 };
 

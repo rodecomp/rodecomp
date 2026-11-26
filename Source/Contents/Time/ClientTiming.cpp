@@ -829,7 +829,7 @@ BOOL CSession::LoadExceptionMinimapNameTable() {
 
 // OFFSET: 0x00DE5620
 // FUNCTION: fn_23492
-bool CSession::LoadFogParameters() {
+bool CSession::InitFogParameterTable() {
   this->m_fogParameters.clear();
 
   bool result = false;

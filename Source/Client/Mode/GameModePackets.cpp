@@ -26119,7 +26119,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PACKET_ZC_GUILD_EMBLEM_IMG*>(g_gameModePacketBuffer);
       const std::uint32_t guildId = packet->guildId;
       const int version = packet->emblemVersion;
-      g_session.StoreEmblem(reinterpret_cast<const unsigned char*>(packet + 1), packet->length - 12, guildId, version);
+      g_session.SetCompressedEmblemImage(reinterpret_cast<const unsigned char*>(packet + 1), packet->length - 12, guildId, version);
       if (g_guildInfo.m_guildId == guildId) {
         this->scene->player->SetGuildInfo(guildId, version);
         if (g_windowMgr.guildInfoManageWnd) {

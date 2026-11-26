@@ -55,7 +55,7 @@ CUnhandledExceptionHandler::CUnhandledExceptionHandler(int (*callback)()) {
     *strrchr(g_moduleBaseName, '.') = '\0';
   }
 
-  SetUnhandledExceptionFilter(TopLevelExceptionFilter);
+  SetUnhandledExceptionFilter(ExceptionFilter);
   _set_invalid_parameter_handler(InvalidParameterHandler);
   _set_purecall_handler(PurecallHandler);
 }
@@ -157,7 +157,7 @@ void __cdecl InvalidParameterHandler(const wchar_t* expression, const wchar_t* f
   record.ExceptionInformation[1] = reinterpret_cast<ULONG_PTR>(file);
   record.ExceptionInformation[2] = static_cast<ULONG_PTR>(line);
 
-  TopLevelExceptionFilter(&exceptionInfo);
+  ExceptionFilter(&exceptionInfo);
   abort();
 }
 
@@ -172,13 +172,13 @@ void __cdecl PurecallHandler() {
 
   record.ExceptionCode = 0xC0000025;
 
-  TopLevelExceptionFilter(&exceptionInfo);
+  ExceptionFilter(&exceptionInfo);
   abort();
 }
 
 // OFFSET: 0x00635F00
 // FUNCTION: fn_04709
-LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
+LONG WINAPI ExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
   PCONTEXT context = exceptionInfo->ContextRecord;
   HMODULE dbgHelp = LoadLibraryA("dbghelp.dll");
 

@@ -55,7 +55,7 @@ const char* CSkinMgr::Name(int index) const {
 
 // OFFSET: 0x007E0C40
 // FUNCTION: fn_09683
-void CSkinMgr::Prepare() {
+void CSkinMgr::ExtractFilesIfZipSkin() {
   if (this->selected == -1 || this->archives[this->selected] == 0 || this->prepared[this->selected] != 0) {
     return;
   }
