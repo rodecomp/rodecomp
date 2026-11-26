@@ -7930,9 +7930,9 @@ void CGameMode::InitializeState() {
   this->nameCard.Clear();
   this->actorPosList.clear();
   this->pickupReqItemNaidList.clear();
-  this->actorMenuIds.clear();
   this->partyPosList.clear();
   this->compassPosList.clear();
+  this->actorMenuIds.clear();
   this->m_skillUnitIds.clear();
   this->spriteMirrorActorIds.clear();
   this->minimapMarkers.clear();
