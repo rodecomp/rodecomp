@@ -73,7 +73,7 @@ __declspec(noinline) Concurrency::details::Resource::Resource(int mode) {
 
 // OFFSET: 0x00E88720
 // FUNCTION: fn_25450
-void Concurrency::details::Resource::sub_E88720() {
+__declspec(noinline) void Concurrency::details::Resource::sub_E88720() {
   ScopedTimerLock guard(this->lock);
 
   const unsigned int base = reinterpret_cast<unsigned int>(this->regionInfo.AllocationBase);
@@ -124,7 +124,7 @@ void CALLBACK fptc(UINT, UINT, DWORD_PTR, DWORD_PTR, DWORD_PTR) {
 
 // OFFSET: 0x00E8CF10
 // FUNCTION: fn_25497
-void Concurrency::details::Resource::sub_E8CF10() {
+__declspec(noinline) void Concurrency::details::Resource::sub_E8CF10() {
   if (this->allocation == nullptr) {
     return;
   }
@@ -146,7 +146,7 @@ void Concurrency::details::Resource::sub_E8CF10() {
 
 // OFFSET: 0x00E903F0
 // FUNCTION: fn_25503
-void Concurrency::details::ResourceManager::sub_E903F0(unsigned int key, Resource* resource) {
+__declspec(noinline) void Concurrency::details::ResourceManager::sub_E903F0(unsigned int key, Resource* resource) {
   ScopedTimerLock guard(this->lock);
   this->resources[key] = resource;
 }
@@ -302,7 +302,7 @@ char* sub_E939D0(char* text) {
 
 // OFFSET: 0x00E93D70
 // FUNCTION: fn_25557
-char* sub_E93D70(char* text) {
+__declspec(noinline) char* sub_E93D70(char* text) {
   ScopedTimerLock guard(sub_E94520());
   if (text != nullptr && *text == 1) {
     DecodeText(text);
