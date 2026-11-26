@@ -8882,6 +8882,10 @@ struct AddQuestHunt64 {
   /* 0016 */ char name[24];
 };
 
+struct AddQuestPacket64 : AddQuestPacket {
+  /* 0011 */ AddQuestHunt64 hunts[1];
+};
+
 struct AddQuestHunt {
   /* 0000 */ int huntId;
   /* 0004 */ int condition;
@@ -8890,6 +8894,10 @@ struct AddQuestHunt {
   /* 000E */ std::int16_t maxLevel;
   /* 0010 */ std::int16_t count;
   /* 0012 */ char name[24];
+};
+
+struct AddQuestPacket32 : AddQuestPacket {
+  /* 0011 */ AddQuestHunt hunts[1];
 };
 #pragma pack(pop)
 
@@ -8900,7 +8908,7 @@ static_assert(sizeof(AddQuestHunt) == 0x2A);
 // OFFSET: 0x00D20C00
 // FUNCTION: fn_21651
 void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
-  const auto* packet = reinterpret_cast<const AddQuestPacket*>(data);
+  const auto* packet = reinterpret_cast<const AddQuestPacket64*>(data);
   if (g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->State()) == true) {
     g_renewQuestMgr->UpdateQuestWindows();
     return;
@@ -8917,17 +8925,16 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
   info.m_minute = packet->endTime != 0 ? time->tm_min : 0;
   _localtime32(&packet->startTime);
 
-  const auto* hunts = reinterpret_cast<const AddQuestHunt64*>(packet + 1);
   for (int i = 0; i < packet->huntCount; ++i) {
-    info.m_huntId[i] = hunts[i].huntId;
-    info.m_huntConditionFlags[i] = hunts[i].condition;
-    const int mobId = hunts[i].mobId;
+    info.m_huntId[i] = packet->hunts[i].huntId;
+    info.m_huntConditionFlags[i] = packet->hunts[i].condition;
+    const int mobId = packet->hunts[i].mobId;
     info.m_huntMobId[i] = mobId;
-    info.m_huntKillCount[i] = hunts[i].count;
-    info.m_huntMinLevel[i] = hunts[i].minLevel;
-    info.m_huntMaxLevel[i] = hunts[i].maxLevel;
+    info.m_huntKillCount[i] = packet->hunts[i].count;
+    info.m_huntMinLevel[i] = packet->hunts[i].minLevel;
+    info.m_huntMaxLevel[i] = packet->hunts[i].maxLevel;
     if ((mobId > JT_MON_BEGIN && mobId < JT_MONSTER_LAST) || static_cast<unsigned int>(mobId - JT_EXTENDED_JOB_NAME_START) <= QUEST_HUNT_CONDITIONAL_MONSTER - JT_EXTENDED_JOB_NAME_START) {
-      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunts[i].name);
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", packet->hunts[i].name);
     } else {
       if (mobId == QUEST_HUNT_DEATH) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_DEAD));
@@ -8935,7 +8942,7 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_PVP));
       } else if (mobId == QUEST_HUNT_MAP_VISIT) {
         StringFormat(
-          info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunts[i].name).c_str())
+          info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", packet->hunts[i].name).c_str())
         );
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
@@ -8953,7 +8960,7 @@ void CGameMode::ReceiveAddQuest64(const unsigned char* data) {
 // OFFSET: 0x00D20EF0
 // FUNCTION: fn_21652
 void CGameMode::ReceiveAddQuest(const unsigned char* data) {
-  const auto* packet = reinterpret_cast<const AddQuestPacket*>(data);
+  const auto* packet = reinterpret_cast<const AddQuestPacket32*>(data);
   if (g_renewQuestMgr->SetOngoingQuestState(packet->questId, packet->State()) == true) {
     g_renewQuestMgr->UpdateQuestWindows();
     return;
@@ -8970,17 +8977,16 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
   info.m_minute = packet->endTime != 0 ? time->tm_min : 0;
   _localtime32(&packet->startTime);
 
-  const auto* hunts = reinterpret_cast<const AddQuestHunt*>(packet + 1);
   for (int i = 0; i < packet->huntCount; ++i) {
-    info.m_huntId[i] = hunts[i].huntId;
-    info.m_huntConditionFlags[i] = hunts[i].condition;
-    const int mobId = hunts[i].mobId;
+    info.m_huntId[i] = packet->hunts[i].huntId;
+    info.m_huntConditionFlags[i] = packet->hunts[i].condition;
+    const int mobId = packet->hunts[i].mobId;
     info.m_huntMobId[i] = mobId;
-    info.m_huntKillCount[i] = hunts[i].count;
-    info.m_huntMinLevel[i] = hunts[i].minLevel;
-    info.m_huntMaxLevel[i] = hunts[i].maxLevel;
+    info.m_huntKillCount[i] = packet->hunts[i].count;
+    info.m_huntMinLevel[i] = packet->hunts[i].minLevel;
+    info.m_huntMaxLevel[i] = packet->hunts[i].maxLevel;
     if ((mobId > JT_MON_BEGIN && mobId < JT_MONSTER_LAST) || static_cast<unsigned int>(mobId - JT_EXTENDED_JOB_NAME_START) <= QUEST_HUNT_CONDITIONAL_MONSTER - JT_EXTENDED_JOB_NAME_START) {
-      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunts[i].name);
+      StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", packet->hunts[i].name);
     } else {
       if (mobId == QUEST_HUNT_DEATH) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_DEAD));
@@ -8988,7 +8994,7 @@ void CGameMode::ReceiveAddQuest(const unsigned char* data) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_PVP));
       } else if (mobId == QUEST_HUNT_MAP_VISIT) {
         StringFormat(
-          info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunts[i].name).c_str())
+          info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", packet->hunts[i].name).c_str())
         );
       } else {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
