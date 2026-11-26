@@ -213,7 +213,7 @@ public:
 
 // OFFSET: 0x00B8D8D0
 // FUNCTION: fn_19436
-inline CNavi_Link::~CNavi_Link() {
+__forceinline CNavi_Link::~CNavi_Link() {
   this->type = 200;
   this->linkedInfo = nullptr;
   this->linkedLinks.erase(this->linkedLinks.begin(), this->linkedLinks.end());
