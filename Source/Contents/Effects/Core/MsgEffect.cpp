@@ -125,22 +125,37 @@ __forceinline static float MsgEffectDriftDirection(CMsgEffect* effect) {
   if (effect->m_drift.x == 0.0f && effect->m_owner != nullptr) {
     if (skinMode == 0) {
       const int angle = static_cast<int>(effect->m_owner->render.angle);
+      int dir;
       if (angle >= 0 && angle < 90) {
-        dirX = -0.8f;
-        effect->m_drift.x = -0.8f;
-        effect->m_drift.z = 0.8f;
+        dir = 0;
       } else if (angle >= 90 && angle < 180) {
-        dirX = -0.8f;
-        effect->m_drift.x = -0.8f;
-        effect->m_drift.z = -0.8f;
+        dir = 2;
       } else if (angle >= 180 && angle < 270) {
-        dirX = 0.8f;
-        effect->m_drift.x = 0.8f;
-        effect->m_drift.z = -0.8f;
+        dir = 4;
       } else {
-        dirX = 0.8f;
-        effect->m_drift.x = 0.8f;
-        effect->m_drift.z = 0.8f;
+        dir = 6;
+      }
+      switch (dir) {
+        case 0:
+          dirX = -0.8f;
+          effect->m_drift.x = -0.8f;
+          effect->m_drift.z = 0.8f;
+          break;
+        case 2:
+          dirX = -0.8f;
+          effect->m_drift.x = -0.8f;
+          effect->m_drift.z = -0.8f;
+          break;
+        case 4:
+          dirX = 0.8f;
+          effect->m_drift.x = 0.8f;
+          effect->m_drift.z = -0.8f;
+          break;
+        case 6:
+          dirX = 0.8f;
+          effect->m_drift.x = 0.8f;
+          effect->m_drift.z = 0.8f;
+          break;
       }
     } else {
       if (skinMode == 1) {
