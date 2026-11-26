@@ -136,16 +136,16 @@ bool SHA3::GetHash(unsigned char* hash, unsigned int size) {
   this->ProcessBuffer();
 
   const unsigned int hashLength = this->digestBits / 64;
+  unsigned int index = 0;
   for (unsigned int i = 0; i < hashLength; ++i) {
     for (unsigned int j = 0; j < 8; ++j) {
-      hash[i * 8 + j] = static_cast<unsigned char>(this->state[i] >> (8 * j));
+      hash[index++] = static_cast<unsigned char>(this->state[i] >> (8 * j));
     }
   }
 
   const unsigned int remainder = this->digestBits - hashLength * 64;
-  unsigned char* tail = hash + hashLength * 8;
   for (unsigned int processed = 0; processed < remainder; processed += 8) {
-    *tail++ = static_cast<unsigned char>(this->state[hashLength] >> processed);
+    hash[index++] = static_cast<unsigned char>(this->state[hashLength] >> processed);
   }
 
   for (unsigned int i = 0; i < 25; ++i) {
