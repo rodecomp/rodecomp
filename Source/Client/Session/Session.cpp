@@ -1114,7 +1114,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       parts[0] = tokenizer[1];
       return -1;
     }
-    char volume[20];
+    char volume[36];
     _itoa(g_soundMgr->sampleVolume, volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
@@ -1124,7 +1124,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       parts[0] = tokenizer[1];
       return -1;
     }
-    char volume[20];
+    char volume[36];
     _itoa(g_soundMgr->Volume(), volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
