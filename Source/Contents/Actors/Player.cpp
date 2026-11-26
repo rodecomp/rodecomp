@@ -57,6 +57,7 @@
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
 #include "Render/Primitives/TextureQuad.h"
@@ -4191,12 +4192,12 @@ void CGrannyPc::RenderModel(
 
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
-  rotation.AppendYRotation((this->angle + 180.0f) / 180.0f * 3.141592f);
+  rotation.AppendYRotation((this->angle + g_angleDivisor) / g_angleDivisor * g_piApprox);
   rotation.AppendScale(0.3f, 0.3f, 0.3f);
   vector3d position;
   position = this->render.position;
-  position.x -= 2.0f;
-  position.z -= 2.0f;
+  position.x -= g_effectIconOuterRadius;
+  position.z -= g_effectIconOuterRadius;
   rotation.AppendTranslate(&position.x);
 
   float screenX;
@@ -4215,7 +4216,7 @@ void CGrannyPc::RenderModel(
     };
   };
   const vector3d direction = transformLight(light);
-  const float scale = 1.0f / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
+  const float scale = g_projectionDepthNumerator / SquareRoot(direction.y * direction.y + direction.x * direction.x + direction.z * direction.z);
   const float lightX = scale * direction.x;
   const float lightY = scale * direction.y;
   const float lightZ = scale * direction.z;
