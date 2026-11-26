@@ -4721,12 +4721,12 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       if (g_itemTagOwner->maxTipId >= id) {
         std::string name;
         const std::string title = g_itemTagOwner->Title(id, &name, 17);
-        if (title.size() + 2 + result.size() > std::strlen(line)) {
+        if (name.size() + 2 + result.size() > std::strlen(line)) {
           start = previous + static_cast<int>(chunk.size());
           break;
         }
 
-        if (name.size() != 0) {
+        if (title.size() != 0) {
           UIItemTagButton* button = this->CreateItemTagButton(title, name, id, this, 0x7F00E4);
           if (button) {
             buttons.push_back(button);
@@ -4755,7 +4755,10 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       button->item = item;
       button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
       const std::string tooltipText = item.DisplayName(0);
-      button->SetTooltip(tooltipText.c_str());
+      const char* tooltip = tooltipText.c_str();
+      if (tooltip) {
+        button->label.assign(tooltip, std::strlen(tooltip));
+      }
       button->m_hoverColor = 0x82F2E1;
       button->SetId(ID_ITEM_TAG);
       button->ResizeToTextClipped(this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) + 1, button->geometry.height);
