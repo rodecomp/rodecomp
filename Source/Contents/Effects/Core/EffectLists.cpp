@@ -5130,10 +5130,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_UNK_2404, new (std::nothrow) CEffectAllocator<CSprArrowEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2411, new (std::nothrow) CEffectAllocator<CFootprintEffect>)) {
+  if (!this->RegisterAllocator(EF_FOOTPRINT, new (std::nothrow) CEffectAllocator<CFootprintEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2412, new (std::nothrow) CEffectAllocator<CFootprintStrEffect>)) {
+  if (!this->RegisterAllocator(EF_FOOTPRINT_STR, new (std::nothrow) CEffectAllocator<CFootprintStrEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_VIOLEN_HIT, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {

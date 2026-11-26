@@ -20,6 +20,14 @@ enum EffectSetCountCommand : int {
   SETCOUNT_EFFECT_COLOR_RESET = 0xFFFE,
 };
 
+enum HatEffectType : int {
+  HAT_EFFECT_TYPE_EFFECT_STATE = 0,
+  HAT_EFFECT_TYPE_HAT = 1,
+  HAT_EFFECT_TYPE_PAIR = 2,
+  HAT_EFFECT_TYPE_FOOTPRINT_PNG = 3,
+  HAT_EFFECT_TYPE_FOOTPRINT_STR = 4,
+};
+
 enum AccountIdSentinel : unsigned int {
   INVALID_AID = 0xFFFFFFFF,
 };

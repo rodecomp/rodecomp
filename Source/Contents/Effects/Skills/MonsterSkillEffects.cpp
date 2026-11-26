@@ -1157,7 +1157,7 @@ void CFloralFlareRoad::Render() {
 
 // OFFSET: 0x00711F80
 // FUNCTION: fn_07235
-CFootprintEffect::CFootprintEffect() : CEffect(2411), stepDistance(50.0), leftFoot(1), lastPosition({0.0f, 0.0f, 0.0f}), lastGroundHeight(-1000.0f) {
+CFootprintEffect::CFootprintEffect() : CEffect(EF_FOOTPRINT), stepDistance(50.0), leftFoot(1), lastPosition({0.0f, 0.0f, 0.0f}), lastGroundHeight(-1000.0f) {
   this->lastPosition.x = this->position[0];
   this->lastPosition.y = this->position[1];
   this->lastPosition.z = this->position[2];
@@ -1302,7 +1302,7 @@ void CFootprintEffect::Render() {
 // OFFSET: 0x00712CA0
 // FUNCTION: fn_07245
 CFootprintStrEffect::CFootprintStrEffect()
-    : CEffect(2412), bottomScale(1.0), topScale(1.0), topHeight(0.0), stepDistance(50.0), footGap(2.0),
+    : CEffect(EF_FOOTPRINT_STR), bottomScale(1.0), topScale(1.0), topHeight(0.0), stepDistance(50.0), footGap(2.0),
       adjustAngle(0), leftFoot(1), lastPosition({0.0f, 0.0f, 0.0f}) {
 }
 

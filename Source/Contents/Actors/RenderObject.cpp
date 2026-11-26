@@ -3210,21 +3210,21 @@ bool CGameActor::ApplyEffectState(int effectId, bool on) {
   int type = 0;
   g_session.m_hotkeyScript->Call("GetEffectType", "d>d", effectId - 2485, &type);
   switch (type) {
-  case 0:
+  case HAT_EFFECT_TYPE_EFFECT_STATE:
     this->SetEffectState(effectId, on);
     break;
-  case 1:
+  case HAT_EFFECT_TYPE_HAT:
     this->SetHatEffect(effectId, on);
     break;
-  case 2:
+  case HAT_EFFECT_TYPE_PAIR:
     this->SetEffectState(effectId, on);
     this->SetHatEffect(effectId, on);
     break;
-  case 3:
-    this->SetEffectInstance(2411, effectId - 2485, on);
+  case HAT_EFFECT_TYPE_FOOTPRINT_PNG:
+    this->SetEffectInstance(EF_FOOTPRINT, effectId - 2485, on);
     break;
-  case 4:
-    this->SetEffectInstance(2412, effectId - 2485, on);
+  case HAT_EFFECT_TYPE_FOOTPRINT_STR:
+    this->SetEffectInstance(EF_FOOTPRINT_STR, effectId - 2485, on);
     break;
   }
   return false;
