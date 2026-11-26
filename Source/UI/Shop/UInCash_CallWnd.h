@@ -16,6 +16,30 @@ class UIStaticText;
 struct NCashWndInfo;
 class UIBitmapButton;
 
+enum NCashButtonSlot : int {
+  NCASH_BUTTON_TAB_NEW = 0,
+  NCASH_BUTTON_TAB_POPULAR = 1,
+  NCASH_BUTTON_TAB_LIMITED = 2,
+  NCASH_BUTTON_TAB_RENTAL_EQUIP = 3,
+  NCASH_BUTTON_TAB_PERMANENT_EQUIP = 4,
+  NCASH_BUTTON_TAB_BUFF = 5,
+  NCASH_BUTTON_TAB_RECOVERY = 6,
+  NCASH_BUTTON_TAB_ETC = 7,
+  NCASH_BUTTON_TAB_BARGAIN = 8,
+  NCASH_BUTTON_TAB_SEARCH = 9,
+  NCASH_BUTTON_FIRST_PAGE = 10,
+  NCASH_BUTTON_PREV_PAGE = 11,
+  NCASH_BUTTON_NEXT_PAGE = 12,
+  NCASH_BUTTON_LAST_PAGE = 13,
+  NCASH_BUTTON_BUY = 14,
+  NCASH_BUTTON_RESET_CART = 15,
+  NCASH_BUTTON_CLOSE = 16,
+  NCASH_BUTTON_FIND = 17,
+  NCASH_BUTTON_REFRESH = 18,
+  NCASH_BUTTON_COUNT = 19,
+  NCASH_BUTTON_OUT_OF_RANGE_19 = 19,
+};
+
 class UInCashWnd : public UIItemBaseWnd {
 public:
   UInCashWnd();
@@ -36,7 +60,7 @@ public:
   /* 00F4 */ UIEditCtrl* m_searchEdit;
   /* 00F8 */ std::list<ITEM_INFO> m_otherItems;
   /* 0100 */ NCashWndInfo* m_placement;
-  /* 0104 */ UIBitmapButton* m_buttons[19];
+  /* 0104 */ UIBitmapButton* m_buttons[NCASH_BUTTON_COUNT];
   /* 0150 */ UIScrollBar* m_otherScroll;
   /* 0154 */ UIStaticText* m_title;
   /* 0158 */ int m_firstOther;

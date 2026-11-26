@@ -6459,15 +6459,15 @@ void UInCashWnd::OnCreate(int width, int height) {
   this->m_searchEdit->Background(215, 215, 215);
   this->AddChild(this->m_searchEdit);
 
-  const char* names[19][3] = {
+  const char* names[NCASH_BUTTON_COUNT][3] = {
     {"신규b", "신규a", "신규a"}, {"인기b", "인기a", "인기a"}, {"한정b", "한정a", "한정a"}, {"임대장비b", "임대장비a", "임대장비a"},
     {"영구장비b", "영구장비a", "영구장비a"}, {"버프b", "버프a", "버프a"}, {"회복b", "회복a", "회복a"}, {"기타b", "기타a", "기타a"},
     {"특가b", "특가a", "특가a"}, {"검색b", "검색a", "검색a"}, {"NC_FirstPage", "NC_FirstPage", "NC_FirstPage"},
     {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
     {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
     {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
-  const int ids[19] = {ID_CASHSHOP_TAB_NEW, ID_CASHSHOP_TAB_POPULAR, ID_CASHSHOP_TAB_LIMITED, ID_CASHSHOP_TAB_RENTAL_EQUIP, ID_CASHSHOP_TAB_PERMANENT_EQUIP, ID_CASHSHOP_TAB_BUFF, ID_CASHSHOP_TAB_RECOVERY, ID_CASHSHOP_TAB_ETC, ID_CASHSHOP_TAB_BARGAIN, ID_CASHSHOP_TAB_SEARCH, ID_FIRST_PAGE, ID_PREV_PAGE, ID_NEXT_PAGE, ID_LAST_PAGE, ID_BUY, ID_RESET_CART, ID_CLOSE, ID_FIND, ID_REFRESH};
-  int positions[19][2] = {
+  const int ids[NCASH_BUTTON_COUNT] = {ID_CASHSHOP_TAB_NEW, ID_CASHSHOP_TAB_POPULAR, ID_CASHSHOP_TAB_LIMITED, ID_CASHSHOP_TAB_RENTAL_EQUIP, ID_CASHSHOP_TAB_PERMANENT_EQUIP, ID_CASHSHOP_TAB_BUFF, ID_CASHSHOP_TAB_RECOVERY, ID_CASHSHOP_TAB_ETC, ID_CASHSHOP_TAB_BARGAIN, ID_CASHSHOP_TAB_SEARCH, ID_FIRST_PAGE, ID_PREV_PAGE, ID_NEXT_PAGE, ID_LAST_PAGE, ID_BUY, ID_RESET_CART, ID_CLOSE, ID_FIND, ID_REFRESH};
+  int positions[NCASH_BUTTON_COUNT][2] = {
     {4, this->m_listHeight + 42}, {4, this->m_listHeight + 87}, {4, this->m_listHeight + 132}, {4, this->m_listHeight + 177},
     {4, this->m_listHeight + 222}, {4, this->m_listHeight + 267}, {4, this->m_listHeight + 312}, {4, this->m_listHeight + 357},
     {4, this->m_listHeight + 402}, {4, this->m_listHeight + 447}, {203, this->geometry.height - 55}, {216, this->geometry.height - 55},
@@ -6480,7 +6480,7 @@ void UInCashWnd::OnCreate(int width, int height) {
   for (int index = 0; index < 20; ++index) {
     UIBitmapButton* button = new UIBitmapButton();
     this->m_buttons[index] = button;
-    if (index < 15) {
+    if (index < NCASH_BUTTON_RESET_CART) {
       button->SetBitmap((interfacePrefix + names[index][0] + ".bmp").c_str(), 0, 0);
       this->m_buttons[index]->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
       this->m_buttons[index]->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -6496,48 +6496,48 @@ void UInCashWnd::OnCreate(int width, int height) {
     this->m_buttons[index]->SetId(ids[index]);
 
     switch (index) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
+    case NCASH_BUTTON_TAB_NEW:
+    case NCASH_BUTTON_TAB_POPULAR:
+    case NCASH_BUTTON_TAB_LIMITED:
+    case NCASH_BUTTON_TAB_RENTAL_EQUIP:
+    case NCASH_BUTTON_TAB_PERMANENT_EQUIP:
+    case NCASH_BUTTON_TAB_BUFF:
+    case NCASH_BUTTON_TAB_RECOVERY:
+    case NCASH_BUTTON_TAB_ETC:
       this->m_buttons[index]->SetTooltip(LookupMessage(index + 0x736));
       break;
-    case 8:
-      this->m_buttons[8]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_TAB_NAME));
+    case NCASH_BUTTON_TAB_BARGAIN:
+      this->m_buttons[NCASH_BUTTON_TAB_BARGAIN]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_TAB_NAME));
       break;
-    case 10:
-      this->m_buttons[10]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
+    case NCASH_BUTTON_FIRST_PAGE:
+      this->m_buttons[NCASH_BUTTON_FIRST_PAGE]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
       break;
-    case 11:
-      this->m_buttons[11]->SetTooltip(LookupMessage(MSI_NC_FIRSTPAGE));
+    case NCASH_BUTTON_PREV_PAGE:
+      this->m_buttons[NCASH_BUTTON_PREV_PAGE]->SetTooltip(LookupMessage(MSI_NC_FIRSTPAGE));
       break;
-    case 12:
-      this->m_buttons[12]->SetTooltip("<=");
+    case NCASH_BUTTON_NEXT_PAGE:
+      this->m_buttons[NCASH_BUTTON_NEXT_PAGE]->SetTooltip("<=");
       break;
-    case 13:
-      this->m_buttons[13]->SetTooltip("=>");
+    case NCASH_BUTTON_LAST_PAGE:
+      this->m_buttons[NCASH_BUTTON_LAST_PAGE]->SetTooltip("=>");
       break;
-    case 14:
-      this->m_buttons[14]->SetTooltip(LookupMessage(MSI_NC_LASTPAGE));
+    case NCASH_BUTTON_BUY:
+      this->m_buttons[NCASH_BUTTON_BUY]->SetTooltip(LookupMessage(MSI_NC_LASTPAGE));
       break;
-    case 15:
-      this->m_buttons[15]->SetTooltip(LookupMessage(MSI_NC_BUY));
+    case NCASH_BUTTON_RESET_CART:
+      this->m_buttons[NCASH_BUTTON_RESET_CART]->SetTooltip(LookupMessage(MSI_NC_BUY));
       break;
-    case 16:
-      this->m_buttons[16]->SetTooltip(LookupMessage(MSI_NC_BLANK));
+    case NCASH_BUTTON_CLOSE:
+      this->m_buttons[NCASH_BUTTON_CLOSE]->SetTooltip(LookupMessage(MSI_NC_BLANK));
       break;
-    case 17:
-      this->m_buttons[17]->SetTooltip(LookupMessage(MSI_BOOK_CLOSE));
+    case NCASH_BUTTON_FIND:
+      this->m_buttons[NCASH_BUTTON_FIND]->SetTooltip(LookupMessage(MSI_BOOK_CLOSE));
       break;
-    case 18:
-      this->m_buttons[18]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
+    case NCASH_BUTTON_REFRESH:
+      this->m_buttons[NCASH_BUTTON_REFRESH]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
       break;
-    case 19:
-      this->m_buttons[19]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_BTN_TOOLTIP));
+    case NCASH_BUTTON_OUT_OF_RANGE_19:
+      this->m_buttons[NCASH_BUTTON_OUT_OF_RANGE_19]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_BTN_TOOLTIP));
       break;
     default:
       break;
@@ -6605,7 +6605,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       button->SetDisabled(1);
       button->Invalidate();
     }
-    if (this->m_tab == 8) {
+    if (this->m_tab == NCASH_BUTTON_TAB_BARGAIN) {
       this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
     } else {
       this->m_otherScroll->Move(-100, -100);
@@ -6667,7 +6667,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     const int count = g_session.GetInventoryCategorySize(this->m_tab);
     for (int index = 0; index < count; ++index) {
       ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(this->m_tab, index);
-      if (item.identity[1] > 0 && (this->m_tab != 8 || item.bindOnEquip != 0xFFFF)) {
+      if (item.identity[1] > 0 && (this->m_tab != NCASH_BUTTON_TAB_BARGAIN || item.bindOnEquip != 0xFFFF)) {
         this->items.push_back(item);
       }
     }
@@ -6831,7 +6831,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         button->SetDisabled(1);
         button->Invalidate();
       }
-      if (this->m_tab == 8) {
+      if (this->m_tab == NCASH_BUTTON_TAB_BARGAIN) {
         this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
       } else {
         this->m_otherScroll->Move(-100, -100);
@@ -6883,7 +6883,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
       }
-      if (this->m_tab == 8) {
+      if (this->m_tab == NCASH_BUTTON_TAB_BARGAIN) {
         const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
         for (ITEM_INFO& entry : this->items) {
           if (std::atoi(entry.itemId.c_str()) == std::atoi(mode->drag.name.c_str())) {
@@ -7330,7 +7330,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     for (int row = 0; row < 4; ++row) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int count = lists.GetInventoryCategorySize(this->m_tab);
-        if (this->m_tab == 8) {
+        if (this->m_tab == NCASH_BUTTON_TAB_BARGAIN) {
           count = static_cast<int>(this->items.size());
         }
         int index = row + (this->m_page - 1) * 8;
@@ -7354,7 +7354,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
       if (y >= top && y <= top + this->m_rowHeight) {
         int index = this->m_page * 8 - 4 + row;
         int count = lists.GetInventoryCategorySize(this->m_tab);
-        if (this->m_tab == 8) {
+        if (this->m_tab == NCASH_BUTTON_TAB_BARGAIN) {
           count = static_cast<int>(this->items.size());
         }
         if (count <= index) {
