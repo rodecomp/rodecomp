@@ -5451,8 +5451,8 @@ void CEffectPrim::RenderSMA2(matrix& wtm) {
   float sn1;
   vector3d vec1 = {0.0f, 0.0f, 0.0f};
   vector3d vec3 = {0.0f, 0.0f, 0.0f};
-  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   vector3d vec2 = {0.0f, 0.0f, 0.0f};
+  vector3d vec4 = {0.0f, 0.0f, 0.0f};
   int rpCnt = 0;
   int order;
   int angle;
