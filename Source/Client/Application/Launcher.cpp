@@ -215,7 +215,7 @@ struct SaktestexeProcessName {
 };
 
 // INLINED
-static void ToUpperName(char* name) {
+static __forceinline void ToUpperName(char* name) {
   for (char* cursor = name; *cursor; ++cursor) {
     if (islower(*cursor)) {
       *cursor -= 'a' - 'A';
