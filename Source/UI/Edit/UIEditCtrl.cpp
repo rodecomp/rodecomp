@@ -9176,19 +9176,20 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == REPLAY_CHUNK_ITEM_STORE_BEGIN) {
-      while (static_cast<unsigned>(b) > offset) {
-        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-        offset += 6;
-        if (header.type == REPLAY_CHUNK_ITEM_STORE_END) {
-          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          break;
-        }
-
-        offset += header.size;
-      }
+    if (header.type != REPLAY_CHUNK_ITEM_STORE_BEGIN) {
+      break;
     }
-    return 0;
+    while (static_cast<unsigned>(b) > offset) {
+      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+      offset += 6;
+      if (header.type == REPLAY_CHUNK_ITEM_STORE_END) {
+        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        break;
+      }
+
+      offset += header.size;
+    }
+    break;
   }
   case UM_COMBOBOX_SELECTED:
     if (sender == this->sortCombo) {
@@ -9222,6 +9223,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   default:
     return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x00859470
