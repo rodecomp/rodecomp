@@ -157,8 +157,9 @@ void CooldownOwner::Draw(
   }
 
   RenderCommand* command = g_renderer->AcquireCommand();
-  command->texture = g_texMgr.Default();
+  CTexture* texture = g_texMgr.Default();
   command->vertices = value.vertices;
+  command->texture = texture;
   command->vertexCount = value.vertexCount;
 
   for (int i = 0; i < 24; ++i) {
@@ -166,7 +167,7 @@ void CooldownOwner::Draw(
     value.vertices[i].y += static_cast<float>(value.y + 12 + offsetY);
   }
 
-  this->m_normal.push_back(command);
+  this->m_normal.emplace_back(command);
 }
 
 // OFFSET: 0x00CA6C00
