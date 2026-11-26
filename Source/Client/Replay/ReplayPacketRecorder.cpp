@@ -127,8 +127,8 @@ bool Replay::WriteFinalSection() {
 // OFFSET: 0x00B86660
 // FUNCTION: fn_19331
 bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay) {
+  const unsigned char* data = packet.data();
   const std::uint16_t bytes = static_cast<std::uint16_t>(packet.size());
-  const unsigned char* data = packet.empty() ? nullptr : &packet[0];
   if (0 == bytes || !data) {
     return false;
   }
@@ -177,13 +177,10 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
 
   auto* words = reinterpret_cast<ReplayCipherWord*>(record.data() + 10);
   if (words) {
-    const std::uint32_t key = this->header.key1 >> 3;
-    const int count = bytes / 4;
-    const std::uint32_t base = this->header.key0 >> 5;
-    this->cipherKey = key;
+    this->cipherKey = this->header.key1 >> 3;
     this->cipherIndex = 0;
-    this->cipherBase = base;
-    for (int index = 0; index < count; ++index) {
+    this->cipherBase = this->header.key0 >> 5;
+    for (int index = 0; index < bytes / 4; ++index) {
       words[index].value ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
     }
   }
