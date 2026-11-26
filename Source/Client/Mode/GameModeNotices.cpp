@@ -5316,9 +5316,9 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
 
   std::string text;
   if (packet->success == 1) {
-    text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS), name.c_str(), grade.c_str(), itemName.c_str());
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS), name.c_str(), grade.c_str(), itemName.c_str()));
   } else {
-    text = FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_FAIL), name.c_str(), grade.c_str(), itemName.c_str());
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_FAIL), name.c_str(), grade.c_str(), itemName.c_str()));
   }
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
