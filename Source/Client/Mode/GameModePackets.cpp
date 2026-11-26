@@ -16918,7 +16918,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     strcpy_s(filtered, sizeof(filtered), message.c_str());
     if (g_forbiddenWords.Contains(filtered) == true) {
       {
-        std::string masked;
+        std::string masked("");
         g_forbiddenWords.Mask(filtered, &masked);
       }
       message = filtered;
@@ -16927,9 +16927,6 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     std::memcpy(body, text + 4, length - 4);
     body[length - 4] = '\0';
     message = body;
-    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    color = 0xFFFF;
-    fontType = 14;
     systemMessage = true;
   } else if (hashPosition > 0 && hashPosition < length) {
     std::memcpy(head, text, hashPosition);
@@ -16941,17 +16938,17 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     }
   }
 
-  int historyNotice = UIM_PUSHINTOCHATHISTORY;
-  if (!systemMessage) {
-    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+  if (systemMessage) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF, 14, reinterpret_cast<std::intptr_t>(senderName), 0);
+  } else {
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
     );
-    historyNotice = UIM_PUSHINTOCHATHISTORY2;
+    g_windowMgr.SendNotice(
+      UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    );
   }
-  g_windowMgr.SendNotice(
-    historyNotice, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
-  );
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
   NavigationLinkParser* parser = g_navigationLinkParser;
