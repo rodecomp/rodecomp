@@ -10,6 +10,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Threading/NSyncObject.h"
+#include "Utility/StackAlloc.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
@@ -78,11 +79,12 @@ void CNProtectGameGuardMgr::Stop() {
   const CNProtectGameGuardMgr::lcCSAuthToken& token = this->m_tokens.front();
   unsigned int counter;
   {
-    NSyncObject managerLock(&g_nProtectGameGuardMgr->m_lock);
-    counter = g_nProtectGameGuardMgr->unknown_0008;
+    CNProtectGameGuardMgr* const manager = g_nProtectGameGuardMgr;
+    NSyncObject managerLock(&manager->m_lock);
+    counter = manager->unknown_0008;
   }
 
-  if (token.id == static_cast<int>(counter) && !token.bytes.empty()) {
+  if (token.id == static_cast<int>(counter) && token.bytes.size() != 0) {
     struct CsAuthPacket {
       /* 0000 */ std::uint16_t id;
       /* 0002 */ std::uint16_t length;
@@ -90,19 +92,14 @@ void CNProtectGameGuardMgr::Stop() {
     };
 
     const std::size_t byteCount = token.bytes.size();
-    const std::size_t allocationSize = byteCount + 12;
-    unsigned char* const allocation = static_cast<unsigned char*>(
-      allocationSize <= 0x400 ? _alloca(allocationSize) : malloc(allocationSize));
-    if (allocation != nullptr) {
-      CsAuthPacket* const packet = reinterpret_cast<CsAuthPacket*>(allocation + 8);
-      const std::uint16_t length = static_cast<std::uint16_t>(byteCount + 4);
+    const std::size_t length = byteCount + 4;
+    CsAuthPacket* const packet = static_cast<CsAuthPacket*>(STACK_ALLOC(length));
+    if (packet) {
+      memcpy_s(packet->data, byteCount, token.bytes.data(), token.bytes.size());
       packet->id = static_cast<std::uint16_t>(ID_CZ_NPROTECTGAMEGUARDCSAUTH);
-      packet->length = length;
-      memcpy_s(packet->data, byteCount, token.bytes.data(), byteCount);
-      GetRagConnection().Send(static_cast<int>(length), packet);
-      if (allocationSize > 0x400) {
-        free(allocation);
-      }
+      packet->length = static_cast<std::uint16_t>(length);
+      GetRagConnection().Send(packet->length, packet);
+      _freea(packet);
     }
   }
 
