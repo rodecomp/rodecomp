@@ -253,9 +253,9 @@ void UIRoMapWnd::DrawArrow(
   const float dirY = length * dy;
   float angle = static_cast<float>(std::acos(static_cast<double>(dirX)));
   if (dirY < 0.0f) {
-    angle = 6.283184f - angle;
+    angle = ScreenLineFullTurn - angle;
   }
-  angle += 1.570796f;
+  angle += ScreenLineQuarterTurn;
   const float sine = ClientSin(angle);
   const float cosine = ClientCos(angle);
   const float normal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
@@ -263,10 +263,10 @@ void UIRoMapWnd::DrawArrow(
   const float offsetX = static_cast<float>(bodyWidth) * normalX;
   const float normalY = normal * sine;
   const float offsetY = static_cast<float>(bodyWidth) * normalY;
+  ScreenPoint end = {to.x, to.y};
   ScreenPoint sideStart = {offsetX + from.x, offsetY + from.y};
   ScreenPoint sideEnd = {offsetX + to.x, offsetY + to.y};
   ScreenPoint start = {from.x, from.y};
-  ScreenPoint end = {to.x, to.y};
 
   while (start.x > startMin.x && startMax.x > start.x && start.y > startMin.y && startMax.y > start.y) {
     start.x += dirX;
@@ -290,8 +290,8 @@ void UIRoMapWnd::DrawArrow(
   mid.y = (end.y - start.y) * progress + start.y;
   ScreenPoint corner;
   if (progress != g_projectionDepthNumerator) {
-    corner.y = mid.y + offsetY;
     corner.x = mid.x + offsetX;
+    corner.y = mid.y + offsetY;
   } else {
     corner.x = (sideEnd.x - sideStart.x) + sideStart.x;
     corner.y = (sideEnd.y - sideStart.y) + sideStart.y;
