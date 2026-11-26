@@ -201,7 +201,7 @@ static __declspec(safebuffers) __forceinline void DrawTrailSpriteQuad(
 void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
   CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
-  const unsigned short alpha = static_cast<unsigned short>(this->state.alpha);
+  const unsigned short alpha = static_cast<int>(this->state.alpha);
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life <= 0 || !(this->state.alpha > 0.0f)) {
@@ -257,8 +257,8 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
         const float angle = static_cast<float>(cell.rotation) + this->state.roll;
         DrawTrailSpriteQuad(*this, this->state.slots[ec].vecBPre, top, left, bottom, right, screenY, depth, 0.0001f, angle, color, image, sprite->palette, 0x101);
 
-        const std::uint32_t paleGlow = (alpha << 24) + 0x64FF64;
-        const std::uint32_t brightGlow = (alpha << 24) + 0x0AFF0A;
+        const std::uint32_t paleGlow = (static_cast<std::uint32_t>(alpha) << 24) + 0x64FF64;
+        const std::uint32_t brightGlow = (static_cast<std::uint32_t>(alpha) << 24) + 0x0AFF0A;
         DrawTrailSpriteQuad(
           *this, this->state.slots[ec].vecBPre, top, left, bottom, right, screenY, depth, 0.0002f, angle, this->state.slots[ec].flag1[0] == 2 ? brightGlow : paleGlow, image,
           sprite->palette, 5, g_effectIconOuterRadius
