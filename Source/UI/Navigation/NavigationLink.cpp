@@ -1804,6 +1804,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
   std::string work = text;
   int offset = 0;
 
+  bool result = false;
   for (;;) {
     std::string link("");
     if (!this->ExtractInnerItemLink(work, link, offset, text.c_str())) {
@@ -1825,8 +1826,10 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
     }
 
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_TAG_MSG)), 0xFF, 0, 0, 0);
-    return true;
+    result = true;
+    break;
   }
+  return result;
 }
 
 // OFFSET: 0x00836D40
