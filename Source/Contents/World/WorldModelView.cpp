@@ -157,6 +157,36 @@ void DrawWorldModelLeaves(
   }
 }
 
+// INLINED
+static __forceinline int ClassifyViewPlanes(const OrientedBounds& bounds, const ModelViewPlanes& planes) {
+  bool clipped = false;
+
+  for (int plane = 0; plane < 6; ++plane) {
+    const PlaneNormal& normal = planes.normals[plane];
+    const float x = planes.planes[plane][0];
+    const float y = normal.y;
+    const float z = normal.z;
+    const float second = Absolute(((bounds.axes[1][0] * x + bounds.axes[1][1] * y) + bounds.axes[1][2] * z) * bounds.halfSize[1]);
+    const float first = Absolute(((bounds.axes[0][0] * x + bounds.axes[0][1] * y) + bounds.axes[0][2] * z) * bounds.halfSize[0]);
+    const float third = Absolute(((bounds.axes[2][0] * x + bounds.axes[2][1] * y) + bounds.axes[2][2] * z) * bounds.halfSize[2]);
+    const float radius = (second + first) + third;
+    const float distance =
+      ((bounds.center[0] * x + bounds.center[1] * y) + bounds.center[2] * z) + planes.planes[plane][3];
+
+    if (!(distance > radius)) {
+      const float negative = -radius;
+
+      if (!(distance > negative)) {
+        return MODEL_VIEW_OUTSIDE;
+      }
+
+      clipped = true;
+    }
+  }
+
+  return clipped ? MODEL_VIEW_CLIPPED : MODEL_VIEW_INSIDE;
+}
+
 // OFFSET: 0x00ADBA40
 // FUNCTION: fn_45893
 void WorldViewSpatial::ClearVisibility() {
@@ -185,7 +215,7 @@ void CView::Render() {
         continue;
       }
 
-      const int visibility = this->spatial.ClassifyOriented(model->oriented);
+      const int visibility = ClassifyViewPlanes(model->oriented, this->spatial.planes);
 
       if (g_updateTick > 0) {
         model->Update();
