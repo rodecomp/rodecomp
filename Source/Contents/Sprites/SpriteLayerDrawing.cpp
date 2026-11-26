@@ -403,7 +403,7 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
       }
 
       offsetX += this->swingX;
-      if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, this->pc->isRiding) == true) {
+      if (IsIgnoredRidingState(this->layerViews[layer], this->pc->GetEffectiveJob(-1), this->pc->render.animation, reinterpret_cast<const bool&>(this->pc->isRiding)) == true) {
         offsetY += SpriteRidingOffset(
           bodyFrame, this->pc->render.previousAnimation, this->pc->render.curMotion, this->pc->GetEffectiveJob(-1), this->pc->sex,
           this->pc->GetBodyCostume()
