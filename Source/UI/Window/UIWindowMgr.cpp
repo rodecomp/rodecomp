@@ -4288,28 +4288,28 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   if (g_replayAnimationScaling != 0 && hotkey != 0x8B && hotkey != 0x8C && hotkey != 0x8D) {
     const ReplayOptions& options = Replay::Instance().header.options;
     if (hotkey != 0x71 && hotkey != 0x6C && hotkey != 0x78 && hotkey != 0x67 && hotkey != 0x73) {
-      bool restricted;
+      bool allowed;
       if (hotkey == 0x64) {
-        restricted = options.Get(ReplayRecordOption::BasicInfo) == 0;
+        allowed = options.Get(ReplayRecordOption::BasicInfo) != 0;
       } else if (hotkey == 0x65 || hotkey == 0x7A || hotkey == 0x7B || hotkey == 0x7C) {
-        restricted = options.Get(ReplayRecordOption::Equip) == 0;
+        allowed = options.Get(ReplayRecordOption::Equip) != 0;
       } else if (hotkey == 0x6D || hotkey == 0x6B) {
-        restricted = options.Get(ReplayRecordOption::Item) == 0;
+        allowed = options.Get(ReplayRecordOption::Item) != 0;
       } else if (hotkey == 0x66) {
-        restricted = options.Get(ReplayRecordOption::Skill) == 0;
+        allowed = options.Get(ReplayRecordOption::Skill) != 0;
       } else if (hotkey == 0x68 || hotkey == 0x69) {
-        restricted = options.Get(ReplayRecordOption::Party) == 0;
+        allowed = options.Get(ReplayRecordOption::Party) != 0;
       } else if (hotkey == 0x75) {
-        restricted = options.Get(ReplayRecordOption::Shortcut) == 0;
+        allowed = options.Get(ReplayRecordOption::Shortcut) != 0;
       } else if (hotkey == 0x76 || hotkey == 0x77) {
-        restricted = options.Get(ReplayRecordOption::Chatting) == 0;
+        allowed = options.Get(ReplayRecordOption::Chatting) != 0;
       } else if (hotkey == 0x93) {
-        restricted = options.Get(ReplayRecordOption::Status) == 0;
+        allowed = options.Get(ReplayRecordOption::Status) != 0;
       } else {
         return false;
       }
 
-      if (restricted) {
+      if (!allowed) {
         return false;
       }
     }
