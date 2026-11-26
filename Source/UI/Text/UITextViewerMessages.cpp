@@ -228,7 +228,6 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
-      return 0;
     }
 
     break;
@@ -236,7 +235,6 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
-      return 0;
     }
 
     break;
@@ -244,7 +242,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_SETTEXT:
     this->AppendText(reinterpret_cast<char*>(argument1), static_cast<int>(argument2), static_cast<int>(argument3), static_cast<int>(argument4));
     this->Invalidate();
-    return 0;
+    break;
 
   case UM_SCROLLVERT:
   case UM_SCROLLHORZ:
@@ -272,12 +270,12 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
     }
 
-    return 0;
+    break;
   }
 
   case UM_TEXT_LBTN_UP:
     this->Activate(static_cast<UITextButton*>(sender), static_cast<int>(argument1));
-    return 0;
+    break;
 
   default:
     return UIListBox::SendMsg(sender, message, argument1, argument2, argument3, argument4);
