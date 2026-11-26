@@ -249,9 +249,10 @@ __declspec(noinline) unsigned char* MD5::DigestBuffer(const unsigned char* input
 // OFFSET: 0x00402580
 // FUNCTION: fn_00129
 std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) {
-  unsigned char digest[16] = {0};
-  DigestBuffer(input, length, digest);
-  return FoldDigest(digest);
+  DigestStorage digest;
+  digest.b0 = digest.b1 = digest.b2 = digest.b3 = digest.b4 = digest.b5 = 0;
+  DigestBuffer(input, length, reinterpret_cast<unsigned char*>(&digest));
+  return FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
 }
 
 // OFFSET: 0x00402640
