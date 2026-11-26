@@ -24,7 +24,12 @@ struct ScreenPoint;
 
 struct RoMapTooltipBox {
   // INLINED
-  RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), unknown_0010(1) {
+  RoMapTooltipBox(int x, int y, int width, int height) {
+    this->unknown_0010 = 1;
+    this->x = x;
+    this->y = y;
+    this->width = width;
+    this->height = height;
   }
 
   /* 0000 */ int x;
