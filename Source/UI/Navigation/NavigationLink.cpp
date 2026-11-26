@@ -1797,7 +1797,7 @@ void UIItemImage::OnRBtnDown(int, int) {
 // OFFSET: 0x00832000
 // FUNCTION: fn_10406
 bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
-  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>(g_itemLinkTag.c_str()))) {
+  if (!_mbsstr(reinterpret_cast<const unsigned char*>(text.c_str()), reinterpret_cast<const unsigned char*>(g_parserItemLinkTag.c_str()))) {
     return false;
   }
 
@@ -1813,14 +1813,14 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
     const int itemId = ItemLinkMessageId(link);
     const bool isTip = link.substr(0, 6) == "00000T";
     if (isTip && itemId <= g_itemTagOwner->maxTipId) {
-      offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+      offset += static_cast<int>(link.size() + g_parserItemLinkTag.size() + g_parserItemLinkCloseTag.size());
       continue;
     }
 
     const bool unowned = !(g_session.LookupClientItem(itemId, 0).identity[1] > 0 || g_session.HasItemId(itemId) ||
                            g_session.HasItem1740Number(itemId));
     if (!unowned) {
-      offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());
+      offset += static_cast<int>(link.size() + g_parserItemLinkTag.size() + g_parserItemLinkCloseTag.size());
       continue;
     }
 
