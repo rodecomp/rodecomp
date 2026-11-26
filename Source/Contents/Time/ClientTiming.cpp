@@ -536,7 +536,8 @@ void CSession::RefreshTrackedAchievement(int id) {
     return;
   }
 
-  SessionRecord6144 progress = g_session.FindAchievementRecord(id);
+  const auto foundRecord = g_session.achievements.find(id);
+  SessionRecord6144 progress = foundRecord != g_session.achievements.end() ? foundRecord->second : SessionRecord6144();
 
   AchievementInfo info;
   g_achievementMgr->GetAchievement(info, id);
