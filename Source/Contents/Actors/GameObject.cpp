@@ -3445,37 +3445,37 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_HAT_EFFECT:
       if (c > 0) {
         this->SetStackedEffect(EF_HAT_EFFECT, true);
-      } else {
-        this->SetStackedEffect(EF_HAT_EFFECT, false);
+        break;
       }
+      this->SetStackedEffect(EF_HAT_EFFECT, false);
       break;
     case EFST_MOONSTAR:
       if (c > 0) {
         this->SetStackedEffect(EF_MOONSTAR, true);
-      } else {
-        this->SetStackedEffect(EF_MOONSTAR, false);
+        break;
       }
+      this->SetStackedEffect(EF_MOONSTAR, false);
       break;
     case EFST_DECORATION_OF_MUSIC:
       if (c > 0) {
         this->SetStackedEffect(EF_MUSIC_HAT, true);
-      } else {
-        this->SetStackedEffect(EF_MUSIC_HAT, false);
+        break;
       }
+      this->SetStackedEffect(EF_MUSIC_HAT, false);
       break;
     case EFST_STRANGELIGHTS:
       if (c > 0) {
         this->SetStackedEffect(EF_STRANGELIGHTS, true);
-      } else {
-        this->SetStackedEffect(EF_STRANGELIGHTS, false);
+        break;
       }
+      this->SetStackedEffect(EF_STRANGELIGHTS, false);
       break;
     case EFST_SUPER_STAR:
       if (c > 0) {
         this->SetStackedEffect(EF_SUPER_STAR, true);
-      } else {
-        this->SetStackedEffect(EF_SUPER_STAR, false);
+        break;
       }
+      this->SetStackedEffect(EF_SUPER_STAR, false);
       break;
     case EFST_ON_PUSH_CART:
       if (c != 0) {
@@ -3620,9 +3620,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_FLOWERSMOKE:
       if (c > 0) {
         this->SetStackedEffect(EF_FLOWERSMOKE, true);
-      } else {
-        this->SetStackedEffect(EF_FLOWERSMOKE, false);
+        break;
       }
+      this->SetStackedEffect(EF_FLOWERSMOKE, false);
       break;
     case EFST_HALLUCINATIONWALK:
     case EFST_NPC_HALLUCINATIONWALK: {
@@ -3660,37 +3660,37 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_HAPPINESS_STAR:
       if (c > 0) {
         this->SetStackedEffect(EF_HAPPINESSSTAR, true);
-      } else {
-        this->SetStackedEffect(EF_HAPPINESSSTAR, false);
+        break;
       }
+      this->SetStackedEffect(EF_HAPPINESSSTAR, false);
       break;
     case EFST_FSTONE:
       if (c > 0) {
         this->SetStackedEffect(EF_FSTONE, true);
-      } else {
-        this->SetStackedEffect(EF_FSTONE, false);
+        break;
       }
+      this->SetStackedEffect(EF_FSTONE, false);
       break;
     case EFST_QSCARABA:
       if (c > 0) {
         this->SetStackedEffect(EF_QSCARABA, true);
-      } else {
-        this->SetStackedEffect(EF_QSCARABA, false);
+        break;
       }
+      this->SetStackedEffect(EF_QSCARABA, false);
       break;
     case EFST_LJOSALFAR:
       if (c > 0) {
         this->SetStackedEffect(EF_LJOSALFAR, true);
-      } else {
-        this->SetStackedEffect(EF_LJOSALFAR, false);
+        break;
       }
+      this->SetStackedEffect(EF_LJOSALFAR, false);
       break;
     case EFST_MAPLE_FALLS:
       if (c > 0) {
         this->SetStackedEffect(EF_MAPLE_FALLS, true);
-      } else {
-        this->SetStackedEffect(EF_MAPLE_FALLS, false);
+        break;
       }
+      this->SetStackedEffect(EF_MAPLE_FALLS, false);
       break;
     case EFST_DRESS_UP:
       g_session.playerAppearanceState = g_session.m_aid == this->render.accountId ? static_cast<int>(d) : g_session.playerAppearanceState;
@@ -3710,23 +3710,23 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_MAGICAL_FEATHER:
       if (c > 0) {
         this->SetStackedEffect(EF_MAGICAL_FEATHER, true);
-      } else {
-        this->SetStackedEffect(EF_MAGICAL_FEATHER, false);
+        break;
       }
+      this->SetStackedEffect(EF_MAGICAL_FEATHER, false);
       break;
     case EFST_MERMAID_LONGING:
       if (c > 0) {
         this->SetStackedEffect(EF_MERMAID_LONGING, true);
-      } else {
-        this->SetStackedEffect(EF_MERMAID_LONGING, false);
+        break;
       }
+      this->SetStackedEffect(EF_MERMAID_LONGING, false);
       break;
     case EFST_TIME_ACCESSORY:
       if (c > 0) {
         this->SetStackedEffect(EF_TIME_ACCESSORY, true);
-      } else {
-        this->SetStackedEffect(EF_TIME_ACCESSORY, false);
+        break;
       }
+      this->SetStackedEffect(EF_TIME_ACCESSORY, false);
       break;
     case EFST_HEAD_EQUIPMENT_EFFECT:
       this->SetStackedEffect(static_cast<int>(d) + EF_HAT_EFFECT_BASE, c > 0);
