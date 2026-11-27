@@ -1661,7 +1661,11 @@ void UIDisplayCharacter::Paint() {
 void UIShowInfoWnd::DrawPayments() {
   int positions[8][2];
   const bool primary = dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->primaryTabVisible;
-  if (primary == true || dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->accessoryTabVisible == true) {
+  const auto accessoryVisible = [this]() {
+    const bool accessory = dynamic_cast<UIStylingshopTabParentWnd*>(this->parent)->accessoryTabVisible;
+    return accessory;
+  };
+  if (primary == true || accessoryVisible() == true) {
     for (int i = 0; i < 8; ++i) {
       positions[i][0] = this->m_paymentLayout.textX + 3;
       positions[i][1] = this->m_paymentLayout.textYOffset + this->geometry.height / 8 * i;
