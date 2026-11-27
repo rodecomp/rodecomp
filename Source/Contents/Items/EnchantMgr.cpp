@@ -65,6 +65,17 @@ CEnchantMgr::CEnchantMgr() {
   m_inputBlocked = true;
 }
 
+// OFFSET: 0x006863F0
+// FUNCTION: fn_05565
+template <>
+CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CEnchantMgr;
+  }
+
+  return s_instance;
+}
+
 // INLINED
 __forceinline CItemDBToIDMgr* ItemDbToIdMgr() {
   if (!g_itemDbToIdMgr) {

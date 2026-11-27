@@ -19,7 +19,6 @@
 #include <cstdint>
 #include <new>
 
-template CEnchantMgr* Singleton<CEnchantMgr>::GetInstance();
 template __declspec(noinline) EnchantInfo& std::map<uint64_t, EnchantInfo>::operator[](uint64_t&&);
 template __forceinline std::map<int, EnchantPerfectInfo>& std::map<int, std::map<int, EnchantPerfectInfo>>::operator[](const int&);
 template __forceinline std::map<std::string, int>::~map() noexcept;

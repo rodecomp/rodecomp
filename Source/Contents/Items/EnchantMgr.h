@@ -97,6 +97,9 @@ public:
   void RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int16_t slot);
 };
 
+template <>
+CEnchantMgr* Singleton<CEnchantMgr>::GetInstance();
+
 int L_AddPerfectEnchant(lua_State* L);
 int L_AddPerfectUpgradeEnchant(lua_State* L);
 int L_AddRandomUpgradeEnchant(lua_State* L);
