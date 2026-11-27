@@ -413,7 +413,7 @@ void CRagEffect::FireSparks() {
   const float* m = this->state.lastPrim->state.transform.values;
   const float distance = static_cast<float>(ClampedRandom(13) + 2);
   vector3d forward;
-  MatrixMult(forward, vector3d{0.0f, 0.0f, distance}, m);
+  TransformVector(forward, vector3d{0.0f, 0.0f, distance}, m);
   EffectPrimitiveState& moving = this->state.lastPrim->state;
   moving.deltaPos2.x = forward.x + 0.0f;
   moving.deltaPos2.y = forward.y - 10.0f;
@@ -15808,23 +15808,24 @@ void CRagEffect::TexturedMagicRing(char type) {
       this->state.lastPrim->state.slots[0].flag1[i] = 3;
     }
 
-    this->state.lastPrim->state.slots[1].life = 1;
-    this->state.lastPrim->state.slots[1].process = 0;
-    this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-    this->state.lastPrim->state.slots[1].maxHeight = 80.0f;
-    this->state.lastPrim->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[1].alphaB = 0;
-    this->state.lastPrim->state.slots[1].distance = 5.5f;
-    this->state.lastPrim->state.slots[1].riseAngle = 90;
+    int slot1 = 1;
+    this->state.lastPrim->state.slots[slot1].life = 1;
+    this->state.lastPrim->state.slots[slot1].process = 0;
+    this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[slot1].maxHeight = 80.0f;
+    this->state.lastPrim->state.slots[slot1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[slot1].alphaB = 0;
+    this->state.lastPrim->state.slots[slot1].distance = 5.5f;
+    this->state.lastPrim->state.slots[slot1].riseAngle = 90;
     if (type == 1) {
-      this->state.lastPrim->state.slots[1].alphaT = -1;
+      this->state.lastPrim->state.slots[slot1].alphaT = -1;
     } else {
-      this->state.lastPrim->state.slots[1].alphaT = 1400;
+      this->state.lastPrim->state.slots[slot1].alphaT = 1400;
     }
-    this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[slot1].vecBNow.y = 0.0f;
     for (i = 0; i < 21; ++i) {
-      this->state.lastPrim->state.slots[1].height[i] = 0.0f;
-      this->state.lastPrim->state.slots[1].flag1[i] = 3;
+      this->state.lastPrim->state.slots[slot1].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[slot1].flag1[i] = 3;
     }
 
     this->state.lastPrim->state.slots[2].life = 1;
@@ -17453,80 +17454,80 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
 
   CEffectPrim* particle = this->LaunchEffectPrim(PP_GROUND_RING, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
-  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
-  stored()->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
-  stored()->state.duration = this->state.duration;
-  stored()->state.textures = new CTexture*[stored()->state.totalTexture];
-  stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  stored()->state.size = static_cast<float>(flag);
+  this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim->state.size = static_cast<float>(flag);
 
-  stored()->state.slots[0].life = 0;
-  stored()->state.slots[1].life = 0;
-  stored()->state.slots[2].life = 0;
-  stored()->state.slots[3].life = 0;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[0].life = 0;
+  this->state.lastPrim->state.slots[slot1].life = 0;
+  this->state.lastPrim->state.slots[2].life = 0;
+  this->state.lastPrim->state.slots[3].life = 0;
 
-  stored()->state.slots[0].life = 1;
-  stored()->state.slots[0].process = 0;
-  stored()->state.slots[0].fullDisplayAngle = 360;
-  stored()->state.slots[0].maxHeight = 15.0f;
-  stored()->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
-  stored()->state.slots[0].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
-  stored()->state.slots[0].distance = static_cast<float>(this->state.stateCnt * 2) + g_depthAverageHalf;
-  stored()->state.slots[0].vecTNow.x = stored()->state.slots[0].distance;
-  stored()->state.slots[0].distance -= static_cast<float>(rand() % 21) * 0.1f;
-  stored()->state.slots[0].riseAngle = 80;
+  this->state.lastPrim->state.slots[0].life = 1;
+  this->state.lastPrim->state.slots[0].process = 0;
+  this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[0].maxHeight = 15.0f;
+  this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  this->state.lastPrim->state.slots[0].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
+  this->state.lastPrim->state.slots[0].distance = static_cast<float>(this->state.stateCnt * 2) + g_depthAverageHalf;
+  this->state.lastPrim->state.slots[0].vecTNow.x = this->state.lastPrim->state.slots[0].distance;
+  this->state.lastPrim->state.slots[0].distance -= static_cast<float>(rand() % 21) * 0.1f;
+  this->state.lastPrim->state.slots[0].riseAngle = 80;
 
   for (int i = 0; i < 21; ++i) {
-    stored()->state.slots[0].height[i] = 0.0f;
-    stored()->state.slots[0].flag1[i] = 0;
+    this->state.lastPrim->state.slots[0].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[0].flag1[i] = 0;
   }
 
-  stored()->state.slots[1].life = 1;
-  stored()->state.slots[1].process = 0;
-  stored()->state.slots[1].fullDisplayAngle = 360;
-  stored()->state.slots[1].maxHeight = 16.0f;
-  stored()->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
-  stored()->state.slots[1].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
-  stored()->state.slots[1].distance = static_cast<float>(this->state.stateCnt * 2) + 1.0f;
-  stored()->state.slots[1].vecTNow.x = stored()->state.slots[1].distance;
-  stored()->state.slots[1].distance += static_cast<float>(rand() % 21) * 0.1f;
-  stored()->state.slots[1].riseAngle = 80;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot1].maxHeight = 16.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  this->state.lastPrim->state.slots[slot1].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
+  this->state.lastPrim->state.slots[slot1].distance = static_cast<float>(this->state.stateCnt * 2) + 1.0f;
+  this->state.lastPrim->state.slots[slot1].vecTNow.x = this->state.lastPrim->state.slots[slot1].distance;
+  this->state.lastPrim->state.slots[slot1].distance += static_cast<float>(rand() % 21) * 0.1f;
+  this->state.lastPrim->state.slots[slot1].riseAngle = 80;
 
   for (int i = 0; i < 21; ++i) {
-    stored()->state.slots[1].height[i] = 0.0f;
-    stored()->state.slots[1].flag1[i] = 0;
+    this->state.lastPrim->state.slots[slot1].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[slot1].flag1[i] = 0;
   }
 
-  stored()->state.slots[2].life = 1;
-  stored()->state.slots[2].process = 0;
-  stored()->state.slots[2].fullDisplayAngle = 360;
-  stored()->state.slots[2].maxHeight = 17.0f;
-  stored()->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
-  stored()->state.slots[2].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
-  stored()->state.slots[2].distance = static_cast<float>(this->state.stateCnt * 2) + 1.5f;
-  stored()->state.slots[2].vecTNow.x = stored()->state.slots[2].distance;
-  stored()->state.slots[2].distance -= static_cast<float>(rand() % 21) * 0.1f;
-  stored()->state.slots[2].riseAngle = 80;
+  this->state.lastPrim->state.slots[2].life = 1;
+  this->state.lastPrim->state.slots[2].process = 0;
+  this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[2].maxHeight = 17.0f;
+  this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  this->state.lastPrim->state.slots[2].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
+  this->state.lastPrim->state.slots[2].distance = static_cast<float>(this->state.stateCnt * 2) + 1.5f;
+  this->state.lastPrim->state.slots[2].vecTNow.x = this->state.lastPrim->state.slots[2].distance;
+  this->state.lastPrim->state.slots[2].distance -= static_cast<float>(rand() % 21) * 0.1f;
+  this->state.lastPrim->state.slots[2].riseAngle = 80;
 
   for (int i = 0; i < 21; ++i) {
-    stored()->state.slots[2].height[i] = 0.0f;
-    stored()->state.slots[2].flag1[i] = 0;
+    this->state.lastPrim->state.slots[2].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[2].flag1[i] = 0;
   }
 
-  stored()->state.slots[3].life = 1;
-  stored()->state.slots[3].process = 0;
-  stored()->state.slots[3].fullDisplayAngle = 360;
-  stored()->state.slots[3].maxHeight = 18.0f;
-  stored()->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
-  stored()->state.slots[3].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
-  stored()->state.slots[3].distance = static_cast<float>(this->state.stateCnt * 2) + 2.0f;
-  stored()->state.slots[3].vecTNow.x = stored()->state.slots[3].distance;
-  stored()->state.slots[3].distance += static_cast<float>(rand() % 21) * 0.1f;
-  stored()->state.slots[3].riseAngle = 80;
+  this->state.lastPrim->state.slots[3].life = 1;
+  this->state.lastPrim->state.slots[3].process = 0;
+  this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[3].maxHeight = 18.0f;
+  this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  this->state.lastPrim->state.slots[3].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
+  this->state.lastPrim->state.slots[3].distance = static_cast<float>(this->state.stateCnt * 2) + 2.0f;
+  this->state.lastPrim->state.slots[3].vecTNow.x = this->state.lastPrim->state.slots[3].distance;
+  this->state.lastPrim->state.slots[3].distance += static_cast<float>(rand() % 21) * 0.1f;
+  this->state.lastPrim->state.slots[3].riseAngle = 80;
 
   for (int i = 0; i < 21; ++i) {
-    stored()->state.slots[3].height[i] = 0.0f;
-    stored()->state.slots[3].flag1[i] = 0;
+    this->state.lastPrim->state.slots[3].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[3].flag1[i] = 0;
   }
 }
 
