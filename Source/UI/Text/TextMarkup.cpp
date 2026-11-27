@@ -220,7 +220,7 @@ void UIWindow::ExtractTextLinks(const std::string& source, const std::string& be
 
   do {
     const int content = position + static_cast<int>(begin.size());
-    std::string tail(text, content);
+    std::string tail = text.substr(content);
     const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
 
     if (close == -1) {
