@@ -23,7 +23,10 @@ UITreeView::UITreeView() : UIWindow(0) {
 // FUNCTION: fn_45813
 UITreeView::~UITreeView() {
   this->DeleteChildNodes(this->root);
-  delete this->root;
+  if (this->root) {
+    this->root->~UITreeNode();
+    ::operator delete(this->root, sizeof(UITreeNode));
+  }
 }
 
 // OFFSET: 0x00879D90
