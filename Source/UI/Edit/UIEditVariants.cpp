@@ -433,6 +433,9 @@ void UIEditCtrl_OldList::RecallHistory(int step) {
   this->Invalidate();
 }
 
+// STRING: st_16838
+static const char caret_pipe[] = "|";
+
 // OFFSET: 0x008551B0
 // FUNCTION: fn_10753
 void UIEditCtrl3::PaintText() {
@@ -602,7 +605,7 @@ void UIEditCtrl3::PaintText() {
     }
 
     int wrapped = 0;
-    if (column - before >= 0) {
+    if (column >= before) {
       column -= before;
     }
 
@@ -625,7 +628,7 @@ void UIEditCtrl3::PaintText() {
       caretLine = this->textY;
     }
 
-    if (reading - before >= 0) {
+    if (reading >= before) {
       reading -= before;
     }
 
@@ -654,7 +657,7 @@ void UIEditCtrl3::PaintText() {
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
       int caretRow = wrapped - first;
       caretRow += this->textY;
-      this->DrawTextAt(x - 2 + caretX, caretRow * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
+      this->DrawTextAt(x - 2 + caretX, caretRow * this->lineHeight, caret_pipe, 0, 0, 12, color, 0, 0);
 
       if (this->manualScroll == 0) {
         if (this->movingUp != 0) {
