@@ -117,7 +117,10 @@ DWORD CRC32::CalculateLowercase(const char* text) {
   strcpy_s(lowercase, MAX_PATH, text);
   _strlwr_s(lowercase, MAX_PATH);
   DWORD checksum = 0xFFFFFFFF;
-  Update(reinterpret_cast<const BYTE*>(lowercase), std::strlen(lowercase), &checksum);
+  const char* current = lowercase;
+  while (*current++ != 0) {
+  }
+  Update(reinterpret_cast<const BYTE*>(lowercase), static_cast<int>(current - (lowercase + 1)), &checksum);
   return ~checksum;
 }
 
