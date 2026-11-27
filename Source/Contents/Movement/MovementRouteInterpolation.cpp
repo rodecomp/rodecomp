@@ -33,11 +33,10 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
       }
 
       const float duration = static_cast<float>(this->points[index + 1].tick - this->points[index].tick);
-      const float offsetY = elapsed * deltaY;
       *x = originX + (deltaX * elapsed) / duration;
       const float yDuration = static_cast<float>(this->points[index + 1].tick - this->points[index].tick);
       const float originY = index == 0 ? this->startY : static_cast<float>(this->points[index].y);
-      *y = originY + offsetY / yDuration;
+      *y = originY + (elapsed * deltaY) / yDuration;
 
       const std::uint32_t midpoint = this->points[index].tick + ((this->points[index + 1].tick - this->points[index].tick) >> 1);
       *metadata = tick < midpoint ? this->points[index].metadata : this->points[index + 1].metadata;
