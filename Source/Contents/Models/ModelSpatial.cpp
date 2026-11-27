@@ -8,7 +8,7 @@ namespace {
     return std::fabs(value);
   }
 
-  constexpr double tolerance = 0.000001;
+  constexpr float tolerance = 0.000001f;
 
   // INLINED
   bool IsSeparated(float projected, float extent, float halfSize) {
