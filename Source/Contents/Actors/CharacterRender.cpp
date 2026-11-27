@@ -79,8 +79,8 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   this->screenY = 0.0f;
   float rhw = 0.0f;
   g_renderer->ProjectViewport(&this->position.x, view, &this->screenX, &this->screenY, &rhw);
-  float distanceScale = g_renderer->ScaleDistance(rhw);
-  distanceScale *= g_session.GetSkillFactor(this->job);
+  float viewportScale = g_renderer->ScaleDistance(rhw);
+  const float distanceScale = g_session.GetSkillFactor(this->job) * viewportScale;
 
   int swapCount = 0;
   bool bodyDrawn = false;
