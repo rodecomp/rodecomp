@@ -1003,6 +1003,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   unsigned char red = 255;
   unsigned char green = 255;
   unsigned char blue = 255;
+  int alpha = alphaB;
   float textureV = g_projectionDepthNumerator;
 
   switch (static_cast<int>(this->state.size)) {
@@ -1021,7 +1022,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     blend = 6;
     break;
   case TEI_RECT_FAINT_WHITE_ALPHA_BLEND:
-    alphaB = 80;
+    alpha = 80;
     blend = 6;
     break;
   case TEI_RECT_SOFT_BLUE:
@@ -1237,14 +1238,14 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   const RagEffectState& master = this->state.master->state;
-  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
   const unsigned char finalRed = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : red;
   const unsigned char finalGreen = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : green;
   const unsigned char finalBlue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : blue;
-  const std::uint32_t color = (((((static_cast<std::uint32_t>(alphaB) << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
+  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
+  const std::uint32_t color = (((((static_cast<std::uint32_t>(alpha) << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
 
-  float left;
   float right;
+  float left;
   if (texPart >= 100) {
     if (texPart == 100) {
       left = 0.35f;
