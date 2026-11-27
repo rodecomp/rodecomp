@@ -3608,76 +3608,75 @@ void CLoginMode::OnChangeState(int value) {
     }
 
     this->connectionReady = GetRagConnection().Connect(endpoint);
-    if (!this->connectionReady) {
+    if (this->connectionReady) {
+      g_packetReassembler->Notify(2);
+      this->SendExecutableDigest();
+      if (g_serviceType != ServiceKorea && g_serviceType != ServiceFrance && g_serviceType != ServiceBrazil) {
+        AccountLoginPacket packet;
+        packet.id = ID_CA_LOGIN;
+        packet.version = g_serviceFlag07;
+        std::memcpy(packet.name, this->m_accountId, sizeof(packet.name));
+        if (g_serviceType == ServicePhilippine) {
+          char password[24];
+          DecryptAES(this->m_password, password, sizeof(password));
+          std::memcpy(packet.password, password, sizeof(packet.password));
+        } else if (g_serviceType == ServiceTaiwan) {
+          DecryptRijndael192(this->m_password, packet.password);
+        } else {
+          std::memcpy(packet.password, this->m_password, sizeof(packet.password));
+        }
+        packet.clientType = static_cast<unsigned char>(GetClientType());
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+      } else if (g_session.m_launchPassCommandLine) {
+        StoveLoginPacket packet;
+        std::memset(packet.ip, 0, sizeof(packet) - offsetof(StoveLoginPacket, ip));
+        packet.id = kStoveLoginPacketId;
+        packet.version = g_serviceFlag07;
+        packet.clientType = static_cast<unsigned char>(GetClientType());
+        char hostName[100];
+        gethostname(hostName, sizeof(hostName));
+        const char* ip;
+        if (hostent* resolved = gethostbyname(hostName)) {
+          ip = inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0]));
+        } else {
+          ip = OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x4F637DC51307B759ULL);
+        }
+        StringFormat(packet.ip, sizeof(packet.ip), static_cast<std::size_t>(-1), ip);
+        StringFormat(packet.mac, sizeof(packet.mac), static_cast<std::size_t>(-1), GetMacAddress().c_str());
+        StringFormat(packet.memberNumber, sizeof(packet.memberNumber), static_cast<std::size_t>(-1), g_stoveMgr->m_memberNumber);
+        StringFormat(packet.gameUserId, sizeof(packet.gameUserId), static_cast<std::size_t>(-1), g_stoveMgr->m_gameUserId);
+        StringFormat(packet.accessToken, sizeof(packet.accessToken), static_cast<std::size_t>(-1), g_stoveMgr->GetAccessToken());
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+      } else {
+        SsoLoginPacket packet;
+        packet.id = ID_CA_SSO_LOGIN_REQ;
+        packet.version = g_serviceFlag07;
+        packet.clientType = static_cast<unsigned char>(GetClientType());
+        std::strncpy(packet.mac, GetMacAddress().c_str(), sizeof(packet.mac));
+        std::strncpy(packet.name, g_launchAccountPassword, std::strlen(g_launchAccountPassword));
+        packet.name[std::strlen(g_launchAccountPassword)] = '\0';
+        char hostName[100];
+        gethostname(hostName, sizeof(hostName));
+        if (hostent* resolved = gethostbyname(hostName)) {
+          std::strcpy(packet.ip, inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0])));
+        } else {
+          std::strcpy(packet.ip, OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x2DCB7567394DC1ABULL));
+        }
+        const std::size_t tokenLength = std::strlen(g_session.m_loginErrorText);
+        packet.length = static_cast<std::int16_t>(tokenLength + offsetof(SsoLoginPacket, token));
+        SsoLoginPacket buffer;
+        std::memcpy(&buffer, &packet, offsetof(SsoLoginPacket, token));
+        std::memcpy(buffer.token, g_session.m_loginErrorText, tokenLength);
+        GetRagConnection().Send(packet.length, &buffer);
+      }
+      static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    } else {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "메시지", 280, 120, 0) != ID_CONNECTION_FAILED_UNUSED_269) {
         g_charServerAccountIdPending = 0;
         this->pendingCursorType = LOGIN_STATE_LOGIN;
       }
-      break;
     }
-
-    g_packetReassembler->Notify(2);
-    this->SendExecutableDigest();
-    if (g_serviceType != ServiceKorea && g_serviceType != ServiceFrance && g_serviceType != ServiceBrazil) {
-      AccountLoginPacket packet;
-      packet.id = ID_CA_LOGIN;
-      packet.version = g_serviceFlag07;
-      std::memcpy(packet.name, this->m_accountId, sizeof(packet.name));
-      if (g_serviceType == ServicePhilippine) {
-        char password[24];
-        DecryptAES(this->m_password, password, sizeof(password));
-        std::memcpy(packet.password, password, sizeof(packet.password));
-      } else if (g_serviceType == ServiceTaiwan) {
-        DecryptRijndael192(this->m_password, packet.password);
-      } else {
-        std::memcpy(packet.password, this->m_password, sizeof(packet.password));
-      }
-      packet.clientType = static_cast<unsigned char>(GetClientType());
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-    } else if (g_session.m_launchPassCommandLine) {
-      StoveLoginPacket packet;
-      std::memset(packet.ip, 0, sizeof(packet) - offsetof(StoveLoginPacket, ip));
-      packet.id = kStoveLoginPacketId;
-      packet.version = g_serviceFlag07;
-      packet.clientType = static_cast<unsigned char>(GetClientType());
-      char hostName[100];
-      gethostname(hostName, sizeof(hostName));
-      const char* ip;
-      if (hostent* resolved = gethostbyname(hostName)) {
-        ip = inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0]));
-      } else {
-        ip = OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x4F637DC51307B759ULL);
-      }
-      StringFormat(packet.ip, sizeof(packet.ip), static_cast<std::size_t>(-1), ip);
-      StringFormat(packet.mac, sizeof(packet.mac), static_cast<std::size_t>(-1), GetMacAddress().c_str());
-      StringFormat(packet.memberNumber, sizeof(packet.memberNumber), static_cast<std::size_t>(-1), g_stoveMgr->m_memberNumber);
-      StringFormat(packet.gameUserId, sizeof(packet.gameUserId), static_cast<std::size_t>(-1), g_stoveMgr->m_gameUserId);
-      StringFormat(packet.accessToken, sizeof(packet.accessToken), static_cast<std::size_t>(-1), g_stoveMgr->GetAccessToken());
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-    } else {
-      SsoLoginPacket packet;
-      packet.id = ID_CA_SSO_LOGIN_REQ;
-      packet.version = g_serviceFlag07;
-      packet.clientType = static_cast<unsigned char>(GetClientType());
-      std::strncpy(packet.mac, GetMacAddress().c_str(), sizeof(packet.mac));
-      std::strncpy(packet.name, g_launchAccountPassword, std::strlen(g_launchAccountPassword));
-      packet.name[std::strlen(g_launchAccountPassword)] = '\0';
-      char hostName[100];
-      gethostname(hostName, sizeof(hostName));
-      if (hostent* resolved = gethostbyname(hostName)) {
-        std::strcpy(packet.ip, inet_ntoa(*reinterpret_cast<in_addr*>(resolved->h_addr_list[0])));
-      } else {
-        std::strcpy(packet.ip, OBFUSCATE_BYTES_TEXT("111.111.111.111", 0x2DCB7567394DC1ABULL));
-      }
-      const std::size_t tokenLength = std::strlen(g_session.m_loginErrorText);
-      packet.length = static_cast<std::int16_t>(tokenLength + offsetof(SsoLoginPacket, token));
-      SsoLoginPacket buffer;
-      std::memcpy(&buffer, &packet, offsetof(SsoLoginPacket, token));
-      std::memcpy(buffer.token, g_session.m_loginErrorText, tokenLength);
-      GetRagConnection().Send(packet.length, &buffer);
-    }
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case LOGIN_STATE_MOBILE_OTP:
