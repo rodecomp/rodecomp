@@ -251,11 +251,18 @@ __forceinline void CPokJukEffect::RenderParticle(CParticle* particle) {
 
       const EffectPoint& base = this->trails[index][layer];
 
-      for (int corner = 0; corner < 4; ++corner) {
-        corners[corner].x += base.x;
-        corners[corner].y += base.y;
-        corners[corner].z += base.z;
-      }
+      corners[0].x += base.x;
+      corners[0].y += base.y;
+      corners[0].z += base.z;
+      corners[1].x += base.x;
+      corners[1].y += base.y;
+      corners[1].z += base.z;
+      corners[2].x += base.x;
+      corners[2].y += base.y;
+      corners[2].z += base.z;
+      corners[3].x += base.x;
+      corners[3].y += base.y;
+      corners[3].z += base.z;
 
       particle->vertices[0].x = corners[3].x;
       particle->vertices[0].y = corners[3].y;
