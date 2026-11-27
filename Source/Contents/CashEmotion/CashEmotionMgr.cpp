@@ -457,6 +457,11 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
   return true;
 }
 
+// INLINED
+static CCashEmotionMgr* ReloadCashEmotionMgr() {
+  return *reinterpret_cast<CCashEmotionMgr* volatile*>(&g_cashEmotionMgr);
+}
+
 // OFFSET: 0x00591FB0
 // FUNCTION: fn_02847
 bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
@@ -474,20 +479,20 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
     listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND));
   }
 
-  const unsigned int now = g_cashEmotionMgr->GetServerTime();
-  if (g_cashEmotionMgr->IsPackAvailable(now, packId)) {
+  const unsigned int now = ReloadCashEmotionMgr()->GetServerTime();
+  if (ReloadCashEmotionMgr()->IsPackAvailable(now, packId)) {
     if (listWnd) {
       listWnd->ShowPack(packId);
     }
     return true;
   }
 
-  const unsigned int endTime = g_cashEmotionMgr->GetPackEndTime(packId);
+  const unsigned int endTime = ReloadCashEmotionMgr()->GetPackEndTime(packId);
   if (endTime) {
     const char* key = now < endTime ? "EMSG_NOT_YET_SALE_START_TIME" : "EMSG_EMOTION_EXPANTION_FAIL_DATE";
     const char* message = g_simpleStringMgr->GetString(key);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 255, 0, 0, 0);
-  } else if (g_cashEmotionMgr->GetPackStartTime(packId) > now) {
+  } else if (ReloadCashEmotionMgr()->GetPackStartTime(packId) > now) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 255, 0, 0, 0);
   }
 
