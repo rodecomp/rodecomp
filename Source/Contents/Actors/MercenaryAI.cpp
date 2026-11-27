@@ -973,7 +973,7 @@ int AiIsMonster(lua_State* state) {
   std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 1));
   CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
-  double result = 0.0;
+  volatile double result = 0.0;
   if (actor) {
     int job = actor->GetEffectiveJob(-1);
     bool checkState = false;
