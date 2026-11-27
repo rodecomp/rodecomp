@@ -30,6 +30,7 @@ class UIButton : public UIWindow {
   friend class UIRodexInboxWnd; friend class UIMiniMapWnd;
   friend class UIMacroReporterWnd;
   friend class UIStylingShopWnd;
+  friend class UIShowInfoWnd;
 
 public:
   UIButton();

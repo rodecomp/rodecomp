@@ -1812,7 +1812,18 @@ void UIShowInfoWnd::DrawPayments() {
   }
 
   if (!favoriteVisible) {
-    shop->SetBuyEnabled(this->m_buyable);
+    if (!this->m_buyable) {
+      shop->m_buyButton->m_argument = 1;
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_disable.bmp", 0, 0);
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_disable.bmp", 1, 0);
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_disable.bmp", 2, 0);
+    } else {
+      shop->m_buyButton->m_argument = 0;
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_out.bmp", 0, 0);
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_over.bmp", 1, 0);
+      shop->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);
+    }
+    shop->m_buyButton->Invalidate();
   }
   shop->Invalidate();
 }
