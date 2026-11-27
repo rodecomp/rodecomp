@@ -167,7 +167,8 @@ void UIAchTab::DrawGroup(int group) {
       }
     }
   } else {
-    const char* bitmap = group == this->hoverGroup ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
+    const bool hovered = group == this->hoverGroup;
+    const char* bitmap = hovered ? "유저인터페이스\\achievement_re\\tab_over.bmp" : "유저인터페이스\\achievement_re\\tab_out.bmp";
     CBitmapRes* background = AchievementBitmap(bitmap);
     this->DrawBitmap(0, y, background, false);
     this->DrawTextAt(11, textY, name.c_str(), 0, 0, this->fontHeight, this->groupColor, 1, 0);
