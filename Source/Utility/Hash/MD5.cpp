@@ -262,7 +262,11 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
 std::uint32_t MD5::HashString(const char* text) {
   DigestStorage digest;
   digest.b0 = digest.b1 = digest.b2 = digest.b3 = digest.b4 = digest.b5 = 0;
-  const std::uint32_t length = static_cast<std::uint32_t>(std::strlen(text));
+  const char* current = text;
+  do {
+    ++current;
+  } while (current[-1] != '\0');
+  const std::uint32_t length = static_cast<std::uint32_t>(current - text - 1);
 
   DigestBuffer(reinterpret_cast<const unsigned char*>(text), length, reinterpret_cast<unsigned char*>(&digest));
   return FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
