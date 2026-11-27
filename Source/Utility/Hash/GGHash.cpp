@@ -62,7 +62,11 @@ const GGHashEntry* __fastcall FindEntry(const GGHashEntry* table, DWORD count, D
 
 // OFFSET: 0x004012B0
 // FUNCTION: fn_00109
-CGGHash::CGGHash() : m_error(0), m_size(0), m_data(nullptr) {
+CGGHash::CGGHash() {
+  volatile DWORD zero = 0;
+  m_error = zero;
+  m_size = zero;
+  m_data = reinterpret_cast<DWORD*>(zero);
 }
 
 // OFFSET: 0x00401300
