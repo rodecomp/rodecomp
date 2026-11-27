@@ -182,6 +182,9 @@
 #include "Utility/Math/ClientAngles.h"
 #include <new>
 
+constexpr int kMsPerMinute = 60000;
+constexpr int kMsPerHour = 60 * kMsPerMinute;
+
 // OFFSET: 0x00D7AF70
 // FUNCTION: fn_22198
 __declspec(noinline) void CGameMode::ReceiveItemDisappear(std::uint32_t itemAid) {
@@ -6621,7 +6624,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_CASH_PLUSEXP:
     {
-      const int minutes = remaining / 60000;
+      const int minutes = remaining / kMsPerMinute;
       if (minutes > 0) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_PLUSEXP_VALUE), minutes, value1);
         std::strcpy(message, text.c_str());
@@ -6635,7 +6638,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_CASH_RECEIVEITEM:
     {
-      const int minutes = remaining / 60000;
+      const int minutes = remaining / kMsPerMinute;
       if (minutes > 0) {
         const int hours = minutes / 60;
         if (hours > 0) {
@@ -6658,7 +6661,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_CASH_PLUSONLYJOBEXP:
     {
-      const int minutes = remaining / 60000;
+      const int minutes = remaining / kMsPerMinute;
       if (minutes > 0) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_JOBPLUSEXP_VALUE), minutes, value1);
         std::strcpy(message, text.c_str());
@@ -23391,7 +23394,7 @@ static_assert(sizeof(PACKET_ZC_AUTOSPELLLIST) == 0x1E);
 void CGameMode::ProcessIncomingPackets() {
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!g_replayAnimationScaling) {
-    const int elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
+    const int elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / kMsPerHour;
     if (elapsedHours > 0 && g_playTimeNoticeHours != elapsedHours) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
         std::uint32_t color = 0x62B0FF;

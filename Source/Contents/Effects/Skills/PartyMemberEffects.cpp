@@ -116,7 +116,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
     this->effectLaunched = 1;
   } else if (effectId < 0) {
     return nullptr;
-  } else if (effectId > 60000) {
+  } else if (effectId > kEffectIdLimit) {
     return nullptr;
   }
 

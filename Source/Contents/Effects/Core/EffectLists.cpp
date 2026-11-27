@@ -303,7 +303,7 @@ void EffectLists::Add(int actor, CEffect* effect) {
 CEffect* EffectLists::Spawn(int actor, int id, vector3d position, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
   CEffect* effect = nullptr;
 
-  if (id < 0 || id > 60000) {
+  if (id < 0 || id > kEffectIdLimit) {
     switch (id) {
     case EF_READYPORTAL:
     case EF_PORTAL:

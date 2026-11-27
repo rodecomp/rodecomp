@@ -2489,6 +2489,8 @@ enum RagEffectID : std::int32_t {
   EF_HAT_EFFECT_BASE = 2485,
 };
 
+constexpr int kEffectIdLimit = 60000;
+
 enum efst_type : std::int16_t {
   EFST_BLANK = -1,
   EFST_PROVOKE,

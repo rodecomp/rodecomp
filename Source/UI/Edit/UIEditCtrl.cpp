@@ -130,6 +130,11 @@
 #include "UI/Edit/UICandidateWnd.h"
 #include "UI/Items/UIMakeTargetProcessWnd.h"
 
+constexpr int kMsPerSecond = 1000;
+constexpr int kMsPerMinute = 60 * kMsPerSecond;
+constexpr int kMsPerHour = 60 * kMsPerMinute;
+constexpr int kMsPerDay = 24 * kMsPerHour;
+
 // STRING: st_00939
 static const char g_messageTitle[] = "Message";
 
@@ -2735,13 +2740,13 @@ void UIMerchantItemMyShopWnd::Paint() {
     const int remaining = this->duration - (timeGetTime() - this->startTick);
 
     if (remaining > 0) {
-      const int days = remaining / 86400000;
-      const int hours = remaining / 3600000 % 24;
-      const int minutes = remaining / 60000 % 60;
-      const int seconds = remaining / 1000 % 60;
+      const int days = remaining / kMsPerDay;
+      const int hours = remaining / kMsPerHour % 24;
+      const int minutes = remaining / kMsPerMinute % 60;
+      const int seconds = remaining / kMsPerSecond % 60;
 
       if (this->buyingShop == 1) {
-        if (remaining <= 60000) {
+        if (remaining <= kMsPerMinute) {
           this->DrawTextAt(12, this->geometry.height - 42, FormatOwnedString(LookupMessage(MSI_REMAIN_TIME), days, hours, minutes, seconds).c_str(), 0,
             0, 11, 0xFF, 1, 0
           );
@@ -2750,7 +2755,7 @@ void UIMerchantItemMyShopWnd::Paint() {
             0, 11, 0, 1, 0
           );
         }
-      } else if (remaining <= 60000) {
+      } else if (remaining <= kMsPerMinute) {
         this->DrawTextAt(20, this->geometry.height - 50, FormatOwnedString(LookupMessage(MSI_REMAIN_TIME), days, hours, minutes, seconds).c_str(), 0, 0,
           12, 0xFF, 1, 0
         );
@@ -10858,11 +10863,11 @@ void UIMerchantItemShopWnd::Paint() {
   if (this->duration > 0) {
     const int remaining = static_cast<int>(this->startTick + this->duration - timeGetTime());
     if (remaining > 0) {
-      const int days = remaining / 86400000;
-      const int hours = remaining / 3600000 % 24;
-      const int minutes = remaining / 60000 % 60;
-      const int seconds = remaining / 1000 % 60;
-      if (remaining <= 60000) {
+      const int days = remaining / kMsPerDay;
+      const int hours = remaining / kMsPerHour % 24;
+      const int minutes = remaining / kMsPerMinute % 60;
+      const int seconds = remaining / kMsPerSecond % 60;
+      if (remaining <= kMsPerMinute) {
         this->DrawTextAt(20, this->geometry.height - 50,
           FormatOwnedString(LookupMessage(MSI_REMAIN_TIME), days, hours, minutes, seconds).c_str(), 0, 0, 12, 0xFF, 1, 0
         );
