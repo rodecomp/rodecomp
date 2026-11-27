@@ -16,6 +16,8 @@ extern "C" float sinf(float);
 extern "C" float cosf(float);
 }
 
+using CosFunc = float (__stdcall *)(float);
+
 // OFFSET: 0x00556E50
 // FUNCTION: fn_02039
 __declspec(noinline) float ClientSin(volatile float angle) {
@@ -26,7 +28,7 @@ __declspec(noinline) float ClientSin(volatile float angle) {
 // OFFSET: 0x00556E40
 // FUNCTION: fn_02038
 __declspec(noinline) float ClientCos(volatile float angle) {
-  angle = crt::cosf(angle);
+  angle = reinterpret_cast<CosFunc>(crt::cosf)(angle);
   return angle;
 }
 
