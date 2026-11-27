@@ -900,7 +900,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     }
   } else if (extra == 3) {
     alignas(16) RenderVertex vertex = TransformVert(wtm, this->render.position);
-    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * g_depthAverageHalf;
     this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
     this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
     this->state.triangles[*rpCnt].vertices[2].x = vertex.x - width;
@@ -969,7 +969,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     }
   } else if (extra == 3) {
     alignas(16) RenderVertex vertex = TransformVert(wtm, this->render.position);
-    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
+    const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * g_depthAverageHalf;
     this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
     this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
     this->state.triangles[*rpCnt].vertices[2].x = vertex.x + width;
