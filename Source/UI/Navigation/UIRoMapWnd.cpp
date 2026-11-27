@@ -336,6 +336,7 @@ void UIRoMapWnd::DrawDungeonLinks() {
   const std::uint32_t selectColor = g_worldViewMgr.dungeonSelectColor;
   std::vector<CWorldViewMap*>::iterator it = g_worldViewMgr.CurrentWorld()->maps.begin();
   const std::vector<CWorldViewMap*>::iterator end = g_worldViewMgr.CurrentWorld()->maps.end();
+  const float depthAverageHalf = g_depthAverageHalf;
   for (; it != end; ++it) {
     const CWorldViewMap* map = *it;
     if (map->id >= 100) {
@@ -355,11 +356,11 @@ void UIRoMapWnd::DrawDungeonLinks() {
       width = field->right - field->left;
       height = field->bottom - field->top;
       const int mapWidth = map->right - map->left;
-      const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
+      const float startX = static_cast<float>(width) * depthAverageHalf + static_cast<float>(field->left);
       const int mapHeight = map->bottom - map->top;
-      const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
-      const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
-      const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
+      const float startY = static_cast<float>(height) * depthAverageHalf + static_cast<float>(field->top);
+      const float endX = static_cast<float>(mapWidth) * depthAverageHalf + static_cast<float>(map->left);
+      const float endY = static_cast<float>(mapHeight) * depthAverageHalf + static_cast<float>(map->top) + 1.0f;
       CTexture* const lineTexture = g_texMgr.Default();
       std::uint32_t color;
       if (isSelected) {
