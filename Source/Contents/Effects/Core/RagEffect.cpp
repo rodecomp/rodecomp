@@ -489,14 +489,10 @@ void CRagEffect::FrostDiver(char type) {
     this->Face(this->state.deltaPos.x, this->state.deltaPos.z);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
-    const vector3d reach = RotatedForward(rotation.values, 5.0f);
-    this->state.deltaPos3.x = this->state.deltaPos3.x - reach.x;
-    this->state.deltaPos3.y = this->state.deltaPos3.y - reach.y;
-    this->state.deltaPos3.z = this->state.deltaPos3.z - reach.z;
-    const vector3d step = RotatedForward(rotation.values, 2.0f);
-    this->state.deltaPos2.x = step.x;
-    this->state.deltaPos2.y = step.y;
-    this->state.deltaPos2.z = step.z;
+    vector3d reach;
+    TransformVector(reach, vector3d{0.0f, 0.0f, 5.0f}, rotation.values);
+    this->state.deltaPos3 -= reach;
+    TransformVector(this->state.deltaPos2, vector3d{0.0f, 0.0f, 2.0f}, rotation.values);
   }
 
   if (this->state.flag != 0) {
@@ -526,11 +522,11 @@ void CRagEffect::FrostDiver(char type) {
   const float distance = static_cast<float>(ClampedRandom(10) + 5) / 10.0f;
   const float sine = ClientSine(angle);
   const float cosine = ClientCosine(angle);
-  this->state.lastPrim->state.deltaPos2 = vector3d{sine * distance, 30.0f, -distance * cosine};
-  vector3d& velocity = this->state.lastPrim->state.deltaPos2;
-  velocity.x = this->state.deltaPos3.x + velocity.x;
-  velocity.y = this->state.deltaPos3.y + velocity.y;
-  velocity.z = this->state.deltaPos3.z + velocity.z;
+  vector3d& drift = this->state.lastPrim->state.deltaPos2;
+  drift.y = 30.0f;
+  drift.x = sine * distance;
+  drift.z = -distance * cosine;
+  this->state.lastPrim->state.deltaPos2 += this->state.deltaPos3;
   this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) + 60) / 100.0f;
   this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(30) + 150) / 10.0f;
   this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -548,9 +544,7 @@ void CRagEffect::FrostDiver(char type) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   CTexture* texture = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
   this->state.lastPrim->state.textures[0] = texture;
-  this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
-  this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
-  this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
+  this->state.deltaPos3 -= this->state.deltaPos2;
 }
 
 // OFFSET: 0x00C16C70
