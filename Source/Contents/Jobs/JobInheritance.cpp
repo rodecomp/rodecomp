@@ -2153,8 +2153,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AC_SHOWER: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    vector3d* sourcePosition = &source->render.position;
-    mode->SpawnArrowEffectToPosition(sourcePosition, &target->render.position, 18.0f);
+    mode->SpawnArrowEffectToPosition(&source->render.position, &target->render.position, 18.0f);
     int column;
     int row;
     mode->WorldCell(target->render.position.x, target->render.position.z, column, row);
@@ -2163,11 +2162,12 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       float x;
       float z;
       mode->CellCenter(offsets[index][0] + column, offsets[index][1] + row, x, z);
+      const float height = mode->scene->terrain->Height(x, z);
       vector3d position;
       position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
+      position.y = height;
       position.z = z;
-      mode->SpawnArrowEffectToPosition(sourcePosition, &position, 18.0f);
+      mode->SpawnArrowEffectToPosition(&source->render.position, &position, 18.0f);
     }
     break;
   }
@@ -2639,7 +2639,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       effectId += 0xA3;
     }
     g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_CROSSRIPPERSLASHER : EF_NEW_CROSSRIPPERSLASHER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_CROSSRIPPERSLASHER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    } else {
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CROSSRIPPERSLASHER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    }
     effect = source->LaunchEffect(EF_STIN6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = vector3d{0.0f, static_cast<float>(target->render.accountId), 0.0f};
@@ -2720,8 +2724,8 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("arrowstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     const int effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B1 : 0x50D;
     g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const int arrowEffectId = effectId + 1;
     vector3d position{0.0f, 0.0f, 0.0f};
+    const int arrowEffectId = effectId + 1;
     for (int delay = 600; delay < 1200; delay += 200) {
       CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, arrowEffectId, position, 0, -1, 0, 0);
       if (arrow) {
@@ -2778,7 +2782,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       spot.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + spot.x;
       spot.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + spot.y;
       spot.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + spot.z;
-      const int delay = std::max(std::rand() % 10, 0) * 50;
+      const int delay = std::max(0, std::rand() % 10) * 50;
       CEffect* spawned = g_effectMgr->Spawn(0, EF_NEW_JUDEX_LIGHT, spot, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(delay);
@@ -3123,17 +3127,21 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
-  case NC_AXETORNADO: {
-    const bool minEffect = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF);
-    const int castEffect = minEffect ? EF_MINEFFECT_AXETORNADO : EF_NEW_AXETORNADO;
-    const int bottomEffect = minEffect ? EF_MINEFFECT_AXETORNADO_BOTTOM : EF_NEW_AXETORNADO_BOTTOM;
-    if (g_effectMgr->Find(source->render.accountId, castEffect)) {
-      return;
+  case NC_AXETORNADO:
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      if (g_effectMgr->Find(source->render.accountId, EF_MINEFFECT_AXETORNADO)) {
+        return;
+      }
+      g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_AXETORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_AXETORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    } else {
+      if (g_effectMgr->Find(source->render.accountId, EF_NEW_AXETORNADO)) {
+        return;
+      }
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXETORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXETORNADO_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
-    g_effectMgr->Spawn(source->render.accountId, castEffect, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, bottomEffect, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    break;
-  }
+    return;
   case NC_POWERSWING: {
     float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
@@ -3314,7 +3322,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
-    break;
+    return;
   case EL_WATER_SCREW:
     target->LaunchEffect(EF_SPR_LIGHTPRINT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
@@ -3427,5 +3435,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     target->LaunchEffect(EF_EL_TROPIC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
+  default:
+    return;
   }
 }
