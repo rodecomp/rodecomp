@@ -105,7 +105,7 @@ BOOL CGGHash::Load(const wchar_t* filename) {
         seed = md5.HashBuffer(reinterpret_cast<const unsigned char*>(&seed), 4);
       }
 
-      DWORD keys[16];
+      DWORD keys[15];
       for (int i = 0; i < static_cast<int>(keyCount); ++i) {
         keys[i] = md5.HashBuffer(reinterpret_cast<const unsigned char*>(&seed), 4);
         seed = keys[i];
