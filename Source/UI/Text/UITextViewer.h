@@ -25,6 +25,8 @@ class UIString;
 class UITextButton;
 struct TextLink;
 
+extern char g_emptyText[4];
+
 class UITextViewer : public UIListBox {
   friend class UIWindow;
   friend class UIQuestDisplay;

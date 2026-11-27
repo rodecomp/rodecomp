@@ -5791,7 +5791,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
   }
 
   char name[256];
-  std::sprintf(name, "");
+  std::sprintf(name, g_emptyText);
   if (packet->aid != g_session.m_aid) {
     std::sprintf(name, LookupMessage(MSI_CHARACTER_NAME), member.name.c_str());
   }
@@ -5901,7 +5901,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       std::sprintf(message, LookupMessage(MSI_ENST_ADRENALINE));
       break;
     case EFST_TRICKDEAD:
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetAction(64, 4, 1);
         this->scene->player->render.isMotionFreezed = true;
@@ -5923,7 +5923,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         g_soundMgr->PlayWave("lava_golem_move.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_PROVOKE:
     case EFST_ENDURE:
@@ -6202,13 +6202,13 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case EFST_SOULFALCON:
     case EFST_SOULGOLEM:
     case EFST_ASSUMPTIO_BUFF:
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
         g_session.guildLeader = 1;
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_FOOD_STR:
     case EFST_FOOD_STR_CASH:
@@ -6371,7 +6371,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       std::sprintf(message, LookupMessage(MSI_DSST_ADRENALINE));
       break;
     case EFST_TRICKDEAD:
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SetState(ST_STAND, 1);
         this->scene->player->render.isMotionFreezed = false;
@@ -6529,7 +6529,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
           g_effectMgr->Retire(player->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_01 + i);
         }
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_PROVOKE:
     case EFST_ENDURE:
@@ -6816,25 +6816,25 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case EFST_SOULFALCON:
     case EFST_SOULGOLEM:
     case EFST_ASSUMPTIO_BUFF:
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_SIREN:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_HEARTASURA, 0, 0, 0, 0, 0);
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_DEEP_SLEEP:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, AM_DELETE_SLEEP_EFFECT, 0, 0, 0, 0, 0, 0);
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_NETHERWORLD:
       if (packet->aid == g_session.m_aid) {
         this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NPC_STOP, 0, 0, 0, 0, 0);
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_WUGDASH:
       if (packet->aid == g_session.m_aid) {
@@ -6843,13 +6843,13 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
           player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BUNSINJYUTSU2, 0, 0, 0, 0, 0);
         }
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_DA_ILLUSION:
       if (packet->aid == g_session.m_aid) {
         g_session.guildLeader = 0;
       }
-      std::sprintf(message, "");
+      std::sprintf(message, g_emptyText);
       break;
     case EFST_FOOD_STR:
     case EFST_FOOD_STR_CASH:
