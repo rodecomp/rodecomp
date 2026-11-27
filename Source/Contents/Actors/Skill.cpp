@@ -16,6 +16,7 @@
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/Models/ModelActor.h"
@@ -220,7 +221,7 @@ void CSkill::Render(int argument) {
 // FUNCTION: fn_24271
 __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int duration) {
   if (g_effectMgr->HasAllocator(effectId)) {
-    g_effectMgr->Spawn(this->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 1, 0);
+    g_effectMgr->Spawn(this->render.accountId, effectId, ZeroVector3d(), 0, -1, 1, 0);
   }
 
   unsigned interval = EffectLifetime(effectId) - 20;
@@ -241,7 +242,8 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
       if (effectId == EF_POISON_MIST || effectId == EF_VOLCANIC_ASH) {
         y += 20.0f;
       }
-      const vector3d position{x, y - static_cast<float>(rand() % 11) * 0.4f, z};
+      y -= static_cast<float>(rand() % 11) * 0.4f;
+      const vector3d position{x, y, z};
       g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, effectId, interval + 20, 0);
     }
   }
