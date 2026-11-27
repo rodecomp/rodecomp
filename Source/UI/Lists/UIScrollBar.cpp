@@ -1895,10 +1895,10 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
       atCursor = false;
     } else {
       remaining = remaining.substr(found + bytes);
-      if (absolute == found) {
-        absolute += bytes;
-      } else {
+      if (absolute != found) {
         absolute += found + bytes;
+      } else {
+        absolute += bytes;
       }
       found = static_cast<int>(remaining.find(fitted));
       continue;
