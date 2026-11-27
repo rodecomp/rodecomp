@@ -13,6 +13,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -565,7 +566,7 @@ void CEfstAction_BasicAction::OnEfstBegin(int efstId, int value, int argument3, 
   if (actor) {
     const int id = this->GetEffectId(efstId, argument4);
     if (id >= 0) {
-      g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, id, ZeroVector3d(), 0, -1, 0, 0);
     }
   }
 }
