@@ -116,6 +116,9 @@ const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 // GLOBAL: gl_25154
 const std::string s_messageBoxItemLinkClosing = "</ITEML>";
 
+// GLOBAL: gl_26179
+extern const char g_uiTexturePathPrefix[] = "유저인터페이스\\";
+
 namespace {
   enum LoginAccountClass : std::intptr_t {
     LOGIN_ACCOUNT_CLASS_INTEGRATED = 0,
@@ -672,7 +675,7 @@ void UIMessageBox::Configure(
     this->m_message0 = ID_CANCEL;
   }
 
-  const std::string prefix("유저인터페이스\\");
+  const std::string prefix(g_uiTexturePathPrefix);
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[3] = {ID_OK, ID_YES, ID_NO};
   int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
