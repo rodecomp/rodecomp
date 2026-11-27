@@ -691,7 +691,7 @@ void UIRuneSet_Info::RefreshDescription() {
   }
 
   const int activeCount = this->m_runeSet->CountActiveSlots();
-  for (int count = 2; count < 7; ++count) {
+  for (int count = 2; count != 7; ++count) {
     const int set = count - 1;
     const int lineCount = static_cast<int>(this->m_runeSet->m_descriptions[set].size());
     if (lineCount == 0) {
