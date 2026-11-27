@@ -2548,7 +2548,8 @@ void CEffectPrim::RenderCone(matrix& wtm) {
       const float sn2 = g_sinTable[this->state.slots[ec].rotStart];
       const float scale = this->state.slots[ec].height[0];
 
-      float dist = this->state.slots[ec].distance;
+      const float baseDist = this->state.slots[ec].distance;
+      float dist = baseDist;
       vec2.y = cs1 * dist;
       dist = sn1 * dist;
       vec2.x = cs2 * dist;
@@ -2557,7 +2558,7 @@ void CEffectPrim::RenderCone(matrix& wtm) {
       vec2.x += this->state.slots[ec].vecTNow.x;
       vec2.z += this->state.slots[ec].vecTNow.z;
 
-      dist = scale * this->state.slots[ec].distance * 0.1f + this->state.slots[ec].distance;
+      dist = scale * baseDist * 0.1f + baseDist;
       vec3.y = cs1 * dist;
       dist = sn1 * dist;
       vec3.x = cs2 * dist;
