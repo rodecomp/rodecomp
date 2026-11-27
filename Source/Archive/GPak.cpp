@@ -861,6 +861,7 @@ void GPakEx::GOST::Dec::ProcessAndXorBlock(const std::uint8_t* inBlock, const st
 
 // OFFSET: 0x00643CC0
 // FUNCTION: fn_04840
+// VIRTUALIZED: emulated 0x00643CCC
 void GPakEx::GOST::Enc::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
   std::uint32_t n1;
   std::uint32_t n2;
@@ -1587,6 +1588,7 @@ bool PakHeaderDecryptor::Decrypt(std::shared_ptr<AES>& cipher, const PakObfuscat
 
 // OFFSET: 0x00659000
 // FUNCTION: fn_05117
+// VIRTUALIZED: emulated 0x0065903E
 void PakAuxiliary::Initialize() {
   PakKeyMaterial material;
   utility::FillRandomBytes(std::span<std::uint8_t>(reinterpret_cast<std::uint8_t*>(&material), sizeof(material)), 9999);
@@ -1749,6 +1751,7 @@ bool PakAuxiliary::DecodeHeader(std::span<const std::uint8_t> name, std::uint8_t
 
 // OFFSET: 0x00659B60
 // FUNCTION: fn_05118
+// VIRTUALIZED: emulated 0x00659B94
 __declspec(noinline) bool PakAuxiliary::Apply(std::span<const std::uint8_t> data, std::span<const std::uint8_t> auxiliary) {
   this->m_archiveKeys.clear();
   if (auxiliary.size() < sizeof(PakArchiveKeyBlock)) {
