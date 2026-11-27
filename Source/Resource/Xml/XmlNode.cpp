@@ -124,20 +124,21 @@ const std::string& XmlNode::Text() {
         continue;
       }
 
+      std::string& text = this->text;
       char* next = cursor + 1;
       if (value == '&') {
         if (std::strcmp(this->name, "registrationweb") != 0) {
-          this->text += this->DecodeEntity(next, end);
+          text += this->DecodeEntity(next, end);
           while (cursor != end && *cursor != ';') {
             ++cursor;
           }
           ++cursor;
         } else {
-          this->text.append(1, '&');
+          text.append(1, '&');
           cursor = next;
         }
       } else {
-        this->text.append(1, value);
+        text.append(1, value);
         cursor = next;
       }
     }
