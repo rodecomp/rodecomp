@@ -1002,24 +1002,25 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
-      const int previous = this->m_pageSlot;
-      this->m_pageSlot -= 5;
-      if (this->m_pageSlot < 0) {
+      int& slot = this->m_pageSlot;
+      const int previous = slot;
+      slot -= 5;
+      if (slot < 0) {
         if (this->m_page <= 0) {
-          this->m_pageSlot = previous;
+          slot = previous;
           break;
         }
         this->SendMsg(nullptr, UM_COMMAND, ID_PREV_PAGE, 0, 0, 0);
-        this->m_pageSlot += this->m_slotsPerPage;
+        slot += this->m_slotsPerPage;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        if (index == this->m_pageSlot) {
+        if (index == slot) {
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
         } else {
           this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
+      g_charInfo.slot = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + slot);
       this->UpdateCharacterInfo();
       this->SaveCurrentSlot();
     }
