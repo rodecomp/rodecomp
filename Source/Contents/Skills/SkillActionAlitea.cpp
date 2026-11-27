@@ -1153,7 +1153,7 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_cast_mute", 0x5B8F49AF09390D1BULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_cast_mute", 0x5B8F49AF09390D1BULL)), ZeroVector3d(), 0, -1, 0, 0)) {
     effect->SetLifeTime(1000);
   }
 
