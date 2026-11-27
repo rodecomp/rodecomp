@@ -61,6 +61,7 @@ void CReassemblyPacketImpl::Destroy() {
 
 // OFFSET: 0x00B155F0
 // FUNCTION: fn_18423
+// VIRTUALIZED: emulated 0x027E2BB9
 int CReassemblyPacketImpl::Notify(int event) {
   if (event == 0) {
     this->m_seed = this->m_seed * this->m_multiplier + this->m_increment;
