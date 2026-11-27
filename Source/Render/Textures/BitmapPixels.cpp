@@ -231,7 +231,7 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
       if (source.m_alpha == true) {
         const std::uint32_t target = destination[column];
         const WORD targetLow = static_cast<WORD>(target);
-        const WORD sourceLow = static_cast<WORD>(input[column]);
+        const std::uint32_t sourceLow = static_cast<WORD>(input[column]);
         const WORD targetAlpha = static_cast<WORD>(target >> 24);
         const WORD sourceAlpha = static_cast<WORD>(input[column] >> 24);
         const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(input[column]) * sourceAlpha / 255;
