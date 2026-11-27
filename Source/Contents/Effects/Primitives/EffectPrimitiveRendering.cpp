@@ -1241,7 +1241,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   const unsigned char finalRed = master.colorChannels[0] != -1 ? static_cast<unsigned char>(master.colorChannels[0]) : red;
   const unsigned char finalGreen = master.colorChannels[1] != -1 ? static_cast<unsigned char>(master.colorChannels[1]) : green;
   const unsigned char finalBlue = master.colorChannels[2] != -1 ? static_cast<unsigned char>(master.colorChannels[2]) : blue;
-  const int destBlend = master.colorChannels[3] != -1 ? master.colorChannels[3] : blend;
+  const int destBlend = master.colorChannels[3] == -1 ? blend : master.colorChannels[3];
   const std::uint32_t color = (((((static_cast<std::uint32_t>(alpha) << 8) + finalRed) << 8) + finalGreen) << 8) + finalBlue;
 
   float right;
@@ -1271,58 +1271,69 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   vec3 += position;
   vec4 += position;
 
-  alignas(16) RenderVertex vertex;
   this->state.triangles[*rpCnt].sourceBlend = 5;
   this->state.triangles[*rpCnt].destinationBlend = destBlend;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec1.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec1.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[0] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[0].diffuse = color;
   this->state.triangles[*rpCnt].vertices[0].u = left;
   this->state.triangles[*rpCnt].vertices[0].v = textureV;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec2.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec2.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[1] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[1].diffuse = color;
   this->state.triangles[*rpCnt].vertices[1].u = right;
   this->state.triangles[*rpCnt].vertices[1].v = textureV;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec3.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec3.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[2] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[2].diffuse = color;
   this->state.triangles[*rpCnt].vertices[2].u = right;
   this->state.triangles[*rpCnt].vertices[2].v = 0.0f;
   this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], this->state.renderFlag);
     ++*rpCnt;
   }
 
   this->state.triangles[*rpCnt].sourceBlend = 5;
   this->state.triangles[*rpCnt].destinationBlend = destBlend;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec4.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[0] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec4.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[0] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[0].diffuse = color;
   this->state.triangles[*rpCnt].vertices[0].u = left;
   this->state.triangles[*rpCnt].vertices[0].v = 0.0f;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec3.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[1] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec3.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[1] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[1].diffuse = color;
   this->state.triangles[*rpCnt].vertices[1].u = right;
   this->state.triangles[*rpCnt].vertices[1].v = 0.0f;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
-  g_renderer->Project(&vec1.x, wtm.values, vertex);
-  this->state.triangles[*rpCnt].vertices[2] = vertex;
+  {
+    alignas(16) RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+    g_renderer->Project(&vec1.x, wtm.values, vertex);
+    this->state.triangles[*rpCnt].vertices[2] = vertex;
+  }
   this->state.triangles[*rpCnt].vertices[2].diffuse = color;
   this->state.triangles[*rpCnt].vertices[2].u = left;
   this->state.triangles[*rpCnt].vertices[2].v = textureV;
   this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], this->state.renderFlag);
     ++*rpCnt;
   }
 }
