@@ -8,6 +8,7 @@
 #include "Contents/Actors/CharacterRender.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Models/ModelAnimation.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -19,6 +20,7 @@
 #include "Contents/World/World.h"
 #include "UI/Login/FuncDrawWNDChar.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Utility/Math/Vector3d.h"
 
 #include "Resource/MSGSTRINGID.h"
@@ -49,8 +51,8 @@ static void DrawPreviewCharacter(
 // FUNCTION: fn_09881
 void UIPreviewEquipWnd::DrawCharacter() {
   matrix view;
-  view.MakeXRotation(this->m_render->cameraPitch / 180.0f * 3.141592f);
-  view.AppendYRotation(this->m_render->cameraYaw / 180.0f * 3.141592f);
+  view.MakeXRotation(this->m_render->cameraPitch / g_angleDivisor * g_piApprox);
+  view.AppendYRotation(this->m_render->cameraYaw / g_angleDivisor * g_piApprox);
 
   vector3d offset;
   offset.x = 0.0f;
