@@ -1220,9 +1220,12 @@ void CPc::ApplyLayerEffects(
     if (alpha > 255) {
       alpha = 255;
     }
+    if (alpha < 0) {
+      alpha = 0;
+    }
     const float rise = std::max(400.0f / mode->camera->camera.desiredDistance * static_cast<float>(riseUnits), 0.0f);
     quad->top = static_cast<float>(box->top) - rise;
-    quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
+    quad->color = (alpha << 24) + 0xFFFFFF;
     quad->bottom = static_cast<float>(box->bottom) - rise;
   }
 
