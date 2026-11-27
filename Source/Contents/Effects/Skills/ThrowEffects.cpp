@@ -276,6 +276,7 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
   switch (this->id) {
   case EF_THROWITEM:
     this->InitEmptyBottleParticle(particle);
+    particle->angle = 0.0f;
     break;
   case EF_THROWITEM2:
     particle->SetTexture("유저인터페이스\\item\\빈포션병.bmp");
@@ -283,6 +284,7 @@ void CThrowItemEffect::InitializeParticle(CParticle* particle) {
     break;
   case EF_THROWITEM3:
     this->InitStoneParticle(particle);
+    particle->angle = 0.0f;
     break;
   case EF_THROWITEM4:
     this->launchDelay = 5;
