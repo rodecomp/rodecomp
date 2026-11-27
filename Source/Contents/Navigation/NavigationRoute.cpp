@@ -1371,7 +1371,14 @@ bool CNavigationManager::LoadTargetPreview() {
 
   int mapType;
   const char* mapName;
-  if (type == 0 || type == 1) {
+  if (type == 0) {
+    if (!object) {
+      return false;
+    }
+    CNaviInfo* info = static_cast<CNaviInfo*>(object);
+    mapType = info->GetType();
+    mapName = info->GetName();
+  } else if (type == 1) {
     if (!object) {
       return false;
     }
