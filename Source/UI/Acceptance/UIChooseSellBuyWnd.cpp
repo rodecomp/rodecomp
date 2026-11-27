@@ -6713,56 +6713,55 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
 
     case ID_BUY: {
-      if (this->m_totalPrice <= 0) {
-        break;
-      }
-      if (std::atoi(this->m_pointEdit->Text()) > this->m_cashBalance) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
-        return 0;
-      }
-      if (this->m_totalPrice > std::atoi(this->m_pointEdit->Text()) + this->m_pointBalance) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
-        return 0;
-      }
-      if (std::atoi(this->m_pointEdit->Text()) > this->m_totalPrice) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL2)), 0xFF, 0, 0, 0);
-        return 0;
-      }
-      NCashBuyHeader header = {};
-      header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
-      header.points = std::atoi(this->m_pointEdit->Text());
-      char text[0x800];
-      if (header.points != 0) {
-        FormatMessageBuffer(text, LookupMessage(MSI_BUY_RECONFIRM2_2019), this->m_totalPrice - header.points, header.points);
-      } else {
-        FormatMessageBuffer(text, LookupMessage(MSI_BUY_RECONFIRM1_2019), this->m_totalPrice);
-      }
-      if (g_windowMgr.Confirm(text, 2, true, true, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
-        break;
-      }
+      if (this->m_totalPrice > 0) {
+        if (std::atoi(this->m_pointEdit->Text()) > this->m_cashBalance) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
+          return 0;
+        }
+        if (this->m_totalPrice > std::atoi(this->m_pointEdit->Text()) + this->m_pointBalance) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
+          return 0;
+        }
+        if (std::atoi(this->m_pointEdit->Text()) > this->m_totalPrice) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL2)), 0xFF, 0, 0, 0);
+          return 0;
+        }
+        NCashBuyHeader header = {};
+        header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
+        header.points = std::atoi(this->m_pointEdit->Text());
+        char text[0x800];
+        if (header.points != 0) {
+          FormatMessageBuffer(text, LookupMessage(MSI_BUY_RECONFIRM2_2019), this->m_totalPrice - header.points, header.points);
+        } else {
+          FormatMessageBuffer(text, LookupMessage(MSI_BUY_RECONFIRM1_2019), this->m_totalPrice);
+        }
+        if (g_windowMgr.Confirm(text, 2, true, true, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
+          break;
+        }
 
-      const int count = g_session.GetNumPurchaseItems();
-      const unsigned int length = (count + 1) * 10;
-      if (length > 0x800) {
-        break;
+        const int count = g_session.GetNumPurchaseItems();
+        const unsigned int length = (count + 1) * 10;
+        if (length > 0x800) {
+          break;
+        }
+        header.packetLength = static_cast<std::uint16_t>(length);
+        header.count = static_cast<std::uint16_t>(count);
+        char buffer[0x800];
+        std::memcpy(buffer, &header, sizeof(header));
+        if (count == 0) {
+          break;
+        }
+        for (int index = 0; index < count; ++index) {
+          ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
+          NCashBuyItem entry;
+          entry.itemId = std::atoi(item.itemId.c_str());
+          entry.quantity = item.quantity;
+          entry.tab = item.bindOnEquip;
+          std::memcpy(buffer + sizeof(header) + index * sizeof(entry), &entry, sizeof(entry));
+        }
+        GetRagConnection().Send(static_cast<short>(length), buffer);
+        return 0;
       }
-      header.packetLength = static_cast<std::uint16_t>(length);
-      header.count = static_cast<std::uint16_t>(count);
-      char buffer[0x800];
-      std::memcpy(buffer, &header, sizeof(header));
-      if (count == 0) {
-        break;
-      }
-      for (int index = 0; index < count; ++index) {
-        ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
-        NCashBuyItem entry;
-        entry.itemId = std::atoi(item.itemId.c_str());
-        entry.quantity = item.quantity;
-        entry.tab = item.bindOnEquip;
-        std::memcpy(buffer + sizeof(header) + index * sizeof(entry), &entry, sizeof(entry));
-      }
-      GetRagConnection().Send(static_cast<short>(length), buffer);
-      return 0;
     }
 
     case ID_CLOSE: {
