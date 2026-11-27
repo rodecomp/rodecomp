@@ -8,6 +8,9 @@
 #include <bit>
 #include <cstring>
 
+// GLOBAL: gl_28145
+float g_textureCoordinateScale = 0.00390625f;
+
 namespace {
   // INLINED
   unsigned Component(unsigned pixel, DWORD mask, const DeviceOwnerDX7::Channel& channel) {
@@ -68,8 +71,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
 
       int x = static_cast<int>(j % columns) * 4;
       int y = static_cast<int>(j / columns) * 4;
-      float tu = static_cast<float>(static_cast<int>(i + j) % 256) * 0.00390625f;
-      float tv = static_cast<float>(static_cast<int>(i + j) / 256) * 0.00390625f;
+      float tu = static_cast<float>(static_cast<int>(i + j) % 256) * g_textureCoordinateScale;
+      float tv = static_cast<float>(static_cast<int>(i + j) / 256) * g_textureCoordinateScale;
 
       ScreenPoint xy[2] = {ScreenPoint(static_cast<float>(x), static_cast<float>(y)), ScreenPoint(static_cast<float>(x + 4), static_cast<float>(y + 4))};
       ScreenPoint uv[2] = {
@@ -89,8 +92,7 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
     readback.m_surface->Blt(nullptr, this->renderTarget, nullptr, DDBLT_WAIT, nullptr);
 
     locked.dwSize = sizeof(locked);
-    locked.dwFlags = 0;
-    ZeroMemory(&locked.dwHeight, sizeof(locked) - 8);
+    ZeroMemory(&locked.dwFlags, sizeof(locked) - 4);
     if (FAILED(readback.m_surface->Lock(nullptr, &locked, DDLOCK_WAIT, nullptr))) {
       return false;
     }
@@ -134,8 +136,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
     i += columns * rows;
   }
 
-  g_textureOffsetX = static_cast<float>(best % 256) * 0.00390625f;
-  g_textureOffsetY = static_cast<float>(best / 256) * 0.00390625f;
+  g_textureOffsetX = static_cast<float>(best % 256) * g_textureCoordinateScale;
+  g_textureOffsetY = static_cast<float>(best / 256) * g_textureCoordinateScale;
   this->device->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFN_LINEAR);
   this->device->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
   return true;
