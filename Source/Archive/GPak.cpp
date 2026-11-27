@@ -1852,7 +1852,7 @@ void DataHashBlockTransform(
   std::span<const std::uint8_t> name, std::span<const std::uint8_t, 60> parameters, std::span<const std::uint8_t, 16> hash, std::span<std::uint8_t, 16> output
 ) {
   const std::span<const std::uint8_t> iv = parameters.subspan(
-    GPakEx::Obfuscated<0x53F9360C, 0x4CC36824, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x53F9360C, 0x4CC36824, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
+    GPakEx::Obfuscated<0x53F9360C, 0x3972ED7C, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x53F9360C, 0x3972ED7C, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
   );
   std::array<std::uint8_t, 16> key = std::bit_cast<std::array<std::uint8_t, 16>>(XXH3_128bits(name.data(), name.size()));
   GPakEx::CipherModeFinal<CIPHER, GPakEx::ENCRYPTION, GPakEx::BlockCipherFinal<GPakEx::ENCRYPTION, typename CIPHER::Base>, GPakEx::CBC_Encryption> cipher;
@@ -1874,7 +1874,7 @@ void DataHashKeyTransform(
   std::span<const std::uint8_t> name, std::span<const std::uint8_t, 60> parameters, std::span<const std::uint8_t, 16> hash, std::span<std::uint8_t, 16> output
 ) {
   const std::span<const std::uint8_t> iv = parameters.subspan(
-    GPakEx::Obfuscated<0x53F9360C, 0x4CC36824, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x53F9360C, 0x4CC36824, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
+    GPakEx::Obfuscated<0x53F9360C, 0x3972ED7C, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x53F9360C, 0x3972ED7C, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
   );
   std::array<std::uint8_t, 16> nameHash = std::bit_cast<std::array<std::uint8_t, 16>>(XXH3_128bits(name.data(), name.size()));
   GPakEx::CipherModeFinal<CIPHER, GPakEx::ENCRYPTION, GPakEx::BlockCipherFinal<GPakEx::ENCRYPTION, typename CIPHER::Base>, GPakEx::CBC_Encryption> cipher;
@@ -1940,9 +1940,9 @@ bool GPakEx::Crypter_SUB_XOR_AES_A<ID, AES_MODE, KEY_OFFSET, IV_OFFSET, MASK_CIP
   DataHashTransform<MASK_CIPHER, MASK_BY_NAME, MASK_IV_OFFSET>(name, parameters, hash, mask);
 
   const std::span<const std::uint8_t> key =
-    parameters.subspan(Obfuscated<0x508EF2F3, 0xBFDC0C82, std::size_t>(KEY_OFFSET), Obfuscated<0x508EF2F3, 0xBFDC0C82, std::size_t>(16));
+    parameters.subspan(Obfuscated<0x508EF2F3, 0xF0E29F8F, std::size_t>(KEY_OFFSET), Obfuscated<0x508EF2F3, 0xF0E29F8F, std::size_t>(16));
   const std::span<const std::uint8_t> iv =
-    parameters.subspan(Obfuscated<0xA101B199, 0x10F4BC62, std::size_t>(IV_OFFSET), Obfuscated<0xA101B199, 0x10F4BC62, std::size_t>(16));
+    parameters.subspan(Obfuscated<0xA101B199, 0x9F068E6D, std::size_t>(IV_OFFSET), Obfuscated<0xA101B199, 0x9F068E6D, std::size_t>(16));
   AES aes;
   if (!aes.Initialize(MutableBytes(key), MutableBytes(iv), AES_MODE)) {
     return false;
@@ -2031,10 +2031,10 @@ bool GPakEx::Crypter_SUB_XOR_BlockCipher_A<ID, CIPHER, MODE, KEY_OFFSET, IV_OFFS
   DataHashTransform<MASK_CIPHER, MASK_BY_NAME, MASK_IV_OFFSET>(name, material, hash, mask);
 
   const std::span<const std::uint8_t> key = std::span<const std::uint8_t, 60>(material).subspan(
-    Obfuscated<0xC0C9A189, 0x9DD8961C, std::size_t>(KEY_OFFSET), Obfuscated<0xC0C9A189, 0x9DD8961C, std::size_t>(CipherSizes<CIPHER>::DEFAULT_KEYLENGTH)
+    Obfuscated<0xC0C9A189, 0xB6643F1D, std::size_t>(KEY_OFFSET), Obfuscated<0xC0C9A189, 0xB6643F1D, std::size_t>(CipherSizes<CIPHER>::DEFAULT_KEYLENGTH)
   );
   const std::span<const std::uint8_t> iv = std::span<const std::uint8_t, 60>(material).subspan(
-    Obfuscated<0x3D1F34CF, 0x7D456D99, std::size_t>(IV_OFFSET), Obfuscated<0x3D1F34CF, 0x7D456D99, std::size_t>(CipherSizes<CIPHER>::BLOCKSIZE)
+    Obfuscated<0x3D1F34CF, 0x73F70B1B, std::size_t>(IV_OFFSET), Obfuscated<0x3D1F34CF, 0x73F70B1B, std::size_t>(CipherSizes<CIPHER>::BLOCKSIZE)
   );
   typename MODE::template Decryption<CIPHER> cipher;
   cipher.SetKeyWithIV(key, iv);
@@ -2087,7 +2087,7 @@ template <
   int ID, int AES_MODE, std::size_t KEY_OFFSET, std::size_t IV_OFFSET, class MASK_CIPHER, bool MASK_BY_NAME, std::size_t MASK_IV_OFFSET, std::size_t PLAIN_SIZE,
   std::size_t BLOCK_SIZE>
 int GPakEx::Crypter_SUB_XOR_AES_A<ID, AES_MODE, KEY_OFFSET, IV_OFFSET, MASK_CIPHER, MASK_BY_NAME, MASK_IV_OFFSET, PLAIN_SIZE, BLOCK_SIZE>::Id() const {
-  return Obfuscated<0x3821881D, 0xC8B24BB8, int>(ID);
+  return Obfuscated<0x3821881D, 0x842316C1, int>(ID);
 }
 
 // OFFSET: 0x006546D0
@@ -2142,7 +2142,7 @@ template <
   int ID, class CIPHER, class MODE, std::size_t KEY_OFFSET, std::size_t IV_OFFSET, class MASK_CIPHER, bool MASK_BY_NAME, std::size_t MASK_IV_OFFSET,
   std::size_t PLAIN_SIZE, std::size_t BLOCK_SIZE>
 int GPakEx::Crypter_SUB_XOR_BlockCipher_A<ID, CIPHER, MODE, KEY_OFFSET, IV_OFFSET, MASK_CIPHER, MASK_BY_NAME, MASK_IV_OFFSET, PLAIN_SIZE, BLOCK_SIZE>::Id() const {
-  return Obfuscated<0x2B225215, 0xD6A9A41E, int>(ID);
+  return Obfuscated<0x2B225215, 0x9DF4E919, int>(ID);
 }
 
 template void DataHashBlockTransform<GPakEx::IDEA, 0x34>(std::span<const std::uint8_t>, std::span<const std::uint8_t, 60>, std::span<const std::uint8_t, 16>, std::span<std::uint8_t, 16>);
@@ -2211,45 +2211,45 @@ bool DecryptSubXorAesBody(
   );
 
   const std::span<const std::uint8_t> key =
-    parameters.subspan(GPakEx::Obfuscated<0x4CBFFD22, 0x063C6555, std::size_t>(KEY_OFFSET), GPakEx::Obfuscated<0x4CBFFD22, 0x063C6555, std::size_t>(16));
+    parameters.subspan(GPakEx::Obfuscated<0x4CBFFD22, 0x71C77F8A, std::size_t>(KEY_OFFSET), GPakEx::Obfuscated<0x4CBFFD22, 0x71C77F8A, std::size_t>(16));
   const std::span<const std::uint8_t> iv =
-    parameters.subspan(GPakEx::Obfuscated<0xEDF22406, 0x73B94AD2, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0xEDF22406, 0x73B94AD2, std::size_t>(16));
+    parameters.subspan(GPakEx::Obfuscated<0xEDF22406, 0x7F5C93BE, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0xEDF22406, 0x7F5C93BE, std::size_t>(16));
   AES aes;
   if (!aes.Initialize(MutableBytes(key), MutableBytes(iv), AES_MODE)) {
     return false;
   }
 
-  if (input.size() <= GPakEx::Obfuscated<0xA32C8BB1, 0x48052735, std::size_t>(PLAIN_SIZE)) {
+  if (input.size() <= GPakEx::Obfuscated<0xA32C8BB1, 0xFD1FAF65, std::size_t>(PLAIN_SIZE)) {
     XorWithKey16(mask, input, output);
-  } else if (input.size() <= GPakEx::Obfuscated<0x584C0F94, 0x3D9B43B4, std::size_t>(PLAIN_SIZE + (BLOCK_SIZE / 16 + 1) * 16)) {
+  } else if (input.size() <= GPakEx::Obfuscated<0x584C0F94, 0xFF7114A4, std::size_t>(PLAIN_SIZE + (BLOCK_SIZE / 16 + 1) * 16)) {
     XorWithKey16(
-      mask, input.subspan(0, GPakEx::Obfuscated<0x9E1F4D5F, 0xB469CC8C, std::size_t>(PLAIN_SIZE)),
-      output.subspan(0, GPakEx::Obfuscated<0x5EC52F52, 0x1FECA855, std::size_t>(PLAIN_SIZE))
+      mask, input.subspan(0, GPakEx::Obfuscated<0x9E1F4D5F, 0x59D8FCEB, std::size_t>(PLAIN_SIZE)),
+      output.subspan(0, GPakEx::Obfuscated<0x5EC52F52, 0x3E0F577A, std::size_t>(PLAIN_SIZE))
     );
-    const std::span<std::uint8_t> tail = output.subspan(GPakEx::Obfuscated<0xCDE8F136, 0xA29C35F3, std::size_t>(PLAIN_SIZE));
-    if (aes.Decrypt(MutableBytes(input.subspan(GPakEx::Obfuscated<0xC47071A4, 0xC080ABD2, std::size_t>(PLAIN_SIZE))), tail, BCRYPT_BLOCK_PADDING) != tail.size()) {
+    const std::span<std::uint8_t> tail = output.subspan(GPakEx::Obfuscated<0xCDE8F136, 0x8CD2C2AE, std::size_t>(PLAIN_SIZE));
+    if (aes.Decrypt(MutableBytes(input.subspan(GPakEx::Obfuscated<0xC47071A4, 0x5D4BDDF4, std::size_t>(PLAIN_SIZE))), tail, BCRYPT_BLOCK_PADDING) != tail.size()) {
       return false;
     }
   } else {
     XorWithKey16(
-      mask, input.subspan(0, GPakEx::Obfuscated<0xC8344285, 0x43344C73, std::size_t>(PLAIN_SIZE)),
-      output.subspan(0, GPakEx::Obfuscated<0xA76A2507, 0x50DB30F7, std::size_t>(PLAIN_SIZE))
+      mask, input.subspan(0, GPakEx::Obfuscated<0xC8344285, 0x337C9449, std::size_t>(PLAIN_SIZE)),
+      output.subspan(0, GPakEx::Obfuscated<0xA76A2507, 0x67E538B3, std::size_t>(PLAIN_SIZE))
     );
     const std::span<std::uint8_t> block = output.subspan(
-      GPakEx::Obfuscated<0xDB023E9F, 0x590434B6, std::size_t>(PLAIN_SIZE), GPakEx::Obfuscated<0xDB023E9F, 0x590434B6, std::size_t>(BLOCK_SIZE)
+      GPakEx::Obfuscated<0xDB023E9F, 0xC1F49F2B, std::size_t>(PLAIN_SIZE), GPakEx::Obfuscated<0xDB023E9F, 0xC1F49F2B, std::size_t>(BLOCK_SIZE)
     );
     if (aes.Decrypt(
           MutableBytes(input.subspan(
-            GPakEx::Obfuscated<0xDF06F6A9, 0xCA9C78CF, std::size_t>(PLAIN_SIZE),
-            GPakEx::Obfuscated<0xDF06F6A9, 0xCA9C78CF, std::size_t>((BLOCK_SIZE / 16 + 1) * 16)
+            GPakEx::Obfuscated<0xDF06F6A9, 0x944796BD, std::size_t>(PLAIN_SIZE),
+            GPakEx::Obfuscated<0xDF06F6A9, 0x944796BD, std::size_t>((BLOCK_SIZE / 16 + 1) * 16)
           )),
           block, BCRYPT_BLOCK_PADDING
         ) != block.size()) {
       return false;
     }
     XorWithKey16(
-      mask, input.subspan(GPakEx::Obfuscated<0xBB5E26F6, 0xF5C5F83D, std::size_t>(PLAIN_SIZE + (BLOCK_SIZE / 16 + 1) * 16)),
-      output.subspan(GPakEx::Obfuscated<0x767283BC, 0x2C63347A, std::size_t>(PLAIN_SIZE + BLOCK_SIZE))
+      mask, input.subspan(GPakEx::Obfuscated<0xBB5E26F6, 0xEDBD736E, std::size_t>(PLAIN_SIZE + (BLOCK_SIZE / 16 + 1) * 16)),
+      output.subspan(GPakEx::Obfuscated<0x767283BC, 0x23A596EC, std::size_t>(PLAIN_SIZE + BLOCK_SIZE))
     );
   }
   return true;
@@ -2280,15 +2280,15 @@ bool DecryptXorAesBody080(
   DataHashKeyTransform<GPakEx::IDEA, 0x31>(std::span<const std::uint8_t>(reinterpret_cast<const std::uint8_t*>(name.data()), name.size()), parameters, hash, mask);
 
   const std::span<const std::uint8_t> key =
-    parameters.subspan(GPakEx::Obfuscated<0xBA26A7FC, 0xC658A09A, std::size_t>(44), GPakEx::Obfuscated<0xBA26A7FC, 0xC658A09A, std::size_t>(16));
+    parameters.subspan(GPakEx::Obfuscated<0xBA26A7FC, 0x13D4082C, std::size_t>(44), GPakEx::Obfuscated<0xBA26A7FC, 0x13D4082C, std::size_t>(16));
   const std::span<const std::uint8_t> iv =
-    parameters.subspan(GPakEx::Obfuscated<0x646AC844, 0x2F74AD24, std::size_t>(28), GPakEx::Obfuscated<0x646AC844, 0x2F74AD24, std::size_t>(16));
+    parameters.subspan(GPakEx::Obfuscated<0x646AC844, 0x99182514, std::size_t>(28), GPakEx::Obfuscated<0x646AC844, 0x99182514, std::size_t>(16));
   AES aes;
   if (!aes.Initialize(MutableBytes(key), MutableBytes(iv), AES::CBC)) {
     return false;
   }
 
-  if (input.size() < GPakEx::Obfuscated<0x0BE08B9C, 0xBD4F0E9F, std::size_t>(0xC00)) {
+  if (input.size() < GPakEx::Obfuscated<0x0BE08B9C, 0x5D55404C, std::size_t>(0xC00)) {
     const std::size_t length = input.size() - input.size() % 16;
     const std::span<std::uint8_t> block = output.subspan(0, length);
     if (aes.Decrypt(block, block, 0) != length) {
@@ -2296,8 +2296,8 @@ bool DecryptXorAesBody080(
     }
   } else {
     const std::span<std::uint8_t> block =
-      output.subspan(GPakEx::Obfuscated<0xA3C9E6EC, 0x02C46CAC, std::size_t>(0x800), GPakEx::Obfuscated<0xA3C9E6EC, 0x02C46CAC, std::size_t>(0x400));
-    if (aes.Decrypt(block, block, 0) != GPakEx::Obfuscated<0x0DF26A1E, 0x0C1D6160, std::size_t>(0x400)) {
+      output.subspan(GPakEx::Obfuscated<0xA3C9E6EC, 0x451553DC, std::size_t>(0x800), GPakEx::Obfuscated<0xA3C9E6EC, 0x451553DC, std::size_t>(0x400));
+    if (aes.Decrypt(block, block, 0) != GPakEx::Obfuscated<0x0DF26A1E, 0x4F8A10B6, std::size_t>(0x400)) {
       return false;
     }
   }
@@ -2327,41 +2327,41 @@ bool DecryptSubXorBlockCipherBody(
   );
 
   const std::span<const std::uint8_t> key = parameters.subspan(
-    GPakEx::Obfuscated<0x96CFF05E, 0x5050D543, std::size_t>(KEY_OFFSET),
-    GPakEx::Obfuscated<0x96CFF05E, 0x5050D543, std::size_t>(GPakEx::CipherSizes<CIPHER>::DEFAULT_KEYLENGTH)
+    GPakEx::Obfuscated<0x96CFF05E, 0xBA514BF6, std::size_t>(KEY_OFFSET),
+    GPakEx::Obfuscated<0x96CFF05E, 0xBA514BF6, std::size_t>(GPakEx::CipherSizes<CIPHER>::DEFAULT_KEYLENGTH)
   );
   const std::span<const std::uint8_t> iv = parameters.subspan(
-    GPakEx::Obfuscated<0x16554CCA, 0x4F238189, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x16554CCA, 0x4F238189, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
+    GPakEx::Obfuscated<0x16554CCA, 0x6F209352, std::size_t>(IV_OFFSET), GPakEx::Obfuscated<0x16554CCA, 0x6F209352, std::size_t>(GPakEx::CipherSizes<CIPHER>::BLOCKSIZE)
   );
   typename MODE::template Decryption<CIPHER> cipher;
   cipher.SetKeyWithIV(key, iv);
 
-  const std::size_t encryptedSize = cipher.CiphertextLength(GPakEx::Obfuscated<0x588A4B2C, 0x8656ECC9, std::size_t>(BLOCK_SIZE), true);
-  if (input.size() <= GPakEx::Obfuscated<0xF261E719, 0x6A9DC46A, std::size_t>(PLAIN_SIZE)) {
+  const std::size_t encryptedSize = cipher.CiphertextLength(GPakEx::Obfuscated<0x588A4B2C, 0xC5BD051C, std::size_t>(BLOCK_SIZE), true);
+  if (input.size() <= GPakEx::Obfuscated<0xF261E719, 0x44AC41ED, std::size_t>(PLAIN_SIZE)) {
     XorWithKey16(mask, input, output);
-  } else if (input.size() <= GPakEx::Obfuscated<0x31E5270B, 0xD384431F, std::size_t>(PLAIN_SIZE) + encryptedSize) {
+  } else if (input.size() <= GPakEx::Obfuscated<0x31E5270B, 0x85FEE287, std::size_t>(PLAIN_SIZE) + encryptedSize) {
     XorWithKey16(
-      mask, input.subspan(0, GPakEx::Obfuscated<0xE9F8CC60, 0x6D0D3DD6, std::size_t>(PLAIN_SIZE)),
-      output.subspan(0, GPakEx::Obfuscated<0x0BEAF6FA, 0xB4EC07A0, std::size_t>(PLAIN_SIZE))
+      mask, input.subspan(0, GPakEx::Obfuscated<0xE9F8CC60, 0xFED137E0, std::size_t>(PLAIN_SIZE)),
+      output.subspan(0, GPakEx::Obfuscated<0x0BEAF6FA, 0xC6B34342, std::size_t>(PLAIN_SIZE))
     );
-    const std::span<std::uint8_t> tail = output.subspan(GPakEx::Obfuscated<0x8A3747F3, 0x0CE217A4, std::size_t>(PLAIN_SIZE));
-    if (cipher.Process(input.subspan(GPakEx::Obfuscated<0xC2A91B0E, 0x5A72F7BA, std::size_t>(PLAIN_SIZE)), tail, true) != tail.size()) {
+    const std::span<std::uint8_t> tail = output.subspan(GPakEx::Obfuscated<0x8A3747F3, 0x3116F88F, std::size_t>(PLAIN_SIZE));
+    if (cipher.Process(input.subspan(GPakEx::Obfuscated<0xC2A91B0E, 0x25557666, std::size_t>(PLAIN_SIZE)), tail, true) != tail.size()) {
       return false;
     }
   } else {
     XorWithKey16(
-      mask, input.subspan(0, GPakEx::Obfuscated<0xCF2A3959, 0x9278DE31, std::size_t>(PLAIN_SIZE)),
-      output.subspan(0, GPakEx::Obfuscated<0xD8D14CE1, 0x0393D53B, std::size_t>(PLAIN_SIZE))
+      mask, input.subspan(0, GPakEx::Obfuscated<0xCF2A3959, 0x809CB92D, std::size_t>(PLAIN_SIZE)),
+      output.subspan(0, GPakEx::Obfuscated<0xD8D14CE1, 0xF3DC6255, std::size_t>(PLAIN_SIZE))
     );
     const std::span<std::uint8_t> block = output.subspan(
-      GPakEx::Obfuscated<0x277A64D7, 0xDC111EEA, std::size_t>(PLAIN_SIZE), GPakEx::Obfuscated<0x277A64D7, 0xDC111EEA, std::size_t>(BLOCK_SIZE)
+      GPakEx::Obfuscated<0x277A64D7, 0x13117AC3, std::size_t>(PLAIN_SIZE), GPakEx::Obfuscated<0x277A64D7, 0x13117AC3, std::size_t>(BLOCK_SIZE)
     );
-    if (cipher.Process(input.subspan(GPakEx::Obfuscated<0x4BDCE5E1, 0x530722FA, std::size_t>(PLAIN_SIZE), encryptedSize), block, true) != block.size()) {
+    if (cipher.Process(input.subspan(GPakEx::Obfuscated<0x4BDCE5E1, 0xFB8CCF55, std::size_t>(PLAIN_SIZE), encryptedSize), block, true) != block.size()) {
       return false;
     }
     XorWithKey16(
-      mask, input.subspan(GPakEx::Obfuscated<0x1FA9A208, 0x02182E64, std::size_t>(PLAIN_SIZE) + encryptedSize),
-      output.subspan(GPakEx::Obfuscated<0x2C321ED5, 0x1F5FEFAB, std::size_t>(PLAIN_SIZE + BLOCK_SIZE))
+      mask, input.subspan(GPakEx::Obfuscated<0x1FA9A208, 0x431B89A8, std::size_t>(PLAIN_SIZE) + encryptedSize),
+      output.subspan(GPakEx::Obfuscated<0x2C321ED5, 0x6F0B1CD9, std::size_t>(PLAIN_SIZE + BLOCK_SIZE))
     );
   }
   return true;
@@ -2444,13 +2444,6 @@ namespace {
   // GLOBAL: gl_26225
   GPakEx::Crypter_SUB_XOR_BlockCipher_A<0x203, GPakEx::ThreeWay, GPakEx::OFB_Mode, 24, 44, GPakEx::IDEA, true, 0x31, 1024, 1024> s_crypter203;
 
-  // INLINED
-  template <class CRYPTER> inline void RegisterCrypter(CRYPTER& crypter) {
-    CRYPTER* instance = &crypter;
-    std::uint16_t id = static_cast<std::uint16_t>(crypter.Id());
-    g_pakCrypters.emplace(id, instance);
-  }
-
   class PakCrypterRegistrar {
   public:
     PakCrypterRegistrar();
@@ -2459,43 +2452,43 @@ namespace {
   // OFFSET: 0x00647310
   // FUNCTION: fn_46739
   PakCrypterRegistrar::PakCrypterRegistrar() {
-    RegisterCrypter(s_crypter005);
-    RegisterCrypter(s_crypter006);
-    RegisterCrypter(s_crypter007);
-    RegisterCrypter(s_crypter008);
-    RegisterCrypter(s_crypter009);
-    RegisterCrypter(s_crypter00A);
-    RegisterCrypter(s_crypter00B);
-    RegisterCrypter(s_crypter00C);
-    RegisterCrypter(s_crypter00D);
-    RegisterCrypter(s_crypter00E);
-    RegisterCrypter(s_crypter00F);
-    RegisterCrypter(s_crypter080);
-    RegisterCrypter(s_crypter081);
-    RegisterCrypter(s_crypter082);
-    RegisterCrypter(s_crypter100);
-    RegisterCrypter(s_crypter101);
-    RegisterCrypter(s_crypter102);
-    RegisterCrypter(s_crypter103);
-    RegisterCrypter(s_crypter104);
-    RegisterCrypter(s_crypter105);
-    RegisterCrypter(s_crypter106);
-    RegisterCrypter(s_crypter107);
-    RegisterCrypter(s_crypter108);
-    RegisterCrypter(s_crypter109);
-    RegisterCrypter(s_crypter10A);
-    RegisterCrypter(s_crypter10B);
-    RegisterCrypter(s_crypter10C);
-    RegisterCrypter(s_crypter10D);
-    RegisterCrypter(s_crypter10E);
-    RegisterCrypter(s_crypter10F);
-    RegisterCrypter(s_crypter110);
-    RegisterCrypter(s_crypter111);
-    RegisterCrypter(s_crypter112);
-    RegisterCrypter(s_crypter113);
-    RegisterCrypter(s_crypter201);
-    RegisterCrypter(s_crypter202);
-    RegisterCrypter(s_crypter203);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter005.Id()), &s_crypter005);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter006.Id()), &s_crypter006);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter007.Id()), &s_crypter007);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter008.Id()), &s_crypter008);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter009.Id()), &s_crypter009);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00A.Id()), &s_crypter00A);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00B.Id()), &s_crypter00B);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00C.Id()), &s_crypter00C);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00D.Id()), &s_crypter00D);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00E.Id()), &s_crypter00E);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter00F.Id()), &s_crypter00F);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter080.Id()), &s_crypter080);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter081.Id()), &s_crypter081);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter082.Id()), &s_crypter082);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter100.Id()), &s_crypter100);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter101.Id()), &s_crypter101);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter102.Id()), &s_crypter102);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter103.Id()), &s_crypter103);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter104.Id()), &s_crypter104);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter105.Id()), &s_crypter105);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter106.Id()), &s_crypter106);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter107.Id()), &s_crypter107);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter108.Id()), &s_crypter108);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter109.Id()), &s_crypter109);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10A.Id()), &s_crypter10A);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10B.Id()), &s_crypter10B);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10C.Id()), &s_crypter10C);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10D.Id()), &s_crypter10D);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10E.Id()), &s_crypter10E);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter10F.Id()), &s_crypter10F);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter110.Id()), &s_crypter110);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter111.Id()), &s_crypter111);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter112.Id()), &s_crypter112);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter113.Id()), &s_crypter113);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter201.Id()), &s_crypter201);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter202.Id()), &s_crypter202);
+    g_pakCrypters.emplace(static_cast<std::uint16_t>(s_crypter203.Id()), &s_crypter203);
 
     g_pakDecryptFunctions.emplace(0x005, DecryptSubXorAesBody<1, 0, 16, GPakEx::IDEA, true, 0x30, 0, 1024>);
     g_pakDecryptFunctions.emplace(0x006, DecryptSubXorAesBody<2, 16, 32, GPakEx::IDEA, true, 0x31, 0, 1024>);

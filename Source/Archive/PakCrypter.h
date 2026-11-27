@@ -7,14 +7,17 @@
 #include <cstdint>
 #include <span>
 
+std::uint32_t Triple32Hash(std::uint32_t value);
+
 namespace GPakEx {
 
   // INLINED
-  template <std::uint32_t KEY1, std::uint32_t KEY2, class T> inline T Obfuscated(T value) {
-    volatile T masked = value ^ KEY1 ^ KEY2;
-    masked = masked ^ KEY1;
-    masked = masked ^ KEY2;
-    return masked;
+  template <std::uint32_t KEY, std::uint32_t SEED, class T> inline T Obfuscated(T value) {
+    const std::uint32_t mask = Triple32Hash(SEED);
+    volatile T masked = value ^ KEY ^ mask;
+    volatile T result = masked ^ KEY;
+    result = result ^ mask;
+    return result;
   }
 
   template <class CIPHER> struct CipherSizes;

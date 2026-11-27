@@ -38,7 +38,7 @@ template __declspec(noinline) void std::_Hash_vec<PakCrypterMap::_Mybase::_Alite
 template __declspec(noinline) void std::_Hash_vec<PakDecryptFunctionMap::_Mybase::_Aliter>::_Assign_grow(const size_type, const value_type);
 // OFFSET: 0x00654EF0
 // FUNCTION: fn_05053
-template __declspec(noinline) bool PakCrypterMap::_Mybase::_Check_rehash_required_1() const noexcept;
+template bool PakCrypterMap::_Mybase::_Check_rehash_required_1() const noexcept;
 // OFFSET: 0x00654F60
 // FUNCTION: fn_05055
 template __declspec(noinline) void PakDecryptImpl::_Delete_this(bool) noexcept;
@@ -70,7 +70,7 @@ template __declspec(noinline) const type_info& PakDecryptImpl::_Target_type() co
 template __declspec(noinline) PakDecryptFunctionMap::iterator PakDecryptFunctionMap::_Mybase::erase(const_iterator, const_iterator) noexcept;
 // OFFSET: 0x00655690
 // FUNCTION: fn_05066
-template __declspec(noinline) PakCrypterNode* std::allocator<PakCrypterNode>::allocate(const std::size_t);
+template PakCrypterNode* std::allocator<PakCrypterNode>::allocate(const std::size_t);
 // OFFSET: 0x00655D70
 // FUNCTION: fn_05069
 template __declspec(noinline) std::_Hash_find_last_result<PakArchiveKeyMap::_Mybase::_Nodeptr> PakArchiveKeyMap::_Mybase::_Find_last<std::uint16_t>(
@@ -214,7 +214,7 @@ template __declspec(noinline) std::_Hash_vec<PakCrypterMap::_Mybase::_Aliter>::~
 template __declspec(noinline) std::_Hash_vec<PakDecryptFunctionMap::_Mybase::_Aliter>::~_Hash_vec();
 // OFFSET: 0x0064A520
 // FUNCTION: fn_04907
-template __declspec(noinline) std::_List_node_emplace_op2<PakCrypterMap::_Mybase::_Alnode>::~_List_node_emplace_op2();
+template std::_List_node_emplace_op2<PakCrypterMap::_Mybase::_Alnode>::~_List_node_emplace_op2();
 // OFFSET: 0x006453A0
 // FUNCTION: fn_04856
 template __declspec(noinline) std::pair<PakCrypterMap::iterator, bool> PakCrypterMap::_Mybase::emplace<std::uint16_t&, GPakEx::Crypter_SUB_XOR_AES_A<0x201, 2, 16, 32, GPakEx::IDEA, true, 0x33, 0, 2048>*&>(std::uint16_t&, GPakEx::Crypter_SUB_XOR_AES_A<0x201, 2, 16, 32, GPakEx::IDEA, true, 0x33, 0, 2048>*&);
