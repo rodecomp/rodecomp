@@ -510,7 +510,7 @@ namespace myGPack {
     names.push_back("data\\texture\\유저인터페이스\\map\\yuno_in03.bmp");
     names.push_back("data\\texture\\유저인터페이스\\map\\yuno_pre.bmp");
 
-    int removed = 0;
+    std::size_t removed = 0;
 
     if (names.size() > 0) {
       for (auto name = names.begin(); name != names.end(); ++name) {
@@ -525,7 +525,7 @@ namespace myGPack {
       }
     }
 
-    return removed > 0;
+    return removed != 0;
   }
 
   // OFFSET: 0x005F4CB0
