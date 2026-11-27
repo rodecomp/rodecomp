@@ -59,3 +59,4 @@ template void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestI
 template void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::OnCreate(int, int);
 template __forceinline void std::vector<std::string>::_Buy_nonzero(const std::size_t);
 template __forceinline void std::vector<std::string>::_Buy_raw(const std::size_t);
+template __forceinline std::_List_node<AdventureGuide::CUITab*, void*>* std::allocator<std::_List_node<AdventureGuide::CUITab*, void*>>::allocate(const std::size_t);
