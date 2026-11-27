@@ -870,7 +870,8 @@ __declspec(noinline) void LoadItemNameTables() {
   unknownItemDesc.unidentifiedName = s_unknownItemName;
   unknownItemDesc.unidentifiedResource = "사과";
   unknownItemDesc.unidentifiedDescription.push_back(s_unknownItemName);
-  FindItemDescription(-1, g_itemDescriptions) = unknownItemDesc;
+  ITEM_DESC& invalidItemDesc = FindItemDescription(-1, g_itemDescriptions);
+  invalidItemDesc = unknownItemDesc;
 
   ItemCardName& sorry = FindItemCardName(0, g_itemCardNames);
   sorry.name = "sorry";
