@@ -991,7 +991,7 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
     ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
     if (owned.identity[1] > 0 && (owned.placeEtcTab == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
       RawItemBasic item = {};
-      item.id = record.index;
+      item.id = value->items[i].index;
       strcpy_s(item.itemId, sizeof(item.itemId), owned.itemId.c_str());
       item.price = record.price;
       item.realPrice = record.realPrice;
