@@ -983,12 +983,12 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
   if (zeny) {
     bool enough;
     if (g_session.m_zeny >= zeny) {
-      enough = true;
       this->m_checks[index]->SetTooltip("");
+      enough = true;
     } else {
-      enough = false;
       this->m_checks[index]->SetTooltip(
           LookupMessage(g_session.m_zeny + g_session.m_bankBalance >= zeny ? MSI_STYLING_SHOP_SUGGEST_TO_GO_TO_BANK : MSI_BANK_0_MINI));
+      enough = false;
     }
     return enough;
   }
