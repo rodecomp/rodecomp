@@ -2156,7 +2156,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           const std::string name = this->ActorName(this->menuTargetAid);
           const char* category = g_windowMgr.IsFriend(name.c_str()) ? LookupMessage(MSI_FRIEND) :
             (g_session.IsGuildMemberAccount(this->menuTargetAid) ? "GuildMember" : nullptr);
-          std::string code;
+          std::string code("");
           if (auto* actor = dynamic_cast<CPc*>(this->scene->GetGameActorByAID(this->menuTargetAid))) {
             code = g_session.ShortcutFilename(actor->GetPkState());
           }
@@ -2220,7 +2220,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_COPY_GID: {
-          char text[512];
+          char text[128];
           std::sprintf(text, "%s : %d (GID)", g_session.m_serverName.c_str(), this->menuTargetAid);
           CLanguageBase* language = g_serverLanguage;
           language->ResetInput();
@@ -2676,10 +2676,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (std::strlen(g_windowMgr.chatInputText.c_str()) == 0 || g_session.IsBerserkActive() == 1) {
         return 0;
       }
-      char text[4096];
+      char text[0x16A];
       std::strcpy(text, g_windowMgr.chatInputText.c_str());
       if (g_forbiddenWords.Contains(text)) {
-        std::string masked;
+        std::string masked("");
         g_forbiddenWords.Mask(text, &masked);
         g_windowMgr.chatInputText.assign(text, std::strlen(text));
       }
@@ -2695,11 +2695,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const char* message = g_windowMgr.chatInputText.c_str();
       const char* prefix = g_serverLanguage->Prefix(false);
       const char* name = g_session.DecodePlayerName();
-      char formatted[16384];
+      char formatted[0x16A];
       std::sprintf(formatted, "%s : %s%s", name, prefix, message);
       const std::size_t length = std::strlen(formatted);
       g_windowMgr.ClearChatInputText();
-      std::uint16_t packet[16384];
+      std::uint16_t packet[0x200];
       packet[0] = ID_CZ_BATTLEFIELD_CHAT;
       packet[1] = static_cast<std::uint16_t>(length + 5);
       std::memcpy(packet + 2, formatted, length + 1);
@@ -2713,7 +2713,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       char text[0x16A];
       std::strcpy(text, g_windowMgr.chatInputText.c_str());
       if (g_forbiddenWords.Contains(text)) {
-        std::string replacement;
+        std::string replacement("");
         g_forbiddenWords.Mask(text, &replacement);
         g_windowMgr.chatInputText.assign(text);
       }
@@ -2731,7 +2731,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       char shortenedByte[0x16A];
       char shortenedPair[0x16A];
       std::memcpy(extendedPair, text, sizeof(text));
-      const int length = static_cast<int>(std::strlen(text));
+      int length = static_cast<int>(std::strlen(extendedPair));
       if (length > 6) {
         if (length + 3 < 0x16A) {
           extendedPair[length + 2] = extendedPair[length];
@@ -2740,16 +2740,19 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           extendedPair[length + 1] = extendedPair[length - 1];
         }
         std::memcpy(extendedByte, text, sizeof(text));
+        length = static_cast<int>(std::strlen(extendedByte));
         if (length + 1 < 0x16A) {
           extendedByte[length + 1] = extendedByte[length];
           extendedByte[length] = extendedByte[length - 1];
         }
         std::memcpy(shortenedByte, text, sizeof(text));
+        length = static_cast<int>(std::strlen(shortenedByte));
         if (length + 1 < 0x16A) {
           shortenedByte[length - 1] = shortenedByte[length];
           shortenedByte[length] = shortenedByte[length + 1];
         }
         std::memcpy(shortenedPair, text, sizeof(text));
+        length = static_cast<int>(std::strlen(shortenedPair));
         if (length + 1 < 0x16A) {
           shortenedPair[length - 2] = shortenedPair[length];
           shortenedPair[length - 1] = shortenedPair[length + 1];
@@ -2790,9 +2793,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             }
           }
           if (g_session.IsSuperNoviceClass(g_session.GetDisplayJob())) {
-            char first[0x16A];
-            char middle[0x400];
-            char last[0x16A];
+            char first[0x100];
+            char middle[0x100];
+            char last[0x100];
             if (g_serviceType == ServiceKorea) {
               std::sprintf(first, LookupMessage(MSI_SUPERNOVICE1));
               const char* suffix = LookupMessage(MSI_SUPERNOVICE3);
@@ -2843,7 +2846,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           break;
         }
       }
-      if (g_navigationLinkParser->HasUnownedItemLink(g_windowMgr.chatInputText) == true) {
+      if (g_navigationLinkParser->HasUnownedItemLink(std::string(g_windowMgr.chatInputText.c_str())) == true) {
         return 0;
       }
       char message[0x169]{};
@@ -2867,7 +2870,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       char filtered[0x16A];
       strncpy_s(filtered, sizeof(filtered), g_windowMgr.chatInputText.c_str(), static_cast<std::size_t>(-1));
       if (g_forbiddenWords.Contains(filtered)) {
-        std::string masked;
+        std::string masked("");
         g_forbiddenWords.Mask(filtered, &masked);
         g_windowMgr.chatInputText.assign(filtered, std::strlen(filtered));
         return 0;
@@ -2881,7 +2884,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       this->lastChat.assign(filtered, std::strlen(filtered));
-      if (g_navigationLinkParser->HasUnownedItemLink(std::string(g_windowMgr.chatInputText.c_str()))) {
+      if (g_navigationLinkParser->HasUnownedItemLink(std::string(g_windowMgr.chatInputText.c_str())) == true) {
         return 0;
       }
       char text[0x169]{};
@@ -2912,10 +2915,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (std::strlen(g_windowMgr.chatInputText.c_str()) == 0 || g_guildInfo.m_guildId == 0 || g_session.IsBerserkActive() == 1) {
         return 0;
       }
-      char text[0x800];
+      char text[0x16A];
       std::strcpy(text, g_windowMgr.chatInputText.c_str());
       if (g_forbiddenWords.Contains(text)) {
-        std::string masked;
+        std::string masked("");
         g_forbiddenWords.Mask(text, &masked);
         g_windowMgr.chatInputText.assign(text, std::strlen(text));
       }
@@ -2928,7 +2931,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       this->lastChat.assign(text, std::strlen(text));
-      if (g_navigationLinkParser->HasUnownedItemLink(g_windowMgr.chatInputText.c_str())) {
+      if (g_navigationLinkParser->HasUnownedItemLink(std::string(g_windowMgr.chatInputText.c_str())) == true) {
         return 0;
       }
       char message[0x169] = {};
@@ -2948,10 +2951,10 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (g_windowMgr.chatInputText.empty() || g_session.IsBerserkActive() == 1) {
         return 0;
       }
-      char text[0x800];
+      char text[0x16A];
       std::strcpy(text, g_windowMgr.chatInputText.c_str());
       if (g_forbiddenWords.Contains(text)) {
-        std::string masked;
+        std::string masked("");
         g_forbiddenWords.Mask(text, &masked);
         g_windowMgr.chatInputText.assign(text, std::strlen(text));
       }
@@ -2964,7 +2967,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       this->lastChat.assign(text, std::strlen(text));
-      if (g_navigationLinkParser->HasUnownedItemLink(g_windowMgr.chatInputText)) {
+      if (g_navigationLinkParser->HasUnownedItemLink(std::string(g_windowMgr.chatInputText.c_str())) == true) {
         return 0;
       }
       char message[0x169] = {};
@@ -3725,7 +3728,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const int y = request[2];
       int level = request[3];
       if (this->ignoreSkillInterval == 0 && !g_session.IsRequestReady(skill)) {
-        char message[0x800];
+        char message[256];
         const char* name = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skill);
         std::sprintf(message, LookupMessage(MSI_SKILLINTERVAL2), name);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFF, 0xB, 0, 0);
@@ -3734,39 +3737,42 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (level == 0) {
         level = g_session.m_skillBundle.Lookup(skill).level;
       }
-      const std::uint16_t words[] = {0xAF4, static_cast<std::uint16_t>(level), static_cast<std::uint16_t>(skill), static_cast<std::uint16_t>(x), static_cast<std::uint16_t>(y)};
-      unsigned char packet[11];
-      std::memcpy(packet, words, sizeof(words));
-      packet[10] = static_cast<unsigned char>(argument2);
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(words[0]), packet);
+      PACKET_CZ_USE_SKILL_TOGROUND3 packet;
+      packet.packetType = ID_CZ_USE_SKILL_TOGROUND3;
+      packet.level = static_cast<std::uint16_t>(level);
+      packet.skillId = static_cast<std::uint16_t>(skill);
+      packet.x = static_cast<std::uint16_t>(x);
+      packet.y = static_cast<std::uint16_t>(y);
+      packet.flag = static_cast<std::uint8_t>(argument2);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return 0;
     }
     case MM_USE_SKILL_TOGROUND_WITH_TALKBOX: {
       const int* request = reinterpret_cast<const int*>(argument1);
-      std::uint16_t packet[16];
-      packet[0] = ID_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2;
-      packet[1] = static_cast<std::uint16_t>(request[3]);
-      packet[2] = static_cast<std::uint16_t>(request[0]);
-      packet[3] = static_cast<std::uint16_t>(request[1]);
-      packet[4] = static_cast<std::uint16_t>(request[2]);
-      if (this->ignoreSkillInterval == 0 && !g_session.IsRequestReady(packet[2])) {
-        char text[1024];
-        const char* skillName = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet[2]);
+      PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2 packet;
+      packet.packetType = ID_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2;
+      packet.level = static_cast<std::uint16_t>(request[3]);
+      packet.skillId = static_cast<std::uint16_t>(request[0]);
+      packet.x = static_cast<std::uint16_t>(request[1]);
+      packet.y = static_cast<std::uint16_t>(request[2]);
+      if (this->ignoreSkillInterval == 0 && !g_session.IsRequestReady(packet.skillId)) {
+        char text[256];
+        const char* skillName = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet.skillId);
         std::sprintf(text, LookupMessage(MSI_SKILLINTERVAL2), skillName);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 11, 0, 0);
         return 0;
       }
-      char* text = reinterpret_cast<char*>(packet + 5);
-      _snprintf_s(text, 21, _TRUNCATE, "%s", reinterpret_cast<const char*>(request[4]));
+      char* text = packet.contents;
+      _snprintf_s(text, sizeof(packet.contents), _TRUNCATE, "%s", reinterpret_cast<const char*>(request[4]));
       if (g_forbiddenWords.Contains(text)) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_SEND_BECAUSE_INSULT)), 0xFF, 0, 0, 0);
         return 0;
       }
-      if (packet[1] == 0) {
-        packet[1] = static_cast<std::uint16_t>(g_session.m_skillBundle.Lookup(packet[2]).level);
+      if (packet.level == 0) {
+        packet.level = static_cast<std::uint16_t>(g_session.m_skillBundle.Lookup(packet.skillId).level);
       }
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return 0;
     }
     case MM_CANCEL_LOCKON: {
@@ -4264,7 +4270,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (!g_serviceOptions.Get(TT_LOGINOUT_ON_OFF) || (argument2 != 0 && argument2 != 1)) {
         return 0;
       }
-      char message[1024];
+      char message[128];
       std::sprintf(message, LookupMessage(argument2 == 0 ? MSI_GUILD_MEMBER_STATUS_OFFLINE : MSI_GUILD_MEMBER_STATUS_ONLINE), argument1);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 4, 0, 0);
       return 0;
@@ -4491,13 +4497,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
         }
         std::free(data);
-        char message[0x200];
+        char message[0x16A];
         const char* decoded = DecodeMessageRot(text);
         std::sprintf(message, "%s : %s", g_session.DecodePlayerName(), decoded);
         message[0x169] = 0;
         const std::size_t messageLength = std::strlen(message);
         g_windowMgr.ClearChatInputText();
-        unsigned char packet[0x800];
+        unsigned char packet[0x400];
         const std::uint16_t header[2] = {ID_CZ_MOVE_ITEM_FROM_BODY_TO_STORE, static_cast<std::uint16_t>(messageLength + 5)};
         std::memcpy(packet, header, sizeof(header));
         std::memcpy(packet + 4, message, messageLength + 1);
@@ -4998,7 +5004,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const char* message = g_windowMgr.chatInputText.c_str();
       const char* prefix = g_serverLanguage->Prefix(false);
       const char* playerName = g_session.DecodePlayerName();
-      char formatted[0x400];
+      char formatted[0x16A];
       std::sprintf(formatted, "%s : %s%s", playerName, prefix, message);
       const std::size_t textLength = std::strlen(formatted);
       g_windowMgr.ClearChatInputText();
