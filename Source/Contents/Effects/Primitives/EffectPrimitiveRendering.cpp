@@ -6122,7 +6122,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       this->state.triangles[rpCnt].texture = this->state.textures[0];
 
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag));
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], this->state.renderFlag);
       }
 
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -6148,7 +6148,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       this->state.triangles[rpCnt].texture = this->state.textures[0];
 
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag));
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], this->state.renderFlag);
       }
 
       uInc += 0.25f;
