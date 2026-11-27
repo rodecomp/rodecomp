@@ -105,7 +105,7 @@ static std::string s_messageEndTag = "</MSG>";
 class CTokenizer {
 public:
   std::string& operator[](int index);
-  __declspec(noinline) int TokenCount() const;
+  int TokenCount() const;
   void Parse(const std::string& text);
 
   /* 0000 */ std::vector<std::string> tokens;
@@ -1113,34 +1113,34 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = TT_VOLUME;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
-      return -1;
+    } else {
+      char volume[36];
+      _itoa(g_soundMgr->sampleVolume, volume, 10);
+      parts[0].assign(volume, std::strlen(volume));
     }
-    char volume[36];
-    _itoa(g_soundMgr->sampleVolume, volume, 10);
-    parts[0].assign(volume, std::strlen(volume));
-    return -1;
+    offset = -1;
   } else if (IsTalkCommand<std::array{'/', 'b', 'v'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xA4', '\xD0', '\xA4', '\xBD'}>(tokenizer[0])) {
     *talkType = TT_BVOLUME;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
-      return -1;
+    } else {
+      char volume[36];
+      _itoa(g_soundMgr->Volume(), volume, 10);
+      parts[0].assign(volume, std::strlen(volume));
     }
-    char volume[36];
-    _itoa(g_soundMgr->Volume(), volume, 10);
-    parts[0].assign(volume, std::strlen(volume));
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', 'g', 'c'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_GUILD_CHAT;
     parts[0] = text + (IsTalkCommand<std::array{'/', 'g', 'c'}>(tokenizer[0]) ? 4 : 11);
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', 'e', 'x'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xC2', '\xF7', '\xB4', '\xDC'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_EX;
     parts[0] = text + (IsTalkCommand<std::array{'/', 'e', 'x'}>(tokenizer[0]) ? 4 : 6);
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', 'i', 'n'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xC7', '\xD8', '\xC1', '\xA6'}>(tokenizer[0])) && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_WHISPER_PC_IN;
     parts[0] = text + (IsTalkCommand<std::array{'/', 'i', 'n'}>(tokenizer[0]) ? 4 : 6);
-    return -1;
+    offset = -1;
   } else if (IsTalkCommand<std::array{'/', 'r', 'e', 'd'}>(tokenizer[0])) {
     *talkType = TT_IS_REDCELL;
     for (int index = 1; index < tokenizer.TokenCount(); ++index) {
@@ -1148,23 +1148,23 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       parts[0].append(token.c_str(), token.size());
       parts[0].append(" ");
     }
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', '\xB0', '\xC5', '\xB7', '\xA1'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'j', 'f', 'o'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xB1', '\xB3', '\xC8', '\xAF'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'y', 'g', 'h', 'k', 's'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'd', 'e', 'a', 'l'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', '\xA4', '\xB7', '\xA4', '\xA7', '\xB9', '\xCC'}>(tokenizer[0])) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_EXCHANGE_ITEM;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', '\xB1', '\xE6', '\xB5', '\xE5'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'r', 'l', 'f', 'e', 'm'}>(tokenizer[0]) || IsTalkCommand<std::array{'/', 'g', 'u', 'i', 'l', 'd'}>(tokenizer[0])) && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_MAKE_GUILD;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if ((IsTalkCommand<std::array{'/', '\xC7', '\xD8', '\xC3', '\xBC'}>(tokenizer[0]) || tokenizer[0] == "/gocp" || tokenizer[0] == "/breakguild") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_BREAK_GUILD;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/결성" || tokenizer[0] == "/ruftjd" || tokenizer[0] == "/organize") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_MAKE_GROUP;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/몬스터" || tokenizer[0] == "/아이템" || tokenizer[0] == "/item" || tokenizer[0] == "/monster") && tokenizer.TokenCount() >= 2) {
     *talkType = TT_REQ_ITEM_CREATE;
     parts[0] = tokenizer[1];
@@ -1179,7 +1179,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       }
       parts[0] = joined;
     }
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/맵이동" || tokenizer[0] == "/mapmove" || tokenizer[0] == "/mm") && tokenizer.TokenCount() > 1) {
     *talkType = TT_REQ_MOVETO_MAP;
     parts[0] = tokenizer[1];
@@ -1189,18 +1189,18 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     } else {
       parts[1] = parts[2].assign("0");
     }
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/제명" || tokenizer[0] == "/wpaud" || tokenizer[0] == "/expel") && tokenizer.TokenCount() == 2) {
     *talkType = TT_REQ_EXPEL_GROUP_MEMBER;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/sm" && tokenizer.TokenCount() == 2) {
     *talkType = TT_TEST_SHOW_IMAGE;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/resetstate") {
     *talkType = TT_REQ_RESETSTATE;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/resetskill") {
     *talkType = TT_REQ_RESETSKILL;
     if (tokenizer.TokenCount() >= 2) {
@@ -1208,54 +1208,54 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     } else {
       parts[0].assign("1");
     }
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/changemaptype" || tokenizer[0] == "/cmt") && tokenizer.TokenCount() == 4) {
     *talkType = TT_CHANGE_MAPTYPE;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
     parts[2] = tokenizer[3];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/emblem" || tokenizer[0] == "/엠블렘" || tokenizer[0] == "/앰블렘" || tokenizer[0] == "/dpaqmffpa" || tokenizer[0] == "/doaqmffpa") {
     *talkType = TT_SHOW_EMBLEM_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/hide") {
     *talkType = TT_HIDE;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/폰트" || tokenizer[0] == "/font") {
     *talkType = TT_NAME_ABOVE_HEAD_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/mineffect" || tokenizer[0] == LookupMessage(MSI_MINEFFECT)) {
     *talkType = TT_MIN_EFFECT_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/remove" && tokenizer.TokenCount() == 2) {
     *talkType = TT_REMOVE;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/summon" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RECALL_GID;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/shift") {
     *talkType = TT_SHIFT;
     for (int index = 0; index < tokenizer.TokenCount() - 1; ++index) {
       parts[index] = tokenizer[index + 1];
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/recall" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RECALL_AID;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/check" && tokenizer.TokenCount() == 2) {
     *talkType = TT_CHECK_ID;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/rc" && tokenizer.TokenCount() == 2) {
     *talkType = TT_RC_ID;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/요금") {
     *talkType = TT_BILLING_INFO;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/이름표시" || tokenizer[0] == "/showname") {
     *talkType = TT_BOLD_NAME_TYPE_ON_OFF;
     offset = 0;
@@ -1306,7 +1306,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       }
       g_windowMgr.SetChatInputText(message.c_str());
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/초대" || tokenizer[0] == "/cheo" || tokenizer[0] == "/invite") {
     *talkType = TT_REQ_INVITE_PARTY;
     std::string command(text);
@@ -1316,7 +1316,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     } else {
       g_windowMgr.SetChatInputText(LookupMessage(MSI_PARTY_INVITE));
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/길드초대" || tokenizer[0] == "/rlfemcheo" || tokenizer[0] == "/guildinvite") {
     *talkType = TT_REQ_INVITE_GUILD;
     std::string command(text);
@@ -1326,7 +1326,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     } else {
       g_windowMgr.SetChatInputText(LookupMessage(MSI_GUILD_INVITE));
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/web" && tokenizer.TokenCount() >= 2) {
     *talkType = TT_WEB_BROWSER;
     parts[0] = tokenizer[1];
@@ -1334,50 +1334,50 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = TT_NAVIGATION;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/navi2" || tokenizer[0] == "/navigation2") && tokenizer.TokenCount() >= 4) {
     *talkType = TT_NAVIGATION2;
     parts[0] = tokenizer[1];
     parts[1] = tokenizer[2];
     parts[2] = tokenizer[3];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/naviopen") {
     *talkType = TT_NAVIGATION3;
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/cl" || tokenizer[0] == "/clanchat") && tokenizer.TokenCount() >= 2) {
     *talkType = TT_CLAN_CHAT;
     parts[0] = text + (tokenizer[0] == "/cl" ? 4 : 10);
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL)) {
     *talkType = TT_REQ_BARGAINSALE;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/cashshop") {
     *talkType = TT_SHOW_CASHSHOP_BTN_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/goldpc") {
     *talkType = TT_SHOW_GOLDPCCAFE_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/roulette") {
     *talkType = TT_SHOW_ROULETTE_BTN_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/quake") {
     *talkType = TT_QUAKE_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/매크로등록" || tokenizer[0] == "/macro_register" || tokenizer[0] == "/mr") {
     *talkType = TT_MACRO_REGISTER;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/매크로확인" || tokenizer[0] == "/macro_preview" || tokenizer[0] == "/mp") {
     *talkType = TT_MACRO_PREVIEW;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/매크로신고" || tokenizer[0] == "/macro_detector" || tokenizer[0] == "/md") {
     *talkType = TT_MACRO_DETECTOR;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/setcamera" && tokenizer.TokenCount() > 2) {
     *talkType = TT_SET_CAMERA;
     parts[0] = tokenizer[1];
@@ -1385,55 +1385,55 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     if (tokenizer.TokenCount() == 4) {
       parts[2] = tokenizer[3];
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/resetcooltime" || tokenizer[0] == "/rct") {
     *talkType = TT_RESET_COOLTIME;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/call" || tokenizer[0] == "/호출") {
     *talkType = TT_BLOCK_CALL_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/환복" || tokenizer[0] == "/changedress" || tokenizer[0] == "/nocosplay") {
     *talkType = TT_EX_NO_COS_PLAY;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/노점보기" || tokenizer[0] == "/showshop") {
     *talkType = TT_SHOW_MERCHANT_SHOP_ON_OFF;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/prison") {
     *talkType = TT_PRISON_USER;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/계정한정" || tokenizer[0] == "/accountlimitedtool") {
     *talkType = TT_OPEN_ACCOUNT_LIMITED_TOOL;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/모험가중개소" || tokenizer[0] == "/중개소" || tokenizer[0] == "/agency") {
     *talkType = TT_ADVEN_PARTY_BOARD;
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/removeon") {
     *talkType = TT_REMOVE_ON;
     parts[0] = tokenizer.TokenCount() >= 2 ? tokenizer[1] : std::string("0");
     parts[1] = tokenizer.TokenCount() >= 3 ? tokenizer[2] : std::string("0");
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/removeoff") {
     *talkType = TT_REMOVE_OFF;
     if (tokenizer.TokenCount() >= 2) {
       parts[0] = tokenizer[1];
     }
-    return -1;
+    offset = -1;
   } else if ((tokenizer[0] == "/MacroChecker" || tokenizer[0] == "/macrochecker") && tokenizer.TokenCount() > 1) {
     *talkType = TT_MACRO_CHECKER_MAP;
     parts[0] = tokenizer[1];
-    return -1;
+    offset = -1;
   } else if (tokenizer[0] == "/ProbabilityTest" || tokenizer[0] == "/확률테스트") {
     *talkType = TT_PROBABILITY_TEST;
-    return -1;
+    offset = -1;
   } else {
     *talkType = this->GetCommandId(tokenizer[0].c_str());
-    return -1;
+    offset = -1;
   }
 
-  if (*talkType != 0) {
+  if (offset != -1 && *talkType != TT_NORMAL) {
     while (text[offset] == ' ') {
       ++offset;
     }
