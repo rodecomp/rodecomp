@@ -3793,7 +3793,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
   switch (message) {
   case UM_DEFPUSH:
-    return 0;
+    break;
   case UM_COMBOBOX_SELECTED: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
@@ -3805,20 +3805,16 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->feedConfirmationWnd = new UINormalMB();
       this->feedConfirmationWnd->Create(this, LookupMessage(MSI_SURE_TO_FEED_PET), 2, true, nullptr, 280, 120, nullptr);
       g_windowMgr.AddRendered(this->feedConfirmationWnd);
-      g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-      return 0;
+      break;
     case ID_PET_PERFORMANCE:
       mode->SendMsg(MM_COMMAND_PET, 2, 0, 0, 0);
-      g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-      return 0;
+      break;
     case ID_PET_UNEQUIP_ACCESSORY:
       mode->SendMsg(MM_COMMAND_PET, 4, 0, 0, 0);
-      g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-      return 0;
+      break;
     case ID_PET_RETURN_TO_EGG:
       mode->SendMsg(MM_COMMAND_PET, 3, 0, 0, 0);
-      g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-      return 0;
+      break;
     case ID_PET_EVOLUTION:
       if (g_session.m_petFriendly > 900) {
         g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
@@ -3826,15 +3822,13 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         const int petEgg = g_session.LookupClientItemByIdentity(g_session.petEggIndex).GetItemId();
         window->SendMsg(nullptr, UM_SET_PET_EVOLUTION_MATERIALS, petEgg, b, 0, 0);
         this->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-        return 0;
+        break;
       }
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RG_FAMILIAR)), 255, 0, 0, 0);
       break;
     }
     g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
-    return 0;
-  }
+  } break;
   case UM_COMMAND:
     if (a == ID_OK || a == ID_CLOSE) {
       this->RecordResponse(static_cast<int>(a), b, c, d);
@@ -3844,38 +3838,36 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case ID_OK:
       if (std::strlen(this->nameEdit->Text()) >= 24) {
         g_windowMgr.Confirm(LookupMessage(MSI_PETNAME_IN23), 0, true, false, 0, "메시지", 280, 120, 0);
-        return 0;
+        break;
       }
       if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
         g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
-        return 0;
+        break;
       }
       {
         char text[512];
-        UIEditCtrl* edit = this->nameEdit;
-        std::sprintf(text, LookupMessage(MSI_CHANGE_PETNAME), edit->Text());
+        std::sprintf(text, LookupMessage(MSI_CHANGE_PETNAME), this->nameEdit->Text());
         const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0);
         if (response == ID_NO) {
-          edit->SetText(g_session.petName);
-          edit->Invalidate();
+          this->nameEdit->SetText(g_session.petName);
+          this->nameEdit->Invalidate();
           return 0;
         }
-        if (g_forbiddenWords.Contains(edit->Text()) != true) {
+        if (g_forbiddenWords.Contains(this->nameEdit->Text()) == true) {
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
+          this->nameEdit->SetText(g_session.petName);
+          this->nameEdit->Invalidate();
+        } else {
           g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
           std::sprintf(g_session.petName, this->nameEdit->Text());
           this->Invalidate();
-          return 0;
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
-        edit = this->nameEdit;
-        edit->SetText(g_session.petName);
-        edit->Invalidate();
       }
-      return 0;
+      break;
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_PETINFOWND);
-      return 0;
+      break;
     case ID_CHECK:
       if (sender == this->autoFeedCheck) {
         if (b > 0) {
@@ -3884,7 +3876,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           g_session.SendPetAutoFeedOption(0);
         }
       }
-      return 0;
+      break;
     case ID_COMMAND_MENU: {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXIDWND);
       std::string feed;
@@ -3922,7 +3914,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int y = 44;
       this->ToScreen(x, y);
       menu->Move(x, y);
-      return 0;
+      break;
     }
     case ID_MESSAGEBOX_RESULT: {
       CGameMode* mode = g_modeMgr.GetGameMode();
@@ -3930,16 +3922,15 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_PET_AUTO_FEEDING_BY_ITEMACTION)), 255, 0, 0, 0);
           this->feedConfirmationWnd = nullptr;
-          return 0;
+          break;
         }
         mode->SendMsg(MM_COMMAND_PET, 1, 0, 0, 0);
       }
       this->feedConfirmationWnd = nullptr;
-      return 0;
+      break;
     }
-    default:
-      return 0;
     }
+    break;
   case UM_SETINFO:
     this->saved = reinterpret_cast<PetInfoWndInfo*>(a);
     if (!this->saved->IsValid()) {
@@ -3947,10 +3938,11 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     this->Move(this->saved->x, this->saved->y);
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x008B6520
