@@ -342,6 +342,22 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         std::strcpy(name, reinterpret_cast<const char*>(d));
       }
 
+      switch (c) {
+      case CHAT_MESSAGE_GENERAL:
+      case CHAT_MESSAGE_PARTY:
+      case CHAT_MESSAGE_GUILD:
+      case CHAT_MESSAGE_CLAN: {
+        std::string text(reinterpret_cast<const char*>(a));
+        const int length = static_cast<int>(std::strlen(reinterpret_cast<const char*>(a)));
+        const int position = static_cast<int>(text.find(" :"));
+        if (position > 0 && position < length && position < 24) {
+          std::memcpy(name, reinterpret_cast<const char*>(a), position);
+          name[position] = '\0';
+        }
+        break;
+      }
+      }
+
       bool hasLink = false;
       std::string plain = RemoveTextColors(reinterpret_cast<const char*>(a));
       NavigationLinkParser* parser = g_navigationLinkParser;
@@ -352,22 +368,6 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         WrapPlainText(
           RemoveTextColors(reinterpret_cast<const char*>(a)).c_str(), lines, 0x5E
         );
-      }
-
-      switch (c) {
-      case CHAT_MESSAGE_GENERAL:
-      case CHAT_MESSAGE_PARTY:
-      case CHAT_MESSAGE_GUILD:
-      case CHAT_MESSAGE_CLAN: {
-        std::string text(reinterpret_cast<const char*>(a));
-        const int position = static_cast<int>(text.find(" :"));
-        const int length = static_cast<int>(std::strlen(reinterpret_cast<const char*>(a)));
-        if (position > 0 && position < length && position < 24) {
-          std::memcpy(name, reinterpret_cast<const char*>(a), position);
-          name[position] = '\0';
-        }
-        break;
-      }
       }
 
       if (g_serviceType == ServiceGermany && std::strlen(name) > 24) {
@@ -540,7 +540,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_chatEdit->PushHistory();
       this->m_inputEdit = this->m_chatEdit;
       g_windowMgr.SetFocus(this->m_chatEdit);
-      this->m_chatEdit->linkedText.clear();
+      this->m_chatEdit->linkedText = "";
       if (std::strlen(buffer) == 0) {
         return 0;
       }
