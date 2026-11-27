@@ -100,14 +100,21 @@ void UIPlayerGage::SetSecondValues(std::function<std::int64_t()> current, std::f
 void UIPlayerGage::Paint() {
   this->ClearSurface(this->colors[0]);
 
+  std::int64_t maxVal;
+  std::int64_t curVal;
+  std::int64_t den;
+  int denInt;
+  double num;
+  float ratio;
+
   switch (this->actorKind) {
     case NPC_PET_TYPE:
       if (this->m_thirdCurrent && this->m_thirdMaximum) {
-        const std::int64_t maxVal = MaxIntAndInt64(1, this->m_thirdMaximum());
-        const std::int64_t curVal = this->m_thirdCurrent();
-        const std::int64_t den = (std::max)(curVal, maxVal);
-        const double num = static_cast<double>(this->m_thirdCurrent());
-        const float ratio = static_cast<float>(num / static_cast<double>(den));
+        maxVal = MaxIntAndInt64(1, this->m_thirdMaximum());
+        curVal = this->m_thirdCurrent();
+        den = (std::max)(curVal, maxVal);
+        num = static_cast<double>(this->m_thirdCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          ratio < g_gageThreshold ? this->colors[6] : this->colors[5]);
@@ -116,33 +123,33 @@ void UIPlayerGage::Paint() {
     case NPC_MERSOL_TYPE:
     case NPC_ELEMENTAL_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
-        const std::int64_t curVal1 = this->m_firstCurrent();
-        const std::int64_t den1 = (std::max)(curVal1, maxVal1);
-        const double num1 = static_cast<double>(this->m_firstCurrent());
-        const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
+        maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
+        curVal = this->m_firstCurrent();
+        den = (std::max)(curVal, maxVal);
+        num = static_cast<double>(this->m_firstCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
-        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
-        const std::int64_t curVal2 = this->m_secondCurrent();
-        const int den2 = static_cast<int>((std::max)(curVal2, maxVal2));
-        const double num2 = static_cast<double>(this->m_secondCurrent());
-        const float ratio2 = static_cast<float>(num2 / static_cast<double>(den2));
+        maxVal = MaxIntAndInt64(1, this->m_secondMaximum());
+        curVal = this->m_secondCurrent();
+        denInt = static_cast<int>((std::max)(curVal, maxVal));
+        num = static_cast<double>(this->m_secondCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(denInt));
         this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          this->colors[3]);
       }
       return;
     case NPC_ABR_TYPE:
     case NPC_BIONIC_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum) {
-        const std::int64_t maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
-        const std::int64_t curVal = this->m_firstCurrent();
-        const std::int64_t den = curVal > maxVal ? curVal : maxVal;
-        const double num = static_cast<double>(this->m_firstCurrent());
-        const float ratio = static_cast<float>(num / static_cast<double>(den));
+        maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
+        curVal = this->m_firstCurrent();
+        den = curVal > maxVal ? curVal : maxVal;
+        num = static_cast<double>(this->m_firstCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
@@ -151,62 +158,62 @@ void UIPlayerGage::Paint() {
     case NPC_HO_TYPE:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum &&
           this->m_thirdCurrent && this->m_thirdMaximum) {
-        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
-        const std::int64_t curVal1 = this->m_firstCurrent();
-        const std::int64_t den1 = (std::max)(curVal1, maxVal1);
-        const double num1 = static_cast<double>(this->m_firstCurrent());
-        const float ratio1 = static_cast<float>(num1 / static_cast<double>(den1));
+        maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
+        curVal = this->m_firstCurrent();
+        den = (std::max)(curVal, maxVal);
+        num = static_cast<double>(this->m_firstCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
-        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
-        const std::int64_t curVal2 = this->m_secondCurrent();
-        const std::int64_t den2 = (std::max)(curVal2, maxVal2);
-        const double num2 = static_cast<double>(this->m_secondCurrent());
-        const float ratio2 = static_cast<float>(num2 / static_cast<double>(den2));
+        maxVal = MaxIntAndInt64(1, this->m_secondMaximum());
+        curVal = this->m_secondCurrent();
+        den = (std::max)(curVal, maxVal);
+        num = static_cast<double>(this->m_secondCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          this->colors[3]);
 
-        const std::int64_t maxVal3 = MaxIntAndInt64(1, this->m_thirdMaximum());
-        const std::int64_t curVal3 = this->m_thirdCurrent();
-        const std::int64_t den3 = (std::max)(curVal3, maxVal3);
-        const double num3 = static_cast<double>(this->m_thirdCurrent());
-        const float ratio3 = static_cast<float>(num3 / static_cast<double>(den3));
+        maxVal = MaxIntAndInt64(1, this->m_thirdMaximum());
+        curVal = this->m_thirdCurrent();
+        den = (std::max)(curVal, maxVal);
+        num = static_cast<double>(this->m_thirdCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(den));
         this->FillRegion(1, 9, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio3), 3,
-                         ratio3 < g_gageThreshold ? this->colors[6] : this->colors[5]);
+        this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < g_gageThreshold ? this->colors[6] : this->colors[5]);
       }
       return;
     default:
       if (this->m_firstCurrent && this->m_firstMaximum && this->m_secondCurrent && this->m_secondMaximum) {
-        const std::int64_t maxVal1 = MaxIntAndInt64(1, this->m_firstMaximum());
-        const std::int64_t curVal1 = this->m_firstCurrent();
-        const std::int64_t den1 = curVal1 > maxVal1 ? curVal1 : maxVal1;
-        const double num1 = static_cast<double>(this->m_firstCurrent());
-        const float ratio1 = static_cast<float>(num1 / static_cast<double>(static_cast<int>(den1)));
+        maxVal = MaxIntAndInt64(1, this->m_firstMaximum());
+        curVal = this->m_firstCurrent();
+        den = curVal > maxVal ? curVal : maxVal;
+        num = static_cast<double>(this->m_firstCurrent());
+        ratio = static_cast<float>(num / static_cast<double>(static_cast<int>(den)));
         this->FillRegion(1, 1, this->geometry.width - 2, 3, this->colors[1]);
-        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio1), 3,
-                         ratio1 < g_gageThreshold ? this->colors[4] : this->colors[2]);
+        this->FillRegion(1, 1, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
+                         ratio < g_gageThreshold ? this->colors[4] : this->colors[2]);
 
-        const std::int64_t maxVal2 = MaxIntAndInt64(1, this->m_secondMaximum());
-        const std::int64_t curVal2 = this->m_secondCurrent();
-        const std::int64_t den2 = curVal2 > maxVal2 ? curVal2 : maxVal2;
-        const double num2 = static_cast<double>(this->m_secondCurrent());
+        maxVal = MaxIntAndInt64(1, this->m_secondMaximum());
+        curVal = this->m_secondCurrent();
+        den = curVal > maxVal ? curVal : maxVal;
+        num = static_cast<double>(this->m_secondCurrent());
         this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
-        const float ratio2 = static_cast<float>(num2 / static_cast<double>(static_cast<int>(den2)));
-        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio2), 3,
+        ratio = static_cast<float>(num / static_cast<double>(static_cast<int>(den)));
+        this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          this->colors[3]);
 
         if (this->m_fourthCurrent && this->m_fourthMaximum) {
-          const std::int64_t maxVal4 = MaxIntAndInt64(1, this->m_fourthMaximum());
-          const std::int64_t curVal4 = this->m_fourthCurrent();
-          const std::int64_t den4 = (std::max)(curVal4, maxVal4);
-          const double num4 = static_cast<double>(this->m_fourthCurrent());
-          const float ratio4 = static_cast<float>(num4 / static_cast<double>(static_cast<int>(den4)));
+          maxVal = MaxIntAndInt64(1, this->m_fourthMaximum());
+          curVal = this->m_fourthCurrent();
+          den = (std::max)(curVal, maxVal);
+          num = static_cast<double>(this->m_fourthCurrent());
+          ratio = static_cast<float>(num / static_cast<double>(static_cast<int>(den)));
           this->FillRegion(1, 9, this->geometry.width - 2, 3, this->colors[1]);
-          this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio4), 3,
+          this->FillRegion(1, 9, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                            this->colors[7]);
         }
       }
