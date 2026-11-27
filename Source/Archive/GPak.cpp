@@ -1702,10 +1702,10 @@ bool PakAuxiliary::DecodeHeader(std::span<const std::uint8_t> name, std::uint8_t
     return false;
   }
 
-  std::span<std::uint8_t> input =
-    std::span<std::uint8_t>(data, size).subspan(RevealConstant<8, 0xEB082218, 0x9C2B76A5>(), RevealConstant<0x60, 0xEB082218, 0x9C2B76A5>());
   std::span<std::uint8_t> output = std::span<std::uint8_t, sizeof(PakAuxiliaryHeader)>(reinterpret_cast<std::uint8_t*>(header), sizeof(PakAuxiliaryHeader))
                                      .subspan(RevealConstant<8, 0xB575CB53, 0x7FD9BE32>(), RevealConstant<0x60, 0xB575CB53, 0x7FD9BE32>());
+  std::span<std::uint8_t> input =
+    std::span<std::uint8_t>(data, size).subspan(RevealConstant<8, 0xEB082218, 0x9C2B76A5>(), RevealConstant<0x60, 0xEB082218, 0x9C2B76A5>());
   const PakHeaderSource source = {name, header};
   const PakHeaderDecryptor decryptor = {source, input, output};
 
