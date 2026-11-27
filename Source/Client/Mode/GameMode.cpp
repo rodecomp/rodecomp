@@ -120,6 +120,9 @@
 #include "UI/Replay/UIReplayControlWnd.h"
 #include "UI/Replay/UIReplayRECControlWnd.h"
 
+// STRING: st_00939
+static const char g_messageTitle[] = "Message";
+
 extern "C" long long _Xtime_get_ticks();
 
 #pragma pack(push, 1)
@@ -9273,7 +9276,7 @@ int CGameMode::ProcessGroundClick(int result) {
       if (g_mouse.buttons[0] == 1) {
         shop->SetSuspended(0);
         shop->SetSelection(static_cast<short>(column), static_cast<short>(pickedRow));
-        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ASSISTANT_VENDING_POS), 2, true, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
           shop->SendShopRequest();
           return -1;
         }
