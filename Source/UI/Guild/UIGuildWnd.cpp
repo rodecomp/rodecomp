@@ -3196,13 +3196,13 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (bitmap->image.width == 24 && bitmap->image.height == 24) {
         CFile file;
         if (file.Open(FormatOwnedString("..\\emblem\\%s", name.c_str()).c_str(), 0, true, false) == true) {
-          if (g_guildMgr->m_timeout < file.GetSize()) {
-            g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
-          } else {
+          if (g_guildMgr->m_timeout >= file.GetSize()) {
             std::string uploadPath = FormatOwnedString("emblem\\%s", name.c_str());
             if (!g_emblemDataMgr->Upload(this->m_guildId, uploadPath)) {
               g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "메시지", 280, 120, 0);
             }
+          } else {
+            g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
           }
         }
       } else {
