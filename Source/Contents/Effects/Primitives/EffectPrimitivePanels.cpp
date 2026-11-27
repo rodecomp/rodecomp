@@ -102,18 +102,18 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
     rest = 1.0f - slot.height[9];
     vec[1] = vec[0];
     vec[2] = vec[3];
-    vec[0].x = g_cosTable[bend] * (rest * 32.0f) + vec[1].x;
-    vec[0].z = g_sinTable[bend] * (rest * 32.0f) + vec[1].z;
-    vec[3].x = g_cosTable[bend] * (rest * 40.0f) + vec[2].x;
-    vec[3].z = g_sinTable[bend] * (rest * 40.0f) + vec[2].z;
+    vec[0].x = g_cosTable[bend - 20] * (rest * 32.0f) + vec[1].x;
+    vec[0].z = g_sinTable[bend - 20] * (rest * 32.0f) + vec[1].z;
+    vec[3].x = g_cosTable[bend - 20] * (rest * 40.0f) + vec[2].x;
+    vec[3].z = g_sinTable[bend - 20] * (rest * 40.0f) + vec[2].z;
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec[1], vec[0], vec[3], vec[2], wtm, 0, static_cast<char>(slot.height[1]), 0, shade, shade, 255, 0.0f, 1.0f, slot.height[9], 1.0f, 0);
 
     mid1 = vec[0];
     mid2 = vec[3];
-    vec[0].x = g_cosTable[bend] * 32.0f + vec[1].x;
-    vec[0].z = g_sinTable[bend] * 32.0f + vec[1].z;
-    vec[3].x = g_cosTable[bend] * 40.0f + vec[2].x;
-    vec[3].z = g_sinTable[bend] * 40.0f + vec[2].z;
+    vec[0].x = g_cosTable[bend - 20] * 32.0f + vec[1].x;
+    vec[0].z = g_sinTable[bend - 20] * 32.0f + vec[1].z;
+    vec[3].x = g_cosTable[bend - 20] * 40.0f + vec[2].x;
+    vec[3].z = g_sinTable[bend - 20] * 40.0f + vec[2].z;
     vec[1] = mid1;
     vec[2] = mid2;
     this->RenderTeiRect(&rpCnt, slot.alphaB, vec[1], vec[0], vec[3], vec[2], wtm, 0, static_cast<char>(slot.height[1]), 0, shade, shade, 255, 0.0f, 1.0f, 0.0f, slot.height[9], 0);
