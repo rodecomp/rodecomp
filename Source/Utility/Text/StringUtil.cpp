@@ -97,12 +97,12 @@ bool CGPak::Extract(const myGPack::PakEntry* entry, void* buffer) {
 
 // OFFSET: 0x0058A4D0
 // FUNCTION: fn_02757
-int CountCharacters(WORD codePage, const char* text, const char* end) {
+unsigned int CountCharacters(WORD codePage, const char* text, const char* end) {
   if (text == nullptr) {
     return 0;
   }
 
-  int count = 0;
+  unsigned int count = 0;
   while (*text != '\0' && (end == nullptr || text < end)) {
     text = CharNextExA(codePage, text, 0);
     if (end != nullptr && end < text) {

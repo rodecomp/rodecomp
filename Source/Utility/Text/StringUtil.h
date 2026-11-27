@@ -6,7 +6,7 @@
 #include <vector>
 #include <windows.h>
 
-int CountCharacters(WORD codePage, const char* text, const char* end);
+unsigned int CountCharacters(WORD codePage, const char* text, const char* end);
 bool ContainsText(const std::string& text, std::string_view pattern);
 std::string GetFileName(const std::string& path);
 bool IsNullOrEmpty(const char* text);
