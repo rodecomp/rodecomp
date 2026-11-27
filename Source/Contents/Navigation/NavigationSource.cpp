@@ -661,7 +661,7 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
 // FUNCTION: fn_19566
 CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   const NaviObjectRecord* header = reinterpret_cast<const NaviObjectRecord*>(record);
-  const int type = header->type;
+  volatile int type = header->type;
   if (static_cast<unsigned int>(type - 199) > 100) {
     return nullptr;
   }
