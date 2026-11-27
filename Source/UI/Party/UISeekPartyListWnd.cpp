@@ -232,7 +232,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->Move(this->m_saved->x, this->m_saved->y);
     this->SendMsg(nullptr, UM_RESIZE, 3, this->m_saved->width, this->m_saved->height, 0);
     this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-    return 0;
+    break;
   case UM_COMMAND:
     switch (argument1) {
     case ID_MINI:
@@ -244,25 +244,23 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
       this->m_minimized = !this->m_minimized;
       this->Invalidate();
-      return 0;
+      break;
     case ID_CHARGE:
       this->Invalidate();
-      return 0;
+      break;
     case ID_HELP:
       g_windowMgr.EnsureWindow(WID_PARTYBOOKINGHELPWND);
-      return 0;
+      break;
     case ID_FIND:
     case SEEKPARTY_SEARCH_NEXT_PAGE: {
       PACKET_CZ_PARTY_BOOKING_REQ_SEARCH packet;
       packet.packetType = ID_CZ_PARTY_BOOKING_REQ_SEARCH;
       packet.level = static_cast<short>(std::atoi(this->m_searchEdit->Text()));
-      {
-        std::string text(this->m_searchEdit->Text());
-        for (std::size_t i = 0; i < text.size(); ++i) {
-          if (text[i] < '/' || text[i] > '9') {
-            g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
-            return 0;
-          }
+      std::string text(this->m_searchEdit->Text());
+      for (std::size_t i = 0; i < text.size(); ++i) {
+        if (text[i] < '/' || text[i] > '9') {
+          g_windowMgr.Confirm(LookupMessage(MSI_PARTY_BOOKING_ERR4), 0, true, false, 0, "Message", 280, 120, 0);
+          return 0;
         }
       }
 
@@ -271,7 +269,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         std::memset(buffer, 0, sizeof(buffer));
         StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), g_session.m_maxLevel);
         g_windowMgr.Confirm(buffer, 0, true, false, 0, "Message", 280, 120, 0);
-        return 0;
+        break;
       }
 
       if (this->m_region == 0) {
@@ -289,14 +287,14 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       if (argument1 == ID_FIND) {
         if (this->m_filter.job== packet.job && this->m_filter.level== packet.level && this->m_filter.mapId== packet.mapId) {
-          return 0;
+          break;
         }
         packet.lastIndex = 0;
         g_session.m_partyBooking.Clear();
       } else if (argument1 == SEEKPARTY_SEARCH_NEXT_PAGE) {
         if (!g_session.m_partyBooking.m_lastPage) {
           g_session.m_partyBooking.FlushPending();
-          return 0;
+          break;
         }
         packet.lastIndex = g_session.m_partyBooking.m_lastIndex;
       }
@@ -309,9 +307,9 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_filter.mapId= packet.mapId;
 
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
-      const int level = packet.level;
-      if (level > 0) {
-        if (level < 136) {
+      if (packet.level > 0) {
+        const int level = packet.level;
+        if (level > 135) {
           title = title + " Level: " + IntToString(level, 0);
         } else {
           title = title + " Level: " + IntToString(level, 0);
@@ -330,11 +328,11 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       g_session.m_partyBooking.SetFilter(this->m_filter.level, this->m_filter.mapId, this->m_filter.job);
       this->Invalidate();
-      return 0;
+      break;
     }
     case ID_WHISPER_PARTY_LEADER: {
       if (this->m_hoverIndex == -1) {
-        return 0;
+        break;
       }
 
       int index = 0;
@@ -353,23 +351,24 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
             g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(leaderName.c_str()), 0, 0, 0, 0);
           }
         }
-        return 0;
+        break;
       }
-      return 0;
+      break;
     }
     case ID_CLOSE:
       g_session.m_partyBooking.m_alarm = this->m_alarmCheck->geometry.state != 0;
       g_windowMgr.CloseWindow(WID_SEEKPARTYLISTWND);
-      return 0;
+      break;
     default:
-      return 0;
+      break;
     }
+    break;
   case UM_TEXT_LBTN_UP:
     if (argument1 != SEEKPARTY_BUTTON_OPEN_RECRUIT || g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND)) {
-      return 0;
+      break;
     }
     g_windowMgr.EnsureWindow(WID_SEEKPARTYMBWND);
-    return 0;
+    break;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
@@ -402,10 +401,11 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     } else if (sender == this->m_jobCombo) {
       this->m_jobCategoryChanged = static_cast<int>(argument1) + 1;
     }
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
+  return 0;
 }
 
 // OFFSET: 0x009431D0
