@@ -613,9 +613,11 @@ void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
   this->DrawBitmap(x, y + height - bitmap->image.height, bitmap, false);
   bitmap = load("유저인터페이스\\sysbox_rd.bmp");
   this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, bitmap, false);
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
+  }
 }
 
 // INLINED
