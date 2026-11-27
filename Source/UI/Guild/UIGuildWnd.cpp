@@ -3128,14 +3128,14 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         y = g_renderer->viewport.height - menu->geometry.height;
       }
       menu->Move(x, y);
-      return 0;
+      break;
     }
     break;
   case UM_COMMAND:
     switch (a1) {
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_GUILDWND);
-      return 0;
+      break;
     case ID_CHANGE_GUILE_EMBLEM: {
       if (g_windowMgr.comboBoxWnd != 0) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
@@ -3144,7 +3144,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       const int count = static_cast<int>(this->emblemFiles.size());
       if (count == 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_CHANGE), 0, true, false, 0, "Caution", 280, 120, 0);
-        return 0;
+        break;
       }
 
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
@@ -3159,12 +3159,12 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       int y = 86;
       this->ToScreen(x, y);
       menu->Move(x + 1, y + 1);
-      return 0;
+      break;
     }
     case ID_DISBAND_GUILD:
       g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_WARNING), 0, false, false, 0, "메시지", 280, 120, 0);
       g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_1);
-      return 0;
+      break;
     }
     break;
   case UM_SETSTATE:
@@ -3189,7 +3189,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       if (!bitmap) {
         g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
-        return 0;
+        break;
       }
 
       if (bitmap->image.width == 24 && bitmap->image.height == 24) {
@@ -3208,7 +3208,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "메시지", 280, 120, 0);
       }
     }
-    return 0;
+    break;
   }
   case UM_REFRESH:
     this->m_guildId = g_guildInfo.m_guildId;
@@ -3221,14 +3221,14 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     }
     this->RefreshAgitList();
     this->InvalidateChildren();
-    return 0;
+    break;
   case UM_SHOW_AGIT_MENU:
     if (this->m_agitMenu) {
       this->m_agitMenu->Move(a1, a2);
       this->m_agitMenu->Show(WINDOW_VISIBLE);
       this->m_agitMenu->m_agitIndex = this->m_agitList->selected;
       this->Invalidate();
-      return 0;
+      break;
     }
     break;
   case UM_HIDE_AGIT_MENU:
