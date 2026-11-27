@@ -61,7 +61,7 @@ const char* g_uiInfoScriptPath = "Lua Files\\OptionInfo\\UIInfo_F";
 
 // INLINED
 template <class Signature>
-static __forceinline void AssignHandler(std::function<Signature>& target, const std::function<Signature>& source) {
+static __forceinline void AssignHandler(std::function<Signature>& target, std::function<Signature> source) {
   std::function<Signature>(source).swap(target);
 }
 
