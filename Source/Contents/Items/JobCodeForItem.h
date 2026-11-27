@@ -7,6 +7,11 @@
 #include <map>
 #include <set>
 
+enum ItemJobCode : unsigned long {
+  JOB_CODE_ALL_EXCEPT_NOVICE = 0xFFFFE,
+  JOB_CODE_ALL = 0xFFFFF,
+};
+
 class CJobCodeForItem : public Singleton<CJobCodeForItem> {
 public:
   /* 0004 */ std::map<unsigned int, std::set<JobId>> m_jobGroups;

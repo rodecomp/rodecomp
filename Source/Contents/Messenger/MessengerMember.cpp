@@ -1857,7 +1857,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->iconModeButtons[0]->Enable(0);
       this->SendMsg(sender, UM_RESIZE, 7, 0xF3, 0xB3, 0);
       return 0;
-    case 0x16C:
+    case ID_SORT_MINIPARTY:
       if (g_session.m_lockMouse != true) {
         g_windowMgr.RearrangeMiniPartyWindows();
       }

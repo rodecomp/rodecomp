@@ -7858,7 +7858,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     effectId = EF_NEW_AROMAOIL;
     secondEffectId = EF_NEW_AROMAOIL_BOTTOM;
     break;
-  case 0x19605:
+  case ITEMID_NEW_YEAR_FIRE_C_TW:
     effectId = EF_UNK_2434;
     break;
   }
@@ -11201,7 +11201,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     timeText = this->GetActiveSkillEffectTimeText(id, &activeId);
   }
 
-  if (this->hoveredStatusIconId != id || !this->statusIconTooltip || id == 0x175 || id == 0x2B7) {
+  if (this->hoveredStatusIconId != id || !this->statusIconTooltip || id == 0x175 || id == EFST_CLIENT_ONLY_EQUIP_ARROW) {
     if (!this->statusIconTooltip) {
       this->statusIconTooltip = new UITransBalloonText();
       this->statusIconTooltip->SetSize(50, 50);
@@ -11216,7 +11216,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     std::string extra;
     std::uint32_t color = 0;
     switch (id) {
-    case 0x2B7:
+    case EFST_CLIENT_ONLY_EQUIP_ARROW:
       {
         ITEM_INFO item = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (item.identity[1] > 0) {

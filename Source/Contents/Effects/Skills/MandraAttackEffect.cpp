@@ -89,13 +89,13 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
       sprite = "몬스터\\NEPENTHES_BULLET.spr";
       break;
 
-    case 0xE94:
-    case 0x500B:
+    case JT_JP_ABYSS_BOSS_1:
+    case JT_AB_MOB_137:
       action = "몬스터\\JP_ABYSS_BOSS_1_atk.act";
       sprite = "몬스터\\JP_ABYSS_BOSS_1_atk.spr";
       break;
 
-    case 0xECF:
+    case JT_JP_E_MONSTER_73:
       action = "몬스터\\jp_2017evt_atk.act";
       sprite = "몬스터\\jp_2017evt_atk.spr";
       break;

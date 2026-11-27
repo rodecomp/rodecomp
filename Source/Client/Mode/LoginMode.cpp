@@ -2819,7 +2819,7 @@ void CLoginMode::PollNetworkStatus() {
       this->pendingCursorType = LOGIN_STATE_SELECT_CHARACTER;
       break;
     }
-    case 0xC05: {
+    case ID_UNKNOWN_0xC05: {
       const CharacterSlotCountsPacket* packet = reinterpret_cast<const CharacterSlotCountsPacket*>(g_gameModePacketBuffer);
       g_session.restrictedCharacterSlots = packet->counts[1];
       CharacterSlotsPacket slots;

@@ -394,14 +394,14 @@ void CJobCodeForItem::Init() {
 // FUNCTION: fn_06467
 bool CJobCodeForItem::IsJobAllowed(JobId job, unsigned long code) {
   switch (code) {
-  case 0xFFFFE: {
+  case JOB_CODE_ALL_EXCEPT_NOVICE: {
     auto group = this->m_jobGroups.find(0);
     if (group != this->m_jobGroups.end()) {
       return group->second.end() == group->second.find(job);
     }
     return false;
   }
-  case 0xFFFFF:
+  case JOB_CODE_ALL:
     return true;
   default: {
     auto it = this->m_jobCodes.find(code);

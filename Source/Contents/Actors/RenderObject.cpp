@@ -2434,9 +2434,9 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
   case JT_G_ENTWEIHEN_M:
   case JT_G_ENTWEIHEN_S:
   case JT_NEPENTHES:
-  case 0xE94:
-  case 0xECF:
-  case 0x500B:
+  case JT_JP_ABYSS_BOSS_1:
+  case JT_JP_E_MONSTER_73:
+  case JT_AB_MOB_137:
   case JT_SUMMON_CREEPER:
   case JT_DEDSERA:
   case JT_EP21_YORTUS_B:

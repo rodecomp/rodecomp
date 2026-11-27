@@ -1062,16 +1062,16 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
   for (auto entry = this->m_values.rbegin(); this->m_values.rend() != entry; ++entry) {
     std::string argument;
     switch (HashName(this->m_definition->separator.c_str())) {
-    case 0x16716DCE:
+    case HASH_GET_NUMBER:
       argument = fmt::format("{0}", entry->first);
       break;
-    case 0x78BA6385:
+    case HASH_GET_SKILL_NAME:
       argument = CSkillInfo::DisplayName(entry->first);
       if (argument.size() == 0) {
         continue;
       }
       break;
-    case 0x8F918611:
+    case HASH_GET_SKILL_GROUP:
       if (entry->first != 0) {
         std::list<unsigned int>* skills = CEquipmentPropertiesMgr::GetInstance()->FindSkillGroup(entry->first);
         if (skills == nullptr) {
@@ -1089,7 +1089,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
         }
       }
       break;
-    case 0xA2AF91ED: {
+    case HASH_GET_ADD_DAMAGE_SKILL_NAME: {
       CEquipmentPropertiesMgr* manager = CEquipmentPropertiesMgr::GetInstance();
       const unsigned int key = entry->first;
       const int skillId = manager->GetConstantValue(key);
@@ -2173,58 +2173,58 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
         unsigned int hash = HashName(key.c_str());
         int variable;
         switch (hash) {
-        case 0x617FECDF:
+        case HASH_VAR_MAXHPAMOUNT:
           variable = SP_MAXHP;
           break;
-        case 0x8854128A:
+        case HASH_VAR_MAXSPAMOUNT:
           variable = SP_MAXSP;
           break;
-        case 0x4BA88EBA:
+        case HASH_VAR_STRAMOUNT:
           variable = SP_STR;
           break;
-        case 0x66C4AA72:
+        case HASH_VAR_AGIAMOUNT:
           variable = SP_AGI;
           break;
-        case 0x1C3E3594:
+        case HASH_VAR_VITAMOUNT:
           variable = SP_VIT;
           break;
-        case 0xCF35A0EC:
+        case HASH_VAR_INTAMOUNT:
           variable = SP_INT;
           break;
-        case 0x6E5FE302:
+        case HASH_VAR_DEXAMOUNT:
           variable = SP_DEX;
           break;
-        case 0xEDABA34D:
+        case HASH_VAR_LUKAMOUNT:
           variable = SP_LUK;
           break;
-        case 0x35175B63:
+        case HASH_VAR_ATTPOWER:
           variable = SP_ATK1;
           break;
-        case 0xBDC4C598:
+        case HASH_VAR_ITEMDEFPOWER:
           variable = SP_DEF1;
           break;
-        case 0xEFCBA0D6:
+        case HASH_VAR_MDEFPOWER:
           variable = SP_MDEF1;
           break;
-        case 0xD1114E90:
+        case HASH_VAR_ATTMPOWER:
           variable = EQUIPMENT_STAT_VAR_MAGIC_ATTACK_POWER;
           break;
-        case 0xD1CD4317:
+        case HASH_VAR_POWAMOUNT:
           variable = SP_POW;
           break;
-        case 0x2F0A85E9:
+        case HASH_VAR_STAAMOUNT:
           variable = SP_STA;
           break;
-        case 0x43C069D4:
+        case HASH_VAR_WISAMOUNT:
           variable = SP_WIS;
           break;
-        case 0xCCC3CEB0:
+        case HASH_VAR_SPLAMOUNT:
           variable = SP_SPL;
           break;
-        case 0x32AF6341:
+        case HASH_VAR_CONAMOUNT:
           variable = SP_CON;
           break;
-        case 0xC5524E6A:
+        case HASH_VAR_CRTAMOUNT:
           variable = SP_CRT;
           break;
         default:
@@ -2354,16 +2354,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
       }
       int kind = 0;
       switch (HashName(key.c_str())) {
-      case 0xBDE09DB7:
+      case HASH_NORMAL_WEAPON:
         kind = 1;
         break;
-      case 0x78974D0E:
+      case HASH_NORMAL_ARMOR:
         kind = 2;
         break;
-      case 0x7A2F6FD4:
+      case HASH_SHADOW_WEAPON:
         kind = 3;
         break;
-      case 0xA515CF8B:
+      case HASH_SHADOW_ARMOR:
         kind = 4;
         break;
       default:
@@ -2400,27 +2400,27 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
         }
         int categoryIndex = 0;
         switch (HashName(category.c_str())) {
-        case 0x95E1BB50:
+        case HASH_GRADE_NORMAL:
           break;
-        case 0x2B3A7568:
+        case HASH_GRADE_MAGIC:
           categoryIndex = 1;
           break;
-        case 0xBB80A3D1:
+        case HASH_GRADE_RARE:
           categoryIndex = 2;
           break;
-        case 0xBB79C188:
+        case HASH_GRADE_EPIC:
           categoryIndex = 3;
           break;
-        case 0xA61EE35E:
+        case HASH_GRADE_UNIQUE:
           categoryIndex = 4;
           break;
-        case 0x907C4C76:
+        case HASH_GRADE_LEGEND:
           categoryIndex = 5;
           break;
-        case 0x65FD5769:
+        case HASH_GRADE_ANCIENT:
           categoryIndex = 6;
           break;
-        case 0x781614BE:
+        case HASH_GRADE_AWAKEN:
           categoryIndex = 7;
           break;
         default:
@@ -2450,10 +2450,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
           }
           int fieldIndex = 0;
           switch (HashName(field.c_str())) {
-          case 0x09B447CA:
+          case HASH_REFINING_WEAPON_ATK_MULTIPLE:
             fieldIndex = 1;
             break;
-          case 0x27A83F77:
+          case HASH_REFINING_WEAPON_MATK_MULTIPLE:
             fieldIndex = 2;
             break;
           default:
@@ -2528,16 +2528,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
       }
       int kind = 0;
       switch (HashName(key.c_str())) {
-      case 0xC3B9E8CE:
+      case HASH_WEAPON_ATK:
         kind = 1;
         break;
-      case 0x48A75AE8:
+      case HASH_WEAPON_ADV_ATK:
         kind = 2;
         break;
-      case 0x18585774:
+      case HASH_ARMOR_DEF:
         kind = 3;
         break;
-      case 0x1858930F:
+      case HASH_ARMOR_RES:
         kind = 4;
         break;
       default:
@@ -6841,23 +6841,23 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       if (hasType == true) {
         unsigned int hash = HashName(itemType.c_str());
         switch (hash) {
-        case 0x0F1AAAA6:
+        case HASH_ARMOR:
           info.kind = EQUIP_INFO_ARMOR;
           count = 17;
           break;
-        case 0x47F48D1C:
+        case HASH_MWEAPON:
           info.kind = EQUIP_INFO_MELEE_WEAPON;
           count = 17;
           break;
-        case 0xC8D7BCE1:
+        case HASH_RWEAPON:
           info.kind = EQUIP_INFO_RANGED_WEAPON;
           count = 15;
           break;
-        case 0x7C941E6F:
+        case HASH_AMMO:
           info.kind = EQUIP_INFO_AMMO;
           count = 2;
           break;
-        case 0xA4C66E86:
+        case HASH_SPECIAL:
           info.kind = EQUIP_INFO_SPECIAL;
           count = 0;
           break;
@@ -6874,7 +6874,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
 
       unsigned int hash = HashName(itemType.c_str());
       switch (hash) {
-      case 0x0F1AAAA6:
+      case HASH_ARMOR:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
             continue;
@@ -6943,7 +6943,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
         }
         break;
-      case 0x47F48D1C:
+      case HASH_MWEAPON:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
             continue;
@@ -7012,7 +7012,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
         }
         break;
-      case 0xC8D7BCE1:
+      case HASH_RWEAPON:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
             continue;
@@ -7075,7 +7075,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
         }
         break;
-      case 0x7C941E6F:
+      case HASH_AMMO:
         for (int index = 0; index < count; ++index) {
           if (stats[index] == 0) {
             continue;
