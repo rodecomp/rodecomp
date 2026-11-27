@@ -4406,11 +4406,6 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       }
     }
     break;
-  case HK_CLANWND_ONOFF + 100:
-    if (this->basicInfoWnd && !g_windowMgr.CloseWindow(WID_CLANINFOMANAGEWND)) {
-      g_windowMgr.EnsureWindow(WID_CLANINFOMANAGEWND);
-    }
-    break;
   case HK_EMOTIONWND_ONOFF + 100:
     if (this->basicInfoWnd && !g_windowMgr.CloseWindow(WID_CASHEMOTIONLISTWND)) {
       g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND);
@@ -4538,9 +4533,6 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       g_windowMgr.EnsureWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
     }
     break;
-  case HK_GROUND_CURSOR_ONOFF + 100:
-    g_session.m_showEffects = 1 - g_session.m_showEffects;
-    break;
   case HK_CHATMODE_ONOFF + 100:
     if (this->basicInfoWnd && this->chatModeChanged && this->chatWnd && (this->IsHoverOnWindow01C8Button() || this->hoverWindow == nullptr)) {
       this->chatWnd->ToggleInput();
@@ -4553,6 +4545,9 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     if (UIWindow* window = this->LookupWindow(WID_MENUICONWND)) {
       window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
+    break;
+  case HK_GROUND_CURSOR_ONOFF + 100:
+    g_session.m_showEffects = 1 - g_session.m_showEffects;
     break;
   case HK_CASHSHOPWND + 100:
     if (this->basicInfoWnd) {
@@ -4596,6 +4591,11 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       g_windowMgr.modal->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
     } else {
       g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
+    }
+    break;
+  case HK_CLANWND_ONOFF + 100:
+    if (this->basicInfoWnd && !g_windowMgr.CloseWindow(WID_CLANINFOMANAGEWND)) {
+      g_windowMgr.EnsureWindow(WID_CLANINFOMANAGEWND);
     }
     break;
 
