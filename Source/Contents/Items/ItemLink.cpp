@@ -44,8 +44,8 @@ int UIChatHisBox::Number(std::string text) {
 // OFFSET: 0x00893AE0
 // FUNCTION: fn_11507
 int UIChatHisBox::DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field) {
-  int count = 1;
   std::string value("");
+  int count = 1;
   std::vector<std::int32_t> cards;
 
   for (++position; position < length + 1; ++position) {
