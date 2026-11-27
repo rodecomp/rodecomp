@@ -858,6 +858,55 @@ __forceinline void UIPartyInfoWnd::Reset() {
 }
 
 // INLINED
+__forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
+  this->searching = 1;
+
+  if (!Digits(TextValue(this->minimum))) {
+    char number[10] = {};
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
+    this->minimum->SetText(number);
+  }
+
+  if (!Digits(TextValue(this->maximum))) {
+    char number[10] = {};
+    StringFormat(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
+    this->maximum->SetText(number);
+  }
+
+  CAdvenPartyInfo filter;
+  filter.tanker = this->jobs[0]->selected;
+  filter.healer = this->jobs[1]->selected;
+  filter.dealer = this->jobs[2]->selected;
+  filter.assist = this->jobs[3]->selected;
+
+  if (this->minimum->Length() > 0) {
+    filter.minimumLevel = std::atoi(this->minimum->Text());
+  }
+
+  if (this->minimum->Length() > 0) {
+    filter.maximumLevel = std::atoi(this->maximum->Text());
+  }
+
+  if (this->selectedType != 0) {
+    filter.type = this->selectedType;
+  }
+
+  filter.memo = this->memo->Text();
+  filter.characterName = g_session.DecodePlayerName();
+
+  this->SetPageButtonEnabled(PageButton::Previous, 0);
+  this->SetPageButtonEnabled(PageButton::Next, 0);
+  DisableButton(this->refresh, 1);
+  this->refresh->Invalidate();
+
+  if (trigger != 246 && trigger != 218) {
+    this->page = 1;
+  }
+
+  g_adventurerAgencyMgr->RequestSearch(filter, this->page);
+}
+
+// INLINED
 __forceinline void UIAdvenPartyBoardWnd::RefreshRows() {
   for (int index = 0; index < 10; ++index) {
     this->rows[index]->Reset();
@@ -936,55 +985,6 @@ void UIAdvenPartyBoardWnd::ResetSearch() {
   this->InvalidateChildren();
 }
 
-// INLINED
-__forceinline void UIAdvenPartyBoardWnd::Search(int trigger) {
-  this->searching = 1;
-
-  if (!Digits(TextValue(this->minimum))) {
-    char number[10] = {};
-    StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max(1, (g_session.m_level - 5)));
-    this->minimum->SetText(number);
-  }
-
-  if (!Digits(TextValue(this->maximum))) {
-    char number[10] = {};
-    StringFormat(number, sizeof(number), _TRUNCATE, "%d", (g_session.m_level + 5));
-    this->maximum->SetText(number);
-  }
-
-  CAdvenPartyInfo filter;
-  filter.tanker = this->jobs[0]->selected;
-  filter.healer = this->jobs[1]->selected;
-  filter.dealer = this->jobs[2]->selected;
-  filter.assist = this->jobs[3]->selected;
-
-  if (this->minimum->Length() > 0) {
-    filter.minimumLevel = std::atoi(this->minimum->Text());
-  }
-
-  if (this->minimum->Length() > 0) {
-    filter.maximumLevel = std::atoi(this->maximum->Text());
-  }
-
-  if (this->selectedType != 0) {
-    filter.type = this->selectedType;
-  }
-
-  filter.memo = this->memo->Text();
-  filter.characterName = g_session.DecodePlayerName();
-
-  this->SetPageButtonEnabled(PageButton::Previous, 0);
-  this->SetPageButtonEnabled(PageButton::Next, 0);
-  DisableButton(this->refresh, 1);
-  this->refresh->Invalidate();
-
-  if (trigger != 246 && trigger != 218) {
-    this->page = 1;
-  }
-
-  g_adventurerAgencyMgr->RequestSearch(filter, this->page);
-}
-
 // OFFSET: 0x007C0420
 // FUNCTION: fn_09312
 int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -1032,9 +1032,6 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->LoadPage(this->page);
       }
 
-      break;
-    case ID_FIND:
-      this->Search(static_cast<int>(c));
       break;
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_ADVENPARTYBOARDWND);
@@ -1090,6 +1087,9 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->page = 1;
       this->searching = 0;
       this->LoadPage(1);
+      break;
+    case ID_FIND:
+      this->Search(static_cast<int>(c));
       break;
     default:
       break;
