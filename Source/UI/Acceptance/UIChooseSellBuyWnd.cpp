@@ -1139,14 +1139,20 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   }
 
   if (!g_forbiddenWords.Allows(this->edit->Text())) {
-    this->edit->TextColor(RGB(255, 0, 0), 0xFFFFFFFF);
+    this->edit->TextColor(255, 0, 0, 0xFFFFFFFF);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BAD_SENTANGE)), 0xFF, 0, 0, 0);
     return 0;
   }
 
   CMode* mode = g_modeMgr.currentMode;
-  if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))
-      || (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->linkedText.empty())) {
+  NavigationLinkParser* parser = g_navigationLinkParser;
+  if (parser->HasLink(std::string(this->edit->Text()))) {
+    this->edit->SetText("");
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
+    return 0;
+  }
+
+  if (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->linkedText.empty()) {
     this->edit->SetText("");
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
     return 0;
@@ -1155,7 +1161,8 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
   if (!this->edit->LinkedText().empty()) {
     mode->SendMsg(MM_SEND_TEXT_TO_NPC, this->npcId, reinterpret_cast<int>(this->edit->Text()), reinterpret_cast<int>(this->edit->LinkedText().c_str()), 0);
   } else if (this->m_tagCtrl && !this->m_tagCtrl->linkedText.empty()) {
-    if (g_navigationLinkParser->HasUnownedItemLink(std::string(this->m_tagCtrl->linkedText.c_str())) == true) {
+    NavigationLinkParser* linkParser = g_navigationLinkParser;
+    if (linkParser->HasUnownedItemLink(std::string(this->m_tagCtrl->linkedText.c_str())) == true) {
       this->edit->SetText("");
       return 0;
     }
