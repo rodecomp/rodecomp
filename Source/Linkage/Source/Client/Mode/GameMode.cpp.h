@@ -121,3 +121,5 @@ template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(c
 template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
 template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 template __forceinline std::unordered_set<std::uint32_t>::size_type std::_Hash<std::_Uset_traits<std::uint32_t, std::_Uhash_compare<std::uint32_t, std::hash<std::uint32_t>, std::equal_to<std::uint32_t>>, std::allocator<std::uint32_t>, false>>::erase(const std::uint32_t&) noexcept;
+template __forceinline void std::_Tree<std::_Tmap_traits<std::uint32_t, std::pair<int, int>, std::less<std::uint32_t>, std::allocator<std::pair<const std::uint32_t, std::pair<int, int>>>, false>>::clear() noexcept;
+template __forceinline void std::_Tree<std::_Tmap_traits<std::uint32_t, MiniMapMember, std::less<std::uint32_t>, std::allocator<std::pair<const std::uint32_t, MiniMapMember>>, false>>::clear() noexcept;

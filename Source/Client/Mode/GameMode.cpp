@@ -848,6 +848,24 @@ struct PACKET_CZ_USE_ITEM2 {
   /* 0002 */ std::uint16_t index;
   /* 0004 */ std::uint32_t aid;
 };
+
+struct PACKET_CZ_USE_SKILL_TOGROUND3 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint16_t level;
+  /* 0004 */ std::uint16_t skillId;
+  /* 0006 */ std::uint16_t x;
+  /* 0008 */ std::uint16_t y;
+  /* 000A */ std::uint8_t flag;
+};
+
+struct PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint16_t level;
+  /* 0004 */ std::uint16_t skillId;
+  /* 0006 */ std::uint16_t x;
+  /* 0008 */ std::uint16_t y;
+  /* 000A */ char contents[21];
+};
 #pragma pack(pop)
 
 static_assert(sizeof(PACKET_CZ_ACK_EXCHANGE_ITEM) == 3);
@@ -970,6 +988,8 @@ static_assert(sizeof(PACKET_CZ_TRYCOLLECTION) == 6);
 static_assert(sizeof(PACKET_CZ_UNINSTALLATION) == 3);
 static_assert(sizeof(PACKET_CZ_UPGRADE_SKILLLEVEL) == 4);
 static_assert(sizeof(PACKET_CZ_USE_ITEM2) == 8);
+static_assert(sizeof(PACKET_CZ_USE_SKILL_TOGROUND3) == 11);
+static_assert(sizeof(PACKET_CZ_USE_SKILL_TOGROUND_WITHTALKBOX2) == 31);
 
 #pragma pack(push, 1)
 struct OpenStoreEntry {
@@ -983,8 +1003,7 @@ struct OpenStorePacket {
   /* 0002 */ std::int16_t length;
   /* 0004 */ char title[80];
   /* 0054 */ unsigned char open;
-  /* 0055 */ OpenStoreEntry entries[2284];
-  /* 47B5 */ unsigned char padding_47B5[7];
+  /* 0055 */ OpenStoreEntry entries[245];
 };
 #pragma pack(pop)
 
@@ -994,7 +1013,7 @@ static_assert(sizeof(GameModeTextRecord) == 0x190);
 static_assert(offsetof(GameModeTextRecord, buffer) == 0x1E);
 static_assert(sizeof(OpenStoreEntry) == 8);
 static_assert(offsetof(OpenStorePacket, entries) == 85);
-static_assert(sizeof(OpenStorePacket) == 0x47BC);
+static_assert(sizeof(OpenStorePacket) == 0x7FD);
 
 // GLOBAL: gl_24661
 std::vector<ActiveSkillEffect> g_activeSkillEffects;
@@ -7939,9 +7958,9 @@ void CGameMode::InitializeState() {
   this->nameCard.Clear();
   this->actorPosList.clear();
   this->pickupReqItemNaidList.clear();
+  this->actorMenuIds.clear();
   this->partyPosList.clear();
   this->compassPosList.clear();
-  this->actorMenuIds.clear();
   this->m_skillUnitIds.clear();
   this->spriteMirrorActorIds.clear();
   this->minimapMarkers.clear();
