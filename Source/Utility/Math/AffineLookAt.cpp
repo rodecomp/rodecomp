@@ -47,7 +47,7 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float upY = crossY * upInverse;
   const float upZ = crossZ * upInverse;
 
-  this->values[2] = forwardX;
+  this->values[8] = forwardZ;
   this->values[0] = rightX;
   this->values[7] = upZ;
   this->values[5] = forwardY;
@@ -55,7 +55,7 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   this->values[3] = rightY;
   this->values[6] = rightZ;
   this->values[4] = upY;
-  this->values[8] = forwardZ;
+  this->values[2] = forwardX;
 
   this->values[9] = -((rightX * origin[0] + rightY * origin[1]) + rightZ * origin[2]);
   this->values[10] = -((upX * origin[0] + upY * origin[1]) + upZ * origin[2]);
