@@ -3,6 +3,7 @@
 #include "Contents/Items/ItemId.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/RuneSystem/RuneSystem.h"
 #include "Contents/Tables/MessageTable.h"
@@ -2205,7 +2206,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       const vector3d positions[7] = {{712.0f, 144.0f, 0.0f}, {799.0f, 169.0f, 0.0f}, {853.0f, 244.0f, 0.0f}, {853.0f, 337.0f, 0.0f},
                                      {799.0f, 412.0f, 0.0f}, {711.0f, 438.0f, 0.0f}, {712.0f, 290.0f, 0.0f}};
       const int effects[7] = {0x975, 0x975, 0x975, 0x975, 0x975, 0x975, 0x976};
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, effects[argument2], ZeroVector3d(), 0, -1, 0, 0);
       if (effect) {
         const vector3d& position = positions[argument2];
         effect->SetWindowOffset(position, 1, 0x169);
@@ -2228,9 +2229,10 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     return 0;
   }
-  case UM_RUNE_SELECT_TAB:
-    this->m_tab->geometry.state = argument1;
-    this->m_tab->Invalidate();
+  case UM_RUNE_SELECT_TAB: {
+    UIRuneSystemTab* tab = this->m_tab;
+    tab->geometry.state = argument1;
+    tab->Invalidate();
     this->SelectTab();
     switch (argument1) {
     case RUNESYSTEM_TAB_RUNESET:
@@ -2251,6 +2253,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     }
     break;
+  }
   case UM_SELECT_ITEM:
     switch (argument1) {
     case ID_ITEMS:
@@ -2273,21 +2276,18 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         const int slotCount = info->m_runeSet->CountSlots();
         const int activeCount = info->m_runeSet->CountActiveSlots();
         for (int index = 0; index < 7; ++index) {
-          RuneSetData* runeSet = info->m_runeSet;
-          if (0 == runeSet->m_reward.values[0]) {
+          if (0 == info->m_runeSet->m_reward.values[0]) {
             info->m_rewards[index]->SendMsg(info, UM_SETID, 0, 0, 0, 0);
-            runeSet = info->m_runeSet;
           }
 
-          UIRuneSetReWard* reward = info->m_rewards[index];
-          if (index < runeSet->m_rewardStep) {
-            reward->SendMsg(info, UM_SETID, 3, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+          if (index < info->m_runeSet->m_rewardStep) {
+            info->m_rewards[index]->SendMsg(info, UM_SETID, 3, static_cast<int>(info->m_runeSet->m_reward.values[index + 1]), 0, 0);
           } else if (index == 0) {
-            reward->SendMsg(info, UM_SETID, runeSet->GetActiveState() ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, info->m_runeSet->GetActiveState() ? 2 : 1, static_cast<int>(info->m_runeSet->m_reward.values[index + 1]), 0, 0);
           } else if (index == 6) {
-            reward->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, static_cast<int>(info->m_runeSet->m_reward.values[index + 1]), 0, 0);
           } else {
-            reward->SendMsg(info, UM_SETID, index < activeCount ? 2 : 1, static_cast<int>(runeSet->m_reward.values[index + 1]), 0, 0);
+            info->m_rewards[index]->SendMsg(info, UM_SETID, index < activeCount ? 2 : 1, static_cast<int>(info->m_runeSet->m_reward.values[index + 1]), 0, 0);
           }
         }
         info->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -2352,14 +2352,14 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
     }
     break;
+  case UM_TAB:
+    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
+    this->SelectTab();
+    break;
   case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
     }
-    break;
-  case UM_TAB:
-    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
-    this->SelectTab();
     break;
   case UM_REFRESH: {
     UIRuneSetList* list = this->m_lists[this->m_tab->geometry.state];
