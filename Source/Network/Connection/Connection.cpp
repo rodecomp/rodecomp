@@ -292,6 +292,7 @@ void __stdcall Nullsub436() {
 
 // OFFSET: 0x00C7CE30
 // FUNCTION: fn_20405
+// VIRTUALIZED: emulated 0x02866FB6
 bool CConnection::Send(int bytes, const void* data) {
   if (static_cast<CRagConnection*>(this)->m_replayMode) {
     return true;
@@ -426,6 +427,7 @@ bool InitializeConnections() {
 
 // OFFSET: 0x00C7D7D0
 // FUNCTION: fn_20409
+// VIRTUALIZED: emulated 0x02040382
 CRagConnection& GetRagConnection() {
   // STATIC: 0x016FDC98
   // GLOBAL: gl_24490
