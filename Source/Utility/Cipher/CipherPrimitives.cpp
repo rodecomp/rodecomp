@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstring>
 
 // GLOBAL: gl_25029
 unsigned char g_cryptonPermutation0[16] = {0x0F, 0x09, 0x06, 0x08, 0x09, 0x09, 0x04, 0x0C, 0x06, 0x02, 0x06, 0x0A, 0x01, 0x03, 0x05, 0x0F};
@@ -702,9 +703,7 @@ int ShaTransform(const unsigned char* state, unsigned int word, unsigned int* di
   int i;
 
   w[0] = word;
-  for (i = 1; i < 16; ++i) {
-    w[i] = 0;
-  }
+  std::memset(w + 1, 0, 15 * sizeof(unsigned int));
   for (i = 16; i < 80; ++i) {
     w[i] = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16];
   }
