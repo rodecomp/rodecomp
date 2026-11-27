@@ -46,8 +46,8 @@ namespace {
 void matrix::MakeXRotation(float radians) {
   this->Identity();
 
-  const float sine = ClientSin(radians);
-  const float cosine = ClientCos(radians);
+  const float sine = sinf(radians);
+  const float cosine = cosf(radians);
   this->values[4] = cosine;
   this->values[8] = cosine;
   this->values[5] = sine;
@@ -84,7 +84,13 @@ void matrix::MakeZRotation(float radians) {
 // FUNCTION: fn_02016
 void matrix::AppendXRotation(float radians) {
   matrix rotation;
-  rotation.MakeXRotation(radians);
+  rotation.Identity();
+  const float sine = ClientSin(radians);
+  const float cosine = ClientCos(radians);
+  rotation.values[4] = cosine;
+  rotation.values[8] = cosine;
+  rotation.values[5] = sine;
+  rotation.values[7] = -sine;
   Rotate(this->values, rotation.values);
 }
 
