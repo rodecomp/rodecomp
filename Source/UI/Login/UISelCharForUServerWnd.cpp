@@ -97,7 +97,9 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->m_slots[slotIndex].action = 0;
     this->m_slots[slotIndex].frame = 0;
 
-    this->m_slots[slotIndex].actionNames[0] = static_cast<const std::string&>(g_equipmentResourceMgr->GetBodyResourceName(0, info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
+    const int sex = g_session.GetCurrentSex();
+    const int costume = info->bodyCostume;
+    this->m_slots[slotIndex].actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(info->job, sex, costume, 0));
     this->m_slots[slotIndex].spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(info->job, g_session.GetCurrentSex(), info->bodyCostume, 0));
 
     int head = info->head;
