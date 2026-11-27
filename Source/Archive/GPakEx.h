@@ -244,7 +244,9 @@ namespace GPakEx {
     public:
       /* 0004 */ SecureWordBuffer m_sTable;
 
-      __declspec(noinline) ~Base() override;
+      // OFFSET: 0x0064A730
+      // FUNCTION: fn_04908
+      __declspec(noinline) ~Base() override = default;
       unsigned int BlockSize() const override;
       unsigned int KeyLength() const override;
       void SetKey(std::span<const std::uint8_t> key) override;
@@ -269,7 +271,9 @@ namespace GPakEx {
     public:
       /* 0004 */ SecureWordBuffer m_sTable;
 
-      __declspec(noinline) ~Base() override;
+      // OFFSET: 0x0064A880
+      // FUNCTION: fn_04909
+      __declspec(noinline) ~Base() override = default;
       unsigned int BlockSize() const override;
       unsigned int KeyLength() const override;
       void SetKey(std::span<const std::uint8_t> key) override;

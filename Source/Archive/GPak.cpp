@@ -953,16 +953,6 @@ GPakEx::OFB_Base::OFB_Base() {
 template <class CIPHER, GPakEx::CipherDir DIR, class BLOCKCIPHER, class MODE> GPakEx::CipherModeFinal<CIPHER, DIR, BLOCKCIPHER, MODE>::~CipherModeFinal() {
 }
 
-// OFFSET: 0x0064A730
-// FUNCTION: fn_04908
-GPakEx::RC6::Base::~Base() {
-}
-
-// OFFSET: 0x0064A880
-// FUNCTION: fn_04909
-GPakEx::RC5::Base::~Base() {
-}
-
 // OFFSET: 0x00654400
 // FUNCTION: fn_04983
 unsigned int GPakEx::RC6::Base::BlockSize() const {
