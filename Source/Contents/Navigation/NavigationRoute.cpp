@@ -1943,9 +1943,9 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         const int* route = reinterpret_cast<const int*>(buffer.data());
         const int routeX = route[2];
         const int routeY = route[3];
-        int x = -1;
-        int y = -1;
         if (this->savedTarget.object != nullptr) {
+          int x = -1;
+          int y = -1;
           const int type = this->savedTarget.type;
           CNaviInfo* info;
           bool found = true;
