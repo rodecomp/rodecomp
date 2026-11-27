@@ -8122,7 +8122,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == g_effectIconOuterRadius) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -8140,7 +8140,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == g_effectIconOuterRadius) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -8158,7 +8158,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == g_effectIconOuterRadius) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
