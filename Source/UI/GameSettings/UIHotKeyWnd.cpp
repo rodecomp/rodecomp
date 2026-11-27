@@ -435,7 +435,8 @@ void UIHotKeyWnd::Paint() {
 
       const std::string fitted = this->FitDisplayText(130, info.description.c_str(), 0, 12, 0);
       const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
-      const int indent = (this->geometry.width / 2 - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
+      const int indentBase = this->geometry.width / 2 - this->m_horizontalMargin - this->m_keyColumnWidth;
+      const int indent = (indentBase - fittedWidth) / 2;
       this->DrawTextAt(indent + keyX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawTextAt(textX + backgroundX, rowY + 5, info.text.c_str(), 0, 0, 12, 0, 0, 0);
 
