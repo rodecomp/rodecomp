@@ -8,6 +8,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Effects/Skills/CloudEffect.h"
 #include "Contents/World/World.h"
 #include "File/MapName.h"
@@ -137,29 +138,29 @@ __declspec(noinline) void CWeatherEffect::Play(char kind) {
   this->actor = mode->scene->player;
 
   if (kind == 0) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD, ZeroVector3d(), 0.0f);
   } else if (kind == 1) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD2, ZeroVector3d(), 0.0f);
   } else if (kind == 2) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD3, ZeroVector3d(), 0.0f);
   } else if (kind == 3) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD4, ZeroVector3d(), 0.0f);
   } else if (kind == 4) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD5, ZeroVector3d(), 0.0f);
   } else if (kind == 5) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD6, ZeroVector3d(), 0.0f);
   } else if (kind == 7) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD7, ZeroVector3d(), 0.0f);
   } else if (kind == 8) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD8, ZeroVector3d(), 0.0f);
   } else if (kind == 9) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD9, ZeroVector3d(), 0.0f);
   } else if (kind == 10) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD10, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD10, ZeroVector3d(), 0.0f);
   } else if (kind == 11) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SU_CN_METEOR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SU_CN_METEOR, ZeroVector3d(), 0.0f);
   } else if (kind == 15) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_RL_HAMMER_OF_GOD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_RL_HAMMER_OF_GOD, ZeroVector3d(), 0.0f);
   }
 }
 
@@ -174,10 +175,10 @@ void CWeatherEffect::StartDarken() {
 void CWeatherEffect::Fireworks() {
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
-  static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, ZeroVector3d(), 0.0f);
 
   for (int count = 0; count < 160; ++count) {
-    static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK, ZeroVector3d(), 0.0f);
   }
 }
 
@@ -192,7 +193,7 @@ void CWeatherEffect::Maple() {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
-  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_MAPLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_MAPLE, ZeroVector3d(), 0.0f);
 }
 
 // OFFSET: 0x00C7BAA0
@@ -206,7 +207,7 @@ void CWeatherEffect::Sakura() {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
-  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, ZeroVector3d(), 0.0f);
 }
 
 // OFFSET: 0x00C7BB20
@@ -220,7 +221,7 @@ void CWeatherEffect::Snow() {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
-  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, ZeroVector3d(), 0.0f);
 }
 
 // OFFSET: 0x00C7BBA0
