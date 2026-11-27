@@ -9148,6 +9148,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
+      return 0;
     } else {
       for (int index = 0; index < 7; ++index) {
         UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(index + WID_ITEMSTORESUBWND_TAB_0));
@@ -9166,8 +9167,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->Invalidate();
       this->UpdateScrollBar();
     }
-    return 0;
   }
+    return 0;
   case UM_TAB:
     this->m_sortMode = a;
     if (this->m_sortMode < 0) {
@@ -9184,20 +9185,20 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type != REPLAY_CHUNK_ITEM_STORE_BEGIN) {
-      break;
-    }
-    while (static_cast<unsigned>(b) > offset) {
-      header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
-      offset += 6;
-      if (header.type == REPLAY_CHUNK_ITEM_STORE_END) {
-        this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-        break;
+    if (REPLAY_CHUNK_ITEM_STORE_BEGIN == header.type) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
+        header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
+        offset += 6;
+        if (header.type == REPLAY_CHUNK_ITEM_STORE_END) {
+          this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+          scanning = false;
+        } else {
+          offset += header.size;
+        }
       }
-
-      offset += header.size;
     }
-    break;
+    return 0;
   }
   case UM_COMBOBOX_SELECTED:
     if (sender == this->sortCombo) {
