@@ -395,6 +395,11 @@ void CGameMode::ReceiveItemSlotOptions(const unsigned char* data) {
                         packet->options);
 }
 
+// INLINED
+static __declspec(noinline) MessengerMember MakeMessengerMember() {
+  return MessengerMember();
+}
+
 // OFFSET: 0x00D1FBA0
 // FUNCTION: fn_21643
 void CGameMode::ReceiveFriendAddResult(const unsigned char* data) {
@@ -415,7 +420,7 @@ void CGameMode::ReceiveFriendAddResult(const unsigned char* data) {
       std::sprintf(buffer, LookupMessage(MSI_FRIEND_ADD_SUCCEED), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFFFF00, 0, 0, 0);
 
-      MessengerMember member;
+      MessengerMember member = MakeMessengerMember();
       member.name = name;
       member.accountId = packet->accountId;
       member.characterId = packet->characterId;
