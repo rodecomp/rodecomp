@@ -18,24 +18,50 @@ void GroundGeometry::CellBounds(int column, int row, float& minimum, float& maxi
   const GroundQuad* quad = this->cells[static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width)].top;
 
   if (quad) {
-    const float heights[4] = {quad->vertices[0].position[1], quad->vertices[1].position[1],
-                              quad->vertices[2].position[1], quad->vertices[3].position[1]};
+    const float height0 = quad->vertices[0].position[1];
+    const float height1 = quad->vertices[1].position[1];
+    const float height2 = quad->vertices[2].position[1];
+    const float height3 = quad->vertices[3].position[1];
     float high = -999999.0f;
 
-    for (unsigned corner = 0; corner < 4; ++corner) {
-      if (heights[corner] > high) {
-        maximum = heights[corner];
-        high = heights[corner];
-      }
+    if (height0 > high) {
+      maximum = height0;
+      high = height0;
+    }
+
+    if (height1 > high) {
+      maximum = height1;
+      high = height1;
+    }
+
+    if (height2 > high) {
+      maximum = height2;
+      high = height2;
+    }
+
+    if (height3 > high) {
+      maximum = height3;
     }
 
     float low = minimum;
 
-    for (unsigned corner = 0; corner < 4; ++corner) {
-      if (low > heights[corner]) {
-        minimum = heights[corner];
-        low = heights[corner];
-      }
+    if (low > height0) {
+      minimum = height0;
+      low = height0;
+    }
+
+    if (low > height1) {
+      minimum = height1;
+      low = height1;
+    }
+
+    if (low > height2) {
+      minimum = height2;
+      low = height2;
+    }
+
+    if (low > height3) {
+      minimum = height3;
     }
   }
 }
