@@ -3170,7 +3170,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     this->SendMsg(this, UM_SET_DISABLE, 575, 0, 0, 0);
     this->Invalidate();
-    return 0;
+    break;
   case UM_SETINFO:
     this->m_placement = reinterpret_cast<EquipWndInfo*>(a);
     if (!this->m_placement->IsValid()) {
@@ -3184,12 +3184,12 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->m_placement->height = height;
     }
     this->Move(this->m_placement->x, this->m_placement->y);
-    return 0;
+    break;
   case UM_REFRESH: {
     if (this->m_page == EQUIPMENT_PAGE_TITLE) {
       this->RefreshTitleList();
       this->Invalidate();
-      return 0;
+      break;
     }
 
     if (this->m_viewOther == 0) {
@@ -3199,33 +3199,33 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
 
     const int height = this->contentOffset + 167;
-    const int viewButtonY = IsEquipViewHidden() * 230 + height - this->contentOffset - 40;
-    this->m_viewButton->Move((this->geometry.width - viewButtonY) / 2 - 18, viewButtonY);
+    const int viewButtonY = height - this->contentOffset - 40;
+    this->m_viewButton->Move(this->geometry.width / 2 - 18, IsEquipViewHidden() * 230 + viewButtonY);
     this->m_otherButton->Move(this->geometry.width / 2 - 14, height - this->contentOffset + (g_session.replayPacketMode > 0 ? -60 : 170));
     this->Invalidate();
-    return 0;
+    break;
   }
   case UM_COMMAND:
     switch (a) {
     case ID_CHECK:
       if (this->m_viewOther != 0) {
-        return 0;
+        break;
       }
       if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         g_modeMgr.currentMode->SendMsg(MM_CONFIG_CALL, b, 0, 0, 0);
-        return 0;
+        break;
       }
       g_modeMgr.currentMode->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, b, 0, 0, 0);
-      return 0;
+      break;
     case ID_EQUIP_OPTION_OFF: {
       if (g_windowMgr.merchantItemMyShopWnd != nullptr) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_CLOSE_STORE)), 255, 0, 0, 0);
-        return 0;
+        break;
       }
 
       std::string notice("");
-      const bool enabled = g_session.replayPacketMode > 0;
+      const int enabled = g_session.replayPacketMode > 0 ? 1 : 0;
       if (IsRidingPeco(g_session.m_jobFlags)) {
         notice = LookupMessage(g_session.GetDisplayJob() == JT_ROYAL_CHICKEN || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_H || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_B
                                  ? MSI_ROYAL_CHIKENOFF
@@ -3277,7 +3277,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->m_viewButton->Move(half - 18, IsEquipViewHidden() * 230 + bottom - 40);
       this->m_otherButton->Move(half - 14, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
       this->Invalidate();
-      return 0;
+      break;
     }
     case ID_MINI: {
       const int height = this->geometry.height;
@@ -3293,11 +3293,11 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (delta != 0) {
         g_snapMgr.MoveEdge(this, 0, delta, 3);
       }
-      return 0;
+      break;
     }
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(this->m_viewOther == 1 ? WID_EQUIPWND_VIEWOTHER_1 : WID_EQUIPWND);
-      return 0;
+      g_windowMgr.CloseWindow(this->m_viewOther != 1 ? WID_EQUIPWND : WID_EQUIPWND_VIEWOTHER_1);
+      break;
     case ID_RADIOBTN:
       for (int index = 0; index < 4; ++index) {
         this->damageSkinButtons[index + 2]->Invalidate();
@@ -3308,13 +3308,13 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           this->damageSkinButtons[index + 2]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
         }
       }
-      return 0;
+      break;
     case ID_EQUIP_OPTION_OPEN:
       if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(WID_MERGEITEMWND) &&
           !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
         g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
       }
-      return 0;
+      break;
     case ID_APPLY: {
       if (this->m_hoverSlot >= 0) {
         g_session.m_damageSkinIndex = this->m_hoverSlot;
@@ -3330,14 +3330,14 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       int millionUnit = 0;
       g_session.m_hotkeyScript->Call("GetDamageMillionUnit", "d>d", this->m_hoverSlot, &millionUnit);
       g_session.m_damageMillionUnit = millionUnit;
-      return 0;
+      break;
     }
     case ID_TITLE_LIST: {
       ChangeTitlePacket packet;
       packet.packetType = ID_CZ_REQ_CHANGE_TITLE;
       packet.titleId = b;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-      return 0;
+      break;
     }
     case ID_SWAP_EQUIPMENT: {
       const int height = this->contentOffset + 167;
@@ -3360,12 +3360,12 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         if (sender == this->swapButton) {
           g_session.m_swapEquipmentMode = 1;
         }
-        return 0;
+        break;
       }
       swap->Move(-1000, -1000);
       this->swapWindow->geometry.state = 0;
       this->Resize(this->geometry.width, height);
-      return 0;
+      break;
     }
     case ID_TAKEOFF_ALL: {
       TakeoffEquipAllPacket packet;
@@ -3374,40 +3374,40 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       } else if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
         packet.location = 0x83FF;
       } else {
-        return 0;
+        break;
       }
       packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL2;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       this->unequipButton->SetDisabled(1);
       this->unequipButton->Invalidate();
-      return 0;
+      break;
     }
     case ID_EQUIPMENT_PROPERTIES:
       if (!g_windowMgr.CloseWindow(WID_EQUIPMENTPROPERTIESWND)) {
         g_windowMgr.EnsureWindow(WID_EQUIPMENTPROPERTIESWND);
       }
-      return 0;
+      break;
     }
-    return 0;
+    break;
   case UM_SET_DISABLE:
     if (a == ID_TAKEOFF_ALL) {
       if (this->m_page == EQUIPMENT_PAGE_COSTUME) {
         UIBitmapButton* button = this->unequipButton;
         button->SetDisabled(g_session.CountDistinctCostumeItems() == 0);
         button->Invalidate();
-        return 0;
+        break;
       }
       if (this->m_page == EQUIPMENT_PAGE_NORMAL) {
         UIBitmapButton* button = this->unequipButton;
         button->SetDisabled(g_session.CountDistinctEquippedItems() == 0);
         button->Invalidate();
-        return 0;
+        break;
       }
     }
-    return 0;
+    break;
   case UM_MENU_SELECTED:
     this->UpdateCharacterView(a);
-    return 0;
+    break;
   case UM_SCROLLHORZ: {
     const int previous = this->m_firstSlot;
     if (a < 0 || a > 0) {
@@ -3428,6 +3428,8 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x008DEC50
