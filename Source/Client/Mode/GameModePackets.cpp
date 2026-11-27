@@ -12743,7 +12743,7 @@ void CGameMode::NotifySkillCasting(
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, PR_KYRIE, reinterpret_cast<std::intptr_t>(source), 0, 0);
     } else if (skillId == IQ_OLEUM_SANCTUM) {
-      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, ZeroVector3d(), 0, -1, 0, 0);
     }
 
     CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, source, target, delay);
