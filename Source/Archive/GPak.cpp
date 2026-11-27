@@ -2514,10 +2514,10 @@ namespace {
     g_pakDecryptFunctions.emplace(0x007, DecryptSubXorAesBody<1, 28, 44, GPakEx::IDEA, false, 0x34, 0, 1024>);
     g_pakDecryptFunctions.emplace(0x008, DecryptSubXorAesBody<1, 0, 16, GPakEx::IDEA, true, 0x32, 1024, 1024>);
     g_pakDecryptFunctions.emplace(0x080, DecryptXorAesBody080);
-    g_pakDecryptFunctions.emplace(0x100, DecryptSubXorBlockCipherBody<GPakEx::TEA, GPakEx::CFB_Mode, 28, 44, GPakEx::IDEA, true, 0x31, 1024, 1024>);
-    g_pakDecryptFunctions.emplace(0x101, DecryptSubXorBlockCipherBody<GPakEx::RC5, GPakEx::OFB_Mode, 16, 32, GPakEx::IDEA, true, 0x31, 0, 1024>);
-    g_pakDecryptFunctions.emplace(0x106, DecryptSubXorBlockCipherBody<GPakEx::TEA, GPakEx::CFB_Mode, 0, 32, GPakEx::IDEA, false, 0x32, 0, 1024>);
     g_pakDecryptFunctions.emplace(0x10D, DecryptSubXorBlockCipherBody<GPakEx::RC5, GPakEx::OFB_Mode, 16, 0, GPakEx::IDEA, true, 0x32, 2048, 1024>);
+    g_pakDecryptFunctions.emplace(0x106, DecryptSubXorBlockCipherBody<GPakEx::TEA, GPakEx::CFB_Mode, 0, 32, GPakEx::IDEA, false, 0x32, 0, 1024>);
+    g_pakDecryptFunctions.emplace(0x101, DecryptSubXorBlockCipherBody<GPakEx::RC5, GPakEx::OFB_Mode, 16, 32, GPakEx::IDEA, true, 0x31, 0, 1024>);
+    g_pakDecryptFunctions.emplace(0x100, DecryptSubXorBlockCipherBody<GPakEx::TEA, GPakEx::CFB_Mode, 28, 44, GPakEx::IDEA, true, 0x31, 1024, 1024>);
   }
 
   // GLOBAL: gl_26228
