@@ -70,7 +70,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
 
     for (int drop = 0, turn = 0; drop < 72; drop += 2, ++turn) {
       const short spin = static_cast<short>(static_cast<short>(turn * 45 + slot.process) % 360);
-      const float offsetX = g_cosTable[spin] * 10.0f;
+      const float offsetX = g_cosTable[spin] * g_projectionDepthOffset;
       vector3d corner1;
       vector3d corner2;
       vector3d corner3;
@@ -79,7 +79,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
       corner2.x = offsetX + vec2.x;
       corner3.x = offsetX + vec3.x;
       corner4.x = offsetX + vec4.x;
-      const float offsetZ = g_sinTable[spin] * 10.0f;
+      const float offsetZ = g_sinTable[spin] * g_projectionDepthOffset;
       corner1.z = offsetZ + vec1.z;
       corner2.z = offsetZ + vec2.z;
       corner3.z = offsetZ + vec3.z;
