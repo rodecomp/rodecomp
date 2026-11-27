@@ -12,11 +12,11 @@
 // OFFSET: 0x005E65E0
 // FUNCTION: fn_03929
 void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
-  Json::Value* const root = &data;
+  const Json::Value& root = data;
   NormalItemSlotWindow& saved = g_windowMgr.m_normalItemSlotWindow;
   bool& itemSlotActive = g_session.ItemSlotActive();
 
-  const Json::Value& values = (*root)["NormalItemSlot"];
+  const Json::Value& values = root["NormalItemSlot"];
 
   if (values.isNull()) {
     return;
@@ -34,7 +34,7 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     g_session.m_normalItemSlots[index].itemId = static_cast<std::uint32_t>(item);
   }
 
-  const Json::Value& info = (*root)["SlotInfo"];
+  const Json::Value& info = root["SlotInfo"];
 
   if (info.empty()) {
     NormalItemSlotWindow defaults;
@@ -58,6 +58,6 @@ void CCharacterLinkedUserDataMgr::LoadNormalItemSlots(Json::Value& data) {
     saved.show = show;
   }
 
-  const Json::Value& active = (*root)["ItemSlotActive"];
+  const Json::Value& active = root["ItemSlotActive"];
   itemSlotActive = active.isNull() ? true : active.asBool();
 }
