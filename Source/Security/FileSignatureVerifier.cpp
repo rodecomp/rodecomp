@@ -93,8 +93,10 @@ FileSignatureVerifier::~FileSignatureVerifier() {
 // OFFSET: 0x00402BE0
 // FUNCTION: fn_00138
 bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data, DWORD dataSize, bool verifyFileName) {
-  HCRYPTKEY* key = &publicKey;
-  std::memcpy(&footer, data + dataSize - sizeof(footer), sizeof(footer));
+  footer.startMarker = *reinterpret_cast<const DWORD*>(data + dataSize - sizeof(footer));
+  footer.fileNameSize = *reinterpret_cast<const DWORD*>(data + dataSize - sizeof(footer) + 4);
+  footer.signatureSize = *reinterpret_cast<const DWORD*>(data + dataSize - sizeof(footer) + 8);
+  footer.endMarker = *reinterpret_cast<const DWORD*>(data + dataSize - sizeof(footer) + 12);
   if (footer.startMarker == 0x32812622 && footer.endMarker == 0x32812621) {
     const DWORD blockSize = footer.signatureSize + footer.fileNameSize + sizeof(footer);
     contentSize = dataSize - blockSize;
@@ -135,6 +137,7 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
     return false;
   }
 
+  HCRYPTKEY* key = &publicKey;
   if (*key != 0) {
     CryptDestroyKey(*key);
     *key = 0;
