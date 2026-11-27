@@ -583,7 +583,12 @@ void CHealEffect::ProcessCone(CParticle* particle) {
 template <bool kCacheFrames>
 static __forceinline void UpdateSparkParticle(CParticle* particle, int effectId) {
   const int cachedFrames = particle->elapsedFrames;
-  particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
+  if constexpr (kCacheFrames) {
+    volatile int step = -5;
+    particle->angleParameter += particle->angleParameter - 5 >= 0 ? step : 355;
+  } else {
+    particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
+  }
 
   int alpha = particle->alpha;
   if ((kCacheFrames ? cachedFrames : particle->elapsedFrames) <= 10) {
