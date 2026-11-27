@@ -6391,3 +6391,25 @@ void CSession::InitJobSpriteNames() {
   jobSpriteNames[404] = KarnosBodyPath4().Text();
   jobSpriteNames[405] = AliteaBodyPath2().Text();
 }
+
+struct CommandPairVector {
+    using value_type = std::pair<const char*, int>;
+
+    /* 0000 */ value_type* m_first;
+    /* 0004 */ value_type* m_end;
+    /* 0008 */ value_type* m_capacity;
+
+    void push_back(const value_type& value);
+};
+
+// OFFSET: 0x00E04030
+// FUNCTION: fn_47474
+void CommandPairVector::push_back(const value_type& value) {
+    if (this->m_end != this->m_capacity) {
+        *this->m_end = value;
+        ++this->m_end;
+        return;
+    }
+
+    reinterpret_cast<std::vector<value_type>*>(this)->_Emplace_reallocate(this->m_end, std::move(const_cast<value_type&>(value)));
+}
