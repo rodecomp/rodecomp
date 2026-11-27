@@ -4053,10 +4053,52 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     job = actor->GetEffectiveJob(-1);
   }
 
-  if (!g_session.IsMonsterActor(actor)) {
-    this->SendMsg(MM_MAKE_SKILL_USED_MSG, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
+  if (g_session.IsMonsterActor(actor)) {
+    int action;
+    int loopType;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType);
+    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2C8) {
+      actor->LaunchEffect(EF_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
+    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2E0) {
+      CGameMode* mode = g_modeMgr.GetGameMode();
+      g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
+      int count = message.level + 2;
+      if (count > 7) {
+        count = 7;
+      } else if (count < 1) {
+        return;
+      }
+      for (int index = 0; index < count; ++index) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
+        } else {
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
+        }
+      }
+    }
+    return;
+  }
 
-    switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
+  this->SendMsg(MM_MAKE_SKILL_USED_MSG, *reinterpret_cast<const std::uint16_t*>(packet + 2), reinterpret_cast<std::intptr_t>(actor), *reinterpret_cast<const std::int16_t*>(packet + 8), 0);
+
+  switch (*reinterpret_cast<const std::uint16_t*>(packet + 2)) {
     case PA_GOSPEL:
       g_soundMgr->PlayWave("effect\\가스펠.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
@@ -4301,47 +4343,6 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     }
-  } else {
-    int action;
-    int loopType;
-    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType);
-    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2C8) {
-      actor->LaunchEffect(EF_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    }
-    if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2E0) {
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      float x;
-      float z;
-      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      const float y = mode->scene->terrain->Height(x, z);
-      vector3d position = {x, y, z};
-      int count = message.level + 2;
-      if (count > 7) {
-        count = 7;
-      } else if (count < 1) {
-        return;
-      }
-      for (int index = 0; index < count; ++index) {
-        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
-            effect->SetDelay(index * 500);
-          }
-          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
-            effect->SetDelay(index * 500);
-          }
-        } else {
-          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
-            effect->SetDelay(index * 500);
-          }
-          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
-            effect->SetDelay(index * 500);
-          }
-        }
-      }
-    }
-  }
 }
 
 #pragma pack(push, 1)
