@@ -69,7 +69,8 @@ __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
       int policy = std::atoi(button->GetLine(4).c_str());
 
       if (policy == -222) {
-        std::string name("$$DB ", 5);
+        std::string name;
+        name = "$$DB ";
 
         if (type != 3) {
           name.clear();
