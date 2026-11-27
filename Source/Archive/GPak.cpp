@@ -1204,30 +1204,31 @@ void GPakEx::IDEA::Base::SetKey(std::span<const std::uint8_t> key) {
 // FUNCTION: fn_05136
 // VIRTUALIZED: 2025-12-02 0x006045F0
 void GPakEx::RC6::Enc::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
+  const std::uint32_t* in = reinterpret_cast<const std::uint32_t*>(inBlock);
   const std::uint32_t* sptr = this->m_sTable.data();
-  std::uint32_t a;
-  std::uint32_t b;
-  std::uint32_t c;
-  std::uint32_t d;
-  BlockGetter<std::uint32_t, false>(inBlock)(a)(b)(c)(d);
-  b += sptr[0];
-  d += sptr[1];
-  sptr += 2;
-  for (unsigned int i = 0; i < ROUNDS; ++i) {
-    std::uint32_t t = _rotl(b * (2 * b + 1), 5);
+  std::uint32_t a = in[0];
+  std::uint32_t b = in[1] + sptr[0];
+  std::uint32_t c = in[2];
+  std::uint32_t d = in[3] + sptr[1];
+  for (unsigned int i = 1; i <= ROUNDS; ++i) {
+    const std::uint32_t t = _rotl(b * (2 * b + 1), 5);
     const std::uint32_t u = _rotl(d * (2 * d + 1), 5);
-    a = _rotl(a ^ t, u & 31) + sptr[0];
-    c = _rotl(c ^ u, t & 31) + sptr[1];
-    t = a;
+    a = _rotl(a ^ t, u) + sptr[2 * i];
+    c = _rotl(c ^ u, t) + sptr[2 * i + 1];
+    const std::uint32_t tmp = a;
     a = b;
     b = c;
     c = d;
-    d = t;
-    sptr += 2;
+    d = tmp;
   }
-  a += sptr[0];
-  c += sptr[1];
-  BlockPutter<std::uint32_t, false>(xorBlock, outBlock)(a)(b)(c)(d);
+  a += sptr[2 * ROUNDS + 2];
+  c += sptr[2 * ROUNDS + 3];
+  const std::uint32_t* mask = reinterpret_cast<const std::uint32_t*>(xorBlock);
+  std::uint32_t* out = reinterpret_cast<std::uint32_t*>(outBlock);
+  out[0] = a ^ (mask ? mask[0] : 0);
+  out[1] = b ^ (mask ? mask[1] : 0);
+  out[2] = c ^ (mask ? mask[2] : 0);
+  out[3] = d ^ (mask ? mask[3] : 0);
 }
 
 // OFFSET: 0x0065B2E0
