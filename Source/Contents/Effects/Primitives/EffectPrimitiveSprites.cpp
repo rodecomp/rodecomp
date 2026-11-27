@@ -74,15 +74,13 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
     if (vec1.y <= 0.0f && slot.process < 300 && static_cast<int>(slot.height[13]) > 0) {
       if (slot.flag1[0] == 0) {
         if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-          CGameMode* gameMode = g_modeMgr.GetGameMode();
-          CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+          CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
             effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
           }
         } else {
-          CGameMode* gameMode = g_modeMgr.GetGameMode();
-          if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
+          if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
             CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
             if (effect) {
               vector3d position{baseX, baseY, baseZ};
@@ -92,15 +90,13 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
         }
       } else {
         if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-          CGameMode* gameMode = g_modeMgr.GetGameMode();
-          CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+          CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
             effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
           }
         } else {
-          CGameMode* gameMode = g_modeMgr.GetGameMode();
-          if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
+          if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
             CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
             if (effect) {
               vector3d position{baseX, baseY, baseZ};
