@@ -14,6 +14,14 @@
 // GLOBAL: gl_24502
 CAdventureGuideMgr* g_adventureGuideMgr;
 
+// OFFSET: 0x00661A40
+// FUNCTION: fn_47472
+template <>
+std::_Tree<std::_Tset_traits<JobId, std::less<JobId>, std::allocator<JobId>, false>>::~_Tree() noexcept {
+  const auto _Scary = _Get_scary();
+  _Scary->_Erase_head(_Getal());
+}
+
 // OFFSET: 0x0066A120
 // FUNCTION: fn_05278
 int InsertIntro(lua_State* state) {
