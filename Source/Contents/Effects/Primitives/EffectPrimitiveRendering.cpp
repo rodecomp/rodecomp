@@ -13,6 +13,7 @@
 #include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/ClientAngles.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
@@ -8020,13 +8021,13 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
   ZeroVector3d vec4;
   RenderVertex projected;
   int rpCnt = 0;
-  float incU = 1.0f / (360.0f / this->state.arcAngle);
-  float incV = 1.0f / (180.0f / this->state.arcAngle);
+  float incU = g_projectionDepthNumerator / (g_fullCircleAngle / this->state.arcAngle);
+  float incV = g_projectionDepthNumerator / (g_angleDivisor / this->state.arcAngle);
   float uVal;
   float vVal = 0.0f;
 
-  temp = 360.0f - this->state.arcAngle;
-  temp1 = 90.0f - this->state.arcAngle;
+  temp = g_fullCircleAngle - this->state.arcAngle;
+  temp1 = g_cameraYawOffset - this->state.arcAngle;
 
   for (i = -90.0f; i <= temp1; i += this->state.arcAngle) {
     uVal = 0.0f;
