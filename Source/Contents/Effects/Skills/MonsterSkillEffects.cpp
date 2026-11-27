@@ -4653,13 +4653,13 @@ struct CylinderSlice {
 __declspec(noinline) CylinderEdge CylinderSlice::ComputePoints(double angle) {
   const float baseZ = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->radius);
   const float baseX = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->radius);
-  vector3d bottom = {baseX, 0.0f, baseZ};
+  __declspec(align(16)) vector3d bottom = {baseX, 0.0f, baseZ};
   const float offsetZ =
       static_cast<float>(ClientSin(static_cast<float>(angle)) * (this->height * ClientCos(static_cast<float>(this->pitch))));
   const float offsetY = static_cast<float>(this->height * -ClientSin(static_cast<float>(this->pitch)));
   const float offsetX =
       static_cast<float>(ClientCos(static_cast<float>(this->pitch)) * this->height * ClientCos(static_cast<float>(angle)));
-  vector3d top = {offsetX + bottom.x, offsetY + bottom.y, offsetZ + bottom.z};
+  __declspec(align(16)) vector3d top = {offsetX + bottom.x, offsetY + bottom.y, offsetZ + bottom.z};
   return CylinderEdge{bottom, top};
 }
 
