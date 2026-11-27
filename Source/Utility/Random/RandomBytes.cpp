@@ -38,9 +38,8 @@ namespace utility {
 // FUNCTION: fn_46731
 // VIRTUALIZED: emulated 0x027AABCA
 void DeriveAuxiliaryKey(const std::uint8_t* digest, std::uint8_t* key) {
-  std::uint32_t* words = reinterpret_cast<std::uint32_t*>(key);
-  words[0] = 0x7E644C48;
-  words[1] = 0x3869416E;
+  constexpr std::uint32_t seed[2] = {0x7E644C48, 0x3869416E};
+  std::memcpy(key, seed, sizeof(seed));
 
   EncryptedName<17, 0x73D1674B61DF7B0BULL>& salt = OBFUSCATE_STRING("%S4%X=HN`7]_bIvm", 0x73D1674B61DF7B0BULL);
   const std::uint8_t* text = reinterpret_cast<const std::uint8_t*>(salt.Text());
