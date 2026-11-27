@@ -392,13 +392,13 @@ void UIItemTagCtrl::UpdateItemTags() {
             break;
           }
 
-          if (firstVisible <= prefix.size()) {
+          if (prefix.size() >= static_cast<std::size_t>(firstVisible)) {
             visible = prefix.substr(firstVisible);
           }
 
           if (firstVisible != 0) {
             x = 1000;
-            if (prefix.size() > firstVisible) {
+            if (prefix.size() > static_cast<std::size_t>(firstVisible)) {
               x = 0;
             }
           } else {
@@ -414,9 +414,12 @@ void UIItemTagCtrl::UpdateItemTags() {
         if (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) {
           const int cursor = g_serverLanguage->cursor;
           if (cursor > static_cast<int>(prefix.size()) && cursor < static_cast<int>(prefix.size()) + bytes + 2) {
-            const int position = cursor < static_cast<int>(prefix.size()) + bytes / 2 + 1
-                                     ? static_cast<int>(prefix.size()) + bytes + 2
-                                     : static_cast<int>(prefix.size());
+            int position;
+            if (cursor < static_cast<int>(prefix.size()) + bytes / 2 + 1) {
+              position = static_cast<int>(prefix.size()) + bytes + 2;
+            } else {
+              position = static_cast<int>(prefix.size());
+            }
             g_serverLanguage->Select(position, position);
           }
         }
