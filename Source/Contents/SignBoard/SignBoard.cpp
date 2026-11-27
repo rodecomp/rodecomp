@@ -92,8 +92,9 @@ void CSignBoardMgr::Initialize() {
 
         vector3d position = {0.0f, 0.0f, 0.0f};
         g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
-          static_cast<float>(it->offset);
+        float offset = static_cast<float>(it->offset);
+        float height = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
+        position.y = height - offset;
         object->render.position = position;
         g_modeMgr.GetGameMode()->scene->objects.push_back(object);
         break;
@@ -103,8 +104,9 @@ void CSignBoardMgr::Initialize() {
         std::string image;
         vector3d position = {0.0f, 0.0f, 0.0f};
         g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
-          static_cast<float>(it->offset);
+        float offset = static_cast<float>(it->offset);
+        float height = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
+        position.y = height - offset;
         icon->render.position = position;
         image = it->image;
         icon->Load(image);
@@ -125,8 +127,9 @@ void CSignBoardMgr::Initialize() {
 
         vector3d position = {0.0f, 0.0f, 0.0f};
         g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
-          static_cast<float>(it->offset);
+        float offset = static_cast<float>(it->offset);
+        float height = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
+        position.y = height - offset;
         object->render.position = position;
         g_modeMgr.GetGameMode()->scene->objects.push_back(object);
         break;
