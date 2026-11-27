@@ -3065,8 +3065,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_characterFlags = this->characters[i].characterFlags;
         g_session.m_head = this->characters[i].head;
-        g_session.m_weapon = 0;
-        g_session.m_weaponLeft = 0;
+        g_session.m_weaponLook = 0;
         g_session.m_accessory = this->characters[i].accessory;
         g_session.m_shield = this->characters[i].shield;
         g_session.UpdateBodyStyle(this->characters[i].job, this->characters[i].bodyStyle, this->characters[i].bodyCostume);
@@ -3138,25 +3137,25 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
 
     ServerAddress2* servers = this->serverList;
-    if (servers[argument1].address.state == 3) {
-      g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "메시지", 280, 120, 0);
-      this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
+    if (servers[argument1].address.state != 3) {
+      g_session.m_accountName = servers[argument1].address.name;
+      const int selected = this->selectedServer;
+      ConnectionEndpoint endpoint;
+      wsprintfA(endpoint.address, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), servers[selected].address.ip & 0xFF, (servers[selected].address.ip >> 8) & 0xFF,
+        (servers[selected].address.ip >> 16) & 0xFF, servers[selected].address.ip >> 24);
+      endpoint.port = servers[this->selectedServer].address.port;
+      StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[this->selectedServer].domain);
+      g_charServerEndpoint = endpoint;
+      g_charServerIp = servers[this->selectedServer].address.ip;
+      g_session.m_serverName = servers[this->selectedServer].address.name;
+      CCheckAttendanceMgr* attendanceMgr = g_checkAttendanceMgr;
+      attendanceMgr->LoadLocal(g_session.m_serverName);
+      this->pendingCursorType = LOGIN_STATE_CONNECT_CHARACTER_SERVER;
       return 0;
     }
 
-    g_session.m_accountName = servers[argument1].address.name;
-    const int selected = this->selectedServer;
-    ConnectionEndpoint endpoint;
-    wsprintfA(endpoint.address, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), servers[selected].address.ip & 0xFF, (servers[selected].address.ip >> 8) & 0xFF,
-      (servers[selected].address.ip >> 16) & 0xFF, servers[selected].address.ip >> 24);
-    endpoint.port = servers[this->selectedServer].address.port;
-    StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[this->selectedServer].domain);
-    g_charServerEndpoint = endpoint;
-    g_charServerIp = servers[this->selectedServer].address.ip;
-    g_session.m_serverName = servers[this->selectedServer].address.name;
-    CCheckAttendanceMgr* attendanceMgr = g_checkAttendanceMgr;
-    attendanceMgr->LoadLocal(g_session.m_serverName);
-    this->pendingCursorType = LOGIN_STATE_CONNECT_CHARACTER_SERVER;
+    g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "메시지", 280, 120, 0);
+    this->pendingCursorType = LOGIN_STATE_SELECT_SERVER;
     return 0;
   }
   case LMM_SENDCHARINFO:
@@ -3173,28 +3172,32 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_GET_BILLING_INFO: {
     char* output = reinterpret_cast<char*>(argument1);
+    std::uint32_t time;
     switch (this->slotExtension.code) {
     case SLOT_BILLING_MONTHLY_CARD:
-      std::sprintf(output, LookupMessage(MSI_BILLING_100), this->slotExtension.time1 / 60);
+      time = this->slotExtension.time1;
+      std::sprintf(output, LookupMessage(MSI_BILLING_100), time / 60);
       return 0;
-    case SLOT_BILLING_TIME_CARD: {
-      const std::uint32_t value = this->slotExtension.time1;
-      std::sprintf(output, LookupMessage(MSI_BILLING_200), value / 3600, (value / 60) % 60, value % 60);
+    case SLOT_BILLING_TIME_CARD:
+      time = this->slotExtension.time1;
+      std::sprintf(output, LookupMessage(MSI_BILLING_200), time / 3600, (time / 60) % 60, time % 60);
       return 0;
-    }
     case SLOT_BILLING_FREE:
       std::sprintf(output, LookupMessage(MSI_BILLING_300));
       return 0;
     case SLOT_BILLING_FREE_PERIOD:
-      std::sprintf(output, LookupMessage(MSI_BILLING_400), (this->slotExtension.time2 - this->slotExtension.time1) / 3600,
-        ((this->slotExtension.time2 - this->slotExtension.time1) / 60) % 60, (this->slotExtension.time2 - this->slotExtension.time1) % 60);
+      time = this->slotExtension.time2 - this->slotExtension.time1;
+      std::sprintf(output, LookupMessage(MSI_BILLING_400), time / 3600, (time / 60) % 60, time % 60);
       return 0;
-    case SLOT_BILLING_INTERNET_CAFE_CARD: {
-      const std::uint32_t value = this->slotExtension.time1 != 0 ? this->slotExtension.time1 : this->slotExtension.time2;
-      const int messageId = this->slotExtension.time1 != 0 ? MSI_BILLING_500 : MSI_BILLING_501;
-      std::sprintf(output, LookupMessage(messageId), value / 3600, (value / 60) % 60, value % 60);
+    case SLOT_BILLING_INTERNET_CAFE_CARD:
+      if (this->slotExtension.time1) {
+        time = this->slotExtension.time1;
+        std::sprintf(output, LookupMessage(MSI_BILLING_500), time / 3600, (time / 60) % 60, time % 60);
+      } else {
+        time = this->slotExtension.time2;
+        std::sprintf(output, LookupMessage(MSI_BILLING_501), time / 3600, (time / 60) % 60, time % 60);
+      }
       return 0;
-    }
     case SLOT_BILLING_INTERNET_CAFE_FREE_PERIOD:
       std::sprintf(output, LookupMessage(MSI_BILLING_600));
       return 0;
