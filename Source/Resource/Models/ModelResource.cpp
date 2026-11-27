@@ -1040,11 +1040,10 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     GrannyDeformVertices(meshes[mesh].deformer, boneIndices, matrices, vertexCount, GrannyGetMeshVertices(meshes[mesh].mesh), this->deformBuffer);
     GrannyGetMeshBytesPerIndex(meshes[mesh].mesh);
     GrannyGetMeshIndices(meshes[mesh].mesh);
-    const void* vertices = this->deformBuffer;
     *indices = meshes[mesh].indices;
     *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
     transform->Identity();
-    return vertices;
+    return this->deformBuffer;
   }
 
   return nullptr;
