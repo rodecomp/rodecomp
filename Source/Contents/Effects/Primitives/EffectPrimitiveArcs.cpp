@@ -96,8 +96,8 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
       curB.y = 0.0f;
       curB.z = baseZ;
       curT.x = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * cosine + baseX;
-      curT.y = -(this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle]);
       curT.z = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle] * sine + baseZ;
+      curT.y = -(this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle]);
 
       if (i > 0) {
         int texture;
