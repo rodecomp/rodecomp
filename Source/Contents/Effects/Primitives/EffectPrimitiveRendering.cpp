@@ -6587,7 +6587,12 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     vec3.Set(slot.vecBNow.x + corner3.x, slot.vecBNow.y + corner3.y, slot.vecBNow.z + corner3.z);
     vec4.Set(slot.vecBNow.x + corner4.x, slot.vecBNow.y + corner4.y, slot.vecBNow.z + corner4.z);
 
-    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+    if (slot.flag1[0] <= 1) {
+      alpha = 250;
+      if (vec1.y < -20.0f) {
+        alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
+      }
+    } else if (slot.flag1[0] == 11) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
