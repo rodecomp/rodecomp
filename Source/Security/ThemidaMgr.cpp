@@ -99,7 +99,7 @@ void CThemidaMgr::Destroy() {
 
 // OFFSET: 0x0076EEB0
 // FUNCTION: fn_08242
-// VIRTUALIZED: emulated 0x027F8A2A
+// VIRTUALIZED: emulated 0x0076EEB9
 void CThemidaMgr::Check() {
   unsigned int value = 0;
   s_themidaKeyA.Generate(reinterpret_cast<const unsigned char*>(&value));
