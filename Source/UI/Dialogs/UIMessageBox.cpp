@@ -3853,20 +3853,24 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       {
         char text[512];
-        std::sprintf(text, LookupMessage(MSI_CHANGE_PETNAME), this->nameEdit->Text());
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0) != ID_NO) {
-          if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
-            g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
-            std::sprintf(g_session.petName, this->nameEdit->Text());
-            this->Invalidate();
-            return 0;
-          }
-
-          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
+        UIEditCtrl* edit = this->nameEdit;
+        std::sprintf(text, LookupMessage(MSI_CHANGE_PETNAME), edit->Text());
+        const int response = g_windowMgr.Confirm(text, 2, false, false, 0, "메시지", 280, 120, 0);
+        if (response == ID_NO) {
+          edit->SetText(g_session.petName);
+          edit->Invalidate();
+          return 0;
         }
-
-        this->nameEdit->SetText(g_session.petName);
-        this->nameEdit->Invalidate();
+        if (g_forbiddenWords.Contains(edit->Text()) != true) {
+          g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
+          std::sprintf(g_session.petName, this->nameEdit->Text());
+          this->Invalidate();
+          return 0;
+        }
+        g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_USE_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
+        edit = this->nameEdit;
+        edit->SetText(g_session.petName);
+        edit->Invalidate();
       }
       return 0;
     case ID_CLOSE:
