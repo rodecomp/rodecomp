@@ -1456,13 +1456,14 @@ void CSession::LoadOptionInfo() {
   g_renderSystemReset = this->GetOptionInteger("RenderSystemReset", 1);
 
   if (resetPolicy != g_renderSystemReset) {
-    g_configuredRenderBackend = defaultBackend;
     g_renderSystemReset = resetPolicy;
+    g_configuredRenderBackend = defaultBackend;
   } else {
     g_configuredRenderBackend = this->GetOptionInteger("RENDERSYSTEM", defaultBackend);
   }
 
-  g_configuredDeviceGuid = this->GetOptionGuid("DX9DEVICEID", g_defaultDrawGuidDX7);
+  const GUID deviceGuid = this->GetOptionGuid("DX9DEVICEID", g_defaultDrawGuidDX7);
+  g_configuredDeviceGuid = deviceGuid;
   strncpy_s(g_configuredDeviceName, sizeof(g_configuredDeviceName), this->GetOptionString("DX9DEVICENAME", "").c_str(), _TRUNCATE);
 
   g_configuredFullscreen = this->GetOptionInteger("ISFULLSCREENMODE", 0);
