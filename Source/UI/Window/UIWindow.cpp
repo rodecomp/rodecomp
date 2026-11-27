@@ -1762,7 +1762,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = parser->DisplayNavigationLink(display);
   display = DisplayTextTag(display, g_questTagBegin, g_questTagEnd);
 
-  int extent = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
+  int extent = this->TextWidth(display.c_str(), display.size(), family, height, bold, 0);
   this->TextWidth("...", 3, family, height, bold, 0);
 
   if (width >= extent) {
