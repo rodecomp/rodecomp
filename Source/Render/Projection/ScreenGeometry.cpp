@@ -23,10 +23,11 @@ static void SetScreenQuadVertex(RenderVertex& vertex, float x, float y, std::uin
 // FUNCTION: fn_01944
 static __declspec(noinline) void DrawLineQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  SetScreenQuadVertex(primitive->vertices[0], p0.x, p0.y, color, 0.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[1], p1.x, p1.y, color, 1.0f, 0.0f);
-  SetScreenQuadVertex(primitive->vertices[2], p2.x, p2.y, color, 0.0f, 1.0f);
-  SetScreenQuadVertex(primitive->vertices[3], p3.x, p3.y, color, 1.0f, 1.0f);
+  RenderVertex* vertices = primitive->vertices;
+  SetScreenQuadVertex(vertices[0], p0.x, p0.y, color, 0.0f, 0.0f);
+  SetScreenQuadVertex(vertices[1], p1.x, p1.y, color, 1.0f, 0.0f);
+  SetScreenQuadVertex(vertices[2], p2.x, p2.y, color, 0.0f, 1.0f);
+  SetScreenQuadVertex(vertices[3], p3.x, p3.y, color, 1.0f, 1.0f);
   primitive->texture = texture;
   primitive->sourceBlend = 2;
   primitive->destinationBlend = 4;
