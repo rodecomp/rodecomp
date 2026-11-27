@@ -28,6 +28,7 @@
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Skills/MonsterSkillEffects.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/Guild/GuildMgr.h"
@@ -2215,13 +2216,13 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
     const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
     const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
     if (state == 2) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, ZeroVector3d(), 0, -1, 0, 0);
       effect->SetWindowOffset(vector3d{784.0f, 161.0f, 0.0f}, 1, 361);
     } else if (state == 1) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, ZeroVector3d(), 0, -1, 0, 0);
       effect->SetWindowOffset(vector3d{784.0f, 161.0f, 0.0f}, 1, 361);
     } else {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? EF_RUNE_ACTIVE_FINISH : EF_RUNESET_ACTIVE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? EF_RUNE_ACTIVE_FINISH : EF_RUNESET_ACTIVE, ZeroVector3d(), 0, -1, 0, 0);
       effect->SetWindowOffset(type == 0 ? vector3d{473.0f, 286.0f, 0.0f} : vector3d{598.0f, 271.0f, 0.0f}, 1, 361);
     }
 
