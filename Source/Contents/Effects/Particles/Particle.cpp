@@ -540,6 +540,13 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   this->submit(primitive, this->flags);
 }
 
+// INLINED
+static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
+  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
+  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
+  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
+}
+
 // OFFSET: 0x00B3E6E0
 // FUNCTION: fn_18826
 void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transform, const matrix& view, int index) {
@@ -587,13 +594,15 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
     float x = (vertices[i].x - screenX) * this->m_scale;
     float y = (vertices[i].y - screenY) * this->m_scale;
     if (this->m_flipX) {
-      x *= g_heightSpeedSign;
+      x *= -1.0f;
     }
     if (this->m_flipY) {
-      y *= g_heightSpeedSign;
+      y *= -1.0f;
     }
-    vertices[i].x = x + screenX;
-    vertices[i].y = y + screenY;
+    x += screenX;
+    y += screenY;
+    vertices[i].x = x;
+    vertices[i].y = y;
   }
 
   if (this->m_angle > 0.0f || this->m_pitch > 0.0f || this->m_yaw > 0.0f) {
@@ -614,8 +623,12 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
       point.x = vertices[i].x - screenX;
       point.y = vertices[i].y - screenY;
       point.z = 0.0f;
-      vertices[i].x = point.x * rotation.values[0] + point.y * rotation.values[3] + point.z * rotation.values[6] + rotation.values[9] + screenX;
-      vertices[i].y = point.x * rotation.values[1] + point.y * rotation.values[4] + point.z * rotation.values[7] + rotation.values[10] + screenY;
+      vector3d rotated;
+      MatrixMult(rotated, point, rotation.values);
+      rotated.x += screenX;
+      rotated.y += screenY;
+      vertices[i].x = rotated.x;
+      vertices[i].y = rotated.y;
     }
   }
 
@@ -652,13 +665,6 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   primitive->textureMode = transform->mtpreset;
   this->flags |= RSF_SECONDARY;
   this->submit(primitive, this->flags);
-}
-
-// INLINED
-static void MatrixMult(vector3d& result, const vector3d& v, const float* m) {
-  result.x = v.x * m[0] + v.y * m[3] + v.z * m[6] + m[9];
-  result.y = v.x * m[1] + v.y * m[4] + v.z * m[7] + m[10];
-  result.z = v.x * m[2] + v.y * m[5] + v.z * m[8] + m[11];
 }
 
 // OFFSET: 0x00B3F050
