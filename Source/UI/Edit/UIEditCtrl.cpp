@@ -10398,6 +10398,9 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     case DRAG_ITEM_EQUIP:
       mode->SendMsg(MM_TAKE_OFF_EQUIP, drag.slot, 0, 0, 0);
       break;
+    case DRAG_ITEM_EQUIP_COSTUME:
+      mode->SendMsg(MM_TAKE_OFF_EQUIP, drag.slot, 1, 0, 0);
+      break;
     case DRAG_ITEM_STORAGE:
       mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_BODY, static_cast<int>(drag.id), drag.quantity, 0, 0);
       break;
@@ -10414,9 +10417,6 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       break;
     case DRAG_SWAP_EQUIP_COSTUME:
       mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, drag.slot, 1, 0, 0);
-      break;
-    case DRAG_ITEM_EQUIP_COSTUME:
-      mode->SendMsg(MM_TAKE_OFF_EQUIP, drag.slot, 1, 0, 0);
       break;
     default:
       break;
