@@ -282,7 +282,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
       alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha >= 0 ? alpha : 0), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
     vec1.x = slot.vecBNow.x + x1;
@@ -305,7 +305,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
       alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha >= 0 ? alpha : 0), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
     vec1.x = slot.vecTPre.x + x1;
@@ -328,7 +328,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
       alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha >= 0 ? alpha : 0), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
     vec1.x = slot.vecTNow.x + x1;
@@ -351,7 +351,7 @@ void CEffectPrim::RenderHoverSquares(matrix& wtm) {
       alpha = static_cast<int>(vec1.y * g_effectHoverAlphaScale);
     }
     if (vec1.y <= 0.0f) {
-      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha < 0 ? 0 : alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      this->RenderTeiRect(&rpCnt, static_cast<short>(alpha >= 0 ? alpha : 0), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
 }
