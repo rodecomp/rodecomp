@@ -193,7 +193,8 @@ void WrapRichText(
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
-      const char* where = lines[index].data() + (HexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0);
+      const int skip = HexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0;
+      const char* where = lines[index].data() + skip;
       lines[index].insert(where - lines[index].data(), marker, 3);
     }
   }
