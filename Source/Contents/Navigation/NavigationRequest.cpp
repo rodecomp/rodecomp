@@ -170,6 +170,8 @@ void CNavigationManager::BuildGridLabels() {
 // OFFSET: 0x00B97200
 // FUNCTION: fn_19598
 int CNavigationManager::RequestRoute(int cellX, int cellY) {
+  volatile int requestedX = cellX;
+  volatile int requestedY = cellY;
   this->selectedNode = -1;
   CNaviInfo* info = this->FindObject(g_session.m_navigationPlayerMap);
   if (info == nullptr) {
@@ -181,8 +183,8 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
   }
 
   CNaviInfo* target = nullptr;
-  int destX = cellX;
-  int destY = cellY;
+  volatile int destX = cellX;
+  volatile int destY = cellY;
   const int type = this->savedTarget.type;
   if (type == 3) {
     if (info == static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()) {
@@ -197,7 +199,7 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
     return -99;
   }
   if (type == 0) {
-    if (cellX < 0 || cellY < 0) {
+    if (requestedX < 0 || requestedY < 0) {
       return -97;
     }
     target = static_cast<CNaviInfo*>(this->savedTarget.object);
