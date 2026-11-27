@@ -152,8 +152,11 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
     char normalized[260] = {};
     StringFormat(normalized, sizeof(normalized), _TRUNCATE, "%s", name);
 
-    for (char* c = normalized; *c; ++c) {
-      *c = g_lowercaseTable[static_cast<unsigned char>(*c)];
+    char* c = normalized;
+    char ch = *c++;
+    while (ch) {
+      c[-1] = g_lowercaseTable[static_cast<unsigned char>(ch)];
+      ch = *c++;
     }
 
     const char* dot = ReverseFindChar(normalized, '.');
