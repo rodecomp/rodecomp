@@ -6878,16 +6878,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             variable = SP_STR;
             break;
           case 2:
-            variable = SP_INT;
+            variable = SP_DEX;
             break;
           case 3:
             variable = SP_VIT;
             break;
           case 4:
-            variable = SP_DEX;
+            variable = SP_AGI;
             break;
           case 5:
-            variable = SP_AGI;
+            variable = SP_INT;
             break;
           case 6:
             variable = SP_LUK;
@@ -6950,16 +6950,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             variable = SP_STR;
             break;
           case 5:
-            variable = SP_INT;
+            variable = SP_DEX;
             break;
           case 6:
             variable = SP_VIT;
             break;
           case 7:
-            variable = SP_DEX;
+            variable = SP_AGI;
             break;
           case 8:
-            variable = SP_AGI;
+            variable = SP_INT;
             break;
           case 9:
             variable = SP_LUK;
@@ -7016,16 +7016,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
             variable = SP_STR;
             break;
           case 3:
-            variable = SP_INT;
+            variable = SP_DEX;
             break;
           case 4:
             variable = SP_VIT;
             break;
           case 5:
-            variable = SP_DEX;
+            variable = SP_AGI;
             break;
           case 6:
-            variable = SP_AGI;
+            variable = SP_INT;
             break;
           case 7:
             variable = SP_LUK;
