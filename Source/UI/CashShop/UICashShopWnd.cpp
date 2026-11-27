@@ -1154,9 +1154,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         if (argument2 > entry.saleData.purchaseCount) {
           g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG), entry.saleData.purchaseCount).c_str(), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         }
-        if (argument2 > entry.saleData.purchaseCount) {
-          argument2 = entry.saleData.purchaseCount;
-        }
+        argument2 = argument2 > entry.saleData.purchaseCount ? entry.saleData.purchaseCount : argument2;
       }
       entry.quantity = argument2;
       this->m_cartItems.push_back(entry);
