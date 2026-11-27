@@ -20525,8 +20525,9 @@ bool CRagEffect::OnProcess3() {
   case EF_KAGEMUSYA:
     {
       CHalluPC2* hallu = new CHalluPC2(static_cast<CPc*>(this->state.parent));
-      hallu->render.position = this->state.parent->render.position;
-      hallu->render.position.x -= ClientSine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
+      EffectActor* parent = this->state.parent;
+      hallu->render.position = parent->render.position;
+      hallu->render.position.x -= ClientSine(static_cast<int>(parent->render.angle)) * 5.0f;
       hallu->render.position.z += ClientCosine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
       hallu->SetColor(100, 192, 192, 192);
       WorldObjects().push_back(hallu);
@@ -21175,15 +21176,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWaveInline(*this, "effect\\earth_quake.wav");
     }
     this->TexturedClassChange(31);
-    if (this->state.stateCnt != 0) {
-      if (this->state.stateCnt != 35) {
-        if (this->state.stateCnt == 70) {
-          g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
-        }
-      } else {
-        g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
-      }
-    } else {
+    if (this->state.stateCnt == 0 || this->state.stateCnt == 35 || this->state.stateCnt == 70) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
     }
     break;
@@ -21193,7 +21186,11 @@ bool CRagEffect::OnProcess3() {
   case EF_UNDEADBODY:
     if ((this->state.parent->render.flags & 0x80000) == 0) {
       this->state.parent->render.flags += 0x80000;
-      this->state.parent->render.outlineAlpha = static_cast<unsigned char>(std::min(this->state.stateCnt, 200));
+      if (this->state.stateCnt < 200) {
+        this->state.parent->render.outlineAlpha = this->state.stateCnt;
+      } else {
+        this->state.parent->render.outlineAlpha = 200;
+      }
     }
     break;
   case EF_UNDEADBODY_DEL:
@@ -21501,7 +21498,8 @@ bool CRagEffect::OnProcess3() {
   case EF_SIGHT2:
     {
       this->render.position = this->state.parent->render.position;
-      const RenderVertex vertex = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, this->state.parent->render.position);
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
+      RenderVertex vertex = TransformVert(gameMode->camera->frame.view, this->state.parent->render.position);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
       if (this->state.stateCnt % 2 == 0) {
@@ -21509,11 +21507,10 @@ bool CRagEffect::OnProcess3() {
         const float sine = ClientSine(angle);
         const float cosine = ClientCosine(angle);
         GetRadian(angle);
+        const float radius = 15.0f;
         this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 20;
-        this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
-        this->state.lastPrim->state.deltaPos2.y = -20.0f;
-        this->state.lastPrim->state.deltaPos2.z = cosine * -15.0f;
+        SetVector(this->state.lastPrim->state.deltaPos2, radius * sine, -20.0f, -radius * cosine);
         this->state.lastPrim->state.deltaPosAccel.y = 0.1f;
         this->state.lastPrim->state.animSpeed = 3;
         this->state.lastPrim->state.size = 2.5f;
