@@ -14,6 +14,7 @@
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Effects/Core/MsgEffect.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Ground/GroundGeometry.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Map/MapSkyMgr.h"
@@ -1402,7 +1403,7 @@ bool CNpc::OnProcess() {
       const int interval = this->xSize * 1000;
       if (timeGetTime() > this->effectTick + interval) {
         this->effectTick = timeGetTime();
-        this->LaunchEffect(this->moveSpeed, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(this->moveSpeed, ZeroVector3d(), 0.0f);
       }
       break;
     }
