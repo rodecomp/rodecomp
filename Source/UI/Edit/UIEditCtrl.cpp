@@ -10191,10 +10191,11 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         over = "유저인터페이스\\inventory\\bt_itemDeal_lock_on_over.bmp";
         normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_on.bmp";
       }
+      UIBitmapButton* dealLock = this->dealLockButton;
       this->dealLockButton->SetBitmap(normal, 0, 0);
-      this->dealLockButton->SetBitmap(over, 1, 0);
+      dealLock->SetBitmap(over, 1, 0);
       this->dealLockButton->SetBitmap(press, 2, 0);
-      this->dealLockButton->Invalidate();
+      dealLock->Invalidate();
       this->Invalidate();
       break;
     }
