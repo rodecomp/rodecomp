@@ -354,13 +354,13 @@ void UIComboBoxEx2::Paint() {
 
   for (int row = top; row < end; ++row) {
     if (this->alignment == 0) {
-      this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
+      this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * (row - top) + 2, lines[row].text.c_str(), 0, 0, 12, lines[row].color, 0, 0);
     } else if (this->alignment == 1) {
       const int x = static_cast<int>(
         static_cast<float>(geometryRef.width) * 0.5f -
-        static_cast<float>(this->TextWidth(this->lines[row].text.c_str(), 0, 0, 12, 0, 0)) * 0.5f
+        static_cast<float>(this->TextWidth(lines[row].text.c_str(), 0, 0, 12, 0, 0)) * 0.5f
       );
-      this->DrawTextAt(x, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
+      this->DrawTextAt(x, this->lineHeight * (row - top) + 2, lines[row].text.c_str(), 0, 0, 12, lines[static_cast<int>(row)].color, 0, 0);
     }
   }
 
