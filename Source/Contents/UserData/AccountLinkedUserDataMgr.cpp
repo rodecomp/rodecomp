@@ -59,8 +59,11 @@ public:
 // FUNCTION: fn_03454
 template <>
 __declspec(noinline) WhisperNameAppender std::for_each(std::set<std::string>::const_iterator first, std::set<std::string>::const_iterator last, WhisperNameAppender function) {
-  for (; first != last; ++first) {
-    function(*first);
+  std::_Adl_verify_range(first, last);
+  auto unwrappedFirst = std::_Get_unwrapped(first);
+  const auto unwrappedLast = std::_Get_unwrapped(last);
+  for (; unwrappedFirst != unwrappedLast; ++unwrappedFirst) {
+    function(*unwrappedFirst);
   }
 
   return function;
