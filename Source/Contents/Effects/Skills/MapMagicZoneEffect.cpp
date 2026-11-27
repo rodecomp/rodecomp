@@ -263,30 +263,25 @@ __forceinline void CMapMagicZoneEffect::UpdateRibbonVertices(CParticle* particle
     const int angle = static_cast<int>(static_cast<float>(step * segment) + particle->angle) % 360;
     const float flat = wave * g_cosTable[particle->phaseParameter];
     const float rise = wave * g_sinTable[particle->phaseParameter];
-
     const float offsetX = flat * g_cosTable[angle];
     const float offsetZ = flat * g_sinTable[angle];
-    ZoneVector3d points[2];
+
+    EffectPoint points[2];
     const float innerX = particle->scale * g_cosTable[angle];
-    const float innerY = 0.0f;
     const float innerZ = particle->scale * g_sinTable[angle];
-    const float outerX = innerX + offsetX;
-    const float outerY = innerY - rise;
-    const float outerZ = innerZ + offsetZ;
+    points[0].x = innerX + offsetX;
+    points[0].y = 0.0f - rise;
+    points[0].z = innerZ + offsetZ;
+    points[1].x = innerX;
+    points[1].y = 0.0f;
+    points[1].z = innerZ;
 
-    points[0].x = innerX;
-    points[0].y = innerY;
-    points[0].z = innerZ;
-    points[1].x = outerX;
-    points[1].y = outerY;
-    points[1].z = outerZ;
-
-    particle->vertices[3].x = points[0].x;
-    particle->vertices[3].y = points[0].y;
-    particle->vertices[3].z = points[0].z;
-    particle->vertices[1].x = points[1].x;
-    particle->vertices[1].y = points[1].y;
-    particle->vertices[1].z = points[1].z;
+    particle->vertices[1].x = points[0].x;
+    particle->vertices[1].y = points[0].y;
+    particle->vertices[1].z = points[0].z;
+    particle->vertices[3].x = points[1].x;
+    particle->vertices[3].y = points[1].y;
+    particle->vertices[3].z = points[1].z;
 
     if (segment != 0) {
       particle->vertices[0].x = this->previousPoints[1].x;
@@ -297,12 +292,12 @@ __forceinline void CMapMagicZoneEffect::UpdateRibbonVertices(CParticle* particle
       particle->vertices[2].z = this->previousPoints[0].z;
     }
 
-    this->previousPoints[0].x = points[0].x;
-    this->previousPoints[0].y = points[0].y;
-    this->previousPoints[0].z = points[0].z;
-    this->previousPoints[1].x = points[1].x;
-    this->previousPoints[1].y = points[1].y;
-    this->previousPoints[1].z = points[1].z;
+    this->previousPoints[0].x = points[1].x;
+    this->previousPoints[0].y = points[1].y;
+    this->previousPoints[0].z = points[1].z;
+    this->previousPoints[1].x = points[0].x;
+    this->previousPoints[1].y = points[0].y;
+    this->previousPoints[1].z = points[0].z;
   }
 }
 
