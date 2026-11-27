@@ -1738,9 +1738,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     CMode* mode = g_modeMgr.currentMode;
     switch (a) {
     case ID_OK: {
-      if (!this->cashShopMode) {
-        mode->SendMsg(MM_REQ_PURCHASE, 0, 0, 0, 0);
-      } else {
+      if (this->cashShopMode) {
         if (!g_session.GetNumPurchaseItems()) {
           return 0;
         }
@@ -1789,6 +1787,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
         return 0;
+      } else {
+        mode->SendMsg(MM_REQ_PURCHASE, 0, 0, 0, 0);
       }
       break;
     }
@@ -1836,10 +1836,11 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (newWidth != this->geometry.width || newHeight != this->geometry.height) {
         this->Resize(newWidth, newHeight);
         this->columns = 1;
-        this->visibleRows = (this->geometry.height - 58) / 32;
+        const int contentHeight = this->geometry.height - 58;
+        this->visibleRows = contentHeight / 32;
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
         this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 58);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, contentHeight);
         this->UpdateScrollBar();
       }
 
