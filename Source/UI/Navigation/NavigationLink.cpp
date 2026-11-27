@@ -835,8 +835,7 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
       const std::string tail = match[2].str();
       std::smatch loopMatch;
       if (std::regex_search(tail, loopMatch, std::regex("^\\[(\\d)\\]")) == true) {
-        const std::string count = loopMatch[1].str();
-        loops = std::atoi(count.c_str());
+        loops = std::atoi(loopMatch[1].str().c_str());
       }
     }
 
