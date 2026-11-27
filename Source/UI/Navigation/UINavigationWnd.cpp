@@ -404,16 +404,18 @@ void UINavigationWnd::RefreshRouteList() {
   std::string destination = g_navigationManager.GetDestinationInfo()->GetName();
   int startX;
   int startY;
-  NaviCell cell;
   int destinationX;
   int destinationY;
   if (nodeCount == 0) {
+    NaviCell cell;
     g_navigationManager.PlayerCell(&startX, &startY);
     destinationX = g_navigationManager.GetDestinationCell(&cell)->x;
     destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
   } else {
     startX = previous->GetLinkedCell().x;
     startY = previous->GetLinkedCell().y;
+    NaviCell cell;
+
     destinationX = g_navigationManager.GetDestinationCell(&cell)->x;
     destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
   }
