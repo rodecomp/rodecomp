@@ -157,10 +157,19 @@ void CAcidifiedThrow::OnProcess() {
     actorViewY -= g_projectionDepthOffset;
 
     const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
-    const vector3d world{
-        actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9],
-        actorViewX * inverse.values[1] + actorViewY * inverse.values[4] + actorViewZ * inverse.values[7] + inverse.values[10],
-        actorViewX * inverse.values[2] + actorViewY * inverse.values[5] + actorViewZ * inverse.values[8] + inverse.values[11]};
+    float worldX = actorViewY * inverse.values[3];
+    worldX += actorViewX * inverse.values[0];
+    worldX += actorViewZ * inverse.values[6];
+    worldX += inverse.values[9];
+    float worldY = actorViewX * inverse.values[1];
+    worldY += actorViewY * inverse.values[4];
+    worldY += actorViewZ * inverse.values[7];
+    worldY += inverse.values[10];
+    float worldZ = actorViewX * inverse.values[2];
+    worldZ += actorViewY * inverse.values[5];
+    worldZ += actorViewZ * inverse.values[8];
+    worldZ += inverse.values[11];
+    const vector3d world{worldX, worldY, worldZ};
 
     this->trajectoryTime -= 0.07f;
 
