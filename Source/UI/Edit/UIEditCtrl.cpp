@@ -5809,12 +5809,12 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->scrollBar->Move(this->geometry.width - 15, 14);
         this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - 38);
         int row = 0;
-        for (int y = 17; y < 241; y += 32, ++row) {
-          int x = -200;
+        for (int y = 17; y < 241; ++row, y += 32) {
           if (row < this->visibleRows && static_cast<unsigned>(this->scroll + row) < this->skills.size()) {
-            x = 53;
+            this->upgradeButtons[row]->Move(53, y);
+          } else {
+            this->upgradeButtons[row]->Move(-200, y);
           }
-          this->upgradeButtons[row]->Move(x, y);
         }
         this->UpdateScrollBar();
         this->UpdateRowButtons();
@@ -5975,8 +5975,8 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return this->scroll - previous;
   }
   case UM_REFRESHITEM: {
-    this->skills.clear();
-    int count = 0;
+    this->skills.erase(this->skills.begin(), this->skills.end());
+    int count;
     if (this->skillTab == 0) {
       count = static_cast<int>(g_session.m_homunSkills.size());
     } else if (this->skillTab == 1) {
