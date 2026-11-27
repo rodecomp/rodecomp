@@ -708,6 +708,8 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
 // FUNCTION: fn_45779
 __forceinline std::pair<unsigned int, int> UITagListBox::FindTagPosition(int offset, int lineCount) {
   std::pair<unsigned int, int> position;
+  position.second = 0;
+  position.first = 0;
   const std::string* text = this->lines.data();
   const unsigned int count = static_cast<unsigned int>(this->lines.size());
   int bytes = 0;
