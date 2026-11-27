@@ -6461,7 +6461,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               lua_pushstring(this->script.GetState(), "valOpt");
               lua_gettable(this->script.GetState(), -2);
               type = lua_type(this->script.GetState(), -1);
-              result = (type != LUA_TNIL) + 1;
               if (type == LUA_TTABLE) {
                 result = 0;
                 lua_pushnil(this->script.GetState());
@@ -6479,6 +6478,8 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                   definition->formatOptions[optionKey] = optionValue;
                   lua_settop(this->script.GetState(), -2);
                 }
+              } else {
+                result = (type != LUA_TNIL) + 1;
               }
               lua_settop(this->script.GetState(), -2);
               valid = result == 0 || result == 1;
