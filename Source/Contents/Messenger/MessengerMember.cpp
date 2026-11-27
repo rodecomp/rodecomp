@@ -1615,12 +1615,16 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       int x = g_mouse.x + 1;
       int y = g_mouse.y + 1;
       x = std::max(x, 1);
-      const int maxX = g_renderer->viewport.width - menu->geometry.width;
-      x = std::min(maxX, x);
+      int maxX = g_renderer->viewport.width - menu->geometry.width;
+      if (x <= maxX) {
+        maxX = x;
+      }
       y = std::max(y, 1);
-      const int maxY = g_renderer->viewport.height - menu->geometry.height;
-      y = std::min(maxY, y);
-      menu->Move(x, y);
+      int maxY = g_renderer->viewport.height - menu->geometry.height;
+      if (y <= maxY) {
+        maxY = y;
+      }
+      menu->Move(maxX, maxY);
     }
     return 0;
   case UM_MENU_SELECTED: {
