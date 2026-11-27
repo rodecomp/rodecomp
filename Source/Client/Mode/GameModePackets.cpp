@@ -15670,7 +15670,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
-      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, ZeroVector3d(), 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -15794,7 +15794,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     actor->characterLevel = packet->level;
     if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
-      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, ZeroVector3d(), 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -15922,7 +15922,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
     if (isPc) {
       actor->render.font = packet->font;
       if (!IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
-        actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        actor->LaunchEffect(EF_ENTRY2, ZeroVector3d(), 0.0f);
       }
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
@@ -16056,7 +16056,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
       }
     }
     if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
-      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, ZeroVector3d(), 0.0f);
     }
   }
 
