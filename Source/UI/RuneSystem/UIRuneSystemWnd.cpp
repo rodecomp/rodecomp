@@ -2352,14 +2352,14 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->Invalidate();
     }
     break;
-  case UM_TAB:
-    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
-    this->SelectTab();
-    break;
   case UM_COMMAND:
     if (argument1 == ID_CLOSE) {
       g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);
     }
+    break;
+  case UM_TAB:
+    g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
+    this->SelectTab();
     break;
   case UM_REFRESH: {
     UIRuneSetList* list = this->m_lists[this->m_tab->geometry.state];
