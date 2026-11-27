@@ -49,7 +49,7 @@ void FuncDrawWNDChar::Draw(bool option) {
   this->LoadResources(layers);
   for (std::list<int>::iterator it = layers.begin(); it != layers.end(); ++it) {
     int layer = *it;
-    std::pair<CSprRes*, CActRes*> resource = this->Resource(layer);
+    const auto& resource = this->Resource(layer);
     CSprRes* sprite = resource.first;
     CActRes* act = resource.second;
     if (!sprite || !act) {
