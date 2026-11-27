@@ -36,7 +36,7 @@ std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
       break;
     case 0:
       if (!result.empty()) {
-        result += '3';
+        result.append(1, '3');
       }
       break;
     case 7:
