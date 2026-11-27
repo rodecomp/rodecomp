@@ -405,7 +405,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
     const int id = std::atoi(this->itemId.c_str());
     if ((static_cast<unsigned>(id) - 9001u <= 498 || static_cast<unsigned>(id) - 10000u <= 999) && CardId(*this, 3) == 1) {
       AppendText(result, InlineApprentice(*this, text, capacity, 0) > 0 ? text : "");
-      AppendText(result, IdentifiedName(*this, text, capacity, 0) > 0 ? text : "");
+      AppendText(result, IdentifiedName(*this, text, capacity, 0) <= 0 ? "" : text);
     } else if (CardId(*this, 0) == 254 && CardId(*this, 1) == 0) {
       if (this->refiningLevel > 0) {
         AppendText(result, InlineRefine(*this, text, capacity, 0) > 0 ? text : "");
