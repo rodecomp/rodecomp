@@ -252,13 +252,13 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
 
   int job = 0;
   int sex = 0;
-  int bodyPalette = 0;
-  int head = 0;
-  int headPalette = 0;
   int accessory0 = 0;
   int accessory1 = 0;
   int accessory2 = 0;
   int robe = 0;
+  int bodyPalette = 0;
+  int head = 0;
+  int headPalette = 0;
   for (index = 1; index < 9999; ++index) {
     mapName = nullptr;
     cell.y = 0;
