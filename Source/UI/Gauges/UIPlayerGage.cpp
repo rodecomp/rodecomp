@@ -201,8 +201,8 @@ void UIPlayerGage::Paint() {
         curVal = this->m_secondCurrent();
         den = curVal > maxVal ? curVal : maxVal;
         num = static_cast<double>(this->m_secondCurrent());
-        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
         ratio = static_cast<float>(num / static_cast<double>(static_cast<int>(den)));
+        this->FillRegion(1, 5, this->geometry.width - 2, 3, this->colors[1]);
         this->FillRegion(1, 5, static_cast<int>(static_cast<float>(this->geometry.width - 2) * ratio), 3,
                          this->colors[3]);
 
