@@ -314,9 +314,9 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
       curT.x = riseX * g_cosTable[angle] + curB.x;
       curT.z = riseX * g_sinTable[angle] + curB.z;
       if (slotsRef[ec].maxHeight == 6.001f) {
-        curT.y = -(2.0f + riseY);
+        curT.y = -(g_effectIconOuterRadius + riseY);
       } else if (slotsRef[ec].maxHeight == 24.001f) {
-        curT.y = -(1.0f + riseY);
+        curT.y = -(g_projectionDepthNumerator + riseY);
       } else {
         curT.y = -riseY;
       }
