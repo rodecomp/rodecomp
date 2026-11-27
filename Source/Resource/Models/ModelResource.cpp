@@ -1,4 +1,5 @@
 #include "Client/Application/ErrorDialog.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Client/Session/Session.h"
 #include "Contents/Jobs/JobId.h"
 #include "File/File.h"
@@ -370,8 +371,8 @@ bool C3dModelResV1::Load(const char* name) {
         record.CopyTo(*volume);
 
         if (volume->flag == 0) {
-          volume->size.values[0] = volume->size.values[0] + 3.0f;
-          volume->size.values[2] = volume->size.values[2] + 3.0f;
+          volume->size.values[0] = volume->size.values[0] + g_masterReachDistance;
+          volume->size.values[2] = volume->size.values[2] + g_masterReachDistance;
         }
 
         this->volumes.push_back(volume);
