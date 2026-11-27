@@ -64,6 +64,12 @@ namespace {
   void ShutdownMilesAtExit() {
     AIL_shutdown();
   }
+
+  // INLINED
+  __declspec(noinline) int RegisterMilesShutdown() {
+    std::atexit(&ShutdownMilesAtExit);
+    return 0;
+  }
 }
 
 // OFFSET: 0x00638A90
@@ -172,7 +178,7 @@ bool CSoundMgr::Initialize() {
 
   AIL_set_redist_directory(".\\");
 
-  std::atexit(&ShutdownMilesAtExit);
+  RegisterMilesShutdown();
   AIL_startup();
 
   this->channels = configuration.mode == SOUND_MODE_2D ? 1 : 2;
@@ -229,9 +235,8 @@ bool CSoundMgr::Initialize() {
     return true;
   }
 
-  strcpy_s(configuration.providerName, sizeof(configuration.providerName), "Miles Fast 2D Positional Audio");
-
   int index = 0;
+  strcpy_s(configuration.providerName, sizeof(configuration.providerName), "Miles Fast 2D Positional Audio");
 
   while (AIL_enumerate_3D_providers(&this->enumerator, &this->providers[index], &this->providerNames[index])) {
     if (std::strcmp(this->providerNames[index], configuration.providerName) == 0) {
