@@ -1621,7 +1621,7 @@ bool PakAuxiliary::Extract(
   }
 
   std::uint8_t key[60];
-  if (header.keyId == 0) {
+  if (0 == header.keyId) {
     std::memcpy(key, header.material, sizeof(key));
   } else {
     const PakArchiveKeyMap::const_iterator found = this->m_archiveKeys.find(header.keyId);
@@ -1629,7 +1629,15 @@ bool PakAuxiliary::Extract(
       return false;
     }
 
-    PakArchiveKeyRecord record = found->second.Unmask();
+    PakArchiveKeyRecord record;
+    std::uint8_t bytes[sizeof(record)];
+    const std::uint8_t* source = found->second.m_data;
+    const std::uint8_t* mask = found->second.m_mask;
+    std::uint8_t* destination = bytes;
+    for (std::size_t i = 0; i < sizeof(record); ++i) {
+      *destination++ = source[i] ^ mask[i % 4] ^ mask[i % 4 + 1];
+    }
+    record = std::bit_cast<PakArchiveKeyRecord>(bytes);
     std::memcpy(key, record.material, sizeof(key));
     SecureZeroMemory(&record, sizeof(record));
   }
