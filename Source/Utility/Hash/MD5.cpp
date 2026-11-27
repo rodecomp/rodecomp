@@ -252,7 +252,9 @@ std::uint32_t MD5::HashBuffer(const unsigned char* input, std::uint32_t length) 
   DigestStorage digest;
   digest.b0 = digest.b1 = digest.b2 = digest.b3 = digest.b4 = digest.b5 = 0;
   DigestBuffer(input, length, reinterpret_cast<unsigned char*>(&digest));
-  return FoldDigest(reinterpret_cast<const unsigned char*>(&digest));
+  const unsigned char* bytes = reinterpret_cast<const unsigned char*>(&digest);
+  return MAKELONG(MAKEWORD(bytes[4] ^ bytes[5] ^ bytes[6] ^ bytes[7], bytes[0] ^ bytes[1] ^ bytes[2] ^ bytes[3]),
+                  MAKEWORD(bytes[8] ^ bytes[9] ^ bytes[10] ^ bytes[11], bytes[12] ^ bytes[13] ^ bytes[14] ^ bytes[15]));
 }
 
 // OFFSET: 0x00402640
