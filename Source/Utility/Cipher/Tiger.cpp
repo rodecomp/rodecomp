@@ -320,6 +320,9 @@ void TigerCompress(const std::uint64_t* block, std::uint64_t* state) {
   std::uint64_t a = state[0];
   std::uint64_t b = state[1];
   std::uint64_t c = state[2];
+  const std::uint64_t aa = a;
+  const std::uint64_t bb = b;
+  const std::uint64_t cc = c;
 
   std::uint64_t x0 = block[0];
   std::uint64_t x1 = block[1];
@@ -365,9 +368,6 @@ void TigerCompress(const std::uint64_t* block, std::uint64_t* state) {
     b = temp;
   }
 
-  const std::uint64_t aa = state[0];
-  const std::uint64_t bb = state[1];
-  const std::uint64_t cc = state[2];
   state[0] = a ^ aa;
   state[1] = b - bb;
   state[2] = c + cc;
