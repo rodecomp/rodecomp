@@ -418,16 +418,16 @@ bool CRendererDX7::Draw() {
 
   // STRING: st_16857
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dlib\\Renderer.cpp";
+  g_renderDiagnosticFile = source;
   g_renderDiagnosticLine = 325;
-  g_renderDiagnosticFile = source;
   this->FlushRenderList();
+  g_renderDiagnosticFile = source;
   g_renderDiagnosticLine = 327;
-  g_renderDiagnosticFile = source;
   this->ClearFrame();
+  g_renderDiagnosticFile = source;
   g_renderDiagnosticLine = 328;
-  g_renderDiagnosticFile = source;
   this->device->EndScene();
-  g_renderDiagnosticLine = 330;
   g_renderDiagnosticFile = source;
+  g_renderDiagnosticLine = 330;
   return true;
 }
