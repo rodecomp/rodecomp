@@ -4647,11 +4647,11 @@ void UIFrameWnd::SplitHighlightText(
     std::string::size_type pos = full.find(word);
     if (pos != std::string::npos) {
       if (pos != 0) {
-        segments.push_back({color, full.substr(0, pos)});
+        segments.emplace_back(color, full.substr(0, pos));
       }
-      segments.push_back({highlightColor, full.substr(pos, word.size())});
+      segments.emplace_back(highlightColor, full.substr(pos, word.size()));
       if (word.size() + pos < full.size()) {
-        segments.push_back({color, full.substr(word.size() + pos)});
+        segments.emplace_back(color, full.substr(word.size() + pos));
       }
     }
   }
