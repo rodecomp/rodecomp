@@ -137,29 +137,29 @@ __declspec(noinline) void CWeatherEffect::Play(char kind) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
 
-  if (kind == 0) {
+  if (kind == WEATHER_EFFECT_CLOUD) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD, ZeroVector3d(), 0.0f);
-  } else if (kind == 1) {
+  } else if (kind == WEATHER_EFFECT_CLOUD2) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD2, ZeroVector3d(), 0.0f);
-  } else if (kind == 2) {
+  } else if (kind == WEATHER_EFFECT_CLOUD3) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD3, ZeroVector3d(), 0.0f);
-  } else if (kind == 3) {
+  } else if (kind == WEATHER_EFFECT_CLOUD4) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD4, ZeroVector3d(), 0.0f);
-  } else if (kind == 4) {
+  } else if (kind == WEATHER_EFFECT_CLOUD5) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD5, ZeroVector3d(), 0.0f);
-  } else if (kind == 5) {
+  } else if (kind == WEATHER_EFFECT_CLOUD6) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD6, ZeroVector3d(), 0.0f);
-  } else if (kind == 7) {
+  } else if (kind == WEATHER_EFFECT_CLOUD7) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD7, ZeroVector3d(), 0.0f);
-  } else if (kind == 8) {
+  } else if (kind == WEATHER_EFFECT_CLOUD8) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD8, ZeroVector3d(), 0.0f);
-  } else if (kind == 9) {
+  } else if (kind == WEATHER_EFFECT_STARS) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD9, ZeroVector3d(), 0.0f);
-  } else if (kind == 10) {
+  } else if (kind == WEATHER_EFFECT_CLOUD10) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD10, ZeroVector3d(), 0.0f);
-  } else if (kind == 11) {
+  } else if (kind == WEATHER_EFFECT_CN_METEOR) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SU_CN_METEOR, ZeroVector3d(), 0.0f);
-  } else if (kind == 15) {
+  } else if (kind == WEATHER_EFFECT_HAMMER_OF_GOD) {
     this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_RL_HAMMER_OF_GOD, ZeroVector3d(), 0.0f);
   }
 }
@@ -460,7 +460,7 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
     unsigned char drawStar = 0;
     this->m_script->Call("IsDrawStar", "s>b", sky.c_str(), &drawStar);
     if (drawStar == 1) {
-      g_weatherEffect.Play(9);
+      g_weatherEffect.Play(WEATHER_EFFECT_STARS);
     }
   }
 

@@ -1342,7 +1342,8 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       break;
     }
     int damage = static_cast<int>(b);
-    if (this->render.accountId == g_session.m_aid && (g_session.HasActiveSkillEffect(0x22) != 0 || g_session.HasActiveSkillEffect(0x15B) != 0)) {
+    if (this->render.accountId == g_session.m_aid &&
+        (g_session.HasActiveSkillEffect(EFST_ILLUSION) != 0 || g_session.HasActiveSkillEffect(EFST_PYREXIA) != 0)) {
       damage = std::rand() % 22001 + 10000;
     }
     this->SpawnDamageDigits(reinterpret_cast<int>(sender), damage, static_cast<std::uint32_t>(c), static_cast<int>(d));
@@ -1797,8 +1798,8 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (damage == 0) {
         if (attacker != nullptr) {
           if ((job >= JT_WARPNPC && job < JT_MON_BEGIN) || g_session.IsMonsterClass(job)) {
-            if ((this->render.accountId == g_session.m_aid && g_session.HasActiveSkillEffect(19)) ||
-                (this->render.accountId == g_session.m_aid && g_session.HasActiveSkillEffect(104))) {
+            if ((this->render.accountId == g_session.m_aid && g_session.HasActiveSkillEffect(EFST_KYRIE)) ||
+                (this->render.accountId == g_session.m_aid && g_session.HasActiveSkillEffect(EFST_PARRYING))) {
               this->SendMsg(nullptr, AM_MAKE_GUARD, 0, 0, 0, 0, 0, 0);
             } else {
               attacker->SendMsg(nullptr, AM_MAKE_MISS, static_cast<std::uint32_t>(-1), 0, 0, 0, 0, 0);

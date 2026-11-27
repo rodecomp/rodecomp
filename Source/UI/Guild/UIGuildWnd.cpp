@@ -12,6 +12,7 @@
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -1333,7 +1334,7 @@ void UIGuildSkillWnd::Paint() {
     this->DrawBitmap(x + 44, y + 45, bitmap, true);
     unsigned gray;
     if (skill->level != 0) {
-      std::sprintf(text, g_serviceType == 12 ? "Nv : %d" : "Lv : %d", skill->level);
+      std::sprintf(text, g_serviceType == ServiceBrazil ? "Nv : %d" : "Lv : %d", skill->level);
       this->DrawTextAt(x + 113, y + 58, text, 0, 0, 12, 0, 0, 0);
       if (skill->type == SKILLTYPE_PASSIVE) {
         std::sprintf(text, LookupMessage(MSI_PASSIVE));
@@ -1551,7 +1552,7 @@ void UIGuildInfoManageWnd::Paint() {
   std::sprintf(text, "%s", "유저인터페이스\\basic_interface\\grp_online.bmp");
   CBitmapRes* online = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   int x;
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     this->DrawBitmap(128, 95, online, true);
     std::sprintf(text, "   %d", guild.onlineMemberCount);
     x = 138;

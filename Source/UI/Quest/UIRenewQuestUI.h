@@ -15,6 +15,14 @@ class CUICheckBox;
 class CUIEditBoxEx;
 class CUIStaticText;
 
+enum RenewQuestListType : int {
+  RENEW_QUEST_LIST_PROGRESS = 1,
+  RENEW_QUEST_LIST_RECOMMENDED = 2,
+  RENEW_QUEST_LIST_HOLD = 4,
+  RENEW_QUEST_LIST_WAIT = 8,
+  RENEW_QUEST_LIST_ALL = RENEW_QUEST_LIST_PROGRESS | RENEW_QUEST_LIST_RECOMMENDED | RENEW_QUEST_LIST_HOLD | RENEW_QUEST_LIST_WAIT,
+};
+
 namespace RenewQuestUI {
 class CUIQuestItem : public CUIListItem {
 public:

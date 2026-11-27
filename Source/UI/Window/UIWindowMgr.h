@@ -218,6 +218,18 @@ struct WindowPolicyEntry {
 
 class UIRoulletteWnd;
 
+enum WindowVisibilityState : int {
+  WINDOW_VISIBILITY_UNINITIALIZED = 0,
+  WINDOW_VISIBILITY_SHOWN = 1,
+  WINDOW_VISIBILITY_HIDDEN = 2,
+};
+
+enum MouseInputResult : int {
+  MOUSE_INPUT_UNHANDLED = 0,
+  MOUSE_INPUT_HANDLED = 1,
+  MOUSE_INPUT_PASS_THROUGH = 2,
+};
+
 class UIWindowMgr {
 public:
   int SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e);

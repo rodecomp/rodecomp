@@ -1,3 +1,4 @@
+#include "UI/Text/ColoredText.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/ActorNameCard.h"
@@ -105,31 +106,31 @@ void UIBalloonText::FitText() {
 
   for (unsigned int index = 0; index < this->m_lines.size(); ++index) {
     const std::int16_t mode = this->m_fontMode;
-    if (mode == 3) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0));
-      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 22, this->m_fontHeight, 0, 0) + 4));
-    } else if (mode == 2) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 20, this->m_fontHeight, 0, 0));
-    } else if (mode == 1) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 21, this->m_fontHeight, 0, 0));
-    } else if (mode == 4) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 23, this->m_fontHeight, 0, 0));
-    } else if (mode == 5) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 24, this->m_fontHeight, 0, 0));
-    } else if (mode == 6) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 25, this->m_fontHeight, 0, 0));
-    } else if (mode == 7) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 26, this->m_fontHeight, 0, 0));
-    } else if (mode == 8) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 27, this->m_fontHeight, 0, 0));
-    } else if (mode == 9) {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 28, this->m_fontHeight, 0, 0));
+    if (mode == TEXT_FONT_STYLE_RIX_NHCGOGO) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_NHCGOGO, this->m_fontHeight, 0, 0));
+      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_NHCGOGO, this->m_fontHeight, 0, 0) + 4));
+    } else if (mode == TEXT_FONT_STYLE_RIX_SQUIRREL) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_SQUIRREL, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_LOVEANGEL) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_LOVEANGEL, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_DIARY) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_DIARY, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_MINI_HEART) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_MINI_HEART, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_FRESHMAN) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_FRESHMAN, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_KID) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_KID, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_MAGIC) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_MAGIC, this->m_fontHeight, 0, 0));
+    } else if (mode == TEXT_FONT_STYLE_RIX_JJANGU) {
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_RIX_JJANGU, this->m_fontHeight, 0, 0));
     } else {
-      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0));
+      width = std::max(width, this->TextWidth(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_DEFAULT, this->m_fontHeight, 0, 0));
     }
 
-    if (3 != this->m_fontMode) {
-      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4));
+    if (TEXT_FONT_STYLE_RIX_NHCGOGO != this->m_fontMode) {
+      height = (height + (this->TextHeight(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_DEFAULT, this->m_fontHeight, 0, 0) + 4));
     }
   }
 
@@ -146,9 +147,9 @@ void UIBalloonText::Paint() {
   unsigned int index = 0;
 
   while (index < this->m_lines.size()) {
-    this->DrawTextAt(6, y, this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, this->m_textColor, 0, 0);
+    this->DrawTextAt(6, y, this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_DEFAULT, this->m_fontHeight, this->m_textColor, 0, 0);
 
-    const int height = this->TextHeight(this->m_lines[index].c_str(), 0, 0, this->m_fontHeight, 0, 0);
+    const int height = this->TextHeight(this->m_lines[index].c_str(), 0, TEXT_FONT_FAMILY_DEFAULT, this->m_fontHeight, 0, 0);
     y += height + 4;
     ++index;
   }
@@ -196,11 +197,11 @@ void UINameBalloonText::Paint() {
         }
       }
     }
-  } else if (this->monsterType != 0) {
+  } else if (this->monsterType != MONSTER_BALLOON_NO_ICON) {
     const char* name;
-    if (this->monsterType == 1) {
+    if (this->monsterType == MONSTER_BALLOON_BOSS) {
       name = "유저인터페이스\\montype_boss.bmp";
-    } else if (this->monsterType == 2) {
+    } else if (this->monsterType == MONSTER_BALLOON_MVP) {
       name = "유저인터페이스\\montype_mvp.bmp";
     } else {
       goto lines;
@@ -322,7 +323,7 @@ void UIVerticalNameBalloonText::SetIcon(const char* name) {
 
 // OFFSET: 0x0084FED0
 // FUNCTION: fn_10668
-UINameBalloonText::UINameBalloonText() : UIBalloonText(), monsterType(0), framed(0) {
+UINameBalloonText::UINameBalloonText() : UIBalloonText(), monsterType(MONSTER_BALLOON_NO_ICON), framed(0) {
   this->m_textColor = 0xFFFFFF;
   this->m_outlineColor = 0;
   this->nameWidth = 0;
@@ -438,13 +439,13 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
   this->nameWidth = width;
   this->monsterType = monsterType;
-  if (monsterType == 0 || info.groupIconId != 0) {
+  if (monsterType == MONSTER_BALLOON_NO_ICON || info.groupIconId != 0) {
     this->Resize(width, static_cast<int>(this->m_lines.size()) * (g_nameBalloonFontHeight + 2) + 6);
   } else {
     const char* path = nullptr;
-    if (monsterType == 1) {
+    if (monsterType == MONSTER_BALLOON_BOSS) {
       path = "유저인터페이스\\montype_boss.bmp";
-    } else if (monsterType == 2) {
+    } else if (monsterType == MONSTER_BALLOON_MVP) {
       path = "유저인터페이스\\montype_mvp.bmp";
     }
 

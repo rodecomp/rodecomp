@@ -12,11 +12,13 @@
 #include "Contents/Effects/Core/MsgEffect.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
+#include "Client/Mode/GameModeEnums.h"
 #include "Client/Session/Session.h"
 #include "Client/Replay/Replay.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Actors/ActorStateFlags.h"
 #include "Contents/Actors/CharacterRender.h"
+#include "Contents/Sprites/SpriteLayerOrder.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/MousePointer.h"
@@ -235,7 +237,7 @@ void CRenderObject::ProcessMotion() {
       this->render.isMotionFinished = true;
     }
     if (this->render.sequenceFinished == 0) {
-      if (this->render.sequenceMode == 3) {
+      if (this->render.sequenceMode == ACTOR_SEQUENCE_REVERSE) {
         this->render.sequenceFrame =
           static_cast<unsigned char>(~static_cast<int>(frame * -2.0f / this->render.speed) - this->render.sequenceLast);
       } else {
@@ -243,13 +245,13 @@ void CRenderObject::ProcessMotion() {
       }
     }
     if (this->render.sequenceFrame > this->render.sequenceLast) {
-      if (this->render.sequenceMode == 2) {
+      if (this->render.sequenceMode == ACTOR_SEQUENCE_PLAY_THEN_REVERSE) {
         ++this->render.sequenceTick;
-        this->render.sequenceMode = 3;
+        this->render.sequenceMode = ACTOR_SEQUENCE_REVERSE;
         this->render.sequenceFrame = 0;
         return;
       }
-      this->render.sequenceMode = 0;
+      this->render.sequenceMode = ACTOR_SEQUENCE_NONE;
       this->render.sequenceFrame = this->render.sequenceLast;
       this->render.sequenceFinished = 1;
     }
@@ -769,11 +771,15 @@ void CRenderObject::ScaleByPulse(float& scale) const {
   }
 }
 
+enum SequenceSpriteOverrideType : int {
+  SEQUENCE_SPRITE_OVERRIDE_HEADGEAR_CYCLE = 15,
+};
+
 // OFFSET: 0x00CC1A00
 // FUNCTION: fn_46352
 CSprRes* CRenderObject::GetSequenceSpriteOverride(int type, int layer) {
-  if (layer == 0) {
-    if (this->render.sequenceMode == 1) {
+  if (layer == SPRITE_LAYER_BODY) {
+    if (this->render.sequenceMode == ACTOR_SEQUENCE_CYCLE_BODY_SPRITES) {
       if (++this->render.sequenceReset > 20) {
         ++this->render.sequenceSpriteIndex;
         this->render.sequenceReset = 0;
@@ -787,11 +793,11 @@ CSprRes* CRenderObject::GetSequenceSpriteOverride(int type, int layer) {
       if (this->render.sequenceSpriteIndex == 2) {
         return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\인간족\\몸통\\남\\로그_남.spr"));
       }
-    } else if (this->render.sequenceMode == 3) {
+    } else if (this->render.sequenceMode == ACTOR_SEQUENCE_REVERSE) {
       return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\인간족\\몸통\\남\\몽크_남.spr"));
     }
   }
-  if (type == 15 && layer == 3) {
+  if (type == SEQUENCE_SPRITE_OVERRIDE_HEADGEAR_CYCLE && layer == SPRITE_LAYER_HEAD_TOP) {
     if (this->render.runStartTick < 20) {
       return static_cast<CSprRes*>(ResourceMgr::Instance().Load("sprite\\악세사리\\남\\남_천사의머리띠.spr"));
     }
@@ -3207,7 +3213,7 @@ bool CGameActor::ApplyEffectState(int effectId, bool on) {
     return false;
   }
 
-  int type = 0;
+  int type = HAT_EFFECT_TYPE_EFFECT_STATE;
   g_session.m_hotkeyScript->Call("GetEffectType", "d>d", effectId - EF_HAT_EFFECT_BASE, &type);
   switch (type) {
   case HAT_EFFECT_TYPE_EFFECT_STATE:
@@ -3569,11 +3575,11 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->motionProgress = 0.0f;
   if (job == JT_ZOMBIE_DRAGON || job == JT_HUGELING) {
     C3dGrannyModelRes* model = this->model;
-    this->actorType = 1;
+    this->actorType = GRANNY_ACTOR_LARGE_MONSTER;
     model->baseHeight = 30.0f;
     model->topHeight = 30.0f;
   } else {
-    this->actorType = job == JT_GUILD_FLAG ? 2 : 0;
+    this->actorType = job == JT_GUILD_FLAG ? GRANNY_ACTOR_GUILD_FLAG : GRANNY_ACTOR_DEFAULT;
   }
 }
 
@@ -4111,7 +4117,7 @@ void C3dGrannyGameActor::Render(int argument) {
     return;
   }
 
-  if (this->actorType == 2) {
+  if (this->actorType == GRANNY_ACTOR_GUILD_FLAG) {
     this->RenderShadowed(argument);
   } else {
     this->RenderLit(argument, light);
@@ -4376,23 +4382,23 @@ void CGameActor::SetCharm(int type, int count) {
   this->charmCount = count;
   if (g_effectMgr->HasAllocator(EF_CHOOKGI)) {
     CEffect* effect;
-    if (type == 1) {
+    if (type == ACTOR_CHARM_WATER) {
       effect = g_effectMgr->Spawn(
         this->render.accountId, EF_CHOOKGI_WATER, this->render.position, 0, -1, 0, 0
       );
-    } else if (type == 2) {
+    } else if (type == ACTOR_CHARM_EARTH) {
       effect = g_effectMgr->Spawn(
         this->render.accountId, EF_CHOOKGI_GROUND, this->render.position, 0, -1, 0, 0
       );
-    } else if (type == 3) {
+    } else if (type == ACTOR_CHARM_FIRE) {
       effect = g_effectMgr->Spawn(
         this->render.accountId, EF_CHOOKGI_FIRE, this->render.position, 0, -1, 0, 0
       );
-    } else if (type == 4) {
+    } else if (type == ACTOR_CHARM_WIND) {
       effect = g_effectMgr->Spawn(
         this->render.accountId, EF_CHOOKGI_WIND, this->render.position, 0, -1, 0, 0
       );
-    } else if (type == 5) {
+    } else if (type == ACTOR_CHARM_SPIRIT_SPHERE) {
       effect = g_effectMgr->Spawn(
         this->render.accountId, EF_CHOOKGI, this->render.position, 0, -1, 0, 0
       );
@@ -4405,13 +4411,13 @@ void CGameActor::SetCharm(int type, int count) {
     }
   } else {
     CRagEffect* effect;
-    if (type == 1) {
+    if (type == ACTOR_CHARM_WATER) {
       effect = this->LaunchEffect(EF_CHOOKGI_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    } else if (type == 2) {
+    } else if (type == ACTOR_CHARM_EARTH) {
       effect = this->LaunchEffect(EF_CHOOKGI_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    } else if (type == 3) {
+    } else if (type == ACTOR_CHARM_FIRE) {
       effect = this->LaunchEffect(EF_CHOOKGI_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    } else if (type == 4) {
+    } else if (type == ACTOR_CHARM_WIND) {
       effect = this->LaunchEffect(EF_CHOOKGI_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
       effect = this->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4814,7 +4820,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
   } while (remaining != 0);
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  if (type == 22 && this->msgEffectList.size() > 0) {
+  if (type == MET_NUMBER_TOTAL && this->msgEffectList.size() > 0) {
     for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end();) {
       CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
       if (effect->m_type == 22) {
@@ -4844,7 +4850,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->render.useGroundLighting = 0;
-    if (type == 22) {
+    if (type == MET_NUMBER_TOTAL) {
       effect->render.scale = 0.5f;
     }
     mode->AddSceneObject(effect);
@@ -5694,7 +5700,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     effect = 0;
     break;
   case NPC_CRITICALSLASH:
-    type = 10;
+    type = DMG_CRITICAL;
     break;
   case NPC_DARKNESSATTACK:
   case SP_CURSEEXPLOSION:

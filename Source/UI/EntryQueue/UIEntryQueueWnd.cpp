@@ -10,6 +10,7 @@
 #include "Contents/Guild/GuildInfo.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/EntryQueue/EntryQueueMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Render/Renderer.h"
 #include "Render/Text/FontCache.h"
@@ -496,7 +497,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case ENTRYQUEUE_BUTTON_INDIVIDUAL:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
-      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
+      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(EFST_ENTRY_QUEUE_APPLY_DELAY)) {
         error = MSI_BATTLEFIELD_MSG_WAIT_1MM;
       } else {
         if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_DOYOU_SINGLE))) {
@@ -512,7 +513,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case ENTRYQUEUE_BUTTON_PARTY:
       if (g_session.GetMapProperty13() == 1) {
         error = MSI_BATTLEFIELD_MSG_NOT_JOINMAP;
-      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
+      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(EFST_ENTRY_QUEUE_APPLY_DELAY)) {
         error = MSI_BATTLEFIELD_MSG_WAIT_1MM;
       } else if (g_session.PartyCount() == 0) {
         error = MSI_BATTLEFIELD_MSG_PLZ_PALTYJOIN;
@@ -534,7 +535,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case ENTRYQUEUE_BUTTON_GUILD: {
       GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() != 1) {
-        if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
+        if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(EFST_ENTRY_QUEUE_APPLY_DELAY)) {
           error = MSI_BATTLEFIELD_MSG_WAIT_1MM;
         } else if (guild->m_guildId < 1) {
           error = MSI_BATTLEFIELD_MSG_PLZ_GUILDJOIN;

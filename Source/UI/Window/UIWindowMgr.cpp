@@ -890,7 +890,7 @@ UIWindowMgr::UIWindowMgr()
   this->compactCompositionLayout = g_language == LANGUAGE_JAPANESE;
   this->skillDescriptionVisible = 0;
   this->loginGridX = 0;
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     this->loginGridY = -25;
   } else {
     this->loginGridY = 0;
@@ -2364,7 +2364,7 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->loginDragRegion = 1;
       }
 
-      if (g_serviceType != 0 && static_cast<signed char>(g_startupSecondPhase) > 0 &&
+      if (g_serviceType != ServiceKorea && static_cast<signed char>(g_startupSecondPhase) > 0 &&
           static_cast<float>(g_mouse.x) > static_cast<float>(quarter) * 2.2f + this->loginSidePanelOffset.x &&
           static_cast<float>(g_mouse.x) < static_cast<float>(quarter) * 3.5f + this->loginSidePanelOffset.x &&
           g_mouse.y > this->loginSidePanelOffset.y && g_mouse.y < this->loginSidePanelOffset.y + third * 3) {
@@ -2396,7 +2396,7 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->loginBottomPanelOffset.x += static_cast<short>(g_mouse.deltaY);
       }
     } else if (this->loginDragRegion == 5) {
-      if (g_serviceType != 0 || this->loginSidePanelOffset.x + g_mouse.deltaX >= 0) {
+      if (g_serviceType != ServiceKorea || this->loginSidePanelOffset.x + g_mouse.deltaX >= 0) {
         this->loginSidePanelOffset.x += static_cast<short>(g_mouse.deltaX);
       }
     }

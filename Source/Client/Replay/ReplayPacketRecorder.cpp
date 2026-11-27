@@ -199,9 +199,9 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
 void Replay::RecordCachedPackets() {
   Replay::Instance().RecordPacket(this->cachedPackets[2459].bytes, 41, 0);
   Replay::Instance().RecordPacket(this->cachedPackets[470].bytes, 41, 0);
-  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x10F), 41, 0);
-  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x235), 41, 0);
-  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(0x29D), 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(ID_ZC_SKILLINFO_LIST), 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(ID_ZC_HOSKILLINFO_LIST), 41, 0);
+  Replay::Instance().RecordPacket(g_session.BuildSkillListReplayPacket(ID_ZC_MER_SKILLINFO_LIST), 41, 0);
   if (g_session.replayPacketMode != 0) {
     Replay::Instance().RecordPacket(g_session.BuildStatusReplayPacket(), 41, 0);
   }

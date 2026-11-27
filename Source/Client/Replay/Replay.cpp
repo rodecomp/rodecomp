@@ -1106,11 +1106,11 @@ std::vector<unsigned char> CSession::BuildShortcutReplayRecords() {
 std::vector<unsigned char> CSession::BuildSkillListReplayPacket(short id) {
   switch (id) {
   case ID_ZC_SKILLINFO_LIST:
-    return BuildSkillInfoListPacket(0x10F, this->m_skillBundle.skills);
+    return BuildSkillInfoListPacket(ID_ZC_SKILLINFO_LIST, this->m_skillBundle.skills);
   case ID_ZC_HOSKILLINFO_LIST:
-    return BuildSkillInfoListPacket(0x235, this->m_homunSkills);
+    return BuildSkillInfoListPacket(ID_ZC_HOSKILLINFO_LIST, this->m_homunSkills);
   case ID_ZC_MER_SKILLINFO_LIST:
-    return BuildSkillInfoListPacket(0x29D, this->m_mercSkills);
+    return BuildSkillInfoListPacket(ID_ZC_MER_SKILLINFO_LIST, this->m_mercSkills);
   default:
     return {};
   }

@@ -825,7 +825,7 @@ void CEffectPrim::PrimBottom2() {
     if (this->state.slots[ec].life == 1) {
       ++this->state.slots[ec].process;
 
-      if (this->state.slots[ec].height[0] == 1.0f) {
+      if (this->state.slots[ec].height[0] == static_cast<float>(COLOR_PLANE_PALE_RED_ALPHA_BLEND)) {
         this->state.slots[ec].fullDisplayAngle += 4;
 
         if (this->state.slots[ec].fullDisplayAngle >= 360) {
@@ -1265,7 +1265,7 @@ void CEffectPrim::PrimIntimidate() {
     }
 
     if (this->state.slots[index].process <= 10 && this->state.slots[index].process > 0) {
-      if (this->state.slots[index].flag1[0] == 0) {
+      if (this->state.slots[index].flag1[0] == ORBIT_SQUARE_LIGHT_BLUE) {
         this->state.slots[index].alphaB += 15;
       } else {
         this->state.slots[index].alphaB += 25;
@@ -1278,7 +1278,7 @@ void CEffectPrim::PrimIntimidate() {
       }
     }
 
-    if (this->state.slots[index].flag1[0] == 2) {
+    if (this->state.slots[index].flag1[0] == ORBIT_SQUARE_FACING_PALE_RED) {
       this->state.slots[index].rotStart += 3;
     }
 
@@ -1286,7 +1286,7 @@ void CEffectPrim::PrimIntimidate() {
       this->state.slots[index].rotStart -= 360;
     }
 
-    if (this->state.slots[index].flag1[0] == 2) {
+    if (this->state.slots[index].flag1[0] == ORBIT_SQUARE_FACING_PALE_RED) {
       this->state.slots[index].height[2] += 3.0f;
     } else {
       this->state.slots[index].height[2] += 5.0f;
@@ -3219,7 +3219,7 @@ bool CEffectPrim::PrimAcidDemon() {
 bool CEffectPrim::PrimAsuraCasting() {
   FaceCamera(this->state.slots);
 
-  if (this->state.slots[0].flag1[4] == 1) {
+  if (this->state.slots[0].flag1[4] == HALO_LAYER_FOLLOW_MASTER) {
     FollowMaster(*this);
   }
 
@@ -3232,7 +3232,7 @@ bool CEffectPrim::PrimAsuraCasting() {
       continue;
     }
 
-    if (this->state.slots[index].flag1[4] == 2) {
+    if (this->state.slots[index].flag1[4] == HALO_LAYER_TIGHT_RAISED) {
       if (this->state.slots[index].process < 20) {
         this->state.slots[index].height[1] += 13.0f;
 
@@ -3380,12 +3380,12 @@ bool CEffectPrim::PrimAsuraCasting() {
         }
       }
 
-      if (this->state.slots[index].process > (this->state.slots[index].flag1[4] != 4 ? 140 : 25)) {
+      if (this->state.slots[index].process > (this->state.slots[index].flag1[4] != HALO_LAYER_TIGHT_RAISED_QUICK_FADE ? 140 : 25)) {
         ShrinkLast(this->state.slots[index], 10, 1.01f);
       }
     }
 
-    if (this->state.slots[index].process < 50 && this->state.slots[index].flag1[4] != 4) {
+    if (this->state.slots[index].process < 50 && this->state.slots[index].flag1[4] != HALO_LAYER_TIGHT_RAISED_QUICK_FADE) {
       this->state.slots[index].distance -= 0.1f;
     }
   }
@@ -4506,7 +4506,7 @@ bool CEffectPrim::PrimDriftingSquares() {
     if (this->state.slots[ec].flag1[11] < 120) {
       ++this->state.slots[ec].flag1[11];
     }
-    if (this->state.slots[ec].flag1[0] == 1) {
+    if (this->state.slots[ec].flag1[0] == DRIFTING_SQUARE_SINGLE_VERTICAL) {
       speed = 0.03f;
     } else {
       if (this->state.slots[ec].flag1[12] < 120) {
@@ -4523,7 +4523,7 @@ bool CEffectPrim::PrimDriftingSquares() {
     DriftSlotAngles(this->state.slots[ec], 8, 3.0f, 2.0f);
 
     const char mode = this->state.slots[ec].flag1[0];
-    if (mode == 1) {
+    if (mode == DRIFTING_SQUARE_SINGLE_VERTICAL) {
       this->state.slots[ec].vecBPre.y += g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * speed;
     } else {
       this->state.slots[ec].vecBPre.x += g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * speed;
@@ -4540,10 +4540,10 @@ bool CEffectPrim::PrimDriftingSquares() {
         reach = -reach;
       }
     }
-    if ((mode == 1 && this->state.slots[ec].process > 3000) || reach >= 30) {
+    if ((mode == DRIFTING_SQUARE_SINGLE_VERTICAL && this->state.slots[ec].process > 3000) || reach >= 30) {
       this->state.slots[ec].flag1[11] -= 2;
       if (this->state.slots[ec].flag1[11] <= 1) {
-        if (mode == 1) {
+        if (mode == DRIFTING_SQUARE_SINGLE_VERTICAL) {
           this->state.slots[ec].process = 0;
           this->state.slots[ec].vecBPre.y = 0.0f;
           this->state.slots[ec].vecBPre.x = 0.0f;
@@ -4554,7 +4554,7 @@ bool CEffectPrim::PrimDriftingSquares() {
         }
       }
     } else {
-      const int roll = mode == 1 ? std::rand() % 20 : std::rand() % 125;
+      const int roll = mode == DRIFTING_SQUARE_SINGLE_VERTICAL ? std::rand() % 20 : std::rand() % 125;
       if (roll == 0 && this->state.slots[ec].flag1[11] > 100 && this->state.slots[ec].flag1[7] == 0) {
         this->state.slots[ec].flag1[7] = 1;
       }
@@ -4576,7 +4576,7 @@ bool CEffectPrim::PrimDriftingSquares() {
       }
     }
 
-    if (this->state.slots[ec].flag1[0] == 1) {
+    if (this->state.slots[ec].flag1[0] == DRIFTING_SQUARE_SINGLE_VERTICAL) {
       return true;
     }
 
@@ -5273,7 +5273,7 @@ void CEffectPrim::PrimGrowFollow() {
     }
 
     if (slot.process <= 10) {
-      if (this->state.size == 113.0f) {
+      if (this->state.size == static_cast<float>(SIZED_SQUARE_FOREGROUND_BLUE)) {
         slot.alphaB += 6;
       } else {
         slot.alphaB += 2;
@@ -5400,7 +5400,7 @@ void CEffectPrim::PrimPulseRing() {
       slot.height[2] *= g_sinTable[process];
     }
 
-    if (4.0f == mode) {
+    if (static_cast<float>(PULSE_RING_OSCILLATING_BLUE_CHANNEL) == mode) {
       if (0.0f == slot.height[6]) {
         slot.height[5] += 1.0f;
         if (slot.height[5] > 200.0f) {
@@ -5460,10 +5460,10 @@ __declspec(noinline) void CEffectPrim::PrimGlowFollow() {
 
   const char kind = stateRef.slots[0].flag1[4];
   if (++stateRef.slots[0].process < 30) {
-    if (kind == 31) {
+    if (kind == GLOW_FOLLOW_BRIGHT_PALE_GREEN) {
       stateRef.slots[0].alphaB += 8;
     }
-    if (kind != 31) {
+    if (kind != GLOW_FOLLOW_BRIGHT_PALE_GREEN) {
       stateRef.slots[0].alphaB += 3;
       if (stateRef.slots[0].alphaB >= 60) {
         stateRef.slots[0].alphaB = 60;
@@ -5890,7 +5890,7 @@ bool CEffectPrim::PrimSpiralFade() {
     const char mode = slot.flag1[0];
     if (process <= 10) {
       slot.height[13] += 20.0f;
-    } else if (mode >= 1) {
+    } else if (mode >= SPIRAL_FADE_REVERSED_EARLY_FADE) {
       if (process > 90) {
         slot.height[13] -= 5.0f;
         if (slot.height[13] < 0.0f) {
@@ -5907,7 +5907,7 @@ bool CEffectPrim::PrimSpiralFade() {
     slot.vecTNow.x += 0.05f;
     const int radius = static_cast<int>(slot.vecTNow.x);
     int phase = process % 60;
-    if (mode == 1) {
+    if (mode == SPIRAL_FADE_REVERSED_EARLY_FADE) {
       phase = 60 - phase;
     }
     slot.vecBPre.x = static_cast<float>(radius) * g_sinTable[6 * phase];
@@ -6032,7 +6032,7 @@ bool CEffectPrim::PrimFieldFireflies() {
     }
 
     const float mode = slot.height[7];
-    if (mode < 99.0f) {
+    if (mode < static_cast<float>(FIELD_FIREFLY_MAP_CLOUD)) {
       ++slot.process;
       if (slot.flag1[2] == FIELD_PANEL_ANIMATED_WHITE && slot.process % 14 == 0) {
         ++slot.flag1[0];
@@ -6041,7 +6041,7 @@ bool CEffectPrim::PrimFieldFireflies() {
         }
       }
 
-      if (mode == 0.0f) {
+      if (mode == static_cast<float>(FIELD_FIREFLY_ALTITUDE_GATED_CLOUD)) {
         if (slot.process < 80 && this->render.position.y < slot.height[6]) {
           slot.alphaB += 2;
         }
@@ -6053,11 +6053,12 @@ bool CEffectPrim::PrimFieldFireflies() {
         if (slot.process < 170) {
           ++slot.alphaB;
         }
-      } else if (mode == 5.0f) {
+      } else if (mode == static_cast<float>(FIELD_FIREFLY_LOW_SLOW_DARK_RED_CLOUD)) {
         if (slot.process < 80) {
           slot.alphaB += 2;
         }
-      } else if (mode == 11.0f || mode == 12.0f || mode == 13.0f || mode == 14.0f) {
+      } else if (mode == static_cast<float>(FIELD_FIREFLY_DARK_RED_CLOUD) || mode == static_cast<float>(FIELD_FIREFLY_BLACK_CLOUD) ||
+                 mode == static_cast<float>(FIELD_FIREFLY_PALE_RED_CLOUD) || mode == static_cast<float>(FIELD_FIREFLY_INDIGO_CLOUD)) {
         if (slot.process < 70) {
           ++slot.alphaB;
         }
@@ -6070,16 +6071,16 @@ bool CEffectPrim::PrimFieldFireflies() {
         slot.alphaB = 0;
 
         const float respawn = slot.height[7];
-        if (respawn == 0.0f) {
+        if (respawn == static_cast<float>(FIELD_FIREFLY_ALTITUDE_GATED_CLOUD)) {
           if (this->render.position.y > slot.height[6]) {
             slot.process = 300;
           }
           slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
-        } else if (respawn == 2.0f || respawn == 5.0f) {
+        } else if (respawn == static_cast<float>(FIELD_FIREFLY_GROUND_LEVEL_CLOUD) || respawn == static_cast<float>(FIELD_FIREFLY_LOW_SLOW_DARK_RED_CLOUD)) {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
-        } else if (respawn == 3.0f) {
+        } else if (respawn == static_cast<float>(FIELD_FIREFLY_TERRAIN_FOG)) {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
           const C3dAttr* grid = g_modeMgr.GetGameMode()->scene->terrain;
@@ -6117,7 +6118,7 @@ bool CEffectPrim::PrimFieldFireflies() {
           slot.vecBNow.x -= g_sinTable[static_cast<int>(slot.height[0])] * 0.2f;
         }
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
-      } else if (motion == 5.0f) {
+      } else if (motion == static_cast<float>(FIELD_FIREFLY_LOW_SLOW_DARK_RED_CLOUD)) {
         slot.vecBNow.x += g_sinTable[static_cast<int>(slot.height[0])] * 0.035f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.035f;
       } else {
@@ -6384,7 +6385,7 @@ namespace {
 bool CEffectPrim::PrimRisingFan() {
   FaceCamera(this->state.slots);
 
-  if (this->state.slots[0].flag1[4] == 1) {
+  if (this->state.slots[0].flag1[4] == HALO_LAYER_FOLLOW_MASTER) {
     const CRagEffect* master = this->state.master;
     this->render.position = master->render.position;
   }
@@ -6411,7 +6412,8 @@ bool CEffectPrim::PrimRisingFan() {
         }
       }
 
-      if ((this->state.slots[index].flag1[4] == 6 || this->state.slots[index].flag1[4] == 7) && this->state.slots[index].process > 90) {
+      if ((this->state.slots[index].flag1[4] == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW ||
+           this->state.slots[index].flag1[4] == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW) && this->state.slots[index].process > 90) {
         this->state.slots[index].height[10] -= 5.0f;
 
         if (this->state.slots[index].height[10] > 0.0f) {
@@ -6437,7 +6439,7 @@ bool CEffectPrim::PrimRisingFan() {
 bool CEffectPrim::PrimRisingFan2() {
   FaceCamera(this->state.slots);
 
-  if (this->state.slots[0].flag1[4] == 1) {
+  if (this->state.slots[0].flag1[4] == RIPPLE_FOLLOW_MASTER) {
     const CRagEffect* master = this->state.master;
     this->render.position = master->render.position;
   }
@@ -6546,7 +6548,7 @@ bool CEffectPrim::PrimFloatingBubbles() {
 bool CEffectPrim::PrimPulsingColumns() {
   const CView* view = g_modeMgr.GetGameMode()->camera;
 
-  if (this->state.slots[0].flag1[0] == 33) {
+  if (this->state.slots[0].flag1[0] == PULSING_COLUMN_CAMERA_ALIGNED_WAVE) {
     this->state.slots[2].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
   }
 
@@ -6559,11 +6561,11 @@ bool CEffectPrim::PrimPulsingColumns() {
 
     ++this->state.slots[index].process;
 
-    if (this->state.slots[index].flag1[0] == 1) {
+    if (this->state.slots[index].flag1[0] == PULSING_COLUMN_FAST_SPIN) {
       this->state.slots[index].rotStart += index + 8;
-    } else if (this->state.slots[index].flag1[0] == 2) {
+    } else if (this->state.slots[index].flag1[0] == PULSING_COLUMN_SHORT_PULSE) {
       this->state.slots[index].rotStart += index < 2 ? index + 4 : index + 2;
-    } else if (this->state.slots[index].flag1[0] == 3) {
+    } else if (this->state.slots[index].flag1[0] == PULSING_COLUMN_SLOWER_SPIN) {
       this->state.slots[index].rotStart += index + 6;
     }
 
@@ -6573,9 +6575,9 @@ bool CEffectPrim::PrimPulsingColumns() {
 
     if (this->state.slots[index].process < this->state.slots[index].alphaT || this->state.slots[index].alphaT < 0) {
       if (this->state.slots[index].process < 16) {
-        if (this->state.slots[index].flag1[0] == 2) {
+        if (this->state.slots[index].flag1[0] == PULSING_COLUMN_SHORT_PULSE) {
           this->state.slots[index].alphaB += 3;
-        } else if (this->state.slots[index].flag1[0] == 3) {
+        } else if (this->state.slots[index].flag1[0] == PULSING_COLUMN_SLOWER_SPIN) {
           this->state.slots[index].alphaB += 2;
         } else {
           this->state.slots[index].alphaB += 5;
@@ -6596,7 +6598,7 @@ bool CEffectPrim::PrimPulsingColumns() {
     for (int column = 0; column < 21; ++column) {
       const char kind = this->state.slots[index].flag1[column];
 
-      if (kind == 0 || kind == 33) {
+      if (kind == PULSING_COLUMN_WAVE || kind == PULSING_COLUMN_CAMERA_ALIGNED_WAVE) {
         int phase;
 
         if (index == 0) {
@@ -6617,13 +6619,13 @@ bool CEffectPrim::PrimPulsingColumns() {
         if (this->state.slots[index].height[column] < 0.0f) {
           this->state.slots[index].height[column] = 0.0f;
         }
-      } else if (kind == 1 || kind == 3) {
+      } else if (kind == PULSING_COLUMN_FAST_SPIN || kind == PULSING_COLUMN_SLOWER_SPIN) {
         this->state.slots[index].height[column] = this->state.slots[index].maxHeight;
 
         if (this->state.slots[index].process <= 90) {
           this->state.slots[index].height[column] *= g_sinTable[this->state.slots[index].process];
         }
-      } else if (kind == 2) {
+      } else if (kind == PULSING_COLUMN_SHORT_PULSE) {
         this->state.slots[index].height[column] = this->state.slots[index].maxHeight;
 
         if (this->state.slots[index].process <= 45) {
@@ -6752,7 +6754,7 @@ namespace {
   __forceinline void FadeColumnHeight(const CEffectPrim& prim, EffectPrimitiveSlot& slot) {
     const float kind = slot.height[4];
 
-    if (kind >= 20.0f && slot.process > 200u &&
+    if (kind >= static_cast<float>(FADING_COLUMN_MOVE_SENSITIVE_BLUE) && slot.process > 200u &&
         (prim.render.position.x != prim.state.master->render.position.x || prim.render.position.z != prim.state.master->render.position.z) &&
         slot.alphaT > 2000) {
       slot.alphaT = static_cast<std::int16_t>(slot.process);
@@ -6761,11 +6763,11 @@ namespace {
     if (slot.process > slot.alphaT) {
       int angle;
 
-      if (kind >= 20.0f) {
+      if (kind >= static_cast<float>(FADING_COLUMN_MOVE_SENSITIVE_BLUE)) {
         angle = (slot.alphaT - slot.process + 18) * 5;
-      } else if (kind >= 10.0f) {
+      } else if (kind >= static_cast<float>(FADING_COLUMN_TIMED_BLUE)) {
         angle = slot.alphaT - slot.process + 90;
-      } else if (kind == 0.0f) {
+      } else if (kind == static_cast<float>(FADING_COLUMN_TALL_PALE_GREEN)) {
         angle = 2505 - slot.process;
       } else {
         angle = 2475 - slot.process;
@@ -6849,7 +6851,7 @@ void CEffectPrim::PrimAuraGlow() {
     if (++slot.process < 300) {
       const char kind = slot.flag1[4];
 
-      if (kind == 1 || kind == 3) {
+      if (kind == AURA_GLOW_WHITE_PULSE || kind == AURA_GLOW_OFFSET_WHITE_PULSE) {
         if (slot.process < 200) {
           slot.alphaB += 10;
 
@@ -6863,34 +6865,34 @@ void CEffectPrim::PrimAuraGlow() {
             slot.alphaB = 0;
           }
         }
-      } else if (kind == 22) {
+      } else if (kind == AURA_GLOW_OVERHEAD_WHITE) {
         slot.alphaB += 10;
 
         if (slot.alphaB >= 220) {
           slot.alphaB = 220;
         }
-      } else if (kind == 0) {
+      } else if (kind == AURA_GLOW_PALE_BLUE_SLOW_FADE_IN) {
         ++slot.alphaB;
-      } else if (kind == 20) {
+      } else if (kind == AURA_GLOW_SMALL_WHITE) {
         slot.alphaB += 5;
 
         if (slot.alphaB >= 200) {
           slot.alphaB = 200;
         }
-      } else if (kind >= 16 && kind <= 18) {
+      } else if (kind >= AURA_GLOW_SOFT_GREEN_REVERSE_SPIN && kind <= AURA_GLOW_STATIC_SOFT_GREEN) {
         slot.alphaB = 100;
-      } else if (kind >= 10 && kind <= 12) {
+      } else if (kind >= AURA_GLOW_GRAY_FORWARD_SPIN && kind <= AURA_GLOW_DARK_GRAY_REVERSE_SPIN) {
         slot.alphaB = 150;
-      } else if (kind == 14) {
+      } else if (kind == AURA_GLOW_FAINT_WHITE) {
         slot.alphaB = 50;
-      } else if (kind >= 10) {
+      } else if (kind >= AURA_GLOW_GRAY_FORWARD_SPIN) {
         slot.alphaB = 250;
       }
     }
 
     const char kind = slot.flag1[4];
 
-    if (kind == 2) {
+    if (kind == AURA_GLOW_EXPANDING_PALE_BLUE) {
       if (slot.process > 40) {
         const short alpha = static_cast<short>(slot.alphaB + (slot.process >= 62 ? -8 : 8));
         slot.alphaB = alpha;
@@ -6903,7 +6905,7 @@ void CEffectPrim::PrimAuraGlow() {
       if (slot.process > 300 && slot.alphaB > 0) {
         --slot.alphaB;
       }
-    } else if (kind == 16 || kind == 17) {
+    } else if (kind == AURA_GLOW_SOFT_GREEN_REVERSE_SPIN || kind == AURA_GLOW_SMALL_SOFT_GREEN_REVERSE_SPIN) {
       if ((slot.process & 1) == 0) {
         --this->state.slots[ec].fullDisplayAngle;
       }
@@ -6911,12 +6913,12 @@ void CEffectPrim::PrimAuraGlow() {
       if (this->state.slots[ec].fullDisplayAngle < 0) {
         this->state.slots[ec].fullDisplayAngle += 360;
       }
-    } else if (kind < 20) {
-      if (kind == 18) {
+    } else if (kind < AURA_GLOW_SMALL_WHITE) {
+      if (kind == AURA_GLOW_STATIC_SOFT_GREEN) {
         if (this->state.slots[ec].fullDisplayAngle < 0) {
           this->state.slots[ec].fullDisplayAngle += 360;
         }
-      } else if (kind == 10 || kind >= 13) {
+      } else if (kind == AURA_GLOW_GRAY_FORWARD_SPIN || kind >= AURA_GLOW_LARGE_DARK_GRAY) {
         if ((slot.process & 1) == 0) {
           ++this->state.slots[ec].fullDisplayAngle;
         }
@@ -6924,7 +6926,7 @@ void CEffectPrim::PrimAuraGlow() {
         if (this->state.slots[ec].fullDisplayAngle >= 360) {
           this->state.slots[ec].fullDisplayAngle -= 360;
         }
-      } else if (kind == 11 || kind == 12) {
+      } else if (kind == AURA_GLOW_GRAY_REVERSE_SPIN || kind == AURA_GLOW_DARK_GRAY_REVERSE_SPIN) {
         if ((slot.process & 1) == 0) {
           --this->state.slots[ec].fullDisplayAngle;
         }
@@ -6943,7 +6945,7 @@ void CEffectPrim::PrimAuraGlow() {
       slot.alphaB = 0;
     }
 
-    if (slot.flag1[4] < 30) {
+    if (slot.flag1[4] < AURA_GLOW_STATIC_RAISED_GREEN) {
       slot.height[8] += 2.0f;
     }
 
@@ -7887,7 +7889,7 @@ namespace {
   ) {
     const char kind = slot.flag1[0];
 
-    if (kind == 14) {
+    if (kind == GROUND_FOG_RISING_WHITE) {
       float height = point.y;
 
       if (height > -40.0f) {
@@ -7910,7 +7912,7 @@ namespace {
       }
 
       point.y = height + slot.maxHeight;
-    } else if (kind == 16) {
+    } else if (kind == GROUND_FOG_RISING_SCATTERED) {
       float height = point.y;
 
       if (height > 0.0f) {
@@ -7920,7 +7922,7 @@ namespace {
       }
 
       point.y = height + slot.maxHeight;
-    } else if (kind == 15) {
+    } else if (kind == GROUND_FOG_HORIZONTAL_DRIFT) {
       if (subtractX) {
         point.x -= g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f;
       } else {
@@ -7962,7 +7964,7 @@ namespace {
         ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.15f, subtractZ);
 
         if (leading) {
-          if (kind == 11) {
+          if (kind == GROUND_FOG_GRAY_WANDERING_GHOST) {
             if (height < -50.0f) {
               point.x = static_cast<float>(ClampedRandom(15)) - 8.0f;
               point.z = static_cast<float>(ClampedRandom(15)) - 8.0f;
@@ -7974,7 +7976,7 @@ namespace {
             height = static_cast<float>(ClampedRandom(100));
           }
         } else if (height < -30.0f) {
-          if (kind == 11) {
+          if (kind == GROUND_FOG_GRAY_WANDERING_GHOST) {
             point.x = static_cast<float>(ClampedRandom(15)) - 8.0f;
             point.z = static_cast<float>(ClampedRandom(15)) - 8.0f;
           } else {
@@ -9284,7 +9286,7 @@ bool CEffectPrim::OnProcess() {
           slot.alphaB -= 3;
 
           if (slot.alphaB < 1) {
-            if (slot.height[5] < 2.0f) {
+            if (slot.height[5] < static_cast<float>(COLOR_PANEL_FOREGROUND_GREEN)) {
               slot.maxHeight = 10.0f;
               slot.rotStart = static_cast<std::int16_t>(NonNegativeRandom(360));
               slot.alphaB = 200;
@@ -9661,13 +9663,15 @@ bool CEffectPrim::OnProcess() {
           continue;
         }
 
-        if (slot.height[4] == 4.0f) {
+        if (slot.height[4] == static_cast<float>(LAND_PROTECTOR_FAST_SPIN)) {
           slot.rotStart += 6;
 
           if (slot.rotStart >= 360) {
             slot.rotStart -= 360;
           }
-        } else if (slot.height[4] == 10.0f || slot.height[4] == 11.0f || slot.height[4] == 12.0f) {
+        } else if (slot.height[4] == static_cast<float>(LAND_PROTECTOR_SPINNING_FLARE) ||
+                   slot.height[4] == static_cast<float>(LAND_PROTECTOR_SPINNING_OUTER_RING) ||
+                   slot.height[4] == static_cast<float>(LAND_PROTECTOR_SPINNING_INNER_RING)) {
           slot.rotStart += 3;
 
           if (slot.rotStart >= 360) {
@@ -9675,15 +9679,16 @@ bool CEffectPrim::OnProcess() {
           }
         }
 
-        if (slot.height[4] == 2.0f) {
+        if (slot.height[4] == static_cast<float>(LAND_PROTECTOR_SLOW_PULSE)) {
           ++slot.riseAngle;
-        } else if (slot.height[4] == 10.0f) {
+        } else if (slot.height[4] == static_cast<float>(LAND_PROTECTOR_SPINNING_FLARE)) {
           if (slot.rotStart < 181) {
             slot.distance -= 0.3f;
           } else {
             slot.distance += 0.3f;
           }
-        } else if (slot.height[4] != 11.0f && slot.height[4] != 12.0f) {
+        } else if (slot.height[4] != static_cast<float>(LAND_PROTECTOR_SPINNING_OUTER_RING) &&
+                   slot.height[4] != static_cast<float>(LAND_PROTECTOR_SPINNING_INNER_RING)) {
           slot.riseAngle += 3;
         }
 
@@ -9835,7 +9840,7 @@ bool CEffectPrim::OnProcess() {
 
         const float kind = slot.height[4];
 
-        if (kind == 2.0f || kind == 6.0f) {
+        if (kind == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW) || kind == static_cast<float>(FAN_BEAM_FOREGROUND_BLUE)) {
           if (process <= 10) {
             slot.alphaB += 10;
           } else if (process > 11) {
@@ -9847,7 +9852,7 @@ bool CEffectPrim::OnProcess() {
           }
 
           slot.distance = slot.distance + 3.0f;
-        } else if (kind == 3.0f) {
+        } else if (kind == static_cast<float>(FAN_BEAM_WHITE)) {
           if (process <= 10) {
             slot.alphaB += 6;
           } else if (process > 11) {

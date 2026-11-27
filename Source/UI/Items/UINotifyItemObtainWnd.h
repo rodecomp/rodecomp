@@ -6,6 +6,11 @@
 
 #include <string>
 
+enum ItemObtainNoticeKind : int {
+  ITEM_OBTAIN_NOTICE_ITEM = 0,
+  ITEM_OBTAIN_NOTICE_ZENY = 1,
+};
+
 class UINotifyItemObtainWnd : public UIFrameWnd {
 public:
   UINotifyItemObtainWnd();

@@ -25,6 +25,7 @@
 #include "Client/Application/Registry.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/NeoPackageItemMgr.h"
 #include "Contents/Items/SelectPackageItemMgr.h"
@@ -573,7 +574,7 @@ void UIDisconnectedServerMsgWnd::Paint() {
 // FUNCTION: fn_12220
 void UIEmailAddressWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
-  const char* text = LookupMessage(g_serviceType == 0 ? MSI_ENTER_PEOPLE_BIRTH : MSI_ENTER_EMAIL);
+  const char* text = LookupMessage(g_serviceType == ServiceKorea ? MSI_ENTER_PEOPLE_BIRTH : MSI_ENTER_EMAIL);
   this->DrawTextAt(15, 6, text, 0, 0, 12, 0, 0, 0);
 }
 
@@ -1058,7 +1059,7 @@ void UINotifyQuestWnd::Paint() {
 // FUNCTION: fn_12237
 void UINpcEditDialogWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
-  this->DrawTextAt(15, 6, g_serviceType == 12 ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(15, 6, g_serviceType == ServiceBrazil ? "Insira o Numero" : "Input number ", 0, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x008EF850
@@ -1187,14 +1188,14 @@ void UIPartyInvitationToWnd::Paint() {
 // OFFSET: 0x008EFA00
 // FUNCTION: fn_12240
 void UIPartySettingWnd::Paint() {
-  const char* title = LookupMessage(this->m_mode != 50 ? MSI_PARTYSETTING : MSI_CREATE_PARTY);
+  const char* title = LookupMessage(this->m_mode != PARTY_SETTING_LAYOUT_CREATE ? MSI_PARTYSETTING : MSI_CREATE_PARTY);
   const int titleHeight = this->DrawTitleBar(true, title, 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
 
-  if (this->m_mode == 70) {
+  if (this->m_mode == PARTY_SETTING_LAYOUT_EXP_SHARE) {
     this->DrawTextAt(10, 22, LookupMessage(MSI_HOWEXPDIV), 0, 0, 12, 0, 0, 0);
-  } else if (this->m_mode == 50) {
+  } else if (this->m_mode == PARTY_SETTING_LAYOUT_CREATE) {
     this->DrawTextAt(10, 22, LookupMessage(MSI_PUT_PARTY_NAME_IN), 0, 0, 12, 0, 0, 0);
   }
 
@@ -1242,12 +1243,12 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      if (this->m_mode != 50) {
+      if (this->m_mode != PARTY_SETTING_LAYOUT_CREATE) {
         g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
       }
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.PartyCount() == 0) {
-        if (this->m_mode == 50) {
+        if (this->m_mode == PARTY_SETTING_LAYOUT_CREATE) {
           std::string name = "";
           name = this->m_nameEdit->Text();
           if (name.find("#") != std::string::npos) {
@@ -1318,7 +1319,7 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Move(this->m_placement->x, this->m_placement->y);
     break;
   case UM_REFRESH:
-    if (this->m_mode == 5) {
+    if (this->m_mode == PARTY_SETTING_LAYOUT_PARTY_COUNT) {
       g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
     } else {
       this->Invalidate();
@@ -1946,7 +1947,7 @@ void UIItemCollectionWnd::OnLBtnDown(int x, int y) {
   }
 
   this->UIFrameWnd::OnLBtnDown(x, y);
-  if (this->m_kind == 12) {
+  if (this->m_kind == WID_ITEMCOLLECTIONWND) {
     UIWindow* comparison = g_windowMgr.itemCollectionComparisonWnd;
     if (!comparison) {
       return;
@@ -1957,7 +1958,7 @@ void UIItemCollectionWnd::OnLBtnDown(int x, int y) {
     comparison->geometry.alphaStart = alphaStart;
   }
 
-  if (this->m_kind == 82) {
+  if (this->m_kind == WID_COMBINEDCARDITEMCOLLECTIONWND) {
     UIWindow* comparison = g_windowMgr.combinedCardItemCollectionComparisonWnd;
     if (comparison) {
       const int targetAlpha = this->geometry.targetAlpha;
@@ -3852,7 +3853,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     std::strcpy(this->m_bookName, title);
 
     char path[260];
-    if (g_serviceType == 10) {
+    if (g_serviceType == ServiceGermany) {
       std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), name);
     } else {
       std::sprintf(path, "book\\%s.txt", name);
@@ -4077,7 +4078,7 @@ void UIBookWnd::OnCreate(int width, int height) {
 // OFFSET: 0x008E1890
 // FUNCTION: fn_12175
 void UIItemCollectionWnd::OnCreate(int width, int height) {
-  this->m_kind = 12;
+  this->m_kind = WID_ITEMCOLLECTIONWND;
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
@@ -4120,7 +4121,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_resizer = new UIResizer();
   this->m_resizer->SetSize(16, 16);
   this->m_resizer->SetDirection(7);
-  this->m_resizer->SetBitmapName(this->m_kind != 234 ? "유저인터페이스\\btn_resize.bmp" : "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp");
+  this->m_resizer->SetBitmapName(this->m_kind != WID_ITEMCOLLECTION_COMPARISONWND ? "유저인터페이스\\btn_resize.bmp" : "유저인터페이스\\basic_interface\\btn_comparison_resize.bmp");
   this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->m_resizer->Move(width - 17, height - 17);
   this->AddChild(this->m_resizer);
@@ -4153,7 +4154,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12165
 void UICombinedCardItemCollectionWnd::OnCreate(int width, int height) {
   this->UIItemCollectionWnd::OnCreate(width, height);
-  this->m_kind = 82;
+  this->m_kind = WID_COMBINEDCARDITEMCOLLECTIONWND;
 }
 
 // OFFSET: 0x008DE380
@@ -4161,7 +4162,7 @@ void UICombinedCardItemCollectionWnd::OnCreate(int width, int height) {
 void UICombinedCardItemCollection_ComparisonWnd::OnCreate(int width, int height) {
   this->UIItemCollectionWnd::OnCreate(width, height);
   this->m_closeButton->Enable(0);
-  this->m_kind = 250;
+  this->m_kind = WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND;
   const SkinPaletteCell cell = {7, 1};
   const unsigned color = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()) | 0xFF000000u;
   UITextViewer* viewer = this->m_viewer;
@@ -4174,7 +4175,7 @@ void UICombinedCardItemCollection_ComparisonWnd::OnCreate(int width, int height)
 void UIItemCollection_ComparisonWnd::OnCreate(int width, int height) {
   this->UIItemCollectionWnd::OnCreate(width, height);
   this->m_closeButton->Enable(0);
-  this->m_kind = 234;
+  this->m_kind = WID_ITEMCOLLECTION_COMPARISONWND;
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(30, 6, red, green, blue);
   this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
@@ -4755,7 +4756,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         break;
       }
 
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(text)) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(text)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
         break;
       }
@@ -4784,9 +4785,9 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.SetChatInputText(&text[offset]);
       }
 
-      if (talkType == 24) {
+      if (talkType == TT_EX_EXIT_CHAT_ROOM) {
         g_windowMgr.Schedule(this);
-      } else if (talkType == 51) {
+      } else if (talkType == TT_EX_SAVE_CHAT) {
         this->WriteChatToFile();
       } else {
         g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
@@ -6000,7 +6001,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         break;
       }
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         break;
       }
@@ -6104,7 +6105,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         return 0;
       }
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, g_messageTitle, 280, 120, 0);
         return 0;
       }
@@ -7712,18 +7713,18 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   g_session.partyItemDistribute = PARTY_ITEM_SHARE_INDIVIDUAL;
 
   if (height == 245) {
-    this->m_mode = 70;
+    this->m_mode = PARTY_SETTING_LAYOUT_EXP_SHARE;
   } else if (height == 180) {
-    this->m_mode = 5;
+    this->m_mode = PARTY_SETTING_LAYOUT_PARTY_COUNT;
   } else if (height == 220) {
-    this->m_mode = 50;
+    this->m_mode = PARTY_SETTING_LAYOUT_CREATE;
   }
 
-  if (this->m_mode == 70) {
+  if (this->m_mode == PARTY_SETTING_LAYOUT_EXP_SHARE) {
     const char* texts[2] = {LookupMessage(MSI_EXPDIV1), LookupMessage(MSI_EXPDIV2)};
     for (int i = 0, y = 42; y < 82; ++i, y += 20) {
       this->m_expShareButtons[i] = new UIRadioBtn();
-      this->m_expShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
+      this->m_expShareButtons[i]->SetSize(160, g_serviceType == ServiceBrazil ? 17 : 12);
       this->m_expShareButtons[i]->Move(20, y);
       this->m_expShareButtons[i]->SetText(texts[i]);
       this->m_expShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_expShare == i, 0, 0, 0);
@@ -7732,7 +7733,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
         this->m_expShareButtons[i]->enabled = 0;
       }
     }
-  } else if (this->m_mode == 50) {
+  } else if (this->m_mode == PARTY_SETTING_LAYOUT_CREATE) {
     this->m_nameEdit = new UIEditCtrl();
     this->m_nameEdit->SetSize(100, 20);
     this->m_nameEdit->Move(20, 38);
@@ -7745,7 +7746,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
     const char* texts[2] = {LookupMessage(MSI_ITEMCOLLECT1), LookupMessage(MSI_ITEMCOLLECT2)};
     for (int i = 0, offset = 0; offset < 40; ++i, offset += 20) {
       this->m_itemShareButtons[i] = new UIRadioBtn();
-      this->m_itemShareButtons[i]->SetSize(160, g_serviceType == 12 ? 17 : 12);
+      this->m_itemShareButtons[i]->SetSize(160, g_serviceType == ServiceBrazil ? 17 : 12);
       this->m_itemShareButtons[i]->SetText(texts[i]);
       this->m_itemShareButtons[i]->Move(20, this->m_mode + offset + 37);
       this->m_itemShareButtons[i]->SendMsg(this, UM_SETSTATE, this->m_itemShare == i, 0, 0, 0);
@@ -7758,7 +7759,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   }
 
   this->m_itemDistributeButton = new UIRadioBtn();
-  this->m_itemDistributeButton->SetSize(160, g_serviceType == 12 ? 17 : 12);
+  this->m_itemDistributeButton->SetSize(160, g_serviceType == ServiceBrazil ? 17 : 12);
   this->m_itemDistributeButton->Move(20, this->m_mode + 102);
   this->m_itemDistributeButton->SetText(LookupMessage(MSI_ITEMDIV1));
   this->m_itemDistributeButton->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
@@ -7789,7 +7790,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
   }
 
   this->AddCloseButton("Alt+P", 0);
-  if (this->m_mode == 50) {
+  if (this->m_mode == PARTY_SETTING_LAYOUT_CREATE) {
     g_windowMgr.SetFocus(this->m_nameEdit);
   }
 }
@@ -7798,7 +7799,7 @@ void UIPartySettingWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_11964
 UIPartySettingWnd::UIPartySettingWnd()
     : UIFrameWnd(0) {
-  this->m_mode = 0;
+  this->m_mode = PARTY_SETTING_LAYOUT_DEFAULT;
   this->m_placement = nullptr;
 }
 
@@ -8378,7 +8379,7 @@ int UINotifyItemObtainWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->m_kind = static_cast<int>(a);
     const int amount = static_cast<int>(b);
     char text[128];
-    if (a != 0) {
+    if (a != ITEM_OBTAIN_NOTICE_ITEM) {
       char grouped[24];
       std::sprintf(text, LookupMessage(MSI_GET_ZENY), FormatGroupedInteger(amount, grouped, sizeof(grouped)));
       this->m_message = text;
@@ -9594,7 +9595,7 @@ void UINotifyItemObtainWnd::Paint() {
     breaks.push_back(cursor);
   }
 
-  this->DrawItemNameSegments(kind == 0 ? 41 : 13, 10, width, breaks, text, highlight, highlightColor, 0, 0, 12);
+  this->DrawItemNameSegments(kind == ITEM_OBTAIN_NOTICE_ITEM ? 41 : 13, 10, width, breaks, text, highlight, highlightColor, 0, 0, 12);
 }
 
 // OFFSET: 0x008EB010
@@ -9820,7 +9821,7 @@ void UIExchangeWnd::OnProcess() {
 // OFFSET: 0x008D2CA0
 // FUNCTION: fn_45663
 void UIItemCollectionWnd::DrawComparisonBox(int x, int y, int width, int height) {
-  const char* prefix = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
+  const char* prefix = this->m_kind != WID_ITEMCOLLECTION_COMPARISONWND ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
   this->DrawSkinBox(prefix, x, y, width, height, true);
 }
 
@@ -9850,7 +9851,7 @@ void UIItemCollectionWnd::Paint() {
   }
   const int bottom = this->m_compare == 1 ? height - 29 : height;
 
-  if (this->m_kind == 234 || this->m_kind == 250) {
+  if (this->m_kind == WID_ITEMCOLLECTION_COMPARISONWND || this->m_kind == WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND) {
     this->DrawSkinBox("유저인터페이스\\basic_interface\\sysbox_comparison_", 0, 0, this->geometry.width, bottom, true);
     this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\collection_Comparison_bg.bmp"))), true);
   } else if (0 < this->m_item.grade) {
@@ -9877,7 +9878,7 @@ void UIItemCollectionWnd::Paint() {
     int offset = 0;
     if (this->m_item.identified == 1 && this->m_optionCount > 0) {
       for (std::map<int, std::list<std::string>>::iterator card = this->m_cardTexts.begin(); card != this->m_cardTexts.end(); ++card) {
-        const char* box = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
+        const char* box = this->m_kind != WID_ITEMCOLLECTION_COMPARISONWND ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
         this->DrawSkinBox(box, 0, bottom + offset, this->geometry.width, static_cast<int>(card->second.size()) * 15 + 14, true);
         offset += 8;
         for (std::list<std::string>::iterator line = card->second.begin();;) {
@@ -9899,7 +9900,7 @@ void UIItemCollectionWnd::Paint() {
 
     if (!this->m_item.HasSpecialCard()) {
       const int top = bottom + offset;
-      const char* box = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
+      const char* box = this->m_kind != WID_ITEMCOLLECTION_COMPARISONWND ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
       this->DrawSkinBox(box, 0, top, this->geometry.width, 29, true);
       const int y = top + 2;
       int slot = 0;
@@ -9909,7 +9910,7 @@ void UIItemCollectionWnd::Paint() {
           this->DrawItemIconFromId(x, y, FormatOwnedString("%d", card).c_str(), 0);
         } else {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
-          if (this->m_kind == 234) {
+          if (this->m_kind == WID_ITEMCOLLECTION_COMPARISONWND) {
             const char* name = slot >= this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp" : "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp";
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
           } else if (slot >= this->m_item.SlotCount()) {
@@ -12023,7 +12024,7 @@ int UIFrameWnd::BuildItemName(
         breaks->push_back(*cursor);
       }
 
-      if (g_serviceType != 12 && g_serviceType != 14) {
+      if (g_serviceType != ServiceBrazil && g_serviceType != ServiceRussia) {
         const int bytes = item->Creator(*cursor, capacity, 1);
         if (bytes) {
           *creator = *cursor;
@@ -12078,7 +12079,7 @@ int UIFrameWnd::BuildItemName(
           breaks->push_back(*cursor);
         }
       } else if (item->HasSpecialCard()) {
-        if (g_serviceType == 12) {
+        if (g_serviceType == ServiceBrazil) {
           *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
           breaks->push_back(*cursor);
           *cursor += item->Element(*cursor, capacity, 1);
@@ -12100,7 +12101,7 @@ int UIFrameWnd::BuildItemName(
           if (splitCreator) {
             breaks->push_back(*cursor);
           }
-        } else if (g_serviceType == 14) {
+        } else if (g_serviceType == ServiceRussia) {
           *cursor += item->Star(*cursor, capacity, 1);
           breaks->push_back(*cursor);
           *cursor += item->GetIdDisplayName(*cursor, capacity, 1);
@@ -12753,7 +12754,7 @@ void UIExchangeWnd::Paint() {
   this->DrawTextAt(12, 3, title, 0, 0, 12, 0, 0, 0);
   char partner[128];
   if (this->partnerId > 0) {
-    if (g_serviceType == 6) {
+    if (g_serviceType == ServiceIndonesia) {
       std::sprintf(partner, "%s  Lv%d", this->partnerName.c_str(), this->partnerLevel);
     } else {
       const std::string identifier = g_session.ShortcutFilename(this->partnerId);
@@ -12897,7 +12898,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     case ID_BOOKITEM:
     case ID_AUTOBOOKITEM: {
       char path[260];
-      if (g_serviceType == 10) {
+      if (g_serviceType == ServiceGermany) {
         std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), this->m_item.itemId.c_str());
       } else {
         std::sprintf(path, "book\\%s.txt", this->m_item.itemId.c_str());
@@ -13017,7 +13018,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_NOTICE_TO_DELETE_TIME), text);
       } else {
         std::sprintf(text, LookupMessage(MSI_NOTICE_TO_DELETE_TIME), date);
-        if (g_serviceType == 6) {
+        if (g_serviceType == ServiceIndonesia) {
           color = 24;
         }
       }
@@ -13032,7 +13033,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), descriptions[index]);
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
       } else {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(descriptions[index]), g_serviceType == 6 ? 24 : 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(descriptions[index]), g_serviceType == ServiceIndonesia ? 24 : 26, 0, 0);
       }
     }
     if (g_session.IsPetEgg(std::atoi(item->itemId.c_str())) == 1) {
@@ -13063,7 +13064,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
         std::sprintf(text, "%s%s", g_serverLanguage->Prefix(true), state.c_str());
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 26, 0, 0);
       } else {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(state.c_str()), g_serviceType == 6 ? 24 : 26, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(state.c_str()), g_serviceType == ServiceIndonesia ? 24 : 26, 0, 0);
       }
     }
     this->Invalidate();
@@ -13071,7 +13072,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     if (argument2 != 0 && g_windowMgr.itemParamChangeDisplayWnd) {
       g_windowMgr.itemParamChangeDisplayWnd->SendMsg(nullptr, UM_PARAM, reinterpret_cast<std::intptr_t>(this->m_item.itemId.c_str()), this->m_item.identified, 0, 0);
     }
-    if (this->m_kind == 12) {
+    if (this->m_kind == WID_ITEMCOLLECTIONWND) {
       ITEM_INFO* equipped = g_session.GetEquippedItem(&this->m_item);
       if (g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF) && equipped && argument4 == 0) {
         UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTION_COMPARISONWND);

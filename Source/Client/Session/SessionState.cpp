@@ -319,7 +319,7 @@ void CSession::SetSwapArrowIndex(std::uint32_t value) {
   if (it == g_activeSkillEffects.end()) {
     if (value) {
       ActiveSkillEffect effect;
-      effect.id = 0x2B7;
+      effect.id = EFST_CLIENT_ONLY_EQUIP_ARROW;
       g_activeSkillEffects.push_back(effect);
     }
   } else if (!value) {

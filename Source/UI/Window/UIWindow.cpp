@@ -12,6 +12,7 @@
 #include "UI/Navigation/UIRoMapWnd.h"
 #include "File/FileEnumeration.h"
 #include "Contents/World/World.h"
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/Pc.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Input/Language.h"
@@ -2548,7 +2549,7 @@ void UIPrivateAirplaneWnd::Paint() {
 // OFFSET: 0x005C72A0
 // FUNCTION: fn_03604
 void UINavigationV4Wnd::OnProcess() {
-  if (g_navigationManager.displayMode == 2) {
+  if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_SHARE_MAP) {
     this->Invalidate();
   }
 }
@@ -2885,7 +2886,7 @@ void UINavigationV4Wnd::Paint() {
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_down.bmp"))), false
   );
 
-  if (g_navigationManager.viewMode == 2 && g_navigationManager.displayMode == 1) {
+  if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE && g_navigationManager.displayMode == NAVIGATION_DISPLAY_ROUTE) {
     this->FillRegion(1, 0x2c, 0x10e, 0x10e, 0xcccccc);
     this->DrawMapTexture(3, 0x2e, 0x10a);
     this->DrawTextAt(10, 0x30, g_navigationManager.destinationTitle.c_str(), 0, 0, 12, 0xffffff, 1, 0);
@@ -2920,7 +2921,7 @@ void UINavigationV4Wnd::Paint() {
     return;
   }
 
-  if (g_navigationManager.displayMode == 2) {
+  if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_SHARE_MAP) {
     this->FillRegion(1, 0x2c, 0x10e, 0x10e, 0xcccccc);
     this->DrawMapTexture(3, 0x2e, 0x10a);
     CNaviInfo* info = static_cast<CNaviInfo*>(g_navigationManager.GetCurrentTarget().object);
@@ -2975,14 +2976,14 @@ void UINavigationV4Wnd::Paint() {
     int mapSize = 0x64;
     const NavigationTarget target = g_navigationManager.GetCurrentTarget();
     int mapX = 0x9b;
-    if (target.type == 2) {
+    if (target.type == NAVIGATION_TARGET_NPC) {
       mapX = 0xe3;
       mapSize = 0x28;
       this->DrawTargetSprite(
         0x93, 0x2d, 0x74, 0x74, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Anibackground.bmp")))
       );
       mapY = 0x78;
-    } else if (target.type == 3) {
+    } else if (target.type == NAVIGATION_TARGET_MOB) {
       mapX = 0xe3;
       mapSize = 0x28;
       this->DrawActionSprite(
@@ -3043,7 +3044,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           result = g_navigationManager.Navigate(target.cell.first, target.cell.second);
         }
         if (result >= 0) {
-          g_navigationManager.displayMode = 1;
+          g_navigationManager.displayMode = NAVIGATION_DISPLAY_ROUTE;
           g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
           if (g_windowMgr.modal) {
             g_windowMgr.modal->RefreshWorldMapMarks();
@@ -3066,7 +3067,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_navigationManager.ResetCurrentTarget();
         g_navigationManager.LoadTargetPreview();
         this->FillRouteGroups();
-        g_navigationManager.displayMode = 0;
+        g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
         if (g_windowMgr.modal) {
           g_windowMgr.modal->RefreshWorldMapLevels();
         }
@@ -3169,23 +3170,24 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     case ID_CHARGE:
       if (!g_navigationManager.GetSavedTarget().object) {
-        if (g_navigationManager.displayMode == 2) {
-          if (g_navigationManager.viewMode == 2) {
+        if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_SHARE_MAP) {
+          if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE) {
             this->LayoutWithoutDetails();
-            g_navigationManager.displayMode = 1;
+            g_navigationManager.displayMode = NAVIGATION_DISPLAY_ROUTE;
             g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
           } else {
             this->LayoutWithDetails();
-            g_navigationManager.displayMode = 0;
+            g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
             g_navigationManager.SelectNodeState();
           }
         }
-      } else if (g_navigationManager.displayMode == 1 || (g_navigationManager.displayMode == 2 && g_navigationManager.viewMode != 2)) {
-        g_navigationManager.displayMode = 0;
+      } else if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_ROUTE ||
+                 (g_navigationManager.displayMode == NAVIGATION_DISPLAY_SHARE_MAP && g_navigationManager.viewMode != NAVIGATION_VIEW_ROUTE)) {
+        g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
         g_navigationManager.SelectNodeState();
         this->RefreshLayout();
       } else {
-        g_navigationManager.displayMode = 1;
+        g_navigationManager.displayMode = NAVIGATION_DISPLAY_ROUTE;
         g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
         this->RefreshLayout();
       }
@@ -3193,16 +3195,16 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     case ID_PREVIEW:
       if (g_navigationManager.GetCurrentTargetName().size() != 0) {
         const int type = g_navigationManager.GetCurrentTarget().type;
-        if (type <= 1) {
+        if (type <= NAVIGATION_TARGET_MAP) {
           this->LayoutWithoutDetails();
-          g_navigationManager.displayMode = 2;
+          g_navigationManager.displayMode = NAVIGATION_DISPLAY_SHARE_MAP;
           this->noticeUntil = timeGetTime() + 5000;
         } else {
           const NavigationTarget target = g_navigationManager.GetCurrentTarget();
           CNavi_Object* object = static_cast<CNavi_Object*>(target.object);
           int y = 1000;
           int x = 1000;
-          if (type == 2) {
+          if (type == NAVIGATION_TARGET_NPC) {
             NaviCell cell;
             x = object->GetCell(&cell)->x;
             NaviCell other;
@@ -3213,10 +3215,10 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       break;
     case ID_CLOSE:
-      if (g_navigationManager.viewMode == 2) {
+      if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE) {
         if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
-          g_navigationManager.SetViewMode(1);
-          g_navigationManager.displayMode = 0;
+          g_navigationManager.SetViewMode(NAVIGATION_VIEW_SEARCH);
+          g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
           g_navigationManager.ClearSavedTarget();
           g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
           this->RefreshLayout();
@@ -3227,7 +3229,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
         }
         g_navigationManager.expandedMap = false;
-        g_navigationManager.displayMode = 0;
+        g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
         g_navigationManager.Reset(true);
         g_worldViewMgr.ClearMarks();
         g_worldViewMgr.ClearLevels();
@@ -3242,7 +3244,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         window->SetSize(0xD0, 0x6E);
         window->Move(static_cast<int>((g_renderer->viewport.width - 0xD0) * 0.5), static_cast<int>((g_renderer->viewport.height - 0x6E) * 0.5));
         g_windowMgr.AddRendered(window);
-        if (g_navigationManager.GetCurrentTargetType() == 2) {
+        if (g_navigationManager.GetCurrentTargetType() == NAVIGATION_TARGET_NPC) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_WARNNING_SELECT_NPC)), 0, 0, 0);
         }
 
@@ -3268,7 +3270,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
         CGameMode* mode = g_modeMgr.GetGameMode();
         if (mode->scene && g_modeMgr.GetGameMode()->scene->player &&
-            g_modeMgr.GetGameMode()->scene->player->render.state == 3) {
+            g_modeMgr.GetGameMode()->scene->player->render.state == ST_DEAD) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_DEAD_STATE)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
@@ -3462,13 +3464,13 @@ void UINavigationRuideWnd::RefreshRoute() {
 // FUNCTION: fn_03616
 std::string UINavigationV4Wnd::ObjectName(int type, void* object) {
   std::string name;
-  if (type == 2) {
+  if (type == NAVIGATION_TARGET_NPC) {
     name.assign(static_cast<CNavi_Object*>(object)->GetName());
-  } else if (type == 3) {
+  } else if (type == NAVIGATION_TARGET_MOB) {
     name.assign(static_cast<CNavi_Object*>(object)->GetName());
-  } else if (type == 1) {
+  } else if (type == NAVIGATION_TARGET_MAP) {
     name.assign(static_cast<CNaviInfo*>(object)->GetName());
-  } else if (type == 0) {
+  } else if (type == NAVIGATION_TARGET_CELL) {
     name.assign(static_cast<CNaviInfo*>(object)->GetName());
   }
 
@@ -3510,13 +3512,13 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
   std::memset(suffix, 0, sizeof(suffix));
   std::string label;
 
-  if (type == 2) {
+  if (type == NAVIGATION_TARGET_NPC) {
     label.assign(static_cast<CNavi_Object*>(object)->GetInfo()->GetName());
     NaviCell first;
     NaviCell second;
     std::sprintf(suffix, " [%d,%d]", static_cast<CNavi_Object*>(object)->GetCell(&second)->x, static_cast<CNavi_Object*>(object)->GetCell(&first)->y);
     label.append(suffix);
-  } else if (type == 3) {
+  } else if (type == NAVIGATION_TARGET_MOB) {
     label.assign(static_cast<CNavi_Object*>(object)->GetInfo()->GetName());
     const int level = static_cast<CNavi_Object*>(object)->GetFlag();
     if (level > 0) {
@@ -3535,9 +3537,9 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
     }
 
     label.append(suffix);
-  } else if (type == 1) {
+  } else if (type == NAVIGATION_TARGET_MAP) {
     label.assign(static_cast<CNaviInfo*>(object)->GetTitle());
-  } else if (type == 0) {
+  } else if (type == NAVIGATION_TARGET_CELL) {
     label.assign(static_cast<CNaviInfo*>(object)->GetTitle());
   }
 
@@ -3567,7 +3569,7 @@ void UINavigationV4Wnd::SelectRoute(int route) {
       text = this->MobName(static_cast<CNavi_Object*>(target.object));
     } else {
       text = this->ObjectLabel(target.type, target.object);
-      if (target.type == 0) {
+      if (target.type == NAVIGATION_TARGET_CELL) {
         char coords[30] = {};
         std::sprintf(coords, " [%d,%d]", target.cell.first, target.cell.second);
         text += coords;
@@ -3637,7 +3639,7 @@ void UINavigationV4Wnd::FillRouteGroups() {
     NavigationTarget target = g_navigationManager.GetState(g_navigationManager.nodePaths[index][0]);
     const int count = static_cast<int>(g_navigationManager.nodePaths[index].size());
     std::string name = this->ObjectName(target.type, target.object);
-    if (target.type == 0 && !target.name.empty()) {
+    if (target.type == NAVIGATION_TARGET_CELL && !target.name.empty()) {
       name = target.name;
     }
 
@@ -3710,7 +3712,7 @@ void UINavigationV4Wnd::OnLBtnUp(int x, int y) {
     const int mapY = y - 46;
     if (mapY >= 0 && mapY <= 266) {
       const int mapX = x - 3;
-      if (mapX >= 0 && mapX <= 266 && g_navigationManager.displayMode == 2) {
+      if (mapX >= 0 && mapX <= 266 && g_navigationManager.displayMode == NAVIGATION_DISPLAY_SHARE_MAP) {
         NavigationTarget target = g_navigationManager.GetCurrentTarget();
         CNaviInfo* info = static_cast<CNaviInfo*>(target.object);
         const int width = info->GetCellX();
@@ -3801,7 +3803,7 @@ void UINavigationV4Wnd::RefreshLayout() {
     this->moveButton->Move(-1000, -1000);
   } else {
     this->Resize(272, 338);
-    if (g_navigationManager.displayMode == 0) {
+    if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_SEARCH) {
       this->LayoutWithDetails();
     } else {
       this->LayoutWithoutDetails();

@@ -16,6 +16,7 @@
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Items/ItemDescription.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Tables/MessageTable.h"
@@ -783,9 +784,9 @@ void UIParaItemShopWnd::Paint() {
 
     std::string currency = "Z";
     if (this->showFooter == 1) {
-      if (g_serviceType == 6) {
+      if (g_serviceType == ServiceIndonesia) {
         currency = "K";
-      } else if (g_serviceType == 0) {
+      } else if (g_serviceType == ServiceKorea) {
         if (g_session.m_channelCopId == 1) {
           currency = "H";
         } else {
@@ -813,7 +814,7 @@ void UIParaItemShopWnd::Paint() {
 
   if (this->showFooter == 1) {
     std::string text;
-    if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
+    if (g_serviceType == ServiceKorea && g_session.m_channelCopId == 1) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP_NHN), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingAid));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingAid));

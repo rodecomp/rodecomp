@@ -39,6 +39,12 @@ float g_navigationPointScale = 0.0078125f;
 // GLOBAL: gl_25084
 float g_navigationMarkerScale = 0.453125f;
 
+namespace {
+  enum NavigationRouteListMode : int {
+    NAVIGATION_ROUTE_LIST_MODE_SHOW_ROUTE = 2,
+  };
+}
+
 // GLOBAL: gl_24610
 int g_navigationMode;
 
@@ -193,7 +199,7 @@ void UINavigationWnd::LayoutTabs() {
   const int x = this->geometry.width - 222;
   if (!g_navigationManager.expandedMap) {
     UIWindow* footer;
-    if (g_navigationManager.displayMode == 1) {
+    if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_ROUTE) {
       this->m_searchPanel->Move(x, 37);
       this->m_searchPanel->Invalidate();
       footer = this->m_searchFooter;
@@ -212,7 +218,7 @@ void UINavigationWnd::LayoutTabs() {
 // FUNCTION: fn_12771
 void UINavigationWnd::RefreshHeaderTexts(int mode) {
   if (g_navigationManager.expandedMap) {
-    if (mode == 2) {
+    if (mode == NAVIGATION_VIEW_ROUTE) {
       char text[260];
       char saved[260];
       std::memset(text, 0, sizeof(text));
@@ -240,7 +246,7 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
 // FUNCTION: fn_12772
 void UIRoMapWnd::RefreshWorldMapMarks() {
   g_worldViewMgr.ClearMarks();
-  if (g_navigationManager.viewMode == 2) {
+  if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE) {
     std::string name;
     for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
       CNavi_Link* node = g_navigationManager.GetNode(index);
@@ -298,7 +304,7 @@ void UINavigationWnd::RefreshRouteList() {
   this->m_searchPanel->Invalidate();
 
   const int nodeCount = g_navigationManager.NodeCount();
-  if (g_navigationMode != 2) {
+  if (g_navigationMode != NAVIGATION_ROUTE_LIST_MODE_SHOW_ROUTE) {
     return;
   }
 
@@ -314,7 +320,7 @@ void UINavigationWnd::RefreshRouteList() {
   this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
 
   int lineOffset;
-  if (target.type == 2) {
+  if (target.type == NAVIGATION_TARGET_NPC) {
     CNavi_Object* npc = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), npc->GetInfo()->GetTitle(), npc->GetInfo()->GetName());
@@ -326,7 +332,7 @@ void UINavigationWnd::RefreshRouteList() {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_D_D), npc->GetName(), npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 5;
-  } else if (target.type == 3) {
+  } else if (target.type == NAVIGATION_TARGET_MOB) {
     CNavi_Object* mob = static_cast<CNavi_Object*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), mob->GetInfo()->GetTitle(), mob->GetInfo()->GetName());
@@ -334,19 +340,19 @@ void UINavigationWnd::RefreshRouteList() {
 
     {
       std::string kind;
-      kind = LookupMessage(mob->GetType() == 301 ? 0x8B6 : 0x8B7);
+      kind = LookupMessage(mob->GetType() == NAVIGATION_OBJECT_BOSS_MOB ? MSI_NAVIGATION_BOSS : MSI_NAVIGATION_NORMAL);
       std::memset(text, 0, sizeof(text));
       std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGET_S_S), mob->GetName(), kind.c_str());
       this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     }
     lineOffset = 5;
-  } else if (target.type == 1) {
+  } else if (target.type == NAVIGATION_TARGET_MAP) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), map->GetTitle(), map->GetName());
     this->SendMsg(nullptr, UM_ADDITEM, 441, reinterpret_cast<std::intptr_t>(text), 0, 0);
     lineOffset = 4;
-  } else if (target.type == 0) {
+  } else if (target.type == NAVIGATION_TARGET_CELL) {
     CNaviInfo* map = static_cast<CNaviInfo*>(target.object);
     std::memset(text, 0, sizeof(text));
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_TARGETMAP_S_S), map->GetTitle(), map->GetName());
@@ -374,7 +380,7 @@ void UINavigationWnd::RefreshRouteList() {
     std::memset(text, 0, 64);
     CNavi_Link* node = g_navigationManager.GetNode(index);
     if (index == 0) {
-      if (node->GetType() == 400) {
+      if (node->GetType() == NAVIGATION_OBJECT_SCROLL) {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_ITEM_S_S), index, node->GetName(), node->GetLinkedName());
       } else {
         int column = 0;
@@ -420,7 +426,7 @@ void UINavigationWnd::RefreshRouteList() {
     destinationY = g_navigationManager.GetDestinationCell(&cell)->y;
   }
 
-  if (savedType == 2 || savedType == 0) {
+  if (savedType == NAVIGATION_TARGET_NPC || savedType == NAVIGATION_TARGET_CELL) {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_E_D_S_D_D_D_D), nodeCount, destination.c_str(), startX, startY, destinationX, destinationY);
   } else {
     std::sprintf(text, LookupMessage(MSI_NAVIGATION_E_D_S), nodeCount, destination.c_str());
@@ -612,16 +618,16 @@ void UINavigationWnd::Paint() {
   int size = 0x80;
   this->FillRegion(6, 0x25, 0x82, 0x82, 0x646464);
 
-  if (g_navigationManager.previewType == 2) {
+  if (g_navigationManager.previewType == NAVIGATION_PREVIEW_OBJECT) {
     int markerSize = size;
-    if (targetType == 2) {
+    if (targetType == NAVIGATION_TARGET_NPC) {
       markerSize = size - 0x3D;
       size = 0x3A;
       if (mapCellX > -1 && mapCellY > -1) {
         mapCellX = static_cast<int>(static_cast<float>(mapCellX) * g_navigationMarkerScale);
         mapCellY = static_cast<int>(static_cast<float>(mapCellY) * g_navigationMarkerScale);
       }
-    } else if (targetType == 3) {
+    } else if (targetType == NAVIGATION_TARGET_MOB) {
       size = 0x20;
     }
     this->DrawActionSprite(g_navigationManager.previewSprite, g_navigationManager.previewAction, 7, 0x26, markerSize, 0x80, 0x5dc, true, nullptr);
@@ -639,9 +645,9 @@ void UINavigationWnd::Paint() {
   }
 
   bool drawCrosshair = true;
-  if (g_navigationManager.viewMode == 2) {
+  if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE) {
     if (g_navigationManager.IsCurrentTarget(g_session.m_navigationPlayerMap)) {
-      if (g_navigationManager.displayMode == 1) {
+      if (g_navigationManager.displayMode == NAVIGATION_DISPLAY_ROUTE) {
         drawCrosshair = false;
       }
       this->DrawRoutePoints(mapX, mapY, static_cast<float>(size));
@@ -686,9 +692,9 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case ID_OK: {
       this->Invalidate();
       int result = g_navigationManager.SaveCurrentTarget();
-      if (result == 0) {
+      if (result == NAVIGATION_RESULT_SUCCESS) {
         result = NavigateTo(g_navigationManager.GetSavedTarget());
-        if (result >= 0) {
+        if (result >= NAVIGATION_RESULT_SUCCESS) {
           this->SendMsg(this, UM_COMMAND, ID_BUTTON1, 0, 0, 0);
           this->RefreshRouteList();
           if (g_windowMgr.modal) {
@@ -696,7 +702,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           }
         }
       }
-      g_navigationManager.ShowRouteResult(result, 1);
+      g_navigationManager.ShowRouteResult(result, NAVIGATION_RESULT_DISPLAY_CHAT);
       return 0;
     }
     case ID_SEARCH:
@@ -729,14 +735,14 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case NAVI_BUTTON_VIEW_CHANGE:
       if (!g_navigationManager.expandedMap && this->m_saved->expanded) {
         const int targetType = g_navigationManager.GetCurrentTarget().type;
-        if (targetType != 1 && targetType != 6 && targetType != 0) {
-          if (g_navigationManager.previewType == 1) {
-            g_navigationManager.previewType = 2;
+        if (targetType != NAVIGATION_TARGET_MAP && targetType != NAVIGATION_TARGET_ROUTE_NODE && targetType != NAVIGATION_TARGET_CELL) {
+          if (g_navigationManager.previewType == NAVIGATION_PREVIEW_MAP) {
+            g_navigationManager.previewType = NAVIGATION_PREVIEW_OBJECT;
             this->Invalidate();
             return 0;
           }
-          if (g_navigationManager.previewType == 2) {
-            g_navigationManager.previewType = 1;
+          if (g_navigationManager.previewType == NAVIGATION_PREVIEW_OBJECT) {
+            g_navigationManager.previewType = NAVIGATION_PREVIEW_MAP;
           }
           this->Invalidate();
           return 0;
@@ -758,12 +764,12 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case ID_CLOSE:
-      if (g_navigationManager.viewMode == 2) {
+      if (g_navigationManager.viewMode == NAVIGATION_VIEW_ROUTE) {
         const int response = g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "메시지", 280, 120, 0);
         if (response != 0xBB) {
           break;
         }
-        g_navigationManager.SetViewMode(0);
+        g_navigationManager.SetViewMode(NAVIGATION_VIEW_INACTIVE);
       }
       g_worldViewMgr.ClearMarks();
       g_worldViewMgr.ClearLevels();
@@ -780,11 +786,11 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_windowMgr.navigationWnd = nullptr;
       return 0;
     case ID_BUTTON1:
-      g_navigationManager.displayMode = 1;
+      g_navigationManager.displayMode = NAVIGATION_DISPLAY_ROUTE;
       this->LayoutTabs();
       return 0;
     case ID_BUTTON2:
-      g_navigationManager.displayMode = 0;
+      g_navigationManager.displayMode = NAVIGATION_DISPLAY_SEARCH;
       this->LayoutTabs();
       return 0;
     case NAVI_BUTTON_DATA: {
@@ -932,10 +938,10 @@ void UINavigationWnd::FillRouteList() {
   for (int index = 0; index < g_navigationManager.StateCount(); ++index) {
     std::memset(text, 0, sizeof(text));
     NavigationTarget state = g_navigationManager.GetState(index);
-    if (state.type == 2) {
+    if (state.type == NAVIGATION_TARGET_NPC) {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
       std::sprintf(text, LookupMessage(MSI_NAVIGATION_NPC_S_S), object->GetInfo()->GetName(), object->GetName());
-    } else if (state.type == 3) {
+    } else if (state.type == NAVIGATION_TARGET_MOB) {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
       const int flag = object->GetFlag();
       if (flag > 0) {
@@ -944,9 +950,9 @@ void UINavigationWnd::FillRouteList() {
       } else {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_MOB_S_S), object->GetInfo()->GetName(), object->GetName());
       }
-    } else if (state.type == 1) {
+    } else if (state.type == NAVIGATION_TARGET_MAP) {
       std::sprintf(text, LookupMessage(MSI_NAVIGATION_MAP_S), static_cast<CNaviInfo*>(state.object)->GetName());
-    } else if (state.type == 0) {
+    } else if (state.type == NAVIGATION_TARGET_CELL) {
       CNaviInfo* info = static_cast<CNaviInfo*>(state.object);
       if (state.name.empty()) {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_ALL_S), info->GetName(), state.cell.first, state.cell.second);

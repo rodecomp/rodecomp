@@ -20,13 +20,13 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
   for (std::vector<NaviLink>::iterator it = this->startLinks.begin(); it != this->startLinks.end(); ++it) {
     CNavi_Link* link = it->link;
     const int type = link->GetType();
-    if (type == 204 && !allowGates) {
+    if (type == NAVIGATION_OBJECT_SERVICE_WARP && !allowGates) {
       continue;
     }
-    if (type == 205 && !allowWarps) {
+    if (type == NAVIGATION_OBJECT_AIRSHIP && !allowWarps) {
       continue;
     }
-    if (type != 202 && type != 203) {
+    if (type != NAVIGATION_OBJECT_UNKNOWN_202 && type != NAVIGATION_OBJECT_UNKNOWN_203) {
       if (link->GetLinkedInfo()->IsVisited()) {
         continue;
       }
@@ -34,12 +34,12 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
       if (allowGates != true) {
         continue;
       }
-      if (type == 202) {
-        if (side != 2) {
+      if (type == NAVIGATION_OBJECT_UNKNOWN_202) {
+        if (side != NAVIGATION_ROUTE_SIDE_UNKNOWN_2) {
           continue;
         }
-      } else if (type == 203) {
-        if (side != 1) {
+      } else if (type == NAVIGATION_OBJECT_UNKNOWN_203) {
+        if (side != NAVIGATION_ROUTE_SIDE_UNKNOWN_1) {
           continue;
         }
       } else {
@@ -119,13 +119,13 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
         }
 
         const int type = next->GetType();
-        if (type == 204 && !allowGates) {
+        if (type == NAVIGATION_OBJECT_SERVICE_WARP && !allowGates) {
           continue;
         }
-        if (type == 205 && !allowWarps) {
+        if (type == NAVIGATION_OBJECT_AIRSHIP && !allowWarps) {
           continue;
         }
-        if (type != 202 && type != 203) {
+        if (type != NAVIGATION_OBJECT_UNKNOWN_202 && type != NAVIGATION_OBJECT_UNKNOWN_203) {
           if (next->GetLinkedInfo()->IsVisited()) {
             continue;
           }
@@ -133,12 +133,12 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
           if (allowGates != true) {
             continue;
           }
-          if (type == 202) {
-            if (side != 2) {
+          if (type == NAVIGATION_OBJECT_UNKNOWN_202) {
+            if (side != NAVIGATION_ROUTE_SIDE_UNKNOWN_2) {
               continue;
             }
-          } else if (type == 203) {
-            if (side != 1) {
+          } else if (type == NAVIGATION_OBJECT_UNKNOWN_203) {
+            if (side != NAVIGATION_ROUTE_SIDE_UNKNOWN_1) {
               continue;
             }
           } else {

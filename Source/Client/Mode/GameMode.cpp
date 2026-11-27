@@ -2520,7 +2520,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       ITEM_INFO item = g_session.LookupClientItemByIdentity(argument1);
       const std::uint32_t state = this->scene->player->GetStateFlags();
       const int bodyState = this->scene->player->bodyState;
-      if (IsHiding(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != ITEMID_RUNSTONE_NOSIEGE)) {
+      if (IsHiding(state) || ((bodyState == OPT1_SLEEP || bodyState == OPT1_STONE) && item.GetItemId() != ITEMID_RUNSTONE_NOSIEGE)) {
         return 0;
       }
       if (this->scene->player->render.state == 6 &&
@@ -2587,7 +2587,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       const ITEM_INFO item = g_session.LookupClientItemByIdentity(argument1);
-      if (this->scene->player->bodyState == 4 || this->scene->player->bodyState == 1) {
+      if (this->scene->player->bodyState == OPT1_SLEEP || this->scene->player->bodyState == OPT1_STONE) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PACKAGEITEM_SLEEPSTONECURSEFAIL)), 0xFF, 0, 0, 0);
         return 0;
       }
@@ -5616,7 +5616,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
 // OFFSET: 0x00CFE480
 // FUNCTION: fn_21432
 void CGameMode::RefreshStatusStateEffect(int actorId) {
-  if (g_windowMgr.windowVisibilityState != 2 && actorId == static_cast<int>(g_session.m_aid)) {
+  if (g_windowMgr.windowVisibilityState != WINDOW_VISIBILITY_HIDDEN && actorId == static_cast<int>(g_session.m_aid)) {
     this->scene->player->skillEffect->SendMsg(nullptr, AM_SETCOUNT, 0, 1, 0, 0, 0, 0);
   }
 }
@@ -7241,7 +7241,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   this->noMoveStartTick = timeGetTime();
   this->scene->player->SendMsg(nullptr, AM_FREEZE, 0, 0, 0, 0, 0, 0);
   if (g_screenShakeDuration > 0) {
-    g_screenShakeDuration = g_screenShakeMode == 2 ? 10001 : g_screenShakeDuration;
+    g_screenShakeDuration = g_screenShakeMode == SCREEN_SHAKE_ILLUSION ? 10001 : g_screenShakeDuration;
   }
 
   if (g_replayAnimationScaling == 0) {
@@ -8392,7 +8392,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
     return;
   }
 
-  if (requireControl != 0 && !HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
+  if (requireControl != MOUSE_INPUT_UNHANDLED && !HIBYTE(GetAsyncKeyState(VK_CONTROL))) {
     return;
   }
 
@@ -8722,7 +8722,7 @@ void CGameMode::Initialize(const char* name) {
     g_windowMgr.ShowWindowById(WID_CHATWND, Replay::Instance().header.options.recordRestricted);
   }
 
-  if (g_screenShakeMode == 2) {
+  if (g_screenShakeMode == SCREEN_SHAKE_ILLUSION) {
     if (g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0) {
       this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, EFST_ILLUSION, 1, 0, 0, 0, 0);
     } else {
@@ -8918,7 +8918,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     }
   }
 
-  handled = 1;
+  handled = MOUSE_INPUT_HANDLED;
   if (selfTargetOption) {
     attack = 1;
   }
@@ -9077,13 +9077,13 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
       UINameBalloonText* balloon = itemBalloon;
       unsigned char monsterType;
       if (actor->GetEffectiveJob(-1) == 20269) {
-        monsterType = 0;
+        monsterType = MONSTER_BALLOON_NO_ICON;
       } else {
         monsterType = actor->hpGaugeFlags;
       }
       balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
     } else {
-      itemBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
+      itemBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, MONSTER_BALLOON_NO_ICON);
     }
 
     const unsigned char showEmblem = g_serviceOptions.Get(TT_SHOW_EMBLEM_ON_OFF);
@@ -9113,7 +9113,7 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
 int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   if (g_mouse.buttons[0] == 1 && pick) {
     UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
-    if (reporter && reporter->activeOnly == true && reporter->m_mode == 0) {
+    if (reporter && reporter->activeOnly == true && reporter->m_mode == MACRO_REPORT_MODE_CHARACTER) {
       reporter->AddPickedActor(pick);
       return -1;
     }
@@ -9137,11 +9137,11 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         if (!pick) {
           return result;
         }
-        result = 0;
+        result = MOUSE_INPUT_UNHANDLED;
       }
     } else {
       if (g_mouse.buttons[0] == 2) {
-        return 1;
+        return MOUSE_INPUT_HANDLED;
       }
       if (!pick && clickTarget == 0 && pickTarget == 0) {
         this->lockOnMouse = 0;
@@ -9164,7 +9164,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
       if (pick) {
         if (pick->kind == ACTOR_PICK_PET) {
           this->SetCursorAction(CURSOR_ACTION_DEFAULT);
-          return 0;
+          return MOUSE_INPUT_UNHANDLED;
         }
         if (pick->kind == ACTOR_PICK_COMPANION) {
           this->SetCursorAction(CURSOR_ACTION_DEFAULT);
@@ -9196,9 +9196,9 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     }
   }
 
-  if (pick && result == 0) {
+  if (pick && result == MOUSE_INPUT_UNHANDLED) {
     this->ShowActorNameBalloon(pick->accountId);
-    result = this->HandleActorPick(pick, 0);
+    result = this->HandleActorPick(pick, MOUSE_INPUT_UNHANDLED);
   }
   return result;
 }
@@ -9213,7 +9213,7 @@ int CGameMode::ProcessGroundClick(int result) {
   int row;
   UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
   if (reporter) {
-    if (reporter->activeOnly == true && reporter->m_mode == 1) {
+    if (reporter->activeOnly == true && reporter->m_mode == MACRO_REPORT_MODE_CELL) {
       column = -1;
       row = -1;
       this->PickScreenTerrain(column, row);
@@ -9359,15 +9359,15 @@ int CGameMode::ProcessGroundClick(int result) {
             message.level = this->skillUseLevel;
             message.target = 0;
             mercenary->SetMsg2AI(&message, 1);
-            return 1;
+            return MOUSE_INPUT_HANDLED;
           }
         }
       }
     }
   }
 
-  if (this->skillUseType == SUT_TO_GROUND && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
-    result = 1;
+  if (this->skillUseType == SUT_TO_GROUND && g_mouse.buttons[0] == 1 && (result == MOUSE_INPUT_UNHANDLED || result == MOUSE_INPUT_PASS_THROUGH)) {
+    result = MOUSE_INPUT_HANDLED;
     if (g_session.IsHomunculusSkill(this->skillId) == 1 && g_session.homunAlive == 1) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI() == true) {
@@ -9383,7 +9383,7 @@ int CGameMode::ProcessGroundClick(int result) {
           message.skill = this->skillId;
           message.target = 0;
           homun->SetMsg2AI(&message, 0);
-          return 1;
+          return MOUSE_INPUT_HANDLED;
         }
         }
       }
@@ -9403,7 +9403,7 @@ int CGameMode::ProcessGroundClick(int result) {
   if (this->noMove != 0) {
     return result;
   }
-  if (result != 0 && result != 2) {
+  if (result != MOUSE_INPUT_UNHANDLED && result != MOUSE_INPUT_PASS_THROUGH) {
     return result;
   }
   if (this->drag.source != DRAG_NONE) {
@@ -9726,8 +9726,8 @@ void CGameMode::ProcessInput() {
     this->windowInvalidateTick = timeGetTime();
   }
 
-  if (handled == 2) {
-    handled = 0;
+  if (handled == MOUSE_INPUT_PASS_THROUGH) {
+    handled = MOUSE_INPUT_UNHANDLED;
   }
 
   if (this->skillUseType != SUT_NOSKILL) {
@@ -9766,7 +9766,7 @@ void CGameMode::ProcessInput() {
 
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
-  if (handled == 0) {
+  if (handled == MOUSE_INPUT_UNHANDLED) {
     const std::intptr_t mode = this->skillUseType;
     g_session.UpdateMonsterInfoEnabled(mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL);
     if (pick) {
@@ -9805,14 +9805,14 @@ void CGameMode::ProcessInput() {
       !g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
     handled = this->ProcessGroundClick(this->ProcessMousePick(handled, pick));
     this->UpdateHoverNameBalloon();
-    if (handled != 1 && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
+    if (handled != MOUSE_INPUT_HANDLED && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
       g_windowMgr.SetFocus(nullptr);
     }
-  } else if (pick && handled == 0) {
+  } else if (pick && handled == MOUSE_INPUT_UNHANDLED) {
     this->ShowActorNameBalloon(pick->accountId);
   }
 
-  if ((handled == 1 || g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
+  if ((handled == MOUSE_INPUT_HANDLED || g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) && g_mouse.buttons[0] == MOUSE_BUTTON_PRESSED) {
     g_moveRequestPending = false;
     this->SendMsg(MM_CANCEL_USE_SKILL, 0, 0, 0, 0);
     if (timeGetTime() > this->noMoveStartTick + 5000) {
@@ -9826,7 +9826,7 @@ void CGameMode::ProcessInput() {
     this->ProcessStatusIconTooltip(g_mouse.x, g_mouse.y);
   }
 
-  if (handled == 0) {
+  if (handled == MOUSE_INPUT_UNHANDLED) {
     if (this->skillUseType != SUT_NOSKILL) {
       this->SetCursorAction(CURSOR_ACTION_SKILL);
     } else if (g_mouse.buttons[1] != MOUSE_BUTTON_HELD) {
@@ -11016,7 +11016,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
 
   if (attack && actor->render.state != ST_DEAD) {
     this->SetCursorAction(skillMode == 0 ? CURSOR_ACTION_ATTACK : CURSOR_ACTION_SKILL_TARGET);
-    handled = 1;
+    handled = MOUSE_INPUT_HANDLED;
   } else if (skillMode && actor->render.state != ST_DEAD) {
     this->SetCursorAction(CURSOR_ACTION_SKILL);
   } else {
@@ -11320,12 +11320,12 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       if (pick->job != JT_WARPNPC && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
         this->SetCursorAction(CURSOR_ACTION_INTERACT);
         if (g_mouse.buttons[0] == 2) {
-          result = 2;
+          result = MOUSE_INPUT_PASS_THROUGH;
         } else {
-          result = 1;
+          result = MOUSE_INPUT_HANDLED;
         }
       } else if (pick->job != JT_WARPNPC) {
-        result = 1;
+        result = MOUSE_INPUT_HANDLED;
         if (g_session.IsPlayerJob(pick->job)) {
           const std::intptr_t mode = this->skillUseType;
           int skillMode;
@@ -11388,11 +11388,11 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           const int state = actor != nullptr ? actor->render.state : 3;
           if (attack && state != ST_DEAD) {
             this->SetCursorAction(skillMode ? CURSOR_ACTION_SKILL_TARGET : CURSOR_ACTION_ATTACK);
-            result = 1;
+            result = MOUSE_INPUT_HANDLED;
             this->lastPcGid = pick->accountId;
           } else {
             this->SetCursorAction(skillMode && state != ST_DEAD ? CURSOR_ACTION_SKILL : CURSOR_ACTION_DEFAULT);
-            result = 0;
+            result = MOUSE_INPUT_UNHANDLED;
             if (g_mouse.buttons[0] == 0 && this->lockOnMouse == 0 && this->lastMonGid == 0) {
               this->lastPcGid = pick->accountId;
             }
@@ -11400,7 +11400,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         } else if (g_session.IsNpcJob(pick->job) == true) {
           this->SetCursorAction(CURSOR_ACTION_INTERACT);
           if (g_mouse.buttons[0] == 2) {
-            result = 2;
+            result = MOUSE_INPUT_PASS_THROUGH;
           }
         } else if (g_session.IsMonsterClass(pick->job)) {
           const std::intptr_t mode = this->skillUseType;
@@ -11448,16 +11448,16 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             this->lastMonGid = pick->accountId;
           }
           if (g_mouse.buttons[0] == 2 || g_mouse.buttons[1] == 2) {
-            result = 2;
+            result = MOUSE_INPUT_PASS_THROUGH;
           }
         }
       } else {
         this->SetCursorAction(CURSOR_ACTION_WARP);
-        result = 2;
+        result = MOUSE_INPUT_PASS_THROUGH;
       }
       break;
     case ACTOR_PICK_GROUND_SKILL: {
-      result = 1;
+      result = MOUSE_INPUT_HANDLED;
       int action;
       if (g_session.GetSiegeMode()) {
         switch (pick->job) {
@@ -11526,29 +11526,29 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
       this->SetCursorAction(action);
       if (g_mouse.buttons[0] == 2) {
-        result = 2;
+        result = MOUSE_INPUT_PASS_THROUGH;
       }
       break;
     }
     case ACTOR_PICK_ITEM:
-      result = 1;
+      result = MOUSE_INPUT_HANDLED;
       this->SetCursorAction(CURSOR_ACTION_PICKUP);
       if (g_mouse.buttons[0] == 2) {
-        result = 2;
+        result = MOUSE_INPUT_PASS_THROUGH;
       }
       break;
     case ACTOR_PICK_PET:
-      result = 0;
+      result = MOUSE_INPUT_UNHANDLED;
       this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       break;
     case ACTOR_PICK_COMPANION: {
-      result = 0;
+      result = MOUSE_INPUT_UNHANDLED;
       this->SetCursorAction(CURSOR_ACTION_DEFAULT);
       CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
       if (actor != nullptr && actor->render.state != ST_DEAD) {
         if (g_session.m_aid == static_cast<std::uint32_t>(actor->emblemVersion)) {
           if (actor->objectType == NPC_HO_TYPE && this->skillId == AM_POTIONPITCHER) {
-            result = 1;
+            result = MOUSE_INPUT_HANDLED;
             this->SetCursorAction(CURSOR_ACTION_SKILL_TARGET);
             this->lastMonGid = pick->accountId;
           }
@@ -11561,7 +11561,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
                 break;
               }
             }
-            result = 1;
+            result = MOUSE_INPUT_HANDLED;
             this->SetCursorAction(CURSOR_ACTION_ATTACK);
             this->lastMonGid = pick->accountId;
           }
@@ -11587,7 +11587,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         }
         this->RequestPlayerAction(pick->accountId, 1);
         this->forcedAttack = 0;
-        return 0;
+        return MOUSE_INPUT_UNHANDLED;
       }
       break;
     }
@@ -11611,7 +11611,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     if (allowed && attack) {
       this->RequestPlayerAction(pick->accountId, 1);
     }
-    return 0;
+    return MOUSE_INPUT_UNHANDLED;
   }
   case ACTOR_PICK_CHARACTER: {
     if (pick->job == JT_WARPNPC) {
@@ -11879,7 +11879,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     }
   case ACTOR_PICK_PET:
     this->SetCursorAction(CURSOR_ACTION_DEFAULT);
-    return 0;
+    return MOUSE_INPUT_UNHANDLED;
   case ACTOR_PICK_ITEM:
     if (g_mouse.buttons[0] == 1 && this->skillUseType == SUT_NOSKILL) {
       this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);

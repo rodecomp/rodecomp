@@ -9,6 +9,12 @@
 class FontCache;
 struct TextLocale;
 
+enum MonsterBalloonType : unsigned char {
+  MONSTER_BALLOON_NO_ICON = 0,
+  MONSTER_BALLOON_BOSS = 1,
+  MONSTER_BALLOON_MVP = 2,
+};
+
 class UIBalloonText : public UIWindow {
   friend class UIBalloonOpenBtn;
   friend class UIHotKeyWnd;

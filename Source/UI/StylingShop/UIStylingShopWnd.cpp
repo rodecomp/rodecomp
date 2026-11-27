@@ -1262,11 +1262,11 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
     char path[128];
     memset(path, 0, sizeof(path));
     bool accessory = true;
-    if (type == 4) {
+    if (type == STYLE_TABLE_TOP_ACCESSORY) {
       id = this->m_display->topAccessoryItemId;
-    } else if (type == 5) {
+    } else if (type == STYLE_TABLE_MID_ACCESSORY) {
       id = this->m_display->middleAccessoryItemId;
-    } else if (type == 6) {
+    } else if (type == STYLE_TABLE_BOTTOM_ACCESSORY) {
       id = this->m_display->bottomAccessoryItemId;
     } else {
       accessory = false;
@@ -1282,11 +1282,11 @@ void UIShowInfoWnd::DrawPaymentItem(const int& type, const int& zeny, const int&
 
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   } else if (id != 0) {
-    if (type == 4) {
+    if (type == STYLE_TABLE_TOP_ACCESSORY) {
       id = this->m_display->topAccessoryItemId;
-    } else if (type == 5) {
+    } else if (type == STYLE_TABLE_MID_ACCESSORY) {
       id = this->m_display->middleAccessoryItemId;
-    } else if (type == 6) {
+    } else if (type == STYLE_TABLE_BOTTOM_ACCESSORY) {
       id = this->m_display->bottomAccessoryItemId;
     }
 
@@ -1490,6 +1490,18 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   this->Invalidate();
   return 0;
 }
+
+enum StyleChangeKind : int {
+  STYLE_CHANGE_HAIR_PALETTE = 0,
+  STYLE_CHANGE_HAIR = 1,
+  STYLE_CHANGE_BODY_PALETTE = 2,
+  STYLE_CHANGE_TOP_ACCESSORY = 3,
+  STYLE_CHANGE_MID_ACCESSORY = 4,
+  STYLE_CHANGE_BOTTOM_ACCESSORY = 5,
+  STYLE_CHANGE_DORAM_HAIR = 6,
+  STYLE_CHANGE_DORAM_BODY_PALETTE = 8,
+  STYLE_CHANGE_BODY_STYLE = 9,
+};
 
 #pragma pack(push, 1)
 struct StyleChangeHeader {
@@ -1866,7 +1878,7 @@ bool UIShowInfoWnd::SendStyleChange() {
   bool changed = false;
   int index = 0;
   for (std::list<int>::iterator it = this->m_list.begin(); it != this->m_list.end(); ++it, ++index) {
-    int kind = 0;
+    int kind = STYLE_CHANGE_HAIR_PALETTE;
     int value = 0;
     const int type = *it;
     if (type == STYLE_TABLE_HEAD_PALETTE) {
@@ -1883,7 +1895,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         int table = STYLE_TABLE_HEAD_STYLE;
         int seq = 0;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->head, &seq);
-        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
+        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? STYLE_CHANGE_DORAM_HAIR : STYLE_CHANGE_HAIR;
         value = seq;
       }
     } else if (type == STYLE_TABLE_BODY_PALETTE) {
@@ -1892,7 +1904,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         int table = STYLE_TABLE_BODY_PALETTE;
         int seq = 0;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bodyStyle, &seq);
-        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
+        kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? STYLE_CHANGE_DORAM_BODY_PALETTE : STYLE_CHANGE_BODY_PALETTE;
         value = seq;
       }
     } else if (type == STYLE_TABLE_TOP_ACCESSORY) {
@@ -1901,7 +1913,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         int table = STYLE_TABLE_TOP_ACCESSORY;
         int seq = 0;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->topAccessoryItemId, &seq);
-        kind = 3;
+        kind = STYLE_CHANGE_TOP_ACCESSORY;
         value = seq;
       }
     } else if (type == STYLE_TABLE_MID_ACCESSORY) {
@@ -1910,7 +1922,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         int table = STYLE_TABLE_MID_ACCESSORY;
         int seq = 0;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->middleAccessoryItemId, &seq);
-        kind = 4;
+        kind = STYLE_CHANGE_MID_ACCESSORY;
         value = seq;
       }
     } else if (type == STYLE_TABLE_BOTTOM_ACCESSORY) {
@@ -1919,7 +1931,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         int table = STYLE_TABLE_BOTTOM_ACCESSORY;
         int seq = 0;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bottomAccessoryItemId, &seq);
-        kind = 5;
+        kind = STYLE_CHANGE_BOTTOM_ACCESSORY;
         value = seq;
       }
     } else if (type == STYLE_TABLE_BODY_STYLE) {
@@ -1928,7 +1940,7 @@ bool UIShowInfoWnd::SendStyleChange() {
         std::map<int, int>::iterator job = this->m_display->m_jobs.find(this->m_display->job);
         if (this->m_display->m_jobs.end() != job) {
           value = job->second;
-          kind = 9;
+          kind = STYLE_CHANGE_BODY_STYLE;
         }
       }
     }

@@ -1,4 +1,6 @@
 #include "Client/Mode/GameModeEnums.h"
+#include "Client/Mode/GameModeResultEnums.h"
+#include "UI/Items/UINotifyItemObtainWnd.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeDragState.h"
 #include "UI/GameSettings/TalkType.h"
@@ -3305,11 +3307,11 @@ __declspec(noinline) void CGameMode::Zc_Msg(const unsigned char* packet) {
     break;
   }
 
-  int type = 0;
+  int type = CHAT_MESSAGE_STANDARD;
   switch (p->msgId) {
   case MSI_CAN_NOT_OFFER_EXP_TO_GUILD_MAX_LV:
   case MSI_CAN_NOT_OFFER_EXP_TO_GUILD_MAX_EXP:
-    type = 0x17;
+    type = CHAT_MESSAGE_GUILD_EXP_TRIBUTE;
     break;
   }
 
@@ -3613,7 +3615,7 @@ __declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned c
   const auto* p = reinterpret_cast<const PACKET_ZC_ACK_ITEMIDENTIFY*>(packet);
   ITEM_INFO item = g_session.LookupClientItemByIdentity(p->index);
   if (item.identity[1] > 0) {
-    item.placeEtcTab = p->result == 0;
+    item.placeEtcTab = p->result == ITEMIDENTIFY_SUCCESS;
     g_session.UpdateInventoryItem(item, 1);
   }
 }
@@ -5307,7 +5309,7 @@ void CGameMode::ProcessSkillUsePacket(const unsigned char* packet, int type) {
   int property;
   int delay;
   unsigned char flag = 0;
-  if (type == 0) {
+  if (type == SKILL_USE_ACK_BASIC) {
     sourceAid = p->srcId;
     targetAid = p->dstId;
     property = p->element;
@@ -5315,7 +5317,7 @@ void CGameMode::ProcessSkillUsePacket(const unsigned char* packet, int type) {
     skillId = p->skillId;
     x = p->x;
     y = p->y;
-  } else if (type == 1) {
+  } else if (type == SKILL_USE_ACK_DISPOSABLE) {
     sourceAid = p->srcId;
     targetAid = p->dstId;
     property = p->element;
@@ -8146,6 +8148,15 @@ struct RandomOptionSimulationRecord {
 #pragma pack(pop)
 
 static_assert(sizeof(RandomOptionSimulationRecord) == 0x25);
+enum RandomOptionSimulationType : unsigned char {
+  RANDOM_OPT_TYPE_MUST_1 = 0,
+  RANDOM_OPT_TYPE_MUST_2 = 1,
+  RANDOM_OPT_TYPE_MUST_3 = 2,
+  RANDOM_OPT_TYPE_MUST_4 = 3,
+  RANDOM_OPT_TYPE_MUST_5 = 4,
+  RANDOM_OPT_TYPE_RANDOM = 5,
+};
+
 
 // OFFSET: 0x00D606B0
 // FUNCTION: fn_21974
@@ -8183,7 +8194,7 @@ void CGameMode::ReceiveRandomOptionSimulation(const unsigned char* packet) {
       const char* optionName = nullptr;
       if (g_session.m_hotkeyScript->Call("GetVarOptionName", "d>s", option->optionId, &optionName)) {
         std::fprintf(file, "\t%s", ToUtf8(std::string(optionName), g_textCodePage).c_str());
-        if (type == 5) {
+        if (type == RANDOM_OPT_TYPE_RANDOM) {
           std::fprintf(
             file, "\t\t%d\t%d\t(%d/%d)\t%d\t(%d/%d)\t%.2f%%\n", option->reportValue, option->firstRatioValue, option->firstRatioNumerator,
             option->firstRatioDenominator, option->secondRatioValue, option->secondRatioNumerator, option->secondRatioDenominator,
@@ -8448,7 +8459,7 @@ __declspec(noinline) void CGameMode::ReceiveReputeOpen(std::uint64_t groupId, st
 // OFFSET: 0x00D7B550
 // FUNCTION: fn_22206
 __declspec(noinline) void CGameMode::ReceiveUiOpen(unsigned char type, std::uint64_t data) {
-  if (type == 10) {
+  if (type == OUT_UI_ENCHANT) {
     if (!CEnchantMgr::s_instance) {
       CEnchantMgr::s_instance = new (std::nothrow) CEnchantMgr;
     }
@@ -9668,7 +9679,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
@@ -9715,7 +9726,7 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (this->isWaitingCancelExchangeItem != 0) {
       this->isWaitingCancelExchangeItem = 0;
@@ -9769,7 +9780,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
@@ -9820,7 +9831,7 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (this->isWaitingCancelExchangeItem != 0) {
       this->isWaitingCancelExchangeItem = 0;
@@ -9874,7 +9885,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
@@ -9928,7 +9939,7 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (this->isWaitingCancelExchangeItem != 0) {
       this->isWaitingCancelExchangeItem = 0;
@@ -9984,7 +9995,7 @@ namespace {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
@@ -10044,7 +10055,7 @@ namespace {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
       g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
@@ -11143,7 +11154,7 @@ namespace {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
@@ -11207,7 +11218,7 @@ namespace {
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, ITEM_OBTAIN_NOTICE_ITEM, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
       g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
@@ -11630,7 +11641,7 @@ void CGameMode::ReceiveActorAction(
     }
   }
 
-  if (actor->render.state == 0 && static_cast<CGameActor*>(actor)->hitTargetAid != targetAid && act.type != 1 && act.type != 2 && act.type != 3) {
+  if (actor->render.state == ST_STAND && static_cast<CGameActor*>(actor)->hitTargetAid != targetAid && act.type != DMG_PICKUP_ITEM && act.type != DMG_SIT_DOWN && act.type != DMG_STAND_UP) {
     if (sourceAid == g_session.m_aid) {
       if (this->scene->GetGameActorByAID(g_session.petGid)) {
         const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
@@ -13169,8 +13180,8 @@ namespace {
 void CGameMode::ReceiveEquipItemResult(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_ACK_ADD_SWAP_EQUIPITEM*>(packet);
   const std::uint16_t result = p->result;
-  if (result != 0) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(result == 3 ? MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM : MSI_SWAP_EQUIPITEM_CANNOT_ADD_ITEM)), 0xFF, 0, 0, 0);
+  if (result != ADD_SWAP_EQUIPITEM_SUCCESS) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(result == ADD_SWAP_EQUIPITEM_NO_ITEM ? MSI_SWAP_EQUIPITEM_FAIL_NO_ITEM : MSI_SWAP_EQUIPITEM_CANNOT_ADD_ITEM)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -13425,7 +13436,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
   MirrorSkillSpawnData data;
   data.aid = aid;
   data.owner = owner;
-  data.type = 0x126;
+  data.type = UNT_SHINKIROU;
   data.x = x;
   data.y = y;
   data.visible = 1;
@@ -16565,6 +16576,13 @@ void CGameMode::ReceiveItemBroadcast(const unsigned char* data) {
   }
 }
 
+enum RateInfoType : unsigned char {
+  RATE_INFO_PC_CAFE = 0,
+  RATE_INFO_UNKNOWN_1 = 1,
+  RATE_INFO_SERVER = 2,
+  RATE_INFO_TPLUS = 3,
+};
+
 #pragma pack(push, 1)
 struct RateInfoRecord {
   /* 0000 */ unsigned char type;
@@ -16749,12 +16767,12 @@ void CGameMode::ReceiveRateInfo(const unsigned char* packet) {
   const RateInfoRecord* record = reinterpret_cast<const RateInfoRecord*>(p + 1);
   for (int i = count; i != 0; --i, ++record) {
     const RateInfoRecord entry = *record;
-    if (entry.type == 0) {
+    if (entry.type == RATE_INFO_PC_CAFE) {
       basic = entry;
-    } else if (entry.type != 1) {
-      if (entry.type == 2) {
+    } else if (entry.type != RATE_INFO_UNKNOWN_1) {
+      if (entry.type == RATE_INFO_SERVER) {
         premium = entry;
-      } else if (entry.type == 3) {
+      } else if (entry.type == RATE_INFO_TPLUS) {
         server = entry;
       }
     }
@@ -16997,6 +17015,12 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   }
 }
 
+enum ItemObtainSourceType : unsigned char {
+  ITEMOBTAIN_TYPE_BOXITEM = 0,
+  ITEMOBTAIN_TYPE_MONSTER_ITEM = 1,
+  ITEMOBTAIN_TYPE_NPC = 2,
+};
+
 #pragma pack(push, 1)
 struct ItemObtainBroadcastPacket {
   /* 0000 */ std::uint16_t packetType;
@@ -17032,13 +17056,13 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
   std::string source;
   name.assign(packet->name, packet->nameLength);
   const auto* tail = reinterpret_cast<const ItemObtainSourceTail*>(data + packet->nameLength);
-  if (packet->sourceType == 0) {
+  if (packet->sourceType == ITEMOBTAIN_TYPE_BOXITEM) {
     const int boxItemId = tail->itemId;
     ITEM_INFO box;
     box.SetItemId(boxItemId);
     box.identified = 1;
     source = box.DisplayName(0);
-  } else if (packet->sourceType == 1) {
+  } else if (packet->sourceType == ITEMOBTAIN_TYPE_MONSTER_ITEM) {
     source.assign(tail->name, tail->length);
   }
 
@@ -17046,9 +17070,9 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
   item.SetItemId(packet->itemId);
   item.identified = 1;
   std::string text;
-  if (packet->sourceType == 2) {
+  if (packet->sourceType == ITEMOBTAIN_TYPE_NPC) {
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN2), name.c_str(), item.DisplayName(0).c_str()));
-  } else if (package && packet->sourceType == 0) {
+  } else if (package && packet->sourceType == ITEMOBTAIN_TYPE_BOXITEM) {
     const int count = tail->count;
     if (count > 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN_ADD_LEVEL), name.c_str(), source.c_str(), count, item.DisplayName(0).c_str()));
@@ -21779,6 +21803,11 @@ struct PACKET_ZC_PC_SELL_RESULT {
   /* 0002 */ unsigned char result;
 };
 
+enum DisconnectCharacterResult : unsigned char {
+  DISCONNECT_CHARACTER_FAILED = 0,
+  DISCONNECT_CHARACTER_SUCCESS = 1,
+};
+
 struct PACKET_ZC_ACK_DISCONNECT_CHARACTER {
   /* 0000 */ std::int16_t packetType;
   /* 0002 */ unsigned char result;
@@ -23772,7 +23801,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_DISCONNECT_CHARACTER: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACK_DISCONNECT_CHARACTER*>(g_gameModePacketBuffer);
       char text[80];
-      sprintf(text, LookupMessage(packet->result == 0 ? MSI_FAIL_DISCONNECT_CHARACTER : MSI_SUCCESS_DISCONNECT_CHARACTER));
+      sprintf(text, LookupMessage(packet->result == DISCONNECT_CHARACTER_FAILED ? MSI_FAIL_DISCONNECT_CHARACTER : MSI_SUCCESS_DISCONNECT_CHARACTER));
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
       break;
@@ -24403,7 +24432,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_navigationManager.ClearData();
       g_navigationManager.displayMode = 0;
       g_clanInfo->Clear();
-      if (packet->type == 1) {
+      if (packet->type == QUIT_EXIT) {
         g_timeScheduler->RemoveSchedulesByKey(6);
         g_timeScheduler->RemoveSchedulesByKey(5);
         g_timeScheduler->RemoveSchedulesByKey(7);
@@ -26033,10 +26062,10 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveHpSpRecovery(g_gameModePacketBuffer, 1);
       break;
     case ID_ZC_USESKILL_ACK:
-      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 0);
+      this->ProcessSkillUsePacket(g_gameModePacketBuffer, SKILL_USE_ACK_BASIC);
       break;
     case ID_ZC_USESKILL_ACK2:
-      this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
+      this->ProcessSkillUsePacket(g_gameModePacketBuffer, SKILL_USE_ACK_DISPOSABLE);
       break;
     case ID_ZC_USESKILL_ACK3:
       this->ReceiveActorSkillResult(g_gameModePacketBuffer);
@@ -26074,7 +26103,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PACKET_ZC_COMPASS*>(g_gameModePacketBuffer);
       const int type = packet->type;
       const std::uint32_t id = packet->id;
-      if (type == 2) {
+      if (type == COMPASS_REMOVE) {
         this->RemoveMiniMapPing(id);
         break;
       }
@@ -26372,7 +26401,7 @@ void CGameMode::ProcessIncomingPackets() {
       char name[25];
       std::memcpy(name, packet->otherCharName, 24);
       name[24] = 0;
-      if (packet->type == 0) {
+      if (packet->type == MP_PLUS) {
         char text[128];
         sprintf(text, LookupMessage(MSI_RECEIVE_PLUS_MANNER_POINT), name);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 0, 0, 0);

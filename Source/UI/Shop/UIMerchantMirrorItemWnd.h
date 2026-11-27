@@ -7,6 +7,12 @@
 #include <cstddef>
 #include <cstdint>
 
+enum MerchantMirrorMode : int {
+  MERCHANT_MIRROR_VENDING = 0,
+  MERCHANT_MIRROR_BUYING = 1,
+  MERCHANT_MIRROR_PURCHASE = 2,
+};
+
 class UIMerchantMirrorItemWnd : public UIItemBaseWnd {
 public:
   std::vector<unsigned char> GetReplayData() override;

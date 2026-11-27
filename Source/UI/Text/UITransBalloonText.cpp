@@ -13,7 +13,7 @@ UITransBalloonText::UITransBalloonText() : UIBalloonText(), m_borderColor(605295
 
 // OFFSET: 0x0084E8D0
 // FUNCTION: fn_10647
-UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(0) {
+UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(TEXT_FONT_FAMILY_DEFAULT) {
 }
 
 // OFFSET: 0x00865D10
@@ -21,31 +21,31 @@ UIAchBalloonText::UIAchBalloonText() : UITransBalloonText(), m_fontFamily(0) {
 void UIAchBalloonText::SetFontFamily(int mode) {
   switch (mode) {
   case TEXT_FONT_STYLE_RIX_LOVEANGEL:
-    this->m_fontFamily = 21;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_LOVEANGEL;
     return;
   case TEXT_FONT_STYLE_RIX_SQUIRREL:
-    this->m_fontFamily = 20;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_SQUIRREL;
     return;
   case TEXT_FONT_STYLE_RIX_NHCGOGO:
-    this->m_fontFamily = 22;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_NHCGOGO;
     return;
   case TEXT_FONT_STYLE_RIX_DIARY:
-    this->m_fontFamily = 23;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_DIARY;
     return;
   case TEXT_FONT_STYLE_RIX_MINI_HEART:
-    this->m_fontFamily = 24;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_MINI_HEART;
     return;
   case TEXT_FONT_STYLE_RIX_FRESHMAN:
-    this->m_fontFamily = 25;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_FRESHMAN;
     return;
   case TEXT_FONT_STYLE_RIX_KID:
-    this->m_fontFamily = 26;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_KID;
     return;
   case TEXT_FONT_STYLE_RIX_MAGIC:
-    this->m_fontFamily = 27;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_MAGIC;
     return;
   case TEXT_FONT_STYLE_RIX_JJANGU:
-    this->m_fontFamily = 28;
+    this->m_fontFamily = TEXT_FONT_FAMILY_RIX_JJANGU;
     return;
   }
 }
@@ -128,7 +128,7 @@ void UITransBalloonText::OnCreate(int, int) {
   this->m_rectangle.borderStyle = 0;
   this->m_rectangle.color = 1711276032u;
   this->m_rectangle.flags = 0;
-  this->m_fontMode = 0;
+  this->m_fontMode = TEXT_FONT_STYLE_DEFAULT;
 }
 
 // OFFSET: 0x008697E0
@@ -149,29 +149,29 @@ void UITransBalloonText::Paint() {
   std::uint32_t color = this->m_textColor;
   int y = 4;
   int height = this->m_fontHeight;
-  int family = 0;
+  int family = TEXT_FONT_FAMILY_DEFAULT;
   const std::int16_t mode = this->m_fontMode;
-  if (mode != 0) {
+  if (mode != TEXT_FONT_STYLE_DEFAULT) {
     height = 12;
   }
-  if (mode == 1) {
-    family = 21;
-  } else if (mode == 2) {
-    family = 20;
-  } else if (mode == 3) {
-    family = 22;
-  } else if (mode == 4) {
-    family = 23;
-  } else if (mode == 5) {
-    family = 24;
-  } else if (mode == 6) {
-    family = 25;
-  } else if (mode == 7) {
-    family = 26;
-  } else if (mode == 8) {
-    family = 27;
-  } else if (mode == 9) {
-    family = 28;
+  if (mode == TEXT_FONT_STYLE_RIX_LOVEANGEL) {
+    family = TEXT_FONT_FAMILY_RIX_LOVEANGEL;
+  } else if (mode == TEXT_FONT_STYLE_RIX_SQUIRREL) {
+    family = TEXT_FONT_FAMILY_RIX_SQUIRREL;
+  } else if (mode == TEXT_FONT_STYLE_RIX_NHCGOGO) {
+    family = TEXT_FONT_FAMILY_RIX_NHCGOGO;
+  } else if (mode == TEXT_FONT_STYLE_RIX_DIARY) {
+    family = TEXT_FONT_FAMILY_RIX_DIARY;
+  } else if (mode == TEXT_FONT_STYLE_RIX_MINI_HEART) {
+    family = TEXT_FONT_FAMILY_RIX_MINI_HEART;
+  } else if (mode == TEXT_FONT_STYLE_RIX_FRESHMAN) {
+    family = TEXT_FONT_FAMILY_RIX_FRESHMAN;
+  } else if (mode == TEXT_FONT_STYLE_RIX_KID) {
+    family = TEXT_FONT_FAMILY_RIX_KID;
+  } else if (mode == TEXT_FONT_STYLE_RIX_MAGIC) {
+    family = TEXT_FONT_FAMILY_RIX_MAGIC;
+  } else if (mode == TEXT_FONT_STYLE_RIX_JJANGU) {
+    family = TEXT_FONT_FAMILY_RIX_JJANGU;
   }
 
   for (std::size_t index = 0; index < this->m_lines.size(); ++index) {

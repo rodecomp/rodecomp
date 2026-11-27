@@ -31,6 +31,10 @@
 #include <cstring>
 #include <format>
 
+enum OngoingQuestType : __int64 {
+  ONGOING_QUEST_COOLDOWN = 1,
+};
+
 // GLOBAL: gl_25249
 static bool s_recommendedTabFirstSelect = true;
 
@@ -803,7 +807,7 @@ __declspec(noinline) int CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>
 // FUNCTION: fn_16610
 void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
   const int questId = this->questId;
-  if (this->questType == 2) {
+  if (this->questType == RENEW_QUEST_LIST_RECOMMENDED) {
     g_renewQuestMgr->SetRecommendedQuestActive(questId, active);
     if (auto* window = static_cast<CUIRenewQuestUI*>(g_windowMgr.LookupWindow(WID_RENEWQUESTUI))) {
       window->UpdateQuestLists(this->questType);
@@ -869,7 +873,7 @@ void CUIRenewQuestUI::Initialize() {
 void CUIRenewQuestUI::OnFilterButton(UIWindow* button) {
   if (button) {
     this->filter = button->geometry.id;
-    this->UpdateQuestLists(0xF);
+    this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
   }
 }
 
@@ -1027,7 +1031,7 @@ void RenewQuestUI::CUIQuestItem::OpenQuestInfo() {
     return;
   }
 
-  if (this->questType == 2) {
+  if (this->questType == RENEW_QUEST_LIST_RECOMMENDED) {
     if (CUIRecommendedQuestInfo* info = dynamic_cast<CUIRecommendedQuestInfo*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_RECOMMENDEDQUESTINFO)))) {
       info->SetQuest(this->questId);
       if (UIWindow* other = g_windowMgr.LookupWindow(WID_ONGOINGQUESTINFO)) {
@@ -1057,7 +1061,7 @@ void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned
 void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned long& questId) {
   item->questType = this->type;
   item->questId = questId;
-  if (this->type == 2) {
+  if (this->type == RENEW_QUEST_LIST_RECOMMENDED) {
     auto& quests = g_renewQuestMgr->m_recommendedQuests;
     auto found = quests.find(questId);
     if (found == quests.end()) {
@@ -1088,11 +1092,11 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->icon->tooltip = info.m_iconTooltip;
     item->titleText->SetText(info.m_title);
     item->descriptionText->SetText(info.summary);
-    item->simpleViewCheckBox->Show(this->type != 8);
+    item->simpleViewCheckBox->Show(this->type != RENEW_QUEST_LIST_WAIT);
     CUICheckBox* simpleViewCheckBox = item->simpleViewCheckBox;
     simpleViewCheckBox->checked = info.m_simpleView;
     simpleViewCheckBox->Invalidate();
-    item->activeCheckBox->Show(this->type != 8);
+    item->activeCheckBox->Show(this->type != RENEW_QUEST_LIST_WAIT);
     CUICheckBox* activeCheckBox = item->activeCheckBox;
     activeCheckBox->checked = info.m_active;
     activeCheckBox->Invalidate();
@@ -1106,7 +1110,7 @@ static void AddProgressingQuest(
   CUIRenewQuestUI* window, CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>* listBox, const std::pair<const unsigned int, RenewQuestOngoingInfo>& quest
 ) {
   const std::pair<const unsigned long, RenewQuestOngoingInfo> entry = quest;
-  if (window->MatchesFilter(entry.second) && entry.second.questType != 1 && entry.second.m_state != 0) {
+  if (window->MatchesFilter(entry.second) && entry.second.questType != ONGOING_QUEST_COOLDOWN && entry.second.m_state != 0) {
     listBox->AddData(entry.first, false);
   }
 }
@@ -1114,9 +1118,9 @@ static void AddProgressingQuest(
 // OFFSET: 0x00A67290
 // FUNCTION: fn_16629
 void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
-  if (flags & 1) {
+  if (flags & RENEW_QUEST_LIST_PROGRESS) {
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type != 1) {
+      if (list->type != RENEW_QUEST_LIST_PROGRESS) {
         continue;
       }
 
@@ -1135,9 +1139,9 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
     }
   }
 
-  if (flags & 2) {
+  if (flags & RENEW_QUEST_LIST_RECOMMENDED) {
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type != 2) {
+      if (list->type != RENEW_QUEST_LIST_RECOMMENDED) {
         continue;
       }
 
@@ -1169,9 +1173,9 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
     }
   }
 
-  if (flags & 4) {
+  if (flags & RENEW_QUEST_LIST_HOLD) {
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type != 4) {
+      if (list->type != RENEW_QUEST_LIST_HOLD) {
         continue;
       }
 
@@ -1182,7 +1186,7 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
           if (!this->MatchesFilter(entry.second)) {
             continue;
           }
-          if (entry.second.questType != 1 && entry.second.m_state == 0) {
+          if (entry.second.questType != ONGOING_QUEST_COOLDOWN && entry.second.m_state == 0) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1195,9 +1199,9 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
     }
   }
 
-  if (flags & 8) {
+  if (flags & RENEW_QUEST_LIST_WAIT) {
     for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-      if (list->type != 8) {
+      if (list->type != RENEW_QUEST_LIST_WAIT) {
         continue;
       }
 
@@ -1208,7 +1212,7 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
           if (!this->MatchesFilter(entry.second)) {
             continue;
           }
-          if (entry.second.questType == 1) {
+          if (entry.second.questType == ONGOING_QUEST_COOLDOWN) {
             listBox->AddData(entry.first, false);
           }
         }
@@ -1723,7 +1727,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->searchEdit->SetAlignment(0);
   this->searchEdit->SetOnSubmit([this]() {
     this->searchText = this->searchEdit->edit->Text();
-    this->UpdateQuestLists(0xF);
+    this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
   });
   this->AddChild(this->searchEdit);
 
@@ -1732,7 +1736,7 @@ void CUIRenewQuestUI::OnCreate(int width, int height) {
   this->searchButton->Move(342, 416);
   this->searchButton->SetOnClick([this]() {
     this->searchText = this->searchEdit->edit->Text();
-    this->UpdateQuestLists(0xF);
+    this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
   });
   CUIImageButton* searchButton = this->searchButton;
   searchButton->disabled = 0;
@@ -1823,21 +1827,21 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::Resize(int width, 
 // OFFSET: 0x00A659B0
 // FUNCTION: fn_16597
 RenewQuestUI::CUIQuestItem::CUIQuestItem()
-    : CUIListItem(), icon(nullptr), titleText(nullptr), descriptionText(nullptr), simpleViewCheckBox(nullptr), activeCheckBox(nullptr), questType(1),
+    : CUIListItem(), icon(nullptr), titleText(nullptr), descriptionText(nullptr), simpleViewCheckBox(nullptr), activeCheckBox(nullptr), questType(RENEW_QUEST_LIST_PROGRESS),
       questId(0), pressed(0), baseX(0), baseY(0) {
 }
 
 // OFFSET: 0x00A65A70
 // FUNCTION: fn_16598
-RenewQuestUI::CUIQuestList::CUIQuestList() : CUIControl(), list(nullptr), type(1) {
+RenewQuestUI::CUIQuestList::CUIQuestList() : CUIControl(), list(nullptr), type(RENEW_QUEST_LIST_PROGRESS) {
 }
 
 // OFFSET: 0x00A67E90
 // FUNCTION: fn_45515
 void CUIRenewQuestUI::OnProcessTabClick() {
-  this->RecordValues(0x16, 1, 0, 0, 0);
+  this->RecordValues(0x16, RENEW_QUEST_LIST_PROGRESS, 0, 0, 0);
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-    if (list->type == 1) {
+    if (list->type == RENEW_QUEST_LIST_PROGRESS) {
       if (list->list) {
         list->list->scrollBar->SetPosition(0);
       }
@@ -1849,9 +1853,9 @@ void CUIRenewQuestUI::OnProcessTabClick() {
 // OFFSET: 0x00A67EE0
 // FUNCTION: fn_45516
 void CUIRenewQuestUI::OnRecommendedTabClick() {
-  this->RecordValues(0x16, 2, 0, 0, 0);
+  this->RecordValues(0x16, RENEW_QUEST_LIST_RECOMMENDED, 0, 0, 0);
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-    if (list->type == 2) {
+    if (list->type == RENEW_QUEST_LIST_RECOMMENDED) {
       if (list->list) {
         if (s_recommendedTabFirstSelect) {
           list->list->SelectIndex(0);
@@ -1868,9 +1872,9 @@ void CUIRenewQuestUI::OnRecommendedTabClick() {
 // OFFSET: 0x00A67E40
 // FUNCTION: fn_45517
 void CUIRenewQuestUI::OnHoldTabClick() {
-  this->RecordValues(0x16, 4, 0, 0, 0);
+  this->RecordValues(0x16, RENEW_QUEST_LIST_HOLD, 0, 0, 0);
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-    if (list->type == 4) {
+    if (list->type == RENEW_QUEST_LIST_HOLD) {
       if (list->list) {
         list->list->scrollBar->SetPosition(0);
       }
@@ -1882,9 +1886,9 @@ void CUIRenewQuestUI::OnHoldTabClick() {
 // OFFSET: 0x00A67F50
 // FUNCTION: fn_45518
 void CUIRenewQuestUI::OnWaitTabClick() {
-  this->RecordValues(0x16, 8, 0, 0, 0);
+  this->RecordValues(0x16, RENEW_QUEST_LIST_WAIT, 0, 0, 0);
   for (RenewQuestUI::CUIQuestList* list : this->questLists) {
-    if (list->type == 8) {
+    if (list->type == RENEW_QUEST_LIST_WAIT) {
       if (list->list) {
         list->list->scrollBar->SetPosition(0);
       }
@@ -1897,7 +1901,7 @@ void CUIRenewQuestUI::OnWaitTabClick() {
 // FUNCTION: fn_45521
 void CUIRenewQuestUI::OnSearchSubmit() {
   this->searchText = this->searchEdit->edit->Text();
-  this->UpdateQuestLists(0xF);
+  this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
 }
 
 // OFFSET: 0x00A66100
@@ -1910,7 +1914,7 @@ void CUIRenewQuestUI::OnClose() {
 // FUNCTION: fn_45520
 void CUIRenewQuestUI::OnSearchButton() {
   this->searchText = this->searchEdit->edit->Text();
-  this->UpdateQuestLists(0xF);
+  this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
 }
 
 // OFFSET: 0x00A65AF0
@@ -1945,9 +1949,9 @@ void CUIRenewQuestUI::OnInit() {
 
   for (unsigned int index = 0; index < this->questLists.size(); ++index) {
     RenewQuestUI::CUIQuestList* list = this->questLists[index];
-    list->type = 1 << index;
+    list->type = RENEW_QUEST_LIST_PROGRESS << index;
   }
-  this->UpdateQuestLists(0xF);
+  this->UpdateQuestLists(RENEW_QUEST_LIST_ALL);
 
   for (UIWindow* child : this->filterPanel->m_children) {
     SetTabTooltip(static_cast<CUITabButton*>(child), g_renewQuestMgr->GetFilterName(child->geometry.id));

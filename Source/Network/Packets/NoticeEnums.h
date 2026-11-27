@@ -665,6 +665,7 @@ enum out_ui_type : int {
   OUT_UI_QUEST = 6,
   OUT_UI_ATTENDANCE = 7,
   OUT_UI_ENCHANTGRADE = 8,
+  OUT_UI_ENCHANT = 10,
 };
 
 enum ITEMCOMPOSITION_RESULT : int {

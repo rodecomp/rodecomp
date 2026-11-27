@@ -1674,11 +1674,11 @@ static __forceinline void RenderFacingQuad(
   const int doubled = alphaValue * 2;
   const int alpha = doubled >= 0 ? doubled : 0;
 
-  if (slot.flag1[5] == 7) {
+  if (slot.flag1[5] == FACING_QUAD_PINK_RED) {
     prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-  } else if (slot.flag1[5] == 8) {
+  } else if (slot.flag1[5] == FACING_QUAD_YELLOW) {
     prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-  } else if (slot.flag1[5] == 10) {
+  } else if (slot.flag1[5] == FACING_QUAD_WHITE) {
     prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   } else {
     prim.RenderTeiRect(rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -2237,7 +2237,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
     for (int ring = 10; ring >= 1; --ring) {
       const char kind = this->state.slots[ec].flag1[4];
       int spread = 10 - ring;
-      if (kind != 2) {
+      if (kind != RIPPLE_TIGHT_RAISED_LAYERS) {
         spread *= 3;
       }
 
@@ -2253,7 +2253,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
       SetVector(vec4, this->state.slots[ec].height[0] + this->state.slots[ec].vecTPre.x, 0.0f, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-      const float drop = kind == 2 ? 40.0f : 30.0f;
+      const float drop = kind == RIPPLE_TIGHT_RAISED_LAYERS ? 40.0f : 30.0f;
       vec1.y -= drop;
       vec2.y -= drop;
       vec3.y -= drop;
@@ -2810,13 +2810,13 @@ void CEffectPrim::RenderColorPlane(matrix& wtm) {
     vec4.Set(slot.vecBNow.x, height, slot.vecBNow.z);
     const float kind = slot.height[0];
 
-    if (kind == 1.0f) {
+    if (kind == static_cast<float>(COLOR_PLANE_PALE_RED_ALPHA_BLEND)) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 2.0f) {
+    } else if (kind == static_cast<float>(COLOR_PLANE_PALE_GREEN_ALPHA_BLEND)) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 3.0f) {
+    } else if (kind == static_cast<float>(COLOR_PLANE_YELLOW)) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 4.0f) {
+    } else if (kind == static_cast<float>(COLOR_PLANE_PALE_RED_ADDITIVE)) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 150, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -2991,7 +2991,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
 
     const float mode = this->state.slots[ec].height[5];
     const float level = this->state.slots[ec].height[3];
-    if (mode == 2.0f) {
+    if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_GREEN)) {
       if (level == 0.0f) {
         red = 105;
         blue = 105;
@@ -3012,7 +3012,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 3.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_BLUE)) {
       if (level == 0.0f) {
         red = 105;
         green = 105;
@@ -3033,7 +3033,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 4.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_YELLOW)) {
       if (level == 0.0f) {
         blue = 105;
         red = 255;
@@ -3054,7 +3054,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 5.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_RED)) {
       if (level == 0.0f) {
         green = 105;
         blue = 105;
@@ -3075,7 +3075,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 6.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_MAGENTA)) {
       if (level == 0.0f) {
         green = 105;
         blue = 255;
@@ -3096,7 +3096,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 7.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_CYAN)) {
       if (level == 0.0f) {
         red = 105;
         blue = 255;
@@ -3117,7 +3117,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       if (size > 0.0f) {
         this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 1);
       }
-    } else if (mode == 8.0f) {
+    } else if (mode == static_cast<float>(COLOR_PANEL_FOREGROUND_GRAYSCALE)) {
       if (level == 0.0f) {
         red = 105;
         green = 105;
@@ -3234,17 +3234,17 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       vec1.z = rx * g_sinTable[angle];
       vec1.y = 0.0f;
 
-      if (shape == 0.0f) {
+      if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
         angle -= 90;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 1.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
         angle -= 60;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 2.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
         angle -= 130;
         if (angle < 0) {
           angle += 360;
@@ -3254,17 +3254,17 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       vec2.z = rx * g_sinTable[angle];
       vec2.y = 0.0f;
 
-      if (shape == 0.0f) {
+      if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
         angle -= 90;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 1.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
         angle -= 120;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 2.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
         angle -= 50;
         if (angle < 0) {
           angle += 360;
@@ -3274,17 +3274,17 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
       vec3.z = rx * g_sinTable[angle];
       vec3.y = 0.0f;
 
-      if (shape == 0.0f) {
+      if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
         angle -= 90;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 1.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
         angle -= 60;
         if (angle < 0) {
           angle += 360;
         }
-      } else if (shape == 2.0f) {
+      } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
         angle -= 130;
         if (angle < 0) {
           angle += 360;
@@ -3580,17 +3580,17 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
     vec1.z = rx * g_sinTable[angle];
     vec1.y = 0.0f;
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -3600,17 +3600,17 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
     vec2.z = rx * g_sinTable[angle];
     vec2.y = 0.0f;
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -3620,17 +3620,17 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
     vec3.z = rx * g_sinTable[angle];
     vec3.y = 0.0f;
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_130_50)) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -3665,16 +3665,16 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
       }
 
       switch (this->state.slots[0].flag1[2]) {
-      case 0:
+      case BLADE_TRAIL_BLUE:
         this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 1:
+      case BLADE_TRAIL_PALEST_BLUE:
         this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 2:
+      case BLADE_TRAIL_SOFT_BLUE:
         this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 75, 75, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
-      case 3:
+      case BLADE_TRAIL_PALE_BLUE:
         this->RenderTeiRect(&rpCnt, alpha, p2, p1, p4, p3, wtm, 0, static_cast<unsigned char>(slot.flag1[0]), 1, 85, 85, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       }
@@ -3707,26 +3707,26 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
     vec3 = {0.0f, lift, 0.0f};
     vec4 = {0.0f, lift, 0.0f};
 
-    int left = this->state.slots[ec].riseAngle - (mode == 2.0f ? 1 : 2);
+    int left = this->state.slots[ec].riseAngle - (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW) ? 1 : 2);
     if (left < 0) {
       left += 360;
     }
     vec1 = {rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
-    int right = this->state.slots[ec].riseAngle + (mode == 2.0f ? 1 : 2);
+    int right = this->state.slots[ec].riseAngle + (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW) ? 1 : 2);
     if (right >= 360) {
       right -= 360;
     }
     vec2 = {length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
 
-    if (mode == 2.0f) {
+    if (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 3.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_WHITE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 4.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_BLUE_WITH_ALPHA_BLENDED_YELLOW)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 5.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_GRAY_WITH_ALPHA_BLENDED_WHITE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 6.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_FOREGROUND_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -3739,26 +3739,26 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
     rotSin = g_sinTable[this->state.slots[ec].rotStart];
     vec3 = {0.0f, lift, 0.0f};
     vec4 = {0.0f, lift, 0.0f};
-    left = this->state.slots[ec].riseAngle - (mode == 2.0f ? 2 : 5);
+    left = this->state.slots[ec].riseAngle - (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW) ? 2 : 5);
     if (left < 0) {
       left += 360;
     }
     vec1 = {rotCos * (length * g_cosTable[left]), rotSin * (length * g_cosTable[left]) + lift, length * g_sinTable[left]};
-    right = this->state.slots[ec].riseAngle + (mode == 2.0f ? 2 : 5);
+    right = this->state.slots[ec].riseAngle + (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW) ? 2 : 5);
     if (right >= 360) {
       right -= 360;
     }
     vec2 = {length * g_cosTable[right] * rotCos, length * g_cosTable[right] * rotSin + lift, length * g_sinTable[right]};
 
-    if (mode == 2.0f) {
+    if (mode == static_cast<float>(FAN_BEAM_NARROW_BLUE_AND_YELLOW)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 3.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_WHITE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 4.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_BLUE_WITH_ALPHA_BLENDED_YELLOW)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 5.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_GRAY_WITH_ALPHA_BLENDED_WHITE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 6.0f) {
+    } else if (mode == static_cast<float>(FAN_BEAM_FOREGROUND_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
     } else {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -3995,7 +3995,7 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
     vec3.Set(cs * (radius * g_cosTable[angle3]) - sn * 0.0f, radius * g_sinTable[angle3], sn * (radius * g_cosTable[angle3]) + cs * 0.0f);
     vec4.Set(cs * (radius * g_cosTable[angle4]) - sn * 0.0f, radius * g_sinTable[angle4], sn * (radius * g_cosTable[angle4]) + cs * 0.0f);
 
-    if (kind == 2) {
+    if (kind == ORBIT_SQUARE_FACING_PALE_RED) {
       const int face1 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
       const int face2 = face1 + (face1 + 90 < 360 ? 90 : -270);
       const int face3 = face2 + (face2 + 90 < 360 ? 90 : -270);
@@ -4004,7 +4004,7 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
       vec3.Set(radius * g_cosTable[face2], 0.0f, radius * g_sinTable[face2]);
       vec4.Set(radius * g_cosTable[face3], 0.0f, radius * g_sinTable[face3]);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    } else if (kind == 8 || kind == 9) {
+    } else if (kind == ORBIT_SQUARE_FACING_BLUE || kind == ORBIT_SQUARE_FACING_GRAY) {
       const int face1 = angle1 + (angle1 < 270 ? 90 : -270);
       const int face2 = face1 + (face1 + 90 < 360 ? 90 : -270);
       const int face3 = face2 + (face2 + 90 < 360 ? 90 : -270);
@@ -4021,25 +4021,25 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
     vec3.Set(offsetX + vec3.x + position.x, offsetY + vec3.y + position.y, offsetZ + vec3.z + position.z);
     vec4.Set(offsetX + vec4.x + position.x, offsetY + vec4.y + position.y, offsetZ + vec4.z + position.z);
 
-    if (kind == 0) {
+    if (kind == ORBIT_SQUARE_LIGHT_BLUE) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 100, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 1) {
+    } else if (kind == ORBIT_SQUARE_PALE_YELLOW) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 250, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 2) {
+    } else if (kind == ORBIT_SQUARE_FACING_PALE_RED) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 3) {
+    } else if (kind == ORBIT_SQUARE_BLUE) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 4) {
+    } else if (kind == ORBIT_SQUARE_RED) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 255, 50, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 5) {
+    } else if (kind == ORBIT_SQUARE_GREEN) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 50, 255, 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 6) {
+    } else if (kind == ORBIT_SQUARE_FOREGROUND_PALE_RED) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (kind == 7) {
+    } else if (kind == ORBIT_SQUARE_FOREGROUND_BLUE) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (kind == 8) {
+    } else if (kind == ORBIT_SQUARE_FACING_BLUE) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 50, 50, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (kind == 9) {
+    } else if (kind == ORBIT_SQUARE_FACING_GRAY) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 1, 70, 70, 70, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
   }
@@ -4283,7 +4283,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       char mode = this->state.slots[ec].flag1[4];
       int angle1;
       int angle2;
-      if (mode == 6 || mode == 7) {
+      if (mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW) {
         angle1 = 35;
         angle2 = 145;
       } else {
@@ -4291,7 +4291,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         angle2 = 135;
       }
       int step = 10 - i;
-      if (mode != 2 && mode != 4 && mode != 5) {
+      if (mode != HALO_LAYER_TIGHT_RAISED && mode != HALO_LAYER_TIGHT_RAISED_QUICK_FADE && mode != HALO_LAYER_TIGHT_WHITE_WITH_BLUE_GLOW) {
         step *= 3;
       }
       const float radius = static_cast<float>(step) + this->state.slots[ec].distance;
@@ -4299,12 +4299,12 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       this->state.slots[ec].vecBPre.y = 0.0f;
       this->state.slots[ec].vecBPre.z = g_sinTable[angle1] * radius;
       this->state.slots[ec].vecBNow = {radius * g_cosTable[angle2], 0.0f, g_sinTable[angle2] * radius};
-      unsigned angle3 = static_cast<unsigned>(angle2 + (mode == 6 || mode == 7 ? 70 : 90));
+      unsigned angle3 = static_cast<unsigned>(angle2 + (mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW ? 70 : 90));
       if (angle3 >= 360) {
         angle3 -= 360;
       }
       this->state.slots[ec].vecTNow = {radius * g_cosTable[angle3], 0.0f, g_sinTable[angle3] * radius};
-      int angle4 = static_cast<int>(angle3) + (mode == 6 || mode == 7 ? 110 : 90);
+      int angle4 = static_cast<int>(angle3) + (mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW ? 110 : 90);
       if (angle4 >= 360) {
         angle4 -= 360;
       }
@@ -4316,7 +4316,8 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       vec4.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecTPre.x, 0.0f, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
       mode = this->state.slots[ec].flag1[4];
-      const float lift = mode == 2 || mode == 4 || mode == 6 || mode == 7 ? 40.0f : 30.0f;
+      const float lift = mode == HALO_LAYER_TIGHT_RAISED || mode == HALO_LAYER_TIGHT_RAISED_QUICK_FADE ||
+                         mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW ? 40.0f : 30.0f;
       vec1.y -= lift;
       vec2.y -= lift;
       vec4.y -= lift;
@@ -4324,16 +4325,16 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
 
       const int alpha = static_cast<int>(this->state.slots[ec].height[i]);
       if (alpha > 0) {
-        if (mode == 0) {
+        if (mode == HALO_LAYER_BLACK_ALPHA_BLEND) {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (mode == 3) {
+        } else if (mode == HALO_LAYER_DARK_GRAY_WITH_OUTER_PASS) {
           if (i == 10) {
             this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 2), vec2, vec1, vec4, vec3, wtm, 1, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 10, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           }
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 10, 10, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (mode == 5) {
+        } else if (mode == HALO_LAYER_TIGHT_WHITE_WITH_BLUE_GLOW) {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-        } else if (mode == 6 || mode == 7) {
+        } else if (mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW) {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
           this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 1, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -4341,7 +4342,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       }
 
       mode = this->state.slots[ec].flag1[4];
-      if (mode == 5 || mode == 6 || mode == 7) {
+      if (mode == HALO_LAYER_TIGHT_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_BLUE_GLOW || mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW) {
         this->state.slots[ec].vecBPre = {this->state.slots[ec].vecBPre.x * 1.1f, this->state.slots[ec].vecBPre.y * 1.1f, this->state.slots[ec].vecBPre.z * 1.1f};
         this->state.slots[ec].vecBNow = {this->state.slots[ec].vecBNow.x * 1.1f, this->state.slots[ec].vecBNow.y * 1.1f, this->state.slots[ec].vecBNow.z * 1.1f};
         this->state.slots[ec].vecTPre = {this->state.slots[ec].vecTPre.x * 1.1f, this->state.slots[ec].vecTPre.y * 1.1f, this->state.slots[ec].vecTPre.z * 1.1f};
@@ -4351,7 +4352,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         vec3.Set(this->state.slots[ec].vecTNow.x + this->state.slots[ec].height[0], this->state.slots[ec].vecTNow.y, this->state.slots[ec].vecTNow.z);
         vec4.Set(this->state.slots[ec].vecTPre.x + this->state.slots[ec].height[0], this->state.slots[ec].vecTPre.y, this->state.slots[ec].vecTPre.z);
         this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-        const float outerLift = mode == 5 ? 30.0f : 40.0f;
+        const float outerLift = mode == HALO_LAYER_TIGHT_WHITE_WITH_BLUE_GLOW ? 30.0f : 40.0f;
         vec1.y -= outerLift;
         vec2.y -= outerLift;
         vec3.y -= outerLift;
@@ -4359,7 +4360,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
 
         const int outerAlpha = static_cast<int>(this->state.slots[ec].height[i]);
         if (outerAlpha > 0) {
-          if (mode == 7) {
+          if (mode == HALO_LAYER_WIDE_WHITE_WITH_RED_GLOW) {
             this->RenderTeiRect(
               &rpCnt, static_cast<short>(outerAlpha), vec2, vec1, vec4, vec3, wtm, 0, static_cast<unsigned char>(this->state.slots[ec].flag1[0]), 0, 255, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 0
             );
@@ -5246,7 +5247,7 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
     unsigned char r;
     unsigned char g;
     unsigned char b;
-    if (this->state.slots[ec].height[4] < 10.0f) {
+    if (this->state.slots[ec].height[4] < static_cast<float>(FADING_COLUMN_TIMED_BLUE)) {
       r = 200;
       g = 250;
       b = 200;
@@ -5406,22 +5407,22 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
     vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
     vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
 
-    if (slot.height[3] == 0.0f) {
+    if (slot.height[3] == static_cast<float>(PULSE_RING_WHITE_ADDITIVE)) {
       r = 255;
       g = 255;
       b = 255;
       p = false;
-    } else if (slot.height[3] == 1.0f) {
+    } else if (slot.height[3] == static_cast<float>(PULSE_RING_PALE_GREEN_ALPHA_BLEND)) {
       r = 235;
       g = 255;
       b = 235;
       p = true;
-    } else if (slot.height[3] == 2.0f) {
+    } else if (slot.height[3] == static_cast<float>(PULSE_RING_CROSS_BRACED_GRAY_ALPHA_BLEND)) {
       r = 80;
       g = 80;
       b = 80;
       p = true;
-    } else if (slot.height[3] == 4.0f) {
+    } else if (slot.height[3] == static_cast<float>(PULSE_RING_OSCILLATING_BLUE_CHANNEL)) {
       r = 255;
       g = 255;
       b = static_cast<unsigned char>(static_cast<int>(slot.height[4] + 0.0f + slot.height[5]));
@@ -5433,7 +5434,7 @@ void CEffectPrim::RenderRectUp(matrix& wtm) {
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, p, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, p, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    if (slot.height[3] == 2.0f) {
+    if (slot.height[3] == static_cast<float>(PULSE_RING_CROSS_BRACED_GRAY_ALPHA_BLEND)) {
       int alpha = slot.alphaB * 2;
 
       if (alpha > 255) {
@@ -6171,7 +6172,9 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
 
     const float size = this->state.size;
     int angle;
-    if (size == 100.0f || size >= 110.0f || (size == 4.0f && this->state.slots[ec].height[4] == 4.0f) || size == 10.0f || size == 0.0f) {
+    if (size == static_cast<float>(SIZED_SQUARE_DOUBLE_WHITE) || size >= static_cast<float>(SIZED_SQUARE_WHITE_ALPHA_BLEND) ||
+        (size == static_cast<float>(SIZED_SQUARE_CONDITIONAL_ROTATION) && this->state.slots[ec].height[4] == static_cast<float>(LAND_PROTECTOR_FAST_SPIN)) ||
+        size == static_cast<float>(SIZED_SQUARE_ROTATING_WHITE) || size == static_cast<float>(SIZED_SQUARE_ROTATING_WHITE_ALPHA_BLEND)) {
       angle = this->state.slots[ec].rotStart;
     } else {
       angle = ec * 23;
@@ -6213,31 +6216,31 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
     this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
 
     const float mode = this->state.size;
-    if (mode == 101.0f) {
+    if (mode == static_cast<float>(SIZED_SQUARE_DOUBLE_RED)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 102.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_CYAN)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 111.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_ROTATING_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 112.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_ROTATING_SOFT_GREEN)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 105, 225, 105, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 100.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_DOUBLE_WHITE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 110.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_WHITE_ALPHA_BLEND)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 113.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_FOREGROUND_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (mode == 114.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_FOREGROUND_RED)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 155, 5, 5, 0.0f, 1.0f, 0.0f, 1.0f, 1);
-    } else if (mode == 15.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_GREEN)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 35, 255, 35, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 17.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_PALE_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 105, 105, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode == 18.0f) {
+    } else if (mode == static_cast<float>(SIZED_SQUARE_BLUE)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 35, 35, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    } else if (mode != 0.0f) {
+    } else if (mode != static_cast<float>(SIZED_SQUARE_ROTATING_WHITE_ALPHA_BLEND)) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     } else {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -6523,24 +6526,24 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     vec3.Set(slot.vecBPre.x + corner3.x, slot.vecBPre.y + corner3.y, slot.vecBPre.z + corner3.z);
     vec4.Set(slot.vecBPre.x + corner4.x, slot.vecBPre.y + corner4.y, slot.vecBPre.z + corner4.z);
 
-    if (slot.flag1[0] <= 1) {
+    if (slot.flag1[0] <= GROUND_FOG_DOUBLE_BLUE) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+    } else if (slot.flag1[0] == GROUND_FOG_RISING_WHITE || slot.flag1[0] == GROUND_FOG_RISING_SCATTERED) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (slot.flag1[0] == 11) {
+    } else if (slot.flag1[0] == GROUND_FOG_GRAY_WANDERING_GHOST) {
       alpha = 250;
       if (vec1.y < -40.0f) {
         alpha = static_cast<int>((vec1.y + 40.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 15) {
+    } else if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
       alpha = 255 - 2 * slot.flag1[1];
     } else {
       alpha = 50;
@@ -6556,26 +6559,26 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
       alpha = 0;
     }
 
-    if (slot.flag1[0] == 15) {
-      if (slot.flag1[5] == 7) {
+    if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
+      if (slot.flag1[5] == FACING_QUAD_PINK_RED) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 8) {
+      } else if (slot.flag1[5] == FACING_QUAD_YELLOW) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     } else if (vec1.y <= 0.0f) {
-      if (slot.flag1[0] == 0) {
+      if (slot.flag1[0] == GROUND_FOG_DOUBLE_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 1) {
+      } else if (slot.flag1[0] == GROUND_FOG_DOUBLE_BLUE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 3) {
+      } else if (slot.flag1[0] == GROUND_FOG_YELLOW_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+      } else if (slot.flag1[0] == GROUND_FOG_WHITE || slot.flag1[0] == GROUND_FOG_RISING_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 11) {
+      } else if (slot.flag1[0] == GROUND_FOG_GRAY_WANDERING_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 155, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -6587,24 +6590,24 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     vec3.Set(slot.vecBNow.x + corner3.x, slot.vecBNow.y + corner3.y, slot.vecBNow.z + corner3.z);
     vec4.Set(slot.vecBNow.x + corner4.x, slot.vecBNow.y + corner4.y, slot.vecBNow.z + corner4.z);
 
-    if (slot.flag1[0] <= 1) {
+    if (slot.flag1[0] <= GROUND_FOG_DOUBLE_BLUE) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 11) {
+    } else if (slot.flag1[0] == GROUND_FOG_GRAY_WANDERING_GHOST) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+    } else if (slot.flag1[0] == GROUND_FOG_RISING_WHITE || slot.flag1[0] == GROUND_FOG_RISING_SCATTERED) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (slot.flag1[0] == 15) {
+    } else if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
       alpha = 255 - 2 * slot.flag1[2];
     } else {
       alpha = 50;
@@ -6620,26 +6623,26 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
       alpha = 0;
     }
 
-    if (slot.flag1[0] == 15) {
-      if (slot.flag1[5] == 7) {
+    if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
+      if (slot.flag1[5] == FACING_QUAD_PINK_RED) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 8) {
+      } else if (slot.flag1[5] == FACING_QUAD_YELLOW) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     } else if (vec1.y <= 0.0f) {
-      if (slot.flag1[0] == 0) {
+      if (slot.flag1[0] == GROUND_FOG_DOUBLE_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 1) {
+      } else if (slot.flag1[0] == GROUND_FOG_DOUBLE_BLUE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 3) {
+      } else if (slot.flag1[0] == GROUND_FOG_YELLOW_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+      } else if (slot.flag1[0] == GROUND_FOG_WHITE || slot.flag1[0] == GROUND_FOG_RISING_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] != 11) {
+      } else if (slot.flag1[0] != GROUND_FOG_GRAY_WANDERING_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
@@ -6649,19 +6652,19 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     vec3.Set(slot.vecTPre.x + corner3.x, slot.vecTPre.y + corner3.y, slot.vecTPre.z + corner3.z);
     vec4.Set(slot.vecTPre.x + corner4.x, slot.vecTPre.y + corner4.y, slot.vecTPre.z + corner4.z);
 
-    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+    if (slot.flag1[0] <= GROUND_FOG_DOUBLE_BLUE || slot.flag1[0] == GROUND_FOG_GRAY_WANDERING_GHOST) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+    } else if (slot.flag1[0] == GROUND_FOG_RISING_WHITE || slot.flag1[0] == GROUND_FOG_RISING_SCATTERED) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (slot.flag1[0] == 15) {
+    } else if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
       alpha = 255 - 2 * slot.flag1[3];
     } else {
       alpha = 50;
@@ -6677,26 +6680,26 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
       alpha = 0;
     }
 
-    if (slot.flag1[0] == 15) {
-      if (slot.flag1[5] == 7) {
+    if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
+      if (slot.flag1[5] == FACING_QUAD_PINK_RED) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 8) {
+      } else if (slot.flag1[5] == FACING_QUAD_YELLOW) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     } else if (vec1.y <= 0.0f) {
-      if (slot.flag1[0] == 0) {
+      if (slot.flag1[0] == GROUND_FOG_DOUBLE_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 1) {
+      } else if (slot.flag1[0] == GROUND_FOG_DOUBLE_BLUE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 3) {
+      } else if (slot.flag1[0] == GROUND_FOG_YELLOW_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+      } else if (slot.flag1[0] == GROUND_FOG_WHITE || slot.flag1[0] == GROUND_FOG_RISING_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] != 11) {
+      } else if (slot.flag1[0] != GROUND_FOG_GRAY_WANDERING_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
@@ -6706,19 +6709,19 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
     vec3.Set(slot.vecTNow.x + corner3.x, slot.vecTNow.y + corner3.y, slot.vecTNow.z + corner3.z);
     vec4.Set(slot.vecTNow.x + corner4.x, slot.vecTNow.y + corner4.y, slot.vecTNow.z + corner4.z);
 
-    if (slot.flag1[0] <= 1 || slot.flag1[0] == 11) {
+    if (slot.flag1[0] <= GROUND_FOG_DOUBLE_BLUE || slot.flag1[0] == GROUND_FOG_GRAY_WANDERING_GHOST) {
       alpha = 250;
       if (vec1.y < -20.0f) {
         alpha = static_cast<int>((vec1.y + 20.0f) * 25.0f + 250.0f);
       }
-    } else if (slot.flag1[0] == 14 || slot.flag1[0] == 16) {
+    } else if (slot.flag1[0] == GROUND_FOG_RISING_WHITE || slot.flag1[0] == GROUND_FOG_RISING_SCATTERED) {
       alpha = 100;
       if (vec1.y > -10.0f) {
         alpha = static_cast<int>(150.0f - (vec1.y + 10.0f) * 15.0f);
       } else if (vec1.y < -40.0f) {
         alpha = 0;
       }
-    } else if (slot.flag1[0] == 15) {
+    } else if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
       alpha = 255 - 2 * slot.flag1[4];
     } else {
       alpha = 50;
@@ -6734,26 +6737,26 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundFog(matrix& wtm) {
       alpha = 0;
     }
 
-    if (slot.flag1[0] == 15) {
-      if (slot.flag1[5] == 7) {
+    if (slot.flag1[0] == GROUND_FOG_HORIZONTAL_DRIFT) {
+      if (slot.flag1[5] == FACING_QUAD_PINK_RED) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 70, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[5] == 8) {
+      } else if (slot.flag1[5] == FACING_QUAD_YELLOW) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 10, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       } else {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     } else if (vec1.y <= 0.0f) {
-      if (slot.flag1[0] == 0) {
+      if (slot.flag1[0] == GROUND_FOG_DOUBLE_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 1) {
+      } else if (slot.flag1[0] == GROUND_FOG_DOUBLE_BLUE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 80, 80, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 3) {
+      } else if (slot.flag1[0] == GROUND_FOG_YELLOW_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 55, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] == 10 || slot.flag1[0] == 14) {
+      } else if (slot.flag1[0] == GROUND_FOG_WHITE || slot.flag1[0] == GROUND_FOG_RISING_WHITE) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else if (slot.flag1[0] != 11) {
+      } else if (slot.flag1[0] != GROUND_FOG_GRAY_WANDERING_GHOST) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 70, 120, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
     }
@@ -8105,6 +8108,8 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
   ZeroVector3d vec3;
   ZeroVector3d vec4;
 
+  const float& rectangle130_50 = g_effectIconOuterRadius;
+
   for (int ec = 0; ec < 4; ++ec) {
 
     const short alpha = this->state.slots[ec].alphaB;
@@ -8118,17 +8123,17 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     int angle = this->state.slots[ec].fullDisplayAngle;
     vec1 = {dist * g_cosTable[angle], 0.0f, dist * g_sinTable[angle]};
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == g_effectIconOuterRadius) {
+    } else if (shape == rectangle130_50) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -8136,17 +8141,17 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     }
     vec2 = {dist * g_cosTable[angle], 0.0f, dist * g_sinTable[angle]};
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == g_effectIconOuterRadius) {
+    } else if (shape == rectangle130_50) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -8154,17 +8159,17 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     }
     vec3 = {dist * g_cosTable[angle], 0.0f, dist * g_sinTable[angle]};
 
-    if (shape == 0.0f) {
+    if (shape == static_cast<float>(TEI_QUAD_SQUARE)) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (shape == static_cast<float>(TEI_QUAD_RECTANGLE_60_120)) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == g_effectIconOuterRadius) {
+    } else if (shape == rectangle130_50) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;

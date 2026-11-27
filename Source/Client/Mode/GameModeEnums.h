@@ -448,4 +448,32 @@ enum BuyingStoreSellerTradeResult : short {
   BUYING_STORE_SELLER_LACK_BUYER_ZENY = 7,
 };
 
+enum ScreenShakeMode : char {
+  SCREEN_SHAKE_DEFAULT = 0,
+  SCREEN_SHAKE_DARKNESS = 1,
+  SCREEN_SHAKE_ILLUSION = 2,
+};
+
+enum SkillUseAckType : int {
+  SKILL_USE_ACK_BASIC = 0,
+  SKILL_USE_ACK_DISPOSABLE = 1,
+};
+
+enum CompassType : int {
+  COMPASS_TEMPORARY = 0,
+  COMPASS_TODEAD = 1,
+  COMPASS_REMOVE = 2,
+};
+
+enum MannerPointType : unsigned char {
+  MP_PLUS = 0,
+  MP_MINUS = 1,
+  MP_SELF = 2,
+};
+
+enum RestartType : unsigned char {
+  QUIT_RESTART = 0,
+  QUIT_EXIT = 1,
+};
+
 #endif

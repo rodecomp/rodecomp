@@ -51,11 +51,11 @@ MacroReporterEntry::MacroReporterEntry(std::string name, int id, short reportVal
 // FUNCTION: fn_09832
 UIMacroReporterWnd::UIMacroReporterWnd()
     : UIFrameWnd(0), m_scrollBar(nullptr), m_scrollable(false), scrollBarWidth(13), m_firstRow(0), m_visibleRows(10), activeCheckBox(nullptr),
-      m_reportButton(nullptr), m_mode(0), m_edit(nullptr), reportCount(1), maxReportCount(5), m_state(nullptr), activeOnly(false) {
-  this->m_tabs[0] = nullptr;
-  this->m_tabs[1] = nullptr;
-  this->m_tabs[2] = nullptr;
-  this->m_tabs[3] = nullptr;
+      m_reportButton(nullptr), m_mode(MACRO_REPORT_MODE_CHARACTER), m_edit(nullptr), reportCount(1), maxReportCount(5), m_state(nullptr), activeOnly(false) {
+  this->m_tabs[MACRO_REPORT_MODE_CHARACTER] = nullptr;
+  this->m_tabs[MACRO_REPORT_MODE_CELL] = nullptr;
+  this->m_tabs[MACRO_REPORT_MODE_MAP] = nullptr;
+  this->m_tabs[MACRO_REPORT_MODE_QUIZ] = nullptr;
   this->m_namesValid = false;
   this->m_targetValid = false;
   this->m_nameCount = 0;
@@ -177,7 +177,7 @@ void UIMacroUserInfoWnd::OnCreate(int, int) {
 // OFFSET: 0x007F0EF0
 // FUNCTION: fn_09848
 void UIMacroReporterWnd::Paint() {
-  if (this->m_mode == 0 || this->m_mode == 1) {
+  if (this->m_mode == MACRO_REPORT_MODE_CHARACTER || this->m_mode == MACRO_REPORT_MODE_CELL) {
     if (this->m_entries.size() == 0) {
       UIButton* button = this->m_reportButton;
       button->SetDisabled(1);
@@ -187,7 +187,7 @@ void UIMacroReporterWnd::Paint() {
       button->SetDisabled(0);
       button->Invalidate();
     }
-  } else if (this->m_mode == 2 || this->m_mode == 3) {
+  } else if (this->m_mode == MACRO_REPORT_MODE_MAP || this->m_mode == MACRO_REPORT_MODE_QUIZ) {
     if (this->m_namesValid == 1 && this->m_targetValid == 1) {
       UIButton* button = this->m_reportButton;
       button->SetDisabled(0);
@@ -202,7 +202,7 @@ void UIMacroReporterWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
   this->DrawButtonBar(1, 0, 1);
 
-  if (this->m_mode != 0 && this->m_mode != 1) {
+  if (this->m_mode != MACRO_REPORT_MODE_CHARACTER && this->m_mode != MACRO_REPORT_MODE_CELL) {
     return;
   }
 
@@ -538,7 +538,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
   this->m_edit->SetTooltip(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_RANGE));
   this->AddChild(this->m_edit);
-  if (this->m_mode != 1) {
+  if (this->m_mode != MACRO_REPORT_MODE_CELL) {
     UIEditCtrl* edit = this->m_edit;
     edit->disabled = 1;
     edit->Invalidate();
@@ -548,6 +548,10 @@ void UIMacroReporterWnd::OnCreate(int, int) {
 }
 
 namespace {
+  enum MacroReportTargetType : std::uint8_t {
+    MACRO_REPORT_TARGET_MAP_LIST = 6,
+  };
+
 #pragma pack(push, 1)
   struct PACKET_CZ_MACRO_REPORT_HEADER {
     /* 0000 */ std::uint16_t packetType;
@@ -641,10 +645,10 @@ int UIMacroReporterWnd::SendMsg(
         break;
       }
       this->activeOnly = argument2 != 0;
-      if (this->m_mode == 2 || this->m_mode == 3) {
+      if (this->m_mode == MACRO_REPORT_MODE_MAP || this->m_mode == MACRO_REPORT_MODE_QUIZ) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
-      } else if (this->m_mode == 1 || this->m_mode == 0) {
+      } else if (this->m_mode == MACRO_REPORT_MODE_CELL || this->m_mode == MACRO_REPORT_MODE_CHARACTER) {
         if (argument2) {
           this->geometry.targetAlpha = 128;
           this->geometry.alphaStart = timeGetTime();
@@ -656,7 +660,7 @@ int UIMacroReporterWnd::SendMsg(
       break;
 
     case ID_SEND:
-      if (this->m_mode == 2 || this->m_mode == 3) {
+      if (this->m_mode == MACRO_REPORT_MODE_MAP || this->m_mode == MACRO_REPORT_MODE_QUIZ) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
         if (this->m_namesValid == true && this->m_targetValid == true) {
@@ -664,7 +668,7 @@ int UIMacroReporterWnd::SendMsg(
           strncpy_s(report.header.target, sizeof(report.header.target), this->m_target.c_str(), _TRUNCATE);
           report.header.count = static_cast<std::uint8_t>(this->m_nameCount);
           const int length = this->m_nameCount * 16 + sizeof(report.header);
-          report.header.type = 6;
+          report.header.type = MACRO_REPORT_TARGET_MAP_LIST;
           char buffer[2048];
           std::memset(buffer + sizeof(report.header), 0, sizeof(buffer) - sizeof(report.header));
           if (length > sizeof(buffer)) {
@@ -714,20 +718,20 @@ int UIMacroReporterWnd::SendMsg(
 
     case ID_RADIOBTN: {
       if (this->activeOnly) {
-        if (this->m_mode == 1 || this->m_mode == 0) {
-          if (argument2 == 2 || argument2 == 3) {
+        if (this->m_mode == MACRO_REPORT_MODE_CELL || this->m_mode == MACRO_REPORT_MODE_CHARACTER) {
+          if (argument2 == MACRO_REPORT_MODE_MAP || argument2 == MACRO_REPORT_MODE_QUIZ) {
             this->activeCheckBox->SetChecked(0);
           }
-        } else if (this->m_mode == 2 || this->m_mode == 3) {
-          if (argument2 == 0 || argument2 == 1) {
+        } else if (this->m_mode == MACRO_REPORT_MODE_MAP || this->m_mode == MACRO_REPORT_MODE_QUIZ) {
+          if (argument2 == MACRO_REPORT_MODE_CHARACTER || argument2 == MACRO_REPORT_MODE_CELL) {
             this->activeCheckBox->SetChecked(0);
           }
         }
       }
 
-      if (this->m_mode == 2) {
+      if (this->m_mode == MACRO_REPORT_MODE_MAP) {
         this->ValidateNames(0);
-      } else if (this->m_mode == 3) {
+      } else if (this->m_mode == MACRO_REPORT_MODE_QUIZ) {
         this->ValidateTarget(0);
       }
 
@@ -737,13 +741,13 @@ int UIMacroReporterWnd::SendMsg(
       }
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
-      if (this->m_tabs[1] == sender) {
+      if (this->m_tabs[MACRO_REPORT_MODE_CELL] == sender) {
         SetDisabledState(this->m_edit, 0);
       } else {
         SetDisabledState(this->m_edit, 1);
       }
 
-      if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
+      if (sender == this->m_tabs[MACRO_REPORT_MODE_CHARACTER] || sender == this->m_tabs[MACRO_REPORT_MODE_CELL]) {
         g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
           SetDisabledState(this->m_fields[index], 1);
@@ -768,9 +772,9 @@ int UIMacroReporterWnd::SendMsg(
         }
         for (int index = 0; index < this->m_visibleRows; ++index) {
           SetDisabledState(this->m_fields[index], 0);
-          if (sender == this->m_tabs[2]) {
+          if (sender == this->m_tabs[MACRO_REPORT_MODE_MAP]) {
             this->m_fields[index]->SetText(this->m_names[index].c_str());
-          } else if (sender == this->m_tabs[3]) {
+          } else if (sender == this->m_tabs[MACRO_REPORT_MODE_QUIZ]) {
             if (index == 0) {
               this->m_fields[index]->SetText(this->m_target.c_str());
             } else {
@@ -785,12 +789,12 @@ int UIMacroReporterWnd::SendMsg(
     break;
 
   case UM_DEFPUSH:
-    if (this->m_mode == 2) {
+    if (this->m_mode == MACRO_REPORT_MODE_MAP) {
       if (sender) {
         const int index = (sender->geometry.y - 56) / 22;
         this->m_names[index] = static_cast<UIEditCtrl*>(sender)->Text();
       }
-    } else if (this->m_mode == 3) {
+    } else if (this->m_mode == MACRO_REPORT_MODE_QUIZ) {
       if (sender && sender == this->m_fields[0]) {
         this->m_target = this->m_fields[0]->Text();
       }

@@ -53,6 +53,13 @@ struct MacroReporterState : MacroReporterWndInfo {
   /* 0014 */ std::vector<MacroReporterRecord> entries;
 };
 
+enum MacroReportMode : int {
+  MACRO_REPORT_MODE_CHARACTER = 0,
+  MACRO_REPORT_MODE_CELL = 1,
+  MACRO_REPORT_MODE_MAP = 2,
+  MACRO_REPORT_MODE_QUIZ = 3,
+};
+
 class UIMacroReporterWnd : public UIFrameWnd {
 public:
   UIMacroReporterWnd();

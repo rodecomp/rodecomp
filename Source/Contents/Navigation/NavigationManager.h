@@ -10,6 +10,79 @@
 #include <utility>
 #include <vector>
 
+enum NavigationTargetType : int {
+  NAVIGATION_TARGET_NONE = -1,
+  NAVIGATION_TARGET_CELL = 0,
+  NAVIGATION_TARGET_MAP = 1,
+  NAVIGATION_TARGET_NPC = 2,
+  NAVIGATION_TARGET_MOB = 3,
+  NAVIGATION_TARGET_UNKNOWN_4 = 4,
+  NAVIGATION_TARGET_ROUTE_NODE = 6,
+};
+
+enum NavigationSearchType : int {
+  NAVIGATION_SEARCH_ALL = 0,
+  NAVIGATION_SEARCH_MAP = 1,
+  NAVIGATION_SEARCH_NPC = 2,
+  NAVIGATION_SEARCH_MOB = 3,
+  NAVIGATION_SEARCH_UNKNOWN_4 = 4,
+};
+
+enum NavigationViewMode : int {
+  NAVIGATION_VIEW_INACTIVE = 0,
+  NAVIGATION_VIEW_SEARCH = 1,
+  NAVIGATION_VIEW_ROUTE = 2,
+};
+
+enum NavigationDisplayMode : int {
+  NAVIGATION_DISPLAY_SEARCH = 0,
+  NAVIGATION_DISPLAY_ROUTE = 1,
+  NAVIGATION_DISPLAY_SHARE_MAP = 2,
+};
+
+enum NavigationPreviewType : int {
+  NAVIGATION_PREVIEW_NONE = 0,
+  NAVIGATION_PREVIEW_MAP = 1,
+  NAVIGATION_PREVIEW_OBJECT = 2,
+};
+
+enum NavigationMapType : int {
+  NAVIGATION_MAP_STANDARD = 5001,
+  NAVIGATION_MAP_SCROLL = 5004,
+  NAVIGATION_MAP_UNKNOWN_5005 = 5005,
+};
+
+enum NavigationObjectType : int {
+  NAVIGATION_OBJECT_NPC_RECORD_LOWER_BOUND = 99,
+  NAVIGATION_OBJECT_UNKNOWN_100 = 100,
+  NAVIGATION_OBJECT_NPC = 101,
+  NAVIGATION_OBJECT_UNKNOWN_104 = 104,
+  NAVIGATION_OBJECT_LINK_RECORD_MIN = 199,
+  NAVIGATION_OBJECT_PORTAL = 200,
+  NAVIGATION_OBJECT_NPC_WARP = 201,
+  NAVIGATION_OBJECT_UNKNOWN_202 = 202,
+  NAVIGATION_OBJECT_UNKNOWN_203 = 203,
+  NAVIGATION_OBJECT_SERVICE_WARP = 204,
+  NAVIGATION_OBJECT_AIRSHIP = 205,
+  NAVIGATION_OBJECT_MOB = 300,
+  NAVIGATION_OBJECT_BOSS_MOB = 301,
+  NAVIGATION_OBJECT_MOB_RECORD_MAX = 398,
+  NAVIGATION_OBJECT_SCROLL = 400,
+};
+
+enum NavigationRouteSide : int {
+  NAVIGATION_ROUTE_SIDE_NONE = 0,
+  NAVIGATION_ROUTE_SIDE_UNKNOWN_1 = 1,
+  NAVIGATION_ROUTE_SIDE_UNKNOWN_2 = 2,
+};
+
+enum NavigationResultDisplayMode : int {
+  NAVIGATION_RESULT_DISPLAY_CHAT_AND_DIALOG = 0,
+  NAVIGATION_RESULT_DISPLAY_CHAT = 1,
+  NAVIGATION_RESULT_DISPLAY_DIALOG = 2,
+  NAVIGATION_RESULT_DISPLAY_UNKNOWN_4 = 4,
+};
+
 enum NavigationRouteResult : int {
   NAVIGATION_RESULT_UNKNOWN = -100,
   NAVIGATION_RESULT_NOT_SAME_MAP = -99,
@@ -249,7 +322,7 @@ public:
 // OFFSET: 0x00B8D8D0
 // FUNCTION: fn_19436
 __forceinline CNavi_Link::~CNavi_Link() {
-  this->type = 200;
+  this->type = NAVIGATION_OBJECT_PORTAL;
   this->linkedInfo = nullptr;
   this->linkedLinks.erase(this->linkedLinks.begin(), this->linkedLinks.end());
 }
@@ -356,7 +429,7 @@ struct NavigationTargetLook {
 
 struct NavigationTarget {
   NavigationTarget() {
-    this->type = -1;
+    this->type = NAVIGATION_TARGET_NONE;
     this->object = nullptr;
     this->cell.first = -1;
     this->cell.second = -1;
@@ -392,7 +465,7 @@ struct NavigationTarget {
 // OFFSET: 0x005C2C10
 // FUNCTION: fn_03544
 inline NavigationTarget::~NavigationTarget() {
-  this->type = -1;
+  this->type = NAVIGATION_TARGET_NONE;
   this->object = nullptr;
   this->cell.first = -1;
   this->cell.second = -1;

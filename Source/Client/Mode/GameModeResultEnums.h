@@ -111,4 +111,9 @@ enum ReplayOpenResult : int {
   REPLAY_OPEN_FILE_EXISTS = -2,
 };
 
+enum AddSwapEquipItemResult : unsigned short {
+  ADD_SWAP_EQUIPITEM_SUCCESS = 0,
+  ADD_SWAP_EQUIPITEM_NO_ITEM = 3,
+};
+
 #endif

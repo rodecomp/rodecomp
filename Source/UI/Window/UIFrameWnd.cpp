@@ -41,6 +41,7 @@
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Jobs/JobInheritance.h"
@@ -789,7 +790,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::strcpy(buffer, this->edit->Text());
       }
 
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(buffer)) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(buffer)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 255, 0, 0, 0);
         break;
       }
@@ -1030,7 +1031,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       const int leave = static_cast<int>(message.find(")님이 퇴장 하였습니다.", 0));
       const int colon = static_cast<int>(message.find(" :", 0));
       if (enter > 0 && enter < length) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+        if (g_serviceType == ServiceUae && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + enter + 1, length - enter);
           name[length - enter] = '\0';
         } else {
@@ -1038,7 +1039,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           name[enter - 1] = '\0';
         }
       } else if (leave > 0 && leave < length) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+        if (g_serviceType == ServiceUae && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + leave + 1, length - leave);
           name[length - leave] = '\0';
         } else {
@@ -1046,7 +1047,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           name[leave - 1] = '\0';
         }
       } else if (colon > 0 && colon < length && colon < 24) {
-        if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+        if (g_serviceType == ServiceUae && g_tipOfTheDayEnglish) {
           std::memcpy(name, text + colon, length - colon);
           name[length - colon] = '\0';
         } else {

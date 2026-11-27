@@ -7,6 +7,19 @@
 
 struct lua_State;
 
+enum TownInfoType : int {
+  TOWN_INFO_STORE = 0,
+  TOWN_INFO_WEAPON_SHOP = 1,
+  TOWN_INFO_ARMOR_SHOP = 2,
+  TOWN_INFO_SMITHY = 3,
+  TOWN_INFO_GUIDE = 4,
+  TOWN_INFO_INN = 5,
+  TOWN_INFO_KAFRA = 6,
+  TOWN_INFO_STYLE = 7,
+  TOWN_INFO_WARP = 8,
+  TOWN_INFO_QUEST = 9,
+};
+
 struct TownInfo {
   TownInfo();
   TownInfo(int type, std::string name, int x, int y, std::string image);

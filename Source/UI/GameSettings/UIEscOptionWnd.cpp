@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Session/Session.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
 #include "UI/Buttons/UIBitmapButton.h"
@@ -74,7 +75,7 @@ UIEscOptionWnd::UIEscOptionWnd()
     : UIFrameWnd(0), m_titleHeight(17) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->isPlayerDead != 0) {
-    this->m_mode = !mode->HasResurrectionItem() && !g_session.HasSkillEffect(580) ? 1 : 2;
+    this->m_mode = !mode->HasResurrectionItem() && !g_session.HasSkillEffect(EFST_LIGHT_OF_REGENE) ? 1 : 2;
   } else {
     this->m_mode = 0;
   }

@@ -43,6 +43,14 @@
 #include "Network/Packets/PacketId.h"
 
 namespace {
+  enum NavigationQueryKind : int {
+    NAVIGATION_QUERY_INVALID = 0,
+    NAVIGATION_QUERY_KEYWORDS = 1,
+    NAVIGATION_QUERY_ALL = 2,
+    NAVIGATION_QUERY_MOB_LEVEL = 3,
+    NAVIGATION_QUERY_MOB_TITLE = 4,
+  };
+
   // GLOBAL: gl_25136
   int g_locationFrame = 1;
   // GLOBAL: gl_25137
@@ -403,7 +411,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     break;
   }
 
-  if (mode == 0 || mode == 1) {
+  if (mode == NAVIGATION_RESULT_DISPLAY_CHAT_AND_DIALOG || mode == NAVIGATION_RESULT_DISPLAY_CHAT) {
     char buffer[250];
     std::memset(buffer, 0, sizeof(buffer));
     std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_S), message.c_str());
@@ -411,7 +419,8 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
 
     if (result == NAVIGATION_RESULT_ROUTE_SUCCESS && this->selectedNode != -1 && this->nodes.size() > static_cast<unsigned>(this->selectedNode)) {
       const int type = this->nodes[this->selectedNode]->GetType();
-      if (type == 201 || type == 202 || type == 203 || type == 204) {
+      if (type == NAVIGATION_OBJECT_NPC_WARP || type == NAVIGATION_OBJECT_UNKNOWN_202 || type == NAVIGATION_OBJECT_UNKNOWN_203 ||
+          type == NAVIGATION_OBJECT_SERVICE_WARP) {
         std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_GO_S), this->nodes[this->selectedNode]->GetName());
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
 
@@ -422,7 +431,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
           std::sprintf(text, " %s[ %s ] ", info->GetTitle(), info->GetName());
           std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_MAP_S), text);
         }
-      } else if (type == 205) {
+      } else if (type == NAVIGATION_OBJECT_AIRSHIP) {
         std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_GO_S), this->nodes[this->selectedNode]->GetName());
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0x62B0FF, 0, 0, 0);
         std::sprintf(buffer, LookupMessage(MSI_NAVIGATION_PRINT_PLANE));
@@ -433,9 +442,9 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     }
   }
 
-  if (mode == 0 || mode == 2) {
+  if (mode == NAVIGATION_RESULT_DISPLAY_CHAT_AND_DIALOG || mode == NAVIGATION_RESULT_DISPLAY_DIALOG) {
     g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "메시지", 280, 120, 0);
-    if (mode == 4) {
+    if (mode == NAVIGATION_RESULT_DISPLAY_UNKNOWN_4) {
       const int count = static_cast<int>(g_navigationManager.nodes.size());
       CNavi_Object* node = count == 0 ? nullptr : g_navigationManager.nodes[0];
       std::string text(LookupMessage(MSI_NAVIGATION_PRINT_ITEM));
@@ -467,7 +476,7 @@ std::string CNavigationManager::SelectedNodeText() {
     return this->selectedNodeText;
   }
 
-  if (this->viewMode == 2) {
+  if (this->viewMode == NAVIGATION_VIEW_ROUTE) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       NaviCell cellX;
@@ -520,7 +529,7 @@ std::string CNavigationManager::DestinationText() {
     return this->destinationText;
   }
 
-  if (this->viewMode == 2) {
+  if (this->viewMode == NAVIGATION_VIEW_ROUTE) {
     CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       NaviCell cellX;
@@ -540,7 +549,7 @@ std::string CNavigationManager::DestinationTitle() {
   std::memset(buffer, 0, sizeof(buffer));
 
   if (this->nodes.empty() || this->selectedNode < 0) {
-    if (this->viewMode == 2) {
+    if (this->viewMode == NAVIGATION_VIEW_ROUTE) {
       NaviCell cell;
       this->data.GetCell(&cell);
       CNaviInfo* info = this->data.GetInfo();
@@ -595,14 +604,14 @@ static bool IsSameInstanceMap(std::string player, std::string target) {
 // OFFSET: 0x00B99030
 // FUNCTION: fn_19611
 bool CNavigationManager::StartNavigation(std::string name, int type, unsigned char mode, bool flag, int x, int y, int id) {
-  if (type < 0 || type > 4 || name.size() == 0) {
+  if (type < NAVIGATION_TARGET_CELL || type > NAVIGATION_TARGET_UNKNOWN_4 || name.size() == 0) {
     return false;
   }
 
   const char* playerMap = g_session.m_navigationPlayerMap;
   if (std::strchr(playerMap, '@')) {
     if (!IsSameInstanceMap(playerMap, name)) {
-      this->ShowRouteResult(-90, 1);
+      this->ShowRouteResult(NAVIGATION_RESULT_UNABLE_TO_GUIDE_MAP, NAVIGATION_RESULT_DISPLAY_CHAT);
       return false;
     }
   }
@@ -619,9 +628,9 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   bool succeeded = false;
   NavigationTarget target(type, nullptr);
   std::string text = info->GetName();
-  if (type == 1) {
+  if (type == NAVIGATION_TARGET_MAP) {
     target.object = info;
-  } else if (type == 2) {
+  } else if (type == NAVIGATION_TARGET_NPC) {
     CNavi_Object* npc = info->FindNpcAt(x, y);
     if (!npc) {
       goto missingObject;
@@ -629,7 +638,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     text.push_back(' ');
     text += npc->GetName();
     target.object = npc;
-  } else if (type == 3) {
+  } else if (type == NAVIGATION_TARGET_MOB) {
     CNavi_Object* mob = info->FindMobByIndex(id);
     if (!mob) {
       goto missingObject;
@@ -637,7 +646,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     text.push_back(' ');
     text += mob->GetName();
     target.object = mob;
-  } else if (type == 0) {
+  } else if (type == NAVIGATION_TARGET_CELL) {
     target.object = info;
   } else {
     goto cleanup;
@@ -656,8 +665,8 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
 
   {
     const int result = this->Navigate(x, y);
-    this->ShowRouteResult(result, 1);
-    if (result < 0) {
+    this->ShowRouteResult(result, NAVIGATION_RESULT_DISPLAY_CHAT);
+    if (result < NAVIGATION_RESULT_SUCCESS) {
       goto cleanup;
     }
   }
@@ -668,7 +677,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
     g_windowMgr.modal->RefreshWorldMapMarks();
   }
 
-  this->displayMode = 1;
+  this->displayMode = NAVIGATION_DISPLAY_ROUTE;
   if (g_windowMgr.navigationWnd) {
     this->hideWindow = false;
   }
@@ -703,7 +712,7 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   goto cleanup;
 
 missingObject:
-  this->ShowRouteResult(-94, 1);
+  this->ShowRouteResult(NAVIGATION_RESULT_NO_DATA, NAVIGATION_RESULT_DISPLAY_CHAT);
 cleanup:
   return succeeded;
 }
@@ -711,7 +720,7 @@ cleanup:
 // OFFSET: 0x00B995D0
 // FUNCTION: fn_19612
 bool CNavigationManager::SearchNavigation(std::string name, int type, bool flag) {
-  if (static_cast<unsigned int>(type) <= 4) {
+  if (static_cast<unsigned int>(type) <= NAVIGATION_SEARCH_UNKNOWN_4) {
     this->searchText = name;
     this->hideWindow = flag;
     this->searchType = type;
@@ -977,7 +986,7 @@ void CNaviData::Clear() {
 // FUNCTION: fn_19430
 CNavi_Object::~CNavi_Object() {
   this->id = -1;
-  this->type = 101;
+  this->type = NAVIGATION_OBJECT_NPC;
   this->index = -1;
   this->name.clear();
   this->title.clear();
@@ -1003,17 +1012,17 @@ bool CNavigationManager::SavedTargetText(char* out, int size) {
   char text[0x104];
   std::memset(text, 0, sizeof(text));
 
-  if (this->savedTarget.type == 2) {
+  if (this->savedTarget.type == NAVIGATION_TARGET_NPC) {
     CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
     CNaviInfo* info = object->GetInfo();
     NaviCell cellX;
     NaviCell cellY;
     std::sprintf(text, "%s %d %d", info->GetName(), object->GetCell(&cellX)->x, object->GetCell(&cellY)->y);
-  } else if (this->savedTarget.type == 3) {
+  } else if (this->savedTarget.type == NAVIGATION_TARGET_MOB) {
     std::sprintf(text, "%s", static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()->GetName());
-  } else if (this->savedTarget.type == 1) {
+  } else if (this->savedTarget.type == NAVIGATION_TARGET_MAP) {
     std::sprintf(text, "%s", static_cast<CNaviInfo*>(this->savedTarget.object)->GetName());
-  } else if (this->savedTarget.type == 0) {
+  } else if (this->savedTarget.type == NAVIGATION_TARGET_CELL) {
     CNaviInfo* info = static_cast<CNaviInfo*>(this->savedTarget.object);
     NaviCell cellX;
     NaviCell cellY;
@@ -1120,11 +1129,11 @@ __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::ve
     const auto end = this->destinations.end();
     for (auto infoIt = this->destinations.begin(); infoIt != end; ++infoIt) {
       auto& info = *infoIt;
-      if (kind == 2) {
+      if (kind == NAVIGATION_QUERY_ALL) {
         info->CollectTargets(type, out);
-      } else if (kind == 3) {
+      } else if (kind == NAVIGATION_QUERY_MOB_LEVEL) {
         info->CollectMobsInRange(std::atoi(tokens[0].c_str()), std::atoi(tokens[1].c_str()), out);
-      } else if (kind == 4) {
+      } else if (kind == NAVIGATION_QUERY_MOB_TITLE) {
         if (tokens.size() == 2) {
           info->CollectMobsByTitle(tokens[1].c_str(), out);
         }
@@ -1161,21 +1170,21 @@ int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
       int high = std::atoi(maximum.c_str());
       int kind;
       if (low < 1 || high < 1 || low > high) {
-        kind = 0;
+        kind = NAVIGATION_QUERY_INVALID;
       } else {
         tokens.clear();
         tokens.push_back(minimum);
         tokens.push_back(maximum);
-        kind = 3;
+        kind = NAVIGATION_QUERY_MOB_LEVEL;
       }
       return kind;
     }
     if (std::strncmp(tokens[0].c_str(), LookupMessage(MSI_NAVIGATION_ZZALL), std::strlen(LookupMessage(MSI_NAVIGATION_ZZALL))) == 0) {
-      return 2;
+      return NAVIGATION_QUERY_ALL;
     }
-    return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? 4 : 0;
+    return std::strncmp(tokens[0].c_str(), "$$DB", 4) == 0 ? NAVIGATION_QUERY_MOB_TITLE : NAVIGATION_QUERY_INVALID;
   }
-  return 1;
+  return NAVIGATION_QUERY_KEYWORDS;
 }
 
 // OFFSET: 0x00B896E0
@@ -1203,8 +1212,8 @@ void CNavigationManager::RefreshSearch() {
 // OFFSET: 0x00B9C5C0
 // FUNCTION: fn_19620
 __declspec(noinline) bool CNavigationManager::UpdateSearchResults() {
-  this->displayMode = 0;
-  if (!this->data.Search(this->searchText, 0, this->states)) {
+  this->displayMode = NAVIGATION_DISPLAY_SEARCH;
+  if (!this->data.Search(this->searchText, NAVIGATION_SEARCH_ALL, this->states)) {
     return false;
   }
 
@@ -1315,24 +1324,24 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
   std::memset(text, 0, sizeof(text));
   this->currentTarget.object = info;
   if (x == 1000) {
-    this->currentTarget.type = 1;
+    this->currentTarget.type = NAVIGATION_TARGET_MAP;
     this->currentTarget.cell.first = -1;
     this->currentTarget.cell.second = -1;
     std::sprintf(text, "%s", info->GetName());
   } else {
     this->currentTarget.cell.first = x;
-    this->currentTarget.type = 0;
+    this->currentTarget.type = NAVIGATION_TARGET_CELL;
     this->currentTarget.cell.second = y;
     const char* name = info->GetName();
     std::sprintf(text, "%s %d,%d", name, x, y);
   }
   this->currentTarget.name = text;
 
-  this->displayMode = 0;
+  this->displayMode = NAVIGATION_DISPLAY_SEARCH;
   this->expandedMap = false;
   this->hideWindow = false;
-  if (this->viewMode != 2) {
-    this->viewMode = 1;
+  if (this->viewMode != NAVIGATION_VIEW_ROUTE) {
+    this->viewMode = NAVIGATION_VIEW_SEARCH;
   }
 
   this->LoadTargetPreview();
@@ -1367,32 +1376,32 @@ bool CNavigationManager::LoadTargetPreview() {
 
   const int type = this->currentTarget.type;
   void* object = this->currentTarget.object;
-  this->previewType = 1;
+  this->previewType = NAVIGATION_PREVIEW_MAP;
 
   int mapType;
   const char* mapName;
-  if (type == 0) {
+  if (type == NAVIGATION_TARGET_CELL) {
     if (!object) {
       return false;
     }
     CNaviInfo* info = static_cast<CNaviInfo*>(object);
     mapType = info->GetType();
     mapName = info->GetName();
-  } else if (type == 1) {
+  } else if (type == NAVIGATION_TARGET_MAP) {
     if (!object) {
       return false;
     }
     CNaviInfo* info = static_cast<CNaviInfo*>(object);
     mapType = info->GetType();
     mapName = info->GetName();
-  } else if (type == 6) {
+  } else if (type == NAVIGATION_TARGET_ROUTE_NODE) {
     if (!object) {
       return false;
     }
     CNavi_Object* target = static_cast<CNavi_Object*>(object);
-    if (target->GetType() == 400) {
+    if (target->GetType() == NAVIGATION_OBJECT_SCROLL) {
       mapName = target->GetName();
-      mapType = 5004;
+      mapType = NAVIGATION_MAP_SCROLL;
     } else {
       mapType = target->GetInfo()->GetType();
       mapName = target->GetInfo()->GetName();
@@ -1412,7 +1421,7 @@ bool CNavigationManager::LoadTargetPreview() {
       std::memset(spriteName, 0, sizeof(spriteName));
       std::memset(actionName, 0, sizeof(actionName));
       bool found = false;
-      if (this->currentTarget.type == 2) {
+      if (this->currentTarget.type == NAVIGATION_TARGET_NPC) {
         std::sprintf(spriteName, "npc\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
         std::sprintf(actionName, "npc\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
         if (ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName)) {
@@ -1422,7 +1431,7 @@ bool CNavigationManager::LoadTargetPreview() {
           std::sprintf(actionName, "몬스터\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
           found = ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName);
         }
-      } else if (this->currentTarget.type == 3) {
+      } else if (this->currentTarget.type == NAVIGATION_TARGET_MOB) {
         std::sprintf(spriteName, "몬스터\\%s.spr", g_session.GetJobName(target->GetIndex(), -1));
         std::sprintf(actionName, "몬스터\\%s.act", g_session.GetJobName(target->GetIndex(), -1));
         if (ResourceMgr::Instance().Exists(spriteName) && ResourceMgr::Instance().Exists(actionName)) {
@@ -1438,13 +1447,13 @@ bool CNavigationManager::LoadTargetPreview() {
         this->previewAction = dynamic_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
       }
     }
-    this->previewType = 2;
+    this->previewType = NAVIGATION_PREVIEW_OBJECT;
   }
 
   this->previewTexture = nullptr;
-  if (mapType == 5004) {
+  if (mapType == NAVIGATION_MAP_SCROLL) {
     this->previewTexture = g_texMgr.Load("유저인터페이스\\collection\\불의주문서.bmp", 0, false, true, false);
-  } else if (mapType != 5001 && mapType != 5005) {
+  } else if (mapType != NAVIGATION_MAP_STANDARD && mapType != NAVIGATION_MAP_UNKNOWN_5005) {
     this->previewTexture = g_texMgr.Load("유저인터페이스\\navigation_interface\\Interior.bmp", 0, false, true, false);
   } else {
     char path[60];
@@ -1453,7 +1462,7 @@ bool CNavigationManager::LoadTargetPreview() {
     this->previewTexture = g_texMgr.Load(path, 0, false, true, false);
     if (this->previewTexture) {
       const int targetType = this->currentTarget.type;
-      if (targetType == 2 || targetType == 6) {
+      if (targetType == NAVIGATION_TARGET_NPC || targetType == NAVIGATION_TARGET_ROUTE_NODE) {
         CNavi_Object* target = static_cast<CNavi_Object*>(this->currentTarget.object);
         NaviCell cellY;
         NaviCell cellX;
@@ -1471,7 +1480,7 @@ bool CNavigationManager::LoadTargetPreview() {
         }
         this->previewX = viewX;
         this->previewY = viewY;
-      } else if (targetType == 0) {
+      } else if (targetType == NAVIGATION_TARGET_CELL) {
         if (this->currentTarget.cell.first < 0) {
           NaviCell cellY;
           NaviCell cellX;
@@ -1527,21 +1536,21 @@ bool CNavigationManager::BuildTargetRouteLines() {
   char text[50];
   std::memset(text, 0, sizeof(text));
   const int type = this->currentTarget.type;
-  if (type == 1) {
-    this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetTitle());
-  } else if (type == 2) {
+  if (type == NAVIGATION_TARGET_MAP) {
+    this->AddWrappedRouteLines(NAVIGATION_PREVIEW_MAP, 141, 46, static_cast<CNaviInfo*>(object)->GetTitle());
+  } else if (type == NAVIGATION_TARGET_NPC) {
     CNavi_Object* npc = static_cast<CNavi_Object*>(object);
-    this->AddWrappedRouteLines(2, 141, 46, npc->GetName());
+    this->AddWrappedRouteLines(NAVIGATION_PREVIEW_OBJECT, 141, 46, npc->GetName());
     NaviCell cellY;
     NaviCell cellX;
     std::sprintf(text, "( %d %d )", npc->GetCell(&cellX)->x, npc->GetCell(&cellY)->y);
-    this->routeLines.push_back({2, 142, 149, text, 0xDCDCDC, 0xCB6B54});
-  } else if (type == 3) {
+    this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 149, text, 0xDCDCDC, 0xCB6B54});
+  } else if (type == NAVIGATION_TARGET_MOB) {
     CNavi_Object* mob = static_cast<CNavi_Object*>(object);
-    this->AddWrappedRouteLines(2, 141, 46, mob->GetName());
+    this->AddWrappedRouteLines(NAVIGATION_PREVIEW_OBJECT, 141, 46, mob->GetName());
     NaviCell cell;
     std::sprintf(text, "Lv. %d", mob->GetCell(&cell)->x);
-    this->routeLines.push_back({2, 142, 77, text, 0xDCDCDC, 0xCB6B54});
+    this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 77, text, 0xDCDCDC, 0xCB6B54});
 
     const int attributes = mob->GetCell(&cell)->y;
     const unsigned int property = static_cast<unsigned char>(attributes >> 16);
@@ -1570,7 +1579,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = element == 9 ? 2271 : 2272;
     }
     std::sprintf(text, LookupMessage(message), propertyLevel);
-    this->routeLines.push_back({2, 142, 93, text, 0xDCDCDC, 0xCB6B54});
+    this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 93, text, 0xDCDCDC, 0xCB6B54});
 
     if (size == 1) {
       message = MSI_NAVIGATION_RACE1;
@@ -1592,7 +1601,7 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = size == 9 ? 2284 : 2285;
     }
     std::sprintf(text, LookupMessage(message));
-    this->routeLines.push_back({2, 142, 109, text, 0xDCDCDC, 0xCB6B54});
+    this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 109, text, 0xDCDCDC, 0xCB6B54});
 
     if ((attributes & 0xFF00) == 0x100) {
       message = MSI_NAVIGATION_SCALE1;
@@ -1600,15 +1609,15 @@ bool CNavigationManager::BuildTargetRouteLines() {
       message = (attributes & 0xFF00) == 0x200 ? 2274 : 2275;
     }
     std::sprintf(text, LookupMessage(message));
-    this->routeLines.push_back({2, 142, 125, text, 0xDCDCDC, 0xCB6B54});
+    this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 125, text, 0xDCDCDC, 0xCB6B54});
 
-    if (mob->GetType() == 301) {
-      this->routeLines.push_back({2, 142, 149, LookupMessage(MSI_NAVIGATION_BOSS), 0xC8C8C8, 0xFF});
+    if (mob->GetType() == NAVIGATION_OBJECT_BOSS_MOB) {
+      this->routeLines.push_back({NAVIGATION_PREVIEW_OBJECT, 142, 149, LookupMessage(MSI_NAVIGATION_BOSS), 0xC8C8C8, 0xFF});
     }
-  } else if (type == 0) {
-    this->AddWrappedRouteLines(1, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
+  } else if (type == NAVIGATION_TARGET_CELL) {
+    this->AddWrappedRouteLines(NAVIGATION_PREVIEW_MAP, 141, 46, static_cast<CNaviInfo*>(object)->GetName());
     std::sprintf(text, "( %d %d )", this->currentTarget.cell.first, this->currentTarget.cell.second);
-    this->routeLines.push_back({1, 142, 149, text, 0xDCDCDC, 0xCB6B54});
+    this->routeLines.push_back({NAVIGATION_PREVIEW_MAP, 142, 149, text, 0xDCDCDC, 0xCB6B54});
   }
   return true;
 }
@@ -1677,7 +1686,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
   int x = -1;
   int y = -1;
   CNaviInfo* info;
-  if (type == 2) {
+  if (type == NAVIGATION_TARGET_NPC) {
     CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
     if (object->LinkCount() == 0) {
       return false;
@@ -1689,11 +1698,11 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
     y = position->y;
     endLinks = object->CopyLinks();
   } else {
-    if (type == 3) {
+    if (type == NAVIGATION_TARGET_MOB) {
       info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
-    } else if (type == 1) {
+    } else if (type == NAVIGATION_TARGET_MAP) {
       info = static_cast<CNaviInfo*>(this->savedTarget.object);
-    } else if (type == 0) {
+    } else if (type == NAVIGATION_TARGET_CELL) {
       info = static_cast<CNaviInfo*>(this->savedTarget.object);
       x = cellX;
       y = cellY;
@@ -1714,7 +1723,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
     int cost = 0;
     MovementRouteInterpolation route;
     for (CNavi_Link*& link : links) {
-      if (this->savedTarget.type == 0) {
+      if (this->savedTarget.type == NAVIGATION_TARGET_CELL) {
         this->pathFinder.Reset();
         cost = 0;
         if (link->GetLinkedCell().x == x && link->GetLinkedCell().y == y) {
@@ -1739,7 +1748,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
 static NavigationTarget ChooseTarget(CNavigationManager* manager, int nodeIndex) {
   manager->currentTarget = manager->savedTarget;
   if (nodeIndex >= 0 && manager->nodes.size() > static_cast<unsigned int>(nodeIndex)) {
-    manager->currentTarget.type = 6;
+    manager->currentTarget.type = NAVIGATION_TARGET_ROUTE_NODE;
     manager->currentTarget.object = manager->nodes[nodeIndex];
   }
   return manager->currentTarget;
@@ -1756,9 +1765,9 @@ bool CNavigationManager::SelectTarget(int nodeIndex) {
 // FUNCTION: fn_19641
 void CNavigationManager::CancelRoute() {
   this->Reset(false);
-  this->displayMode = 0;
+  this->displayMode = NAVIGATION_DISPLAY_SEARCH;
   if (!this->hideWindow) {
-    this->viewMode = 1;
+    this->viewMode = NAVIGATION_VIEW_SEARCH;
     if (g_windowMgr.navigationWnd != nullptr) {
       g_windowMgr.navigationWnd->RefreshLayout();
     }
@@ -1775,13 +1784,13 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
     const int type = this->savedTarget.type;
     CNaviInfo* info;
     NaviCell cell;
-    if (type == 2) {
+    if (type == NAVIGATION_TARGET_NPC) {
       CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
       info = object->GetInfo();
       const NaviCell* position = object->GetCell(&cell);
       x = position->x;
       y = position->y;
-    } else if (type == 3 || type == 1 || type != 0) {
+    } else if (type == NAVIGATION_TARGET_MOB || type == NAVIGATION_TARGET_MAP || type != NAVIGATION_TARGET_CELL) {
       goto request;
     } else {
       info = static_cast<CNaviInfo*>(this->savedTarget.object);
@@ -1799,27 +1808,29 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
         int playerY;
         mode->PlayerCell(&playerX, &playerY);
         if (x + 1 >= playerX && x - 1 <= playerX && y + 1 >= playerY && y - 1 <= playerY) {
-          return 11;
+          return NAVIGATION_RESULT_HERE;
         }
       }
     }
   }
 
 request:
-  if (this->RequestRoute(cellX, cellY) != -99) {
+  if (this->RequestRoute(cellX, cellY) != NAVIGATION_RESULT_NOT_SAME_MAP) {
     return this->RouteFromPlayer();
   }
   if (!this->RouteToSavedTarget(cellX, cellY)) {
-    return -97;
+    return NAVIGATION_RESULT_FAIL_TARGET;
   }
   if (!this->CollectStartLinks()) {
-    return -98;
+    return NAVIGATION_RESULT_FAIL_START_DATA;
   }
   const int type = this->savedTarget.type;
   this->routeResult =
-    this->data.FindRoute(&this->nodes, type != 2 && type != 0, this->allowGates, this->includeObjects, this->allowWarps, this->routeSide);
+    this->data.FindRoute(
+      &this->nodes, type != NAVIGATION_TARGET_NPC && type != NAVIGATION_TARGET_CELL, this->allowGates, this->includeObjects, this->allowWarps, this->routeSide
+    );
   if (this->routeResult == 0) {
-    return -96;
+    return NAVIGATION_RESULT_FAIL_ROUTE;
   }
   return this->RouteFromPlayer();
 }
@@ -1956,18 +1967,18 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
           const int type = this->savedTarget.type;
           CNaviInfo* info;
           bool found = true;
-          if (type == 2) {
+          if (type == NAVIGATION_TARGET_NPC) {
             CNavi_Object* object = static_cast<CNavi_Object*>(this->savedTarget.object);
             info = object->GetInfo();
             NaviCell cell;
             const NaviCell* position = object->GetCell(&cell);
             x = position->x;
             y = position->y;
-          } else if (type == 3) {
+          } else if (type == NAVIGATION_TARGET_MOB) {
             info = static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo();
-          } else if (type == 1) {
+          } else if (type == NAVIGATION_TARGET_MAP) {
             info = static_cast<CNaviInfo*>(this->savedTarget.object);
-          } else if (type != 0) {
+          } else if (type != NAVIGATION_TARGET_CELL) {
             found = false;
           } else {
             info = static_cast<CNaviInfo*>(this->savedTarget.object);
@@ -2027,11 +2038,11 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
         offset += header.size;
         break;
       case NAVIGATION_REPLAY_END:
-        if (this->viewMode == 1) {
+        if (this->viewMode == NAVIGATION_VIEW_SEARCH) {
           this->LoadTargetPreview();
           g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
-        } else if (this->viewMode == 2) {
-          this->ShowRouteResult(this->RouteFromPlayer(), 1);
+        } else if (this->viewMode == NAVIGATION_VIEW_ROUTE) {
+          this->ShowRouteResult(this->RouteFromPlayer(), NAVIGATION_RESULT_DISPLAY_CHAT);
           if (!this->hideWindow) {
             g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
           }
@@ -2048,11 +2059,11 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
 // OFFSET: 0x00B9BFC0
 // FUNCTION: fn_19617
 void CNavigationManager::ResumeRoute() {
-  if (this->viewMode == 1) {
+  if (this->viewMode == NAVIGATION_VIEW_SEARCH) {
     this->LoadTargetPreview();
     g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
-  } else if (this->viewMode == 2) {
-    this->ShowRouteResult(this->RouteFromPlayer(), 1);
+  } else if (this->viewMode == NAVIGATION_VIEW_ROUTE) {
+    this->ShowRouteResult(this->RouteFromPlayer(), NAVIGATION_RESULT_DISPLAY_CHAT);
     if (!this->hideWindow) {
       g_windowMgr.EnsureWindow(WID_NAVIGATIONV4WND);
     }

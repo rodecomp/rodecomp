@@ -3289,7 +3289,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_COMMAND:
     switch (a) {
     case ID_MAKEACCOUNT:
-      if (g_serviceType == 0) {
+      if (g_serviceType == ServiceKorea) {
         if (g_session.m_channelCopId == 1) {
           g_modeMgr.Quit();
           const char* url = HangameJoinUrl()().Text();
@@ -4223,7 +4223,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (this->m_nameEdit->Length() >= 4) {
         const BOOL allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
         BOOL valid = TRUE;
-        if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
+        if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
           valid = FALSE;
         }
 

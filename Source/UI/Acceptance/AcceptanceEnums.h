@@ -23,4 +23,11 @@ enum PetRelationship : unsigned int {
   PET_RELATIONSHIP_VERY_FRIENDLY = 5,
 };
 
+enum PartySettingLayout : int {
+  PARTY_SETTING_LAYOUT_DEFAULT = 0,
+  PARTY_SETTING_LAYOUT_PARTY_COUNT = 5,
+  PARTY_SETTING_LAYOUT_CREATE = 50,
+  PARTY_SETTING_LAYOUT_EXP_SHARE = 70,
+};
+
 #endif

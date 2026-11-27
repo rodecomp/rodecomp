@@ -41,6 +41,16 @@
 #include <timeapi.h>
 #include <windows.h>
 
+enum MiniMapMarkerKind : int {
+  MINIMAP_MARKER_TEXTURE = 0,
+  MINIMAP_MARKER_TRIANGLE = 1,
+  MINIMAP_MARKER_SQUARE = 2,
+  MINIMAP_MARKER_CROSS = 3,
+  MINIMAP_MARKER_PLAYER = 4,
+  MINIMAP_MARKER_BOSS = 5,
+  MINIMAP_MARKER_TOWN = 6,
+};
+
 namespace {
 
 // INLINED
@@ -195,7 +205,7 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   }
 
   for (auto it = this->partyPosList.begin(); it != this->partyPosList.end(); ++it) {
-    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 2, it->second.color, false);
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), MINIMAP_MARKER_SQUARE, it->second.color, false);
     if (g_windowMgr.miniMapWnd) {
       g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 0, index, it->second.x, it->second.y);
     }
@@ -204,7 +214,7 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
 
   for (auto it = this->guildPosList.begin(); it != this->guildPosList.end(); ++it) {
     if (this->partyPosList.find(it->first) == this->partyPosList.end()) {
-      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 1, it->second.color, false);
+      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), MINIMAP_MARKER_TRIANGLE, it->second.color, false);
       if (g_windowMgr.miniMapWnd) {
         g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, 1, index, it->second.x, it->second.y);
       }
@@ -215,14 +225,14 @@ void CGameMode::DrawMiniMapMembers(const TextureRegion& view) {
   for (auto it = this->minimapMarkers.begin(); it != this->minimapMarkers.end(); ++it) {
     if (it->second.questIconId != 0) {
       const std::string name = FormatOwnedString("유저인터페이스\\basic_interface\\quest_%d.bmp", it->second.questIconId);
-      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 4, name, 0, 0, true);
+      this->DrawMiniMapMarker(view, it->second.x, it->second.y, 4, name, MINIMAP_MARKER_TEXTURE, 0, true);
     }
   }
 
   if (g_session.storeSearchX > -1) {
     const int y = g_session.storeSearchY;
     if (y > -1) {
-      this->DrawMiniMapMarker(view, g_session.storeSearchX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", 0, 0, true);
+      this->DrawMiniMapMarker(view, g_session.storeSearchX, y, 4, "유저인터페이스\\basic_interface\\search_store.bmp", MINIMAP_MARKER_TEXTURE, 0, true);
     }
   }
 }
@@ -233,7 +243,7 @@ __forceinline void CGameMode::DrawMiniMapPings(const TextureRegion& view) {
   if (this->compassPosList.size() != 0) {
     for (auto it = this->compassPosList.begin(); it != this->compassPosList.end();) {
       const std::uint32_t tick = it->second.tick;
-      if (it->second.persistent == 0 && timeGetTime() > tick + 15000) {
+      if (it->second.persistent == COMPASS_TEMPORARY && timeGetTime() > tick + 15000) {
         it = this->compassPosList.erase(it);
       } else {
         ++it;
@@ -243,7 +253,7 @@ __forceinline void CGameMode::DrawMiniMapPings(const TextureRegion& view) {
       const std::uint32_t tick = it->second.tick;
       const int elapsed = timeGetTime() - tick;
       if (elapsed % 1000 < 500) {
-        this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
+        this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), MINIMAP_MARKER_CROSS, it->second.color, false);
       }
     }
   }
@@ -315,11 +325,11 @@ void CGameMode::DrawMiniMap() {
     rect.bottom = 144;
     this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.minimapColor, texture, view);
 
-    this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", 4, 0xFFFFFFFF, false);
+    this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", MINIMAP_MARKER_PLAYER, 0xFFFFFFFF, false);
   }
 
   for (auto it = g_miniMapEffectMarkers.begin(); it != g_miniMapEffectMarkers.end();) {
-    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), 2, 0xFFFF0000, false);
+    this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(""), MINIMAP_MARKER_SQUARE, 0xFFFF0000, false);
     if (--it->second.count <= 0) {
       it = g_miniMapEffectMarkers.erase(it);
     } else {
@@ -328,7 +338,7 @@ void CGameMode::DrawMiniMap() {
   }
 
   if (this->bossAlarmAndCopyNameFlags[0]) {
-    this->DrawMiniMapMarker(view, this->bossMonsterX, this->bossMonsterY, 6, "유저인터페이스\\map\\bossmonster.bmp", 5, 0, true);
+    this->DrawMiniMapMarker(view, this->bossMonsterX, this->bossMonsterY, 6, "유저인터페이스\\map\\bossmonster.bmp", MINIMAP_MARKER_BOSS, 0, true);
   }
 
   if (g_windowMgr.minimapMarkersVisible) {
@@ -338,13 +348,13 @@ void CGameMode::DrawMiniMap() {
       if (info.image.size() == 0) {
         break;
       }
-      if (info.type == 8) {
+      if (info.type == TOWN_INFO_WARP) {
         break;
       }
-      if (info.type == 9) {
+      if (info.type == TOWN_INFO_QUEST) {
         break;
       }
-      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(""), 6, index, true);
+      this->DrawMiniMapMarker(view, info.x, info.y, 6, std::string(""), MINIMAP_MARKER_TOWN, index, true);
     }
   }
 
@@ -460,11 +470,11 @@ void CGameMode::DrawMiniMapMarker(
         direction = 4;
       }
     }
-    if (kind != 5 && direction != 0) {
+    if (kind != MINIMAP_MARKER_BOSS && direction != 0) {
       const std::string arrow = FormatOwnedString("유저인터페이스\\basic_interface\\quest_arrow%d.bmp", direction);
       texture = arrow;
     }
-  } else if (kind != 4) {
+  } else if (kind != MINIMAP_MARKER_PLAYER) {
     if (drawX - size < left || drawX + size > originX + g_miniMapCenterOffset || drawY - size < g_miniMapTop || drawY + size > g_miniMapBottom) {
       return;
     }
@@ -476,10 +486,10 @@ void CGameMode::DrawMiniMapMarker(
   rect.right = static_cast<int>(size + drawX);
   rect.bottom = static_cast<int>(size + drawY);
 
-  if (kind == 0) {
+  if (kind == MINIMAP_MARKER_TEXTURE) {
     CTexture* marker = g_texMgr.Load(texture.c_str(), 0, false, true, false);
     this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, marker, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
-  } else if (kind == 5) {
+  } else if (kind == MINIMAP_MARKER_BOSS) {
     CTexture* marker = g_texMgr.Load(texture.c_str(), 0, false, true, false);
     this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, marker, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
     if (g_windowMgr.miniMapWnd && (s_lastMarkerX != x || s_lastMarkerY != y)) {
@@ -487,10 +497,10 @@ void CGameMode::DrawMiniMapMarker(
       s_lastMarkerY = y;
       g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_BOSS_POS, x, y, 0, 0);
     }
-  } else if (kind == 1) {
+  } else if (kind == MINIMAP_MARKER_TRIANGLE) {
     this->DrawMiniMapTriangle(static_cast<float>(drawX), static_cast<float>(drawY), static_cast<float>(size + 1), 0xAAFFFFFF);
     this->DrawMiniMapTriangle(static_cast<float>(drawX), static_cast<float>(drawY), static_cast<float>(size), color);
-  } else if (kind == 2) {
+  } else if (kind == MINIMAP_MARKER_SQUARE) {
     RECT border;
     border.left = rect.left - 1;
     border.top = rect.top - 1;
@@ -503,7 +513,7 @@ void CGameMode::DrawMiniMapMarker(
     if (g_windowMgr.miniMapWnd) {
       g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_MARK_POS, x, y, 0, 0);
     }
-  } else if (kind == 3) {
+  } else if (kind == MINIMAP_MARKER_CROSS) {
     const double arm = size * 4;
     RECT horizontal;
     horizontal.left = static_cast<int>(drawX - arm);
@@ -519,7 +529,7 @@ void CGameMode::DrawMiniMapMarker(
     this->DrawTexture(horizontal, 0, 0.0999f, color, white, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
     white = g_texMgr.Default();
     this->DrawTexture(vertical, 0, 0.0999f, color, white, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
-  } else if (kind == 4) {
+  } else if (kind == MINIMAP_MARKER_PLAYER) {
     const int angle = static_cast<int>(g_angleDivisor - this->scene->player->render.angle);
     RECT shadow;
     shadow.left = rect.left - 2;
@@ -540,7 +550,7 @@ void CGameMode::DrawMiniMapMarker(
         window->Invalidate();
       }
     }
-  } else if (kind == 6) {
+  } else if (kind == MINIMAP_MARKER_TOWN) {
     if (texture.size() == 0) {
       g_windowMgr.LookupWindow(WID_MINIMAPZOOMWND)->SendMsg(nullptr, UM_COMMAND, ID_SHOW_MINIMAP_ZOOM_BUTTON, color, rect.left, rect.top);
     } else {
@@ -778,7 +788,7 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(TimeFontSpriteName()));
 
   int number;
-  if (mode == 3) {
+  if (mode == TIME_ATTACK_FRAME_COUNTDOWN) {
     number = current;
     minutes = 0;
     hours = 0;
