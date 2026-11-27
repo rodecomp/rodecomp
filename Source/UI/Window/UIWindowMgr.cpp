@@ -7493,11 +7493,14 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (window) {
     window->SetId(id);
     this->windows[static_cast<WindowId>(id)] = window;
-    UIWindow* root = window;
-    while (root->parent) {
-      root = root->parent;
-    }
-    this->keyboardCommandRootWnd = root;
+    const auto findRoot = [&window]() {
+      UIWindow* root = window;
+      while (root->parent) {
+        root = root->parent;
+      }
+      return root;
+    };
+    this->keyboardCommandRootWnd = findRoot();
   }
 
   bool notify = false;
