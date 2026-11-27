@@ -384,7 +384,36 @@ void CLightSphereEffect::OnProcess() {
 // FUNCTION: fn_46114
 void CLightSphereEffect::UpdateSphere(CParticle* particle) {
   if (particle) {
-    UpdateSphereParticle<true>(particle);
+    int alpha = particle->alpha;
+    if (particle->elapsedFrames < 300) {
+      alpha = alpha + 1 >= 255 ? 255 : alpha + 1;
+    } else {
+      alpha = alpha - 1 < 0 ? 0 : alpha - 1;
+    }
+
+    const int spin = (static_cast<int>(particle->animationParameters[0]) + 2) % 360;
+    particle->alpha = alpha;
+    particle->animationParameters[0] = static_cast<float>(spin);
+    const float scale = particle->scale * g_sinTable[spin] * 0.05f + particle->scale;
+
+    matrix rotation;
+    rotation.Identity();
+    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+
+    matrix scaling;
+    scaling.Identity();
+    scaling.SetScale(scale, scale, 1.0f);
+
+    matrix billboard;
+    billboard.Compose(scaling, rotation);
+
+    matrix translation;
+    translation.Identity();
+    translation.MakeTranslate(0.0f, particle->animationParameter, 0.0f);
+
+    matrix transform;
+    transform.Compose(billboard, translation);
+    particle->transform = transform;
   }
 }
 
