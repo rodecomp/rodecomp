@@ -71,6 +71,7 @@ CGGHash::CGGHash() {
 
 // OFFSET: 0x00401300
 // FUNCTION: fn_00110
+// VIRTUALIZED: 2022-03-31 0x00401300
 BOOL CGGHash::Load(const wchar_t* filename) {
   this->Clear();
 
@@ -185,6 +186,7 @@ static CRC32 s_crc;
 
 // OFFSET: 0x00401730
 // FUNCTION: fn_00112
+// VIRTUALIZED: 2022-03-31 0x00401730
 int CGGHash::VerifyHash(const wchar_t* name, DWORD hash) {
   if (name == nullptr) {
     this->m_error = 1;
