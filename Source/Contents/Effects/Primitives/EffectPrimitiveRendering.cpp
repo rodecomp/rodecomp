@@ -5232,9 +5232,9 @@ void CEffectPrim::RenderRainbow(matrix& wtm) {
 // FUNCTION: fn_19909
 void CEffectPrim::RenderRectUp2(matrix& wtm) {
   ZeroVector3d vec1;
-  ZeroVector3d vec2;
-  ZeroVector3d vec3;
   ZeroVector3d vec4;
+  ZeroVector3d vec3;
+  ZeroVector3d vec2;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 2; ++ec) {
