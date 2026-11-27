@@ -124,7 +124,9 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
   this->m_labels[66] = HotkeyGuideLabel("B", MakeKey(274, 210, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[67] = HotkeyGuideLabel("C", MakeKey(196, 210, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[68] = HotkeyGuideLabel("D", MakeKey(177, 171, 6, 36, 0, 36), HotkeyGuideKey());
-  this->m_labels[69] = HotkeyGuideLabel("E", HotkeyGuideKey(157, 132, 6, 36, 0, 36), HotkeyGuideKey());
+  std::string text69;
+  text69 = "E";
+  this->m_labels[69] = HotkeyGuideLabel(text69, HotkeyGuideKey(157, 132, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[70] = HotkeyGuideLabel("F", HotkeyGuideKey(216, 171, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[71] = HotkeyGuideLabel("G", HotkeyGuideKey(255, 171, 6, 36, 0, 36), HotkeyGuideKey());
   this->m_labels[72] = HotkeyGuideLabel("H", HotkeyGuideKey(294, 171, 6, 36, 0, 36), HotkeyGuideKey());
