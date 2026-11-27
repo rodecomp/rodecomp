@@ -57,34 +57,31 @@ FileSignatureVerifier::FileSignatureVerifier() {
 // FUNCTION: fn_45444
 FileSignatureVerifier::~FileSignatureVerifier() {
   BYTE* data = fileData;
-  auto releaseMemory = std::free;
+  HCRYPTHASH hashHandle = hash;
+  HCRYPTKEY keyHandle = publicKey;
+
   if (data != nullptr) {
-    releaseMemory(data);
+    std::free(data);
   }
   data = signature;
   if (data != nullptr) {
-    releaseMemory(data);
+    std::free(data);
   }
 
-  HCRYPTHASH hashHandle = hash;
-  auto destroyHash = CryptDestroyHash;
   if (hashHandle != 0) {
-    destroyHash(hashHandle);
+    CryptDestroyHash(hashHandle);
   }
-
-  HCRYPTKEY keyHandle = publicKey;
-  auto destroyKey = CryptDestroyKey;
   if (keyHandle != 0) {
-    destroyKey(keyHandle);
+    CryptDestroyKey(keyHandle);
   }
   keyHandle = secondaryKey;
   if (keyHandle != 0) {
-    destroyKey(keyHandle);
+    CryptDestroyKey(keyHandle);
   }
 
   hashHandle = secondaryHash;
   if (hashHandle != 0) {
-    destroyHash(hashHandle);
+    CryptDestroyHash(hashHandle);
   }
 
   HCRYPTPROV context = provider;
