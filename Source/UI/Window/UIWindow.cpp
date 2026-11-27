@@ -1721,6 +1721,30 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
   return total;
 }
 
+// OFFSET: 0x00A7F510
+// FUNCTION: fn_16963
+const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
+}
+
+// OFFSET: 0x00A7F580
+// FUNCTION: fn_16964
+const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
+}
+
+// OFFSET: 0x00A7F5F0
+// FUNCTION: fn_16965
+const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
+}
+
+// OFFSET: 0x00A7FE50
+// FUNCTION: fn_16967
+const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
+}
+
 // OFFSET: 0x00A80880
 // FUNCTION: fn_16977
 std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
@@ -1769,9 +1793,9 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
 // FUNCTION: fn_16978
 std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold) {
   std::string display = DisplayUrlTextTag(text);
-  display = DisplayTextTag(display, g_naviTagBegin, g_naviTagEnd);
+  display = DisplayNavigationTextTag(display);
   display = DisplayTipBoxTextTag(display);
-  display = DisplayTextTag(display, g_itemTagBegin, g_itemTagEnd);
+  display = DisplayItemTextTag(display);
   display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.chatWnd) {
@@ -1779,7 +1803,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   }
 
   display = g_navigationLinkParser->DisplayNavigationLink(display);
-  display = DisplayTextTag(display, g_questTagBegin, g_questTagEnd);
+  display = DisplayQuestTextTag(display);
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
     return display;
@@ -2206,6 +2230,8 @@ static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes
   int top = static_cast<int>(static_cast<float>(first->y) * first->scaleY);
   int right = static_cast<int>(static_cast<float>(image->width) * first->scaleX) + left;
   int bottom = static_cast<int>(static_cast<float>(image->height) * first->scaleY) + top;
+  int originX = -left;
+  int originY = -top;
 
   for (int index = 1; index < frame->cellCount; ++index) {
     const SpriteFrameCell* cell = &frame->Cell(index);
@@ -2224,6 +2250,7 @@ static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes
     const int cellHeight = static_cast<int>(static_cast<float>(part->height) * cell->scaleY);
     if (left > cellX) {
       left = cellX;
+      originX = -cellX;
     }
 
     if (right < cellX + cellWidth) {
@@ -2232,6 +2259,7 @@ static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes
 
     if (top > cellY) {
       top = cellY;
+      originY = -cellY;
     }
 
     if (bottom < cellY + cellHeight) {
@@ -2252,13 +2280,13 @@ static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes
 
   *scale = fit;
   if (fit == 1.0) {
-    *x = -left - static_cast<int>(static_cast<float>(width - spanX) * -0.5f);
-    *y = -top - static_cast<int>(static_cast<float>(height - spanY) * -0.5f);
+    *x = originX - static_cast<int>(static_cast<float>(width - spanX) * -0.5f);
+    *y = originY - static_cast<int>(static_cast<float>(height - spanY) * -0.5f);
     return true;
   }
 
-  *x = static_cast<int>(static_cast<float>(-left) * fit);
-  *y = static_cast<int>(static_cast<float>(-top) * *scale);
+  *x = static_cast<int>(static_cast<float>(originX) * fit);
+  *y = static_cast<int>(static_cast<float>(originY) * *scale);
   if (horizontal) {
     *y -= static_cast<int>((static_cast<float>(height) - static_cast<float>(spanY) * *scale) * -0.5f);
   } else {

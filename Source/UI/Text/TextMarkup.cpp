@@ -135,24 +135,6 @@ std::string UIWindow::RemoveTextColors(const char* text) {
   return result;
 }
 
-// OFFSET: 0x00A7F510
-// FUNCTION: fn_16963
-const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
-}
-
-// OFFSET: 0x00A7F580
-// FUNCTION: fn_16964
-const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
-}
-
-// OFFSET: 0x00A7F5F0
-// FUNCTION: fn_16965
-const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
-}
-
 // OFFSET: 0x00A7F660
 // FUNCTION: fn_16966
 const std::string UIWindow::DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
@@ -182,12 +164,6 @@ const std::string UIWindow::DisplayTextTag(const std::string& source, const std:
   } while (position != -1);
 
   return result + text;
-}
-
-// OFFSET: 0x00A7FE50
-// FUNCTION: fn_16967
-const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0
