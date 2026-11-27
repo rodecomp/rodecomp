@@ -3453,53 +3453,53 @@ inline int MeasureTextWidth(UIWindow* window, const char* text, unsigned bytes, 
 // OFFSET: 0x00A829D0
 // FUNCTION: fn_16994
 const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold) {
-  if (!text) {
-    return nullptr;
-  }
+  const char* result = text;
+  if (text) {
+    const int width = this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), family, height, bold, 0);
+    int ellipsisWidth;
+    {
+      TextContext context(*this->geometry.surface);
+      context.SetFont(family, height, bold, 0);
+      SIZE size;
+      context.Measure("...", 3, &size);
+      ellipsisWidth = size.cx;
+    }
 
-  const int width = this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), family, height, bold, 0);
-  int ellipsisWidth;
-  {
-    TextContext context(*this->geometry.surface);
-    context.SetFont(family, height, bold, 0);
-    SIZE size;
-    context.Measure("...", 3, &size);
-    ellipsisWidth = size.cx;
-  }
-
-  if (width > maxWidth) {
-    const char* current = text;
-    const char* end = text + std::strlen(text);
-    if (current < end) {
-      maxWidth -= ellipsisWidth;
+    if (width > maxWidth) {
+      const char* current = text;
       int bytes = 0;
       int total = 0;
-      do {
-        const int previous = bytes;
-        const char* start = current;
-        current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
-        const int step = static_cast<int>(current - start);
-        total += MeasureTextWidth(this, start, step, family, height, bold, 0);
-        bytes += step;
-        if (total > maxWidth) {
-          bytes = previous;
-          break;
-        }
-      } while (current < end);
+      const char* end = text + std::strlen(text);
+      if (current < end) {
+        maxWidth -= ellipsisWidth;
+        do {
+          const int previous = bytes;
+          const char* start = current;
+          current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
+          const int step = static_cast<int>(current - start);
+          const int stepWidth = MeasureTextWidth(this, start, step, family, height, bold, 0);
+          bytes += step;
+          total += stepWidth;
+          if (total > maxWidth) {
+            bytes = previous;
+            break;
+          }
+        } while (current < end);
 
-      if (bytes > 0) {
-        char* buffer = static_cast<char*>(std::malloc(bytes + 1));
-        std::memcpy(buffer, text, bytes);
-        buffer[bytes] = '\0';
-        // GLOBAL: gl_24797
-        static std::string clipped;
-        clipped = buffer + std::string("...");
-        std::free(buffer);
-        return clipped.c_str();
+        if (bytes > 0) {
+          char* buffer = new char[bytes + 1];
+          std::memcpy(buffer, text, bytes);
+          buffer[bytes] = '\0';
+          // GLOBAL: gl_24797
+          static std::string clipped;
+          clipped = buffer + std::string("...");
+          delete[] buffer;
+          result = clipped.c_str();
+        }
       }
     }
   }
-  return text;
+  return result;
 }
 
 // OFFSET: 0x009EBF40
