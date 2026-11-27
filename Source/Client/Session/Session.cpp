@@ -2582,6 +2582,17 @@ void CSession::CollectFilteredMerchantMyShopItems() {
   }
 }
 
+// INLINED
+static std::uint32_t FindListedPrice(const std::list<ITEM_INFO>& items, int itemId) {
+  for (auto it = items.begin(); it != items.end(); ++it) {
+    if (std::atoi(it->itemId.c_str()) == itemId) {
+      return it->price;
+    }
+  }
+
+  return 0xFFFFFFFF;
+}
+
 // OFFSET: 0x00DFC330
 // FUNCTION: fn_23597
 void CSession::RefreshMerchantMyShopItems() {
@@ -2600,27 +2611,16 @@ void CSession::RefreshMerchantMyShopItems() {
 
   for (auto it = this->m_merchantMyShopItems.begin(); it != this->m_merchantMyShopItems.end();) {
     const int itemId = std::atoi(it->itemId.c_str());
-    auto match = this->m_merchantMirrorItems.begin();
-    for (; match != this->m_merchantMirrorItems.end(); ++match) {
-      if (std::atoi(match->itemId.c_str()) == itemId) {
-        break;
-      }
-    }
-
-    if (this->m_merchantMirrorItems.end() == match) {
+    const std::uint32_t value = FindListedPrice(this->m_merchantMirrorItems, itemId);
+    if (value == 0xFFFFFFFF) {
       it = this->m_merchantMyShopItems.erase(it);
-      continue;
-    }
-
-    const std::uint32_t value = match->prices[0];
-    if (value == 0xFFFFFFFF || g_session.HasSwapEquipmentItem(it->identity[1]) == 1) {
+    } else if (g_session.HasSwapEquipmentItem(it->identity[1]) == 1) {
       it = this->m_merchantMyShopItems.erase(it);
-      continue;
+    } else {
+      it->price = value;
+      it->realPrice = value;
+      ++it;
     }
-
-    it->prices[0] = value;
-    it->prices[1] = value;
-    ++it;
   }
 }
 
