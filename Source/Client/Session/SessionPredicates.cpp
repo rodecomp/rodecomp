@@ -128,3 +128,14 @@ int CSession::IsPetAid(std::uint32_t aid) const {
   }
   return aid == this->petGid;
 }
+
+class CommandPairVector : public std::vector<std::pair<const char*, int>> {
+ public:
+  void push_back(const std::pair<const char*, int>& value);
+};
+
+// OFFSET: 0x00E04030
+// FUNCTION: fn_47474
+void CommandPairVector::push_back(const std::pair<const char*, int>& value) {
+  std::vector<std::pair<const char*, int>>::push_back(value);
+}
