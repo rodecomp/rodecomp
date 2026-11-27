@@ -204,7 +204,7 @@ bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnl
   CGifRes* volatile self = this;
   const char* header = static_cast<const char*>(data);
   if (*reinterpret_cast<const unsigned short*>(header) == 0x4947 && header[2] == 'F') {
-    return self->DecodeGif(data, bytes, iconOnly);
+    return this->DecodeGif(data, bytes, iconOnly);
   }
 
   const char* extension = std::strrchr(name, '.');
