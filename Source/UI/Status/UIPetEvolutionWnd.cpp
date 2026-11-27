@@ -186,8 +186,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       this->m_materials = result.second;
     }
     this->RebuildButtons();
-    break;
-  }
+  } break;
 
   case UM_TEXT_LBTN_UP: {
     ITEM_INFO item;
