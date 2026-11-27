@@ -6867,8 +6867,8 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
 
     if (item.quantity > 0) {
-      const long long pending = g_session.GetMerchantHopeToSellItemTotalPrice();
       const int price = static_cast<int>(drag.price);
+      const long long pending = g_session.GetMerchantHopeToSellItemTotalPrice();
       if (this->buyingStore) {
         const long long cost = price * item.quantity;
         if (g_session.m_zeny + cost + pending <= 0x7FFFFFFF) {
