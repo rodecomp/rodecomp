@@ -2436,6 +2436,10 @@ UIRuneSetList::UIRuneSetList() : UIScrollBar(), m_itemHeight(0x44), m_slotSpacin
   this->arrowLength = 6;
 }
 
+// OFFSET: 0x008156F0
+// FUNCTION: fn_47473
+UIRuneSetList::~UIRuneSetList() = default;
+
 // OFFSET: 0x008149C0
 // FUNCTION: fn_10133
 UIRuneSetReWard::UIRuneSetReWard() : UIBitmapButton(), m_itemId(0), m_state(0) {

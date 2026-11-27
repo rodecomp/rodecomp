@@ -85,6 +85,7 @@ public:
 class UIRuneSetList : public UIScrollBar {
 public:
   UIRuneSetList();
+  ~UIRuneSetList() override;
 
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
