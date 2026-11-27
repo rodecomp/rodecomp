@@ -108,7 +108,7 @@ void PakRegistry::ApplyAuxiliary(const void* data, std::uint32_t size) {
 
   if (!best.empty() && bestIdentifier > 0) {
     for (const auto& archive : this->m_archives) {
-      archive.second->ApplyAuxiliary(data, size, best.data(), best.size());
+      archive.second->ApplyAuxiliary(data, size, best);
     }
   }
 }

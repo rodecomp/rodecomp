@@ -1799,10 +1799,8 @@ bool CGPak::ApplyAuxiliary(std::span<const std::uint8_t> data) {
 
 // OFFSET: 0x00AEC9F0
 // FUNCTION: fn_18137
-void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize) {
-  volatile bool applied = this->m_auxiliary.Apply(
-    std::span<const std::uint8_t>(static_cast<const std::uint8_t*>(data), size), std::span<const std::uint8_t>(static_cast<const std::uint8_t*>(auxData), auxSize)
-  );
+void CGPak::ApplyAuxiliary(const void* data, std::uint32_t size, std::span<const std::uint8_t> auxiliary) {
+  this->m_auxiliary.Apply(std::span<const std::uint8_t>(static_cast<const std::uint8_t*>(data), size), auxiliary);
 }
 
 // OFFSET: 0x00654BB0

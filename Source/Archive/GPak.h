@@ -159,7 +159,7 @@ public:
   bool Extract(const myGPack::PakEntry* entry, void* buffer);
   void ReadAuxiliary(std::vector<std::uint8_t>& output, std::uint64_t* identifier = nullptr);
   bool ApplyAuxiliary(std::span<const std::uint8_t> data);
-  void ApplyAuxiliary(const void* data, std::uint32_t size, const void* auxData, std::uint32_t auxSize);
+  void ApplyAuxiliary(const void* data, std::uint32_t size, std::span<const std::uint8_t> auxiliary);
 
 protected:
   void Clear();
