@@ -133,7 +133,22 @@ void matrix::SetScale(float x, float y, float z) {
 void matrix::AppendScale(float x, float y, float z) {
   matrix scale;
   scale.SetScale(x, y, z);
-  Rotate(this->values, scale.values);
+  float* v = this->values;
+  const float* r = scale.values;
+  float ax[4], ay[4], az[4];
+  for (unsigned row = 0; row < 4; ++row) {
+    ax[row] = v[row * 3];
+    ay[row] = v[row * 3 + 1];
+    az[row] = v[row * 3 + 2];
+  }
+  for (unsigned row = 0; row < 4; ++row) {
+    v[row * 3 + 0] = (az[row] * r[6] + ax[row] * r[0]) + ay[row] * r[3];
+    v[row * 3 + 1] = (az[row] * r[7] + ax[row] * r[1]) + ay[row] * r[4];
+    v[row * 3 + 2] = (az[row] * r[8] + ax[row] * r[2]) + ay[row] * r[5];
+  }
+  v[9] += r[9];
+  v[10] += r[10];
+  v[11] += r[11];
 }
 
 // OFFSET: 0x00552CA0
