@@ -46,13 +46,11 @@ inline int HexColorToken(const char* text, const char* end) {
 // OFFSET: 0x009B4220
 // FUNCTION: fn_13829
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width) {
-  const char* begin = text;
   const char* current = text;
   const char* end = text + std::strlen(text);
   const char* breakAt = text;
   const char* limit = text + width;
   const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
-  const char* chunk = text;
 
   while (current < end) {
     current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
@@ -67,15 +65,15 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
         breakAt = current++;
       }
 
-      chunk = breakAt <= begin ? current : breakAt;
-      AppendLine(lines, begin, chunk);
-      begin = chunk;
-      limit = chunk + width;
+      const char* chunk = breakAt <= text ? current : breakAt;
+      AppendLine(lines, text, chunk);
+      text = chunk;
+      limit = text + width;
     }
   }
 
-  if (chunk < current) {
-    AppendLine(lines, chunk, current);
+  if (text < current) {
+    AppendLine(lines, text, current);
   }
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
