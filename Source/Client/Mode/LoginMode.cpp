@@ -3405,7 +3405,7 @@ void CLoginMode::OnChangeState(int value) {
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       const int port = rand() % 3 + 6951;
-      alignas(16) constexpr std::array<char, 26> hostSource = OBFUSCATE_SOURCE("kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
+      alignas(8) constexpr std::array<char, 26> hostSource = OBFUSCATE_SOURCE("kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       const char* hostText = OBFUSCATE_DECRYPT(0x7941D76335CFA14FULL, hostSource);
       StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
     } else {
