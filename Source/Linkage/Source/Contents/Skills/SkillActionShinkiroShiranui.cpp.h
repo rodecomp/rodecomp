@@ -26,3 +26,4 @@
 #include <vector>
 
 template __declspec(noinline) std::vector<int>::~vector() noexcept;
+template std::string& std::string::operator=(std::string&&) noexcept;

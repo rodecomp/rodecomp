@@ -2,6 +2,7 @@
 #include "Contents/Skills/SkillId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/CombatTypes.h"
 #include "Client/Mode/ModeMgr.h"
@@ -95,6 +96,16 @@ class CSkillAction_SS_FOUR_CHARM : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
+
+// INLINED
+static int RandomBelow(int range) {
+  if (range == 0) {
+    return 0;
+  }
+
+  const int value = std::rand() % range;
+  return value >= 0 ? value : 0;
+}
 
 // INLINED
 static CEffect* SpawnAt(EffectLists* effects, int id, const vector3d& position) {
@@ -305,8 +316,7 @@ void CSkillAction_SS_HITOUAKUMU::OnSkillEffect(int level, CGameActor* source, CG
       effects = g_effectMgr;
       CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hitouakumu_%02d", ring)), source->render.position, 0, -1, 0, 0);
       if (effect) {
-        const int spread = static_cast<int>(step);
-        effect->SetAngle(index * step + (spread ? std::max(0, std::rand() % spread) : 0));
+        effect->SetAngle(index * step + RandomBelow(static_cast<int>(step)));
         effect->SetDelay((order[index] + ring * 10) * 32);
       }
     }
@@ -363,27 +373,27 @@ void CSkillAction_SS_FOUR_CHARM::OnSkillEffect(int level, CGameActor* source, CG
   switch (source->charmType) {
   case CHARM_TYPE_WATER:
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice_bottom"), ZeroVector3d(), 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_ice"), ZeroVector3d(), 0, -1, 0, 0);
     break;
   case CHARM_TYPE_LAND:
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth_bottom"), ZeroVector3d(), 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_earth"), ZeroVector3d(), 0, -1, 0, 0);
     break;
   case CHARM_TYPE_FIRE:
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire_bottom"), ZeroVector3d(), 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_fire"), ZeroVector3d(), 0, -1, 0, 0);
     break;
   case CHARM_TYPE_WIND:
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind_bottom"), ZeroVector3d(), 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("four_charm_wind"), ZeroVector3d(), 0, -1, 0, 0);
     break;
   }
 }
