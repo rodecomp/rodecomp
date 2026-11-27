@@ -8826,16 +8826,16 @@ bool CEffectPrim::OnProcess() {
         }
 
         if (process <= 10) {
-          slot.height[13] += 20.0f;
+          slot.height[13] += g_fireflyGroundOffset;
         } else if (process > 170) {
-          slot.height[13] -= 5.0f;
+          slot.height[13] -= g_fireflyModeFive;
 
           if (slot.height[13] < 0.0f) {
             slot.height[13] = 0.0f;
           }
         }
 
-        float angle = static_cast<float>(process) / 10.0f / 3.0f + slot.vecTNow.x;
+        float angle = static_cast<float>(process) / g_projectionDepthOffset / g_masterReachDistance + slot.vecTNow.x;
         slot.vecTNow.x = angle;
 
         if (angle >= 359.0f) {
@@ -8843,8 +8843,8 @@ bool CEffectPrim::OnProcess() {
           angle = 359.0f;
         }
 
-        slot.vecBPre.x = static_cast<float>(static_cast<int>(angle)) / 6.0f - 30.0f;
-        slot.vecBPre.y = -(g_sinTable[static_cast<int>(angle)] * 20.0f) - 40.0f;
+        slot.vecBPre.x = static_cast<float>(static_cast<int>(angle)) / g_effectPrimitiveOuterSpan - 30.0f;
+        slot.vecBPre.y = -(g_sinTable[static_cast<int>(angle)] * g_fireflyGroundOffset) - 40.0f;
         slot.vecBPre.z = 0.0f;
       }
     } break;
