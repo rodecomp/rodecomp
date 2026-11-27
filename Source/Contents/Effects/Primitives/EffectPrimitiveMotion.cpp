@@ -831,15 +831,17 @@ void CEffectPrim::PrimBottom2() {
         if (this->state.slots[ec].fullDisplayAngle >= 360) {
           this->state.slots[ec].fullDisplayAngle -= 360;
         }
+
+        this->state.slots[ec].maxHeight = 20.0f + 10.0f * g_sinTable[this->state.slots[ec].fullDisplayAngle];
       } else {
         this->state.slots[ec].fullDisplayAngle += 2;
 
         if (this->state.slots[ec].fullDisplayAngle >= 360) {
           this->state.slots[ec].fullDisplayAngle -= 360;
         }
-      }
 
-      this->state.slots[ec].maxHeight = 20.0f + 10.0f * g_sinTable[this->state.slots[ec].fullDisplayAngle];
+        this->state.slots[ec].maxHeight = 20.0f + 10.0f * g_sinTable[this->state.slots[ec].fullDisplayAngle];
+      }
     }
   }
 }
@@ -5373,7 +5375,8 @@ void CEffectPrim::PrimPulseRing() {
       continue;
     }
 
-    const int process = ++slot.process;
+    const int process = slot.process + 1;
+    slot.process = process;
     if (process <= 0) {
       continue;
     }
@@ -5383,7 +5386,7 @@ void CEffectPrim::PrimPulseRing() {
     if (slot.fullDisplayAngle >= 360) {
       slot.fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle - 360);
     }
-    const int angle = slot.fullDisplayAngle;
+    const std::int16_t angle = slot.fullDisplayAngle;
 
     if (process > slot.alphaT) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 2);
