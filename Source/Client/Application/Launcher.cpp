@@ -303,8 +303,12 @@ static bool CheckClientProcessNT() {
 
       DWORD processes[1024];
       DWORD needed;
-      if (!enumProcesses || !enumProcessModules || !getModuleBaseName || !enumProcesses(processes, sizeof(processes), &needed)) {
-        __leave;
+      if (!enumProcesses || !enumProcessModules || !getModuleBaseName) {
+        return false;
+      }
+
+      if (!enumProcesses(processes, sizeof(processes), &needed)) {
+        return false;
       }
 
       const DWORD count = needed / sizeof(DWORD);
