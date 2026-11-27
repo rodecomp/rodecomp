@@ -58,7 +58,7 @@ int CMiniPartyWndAreaMgr::FindFreeCell() {
   const auto end = this->available.end();
   auto it = this->available.begin();
   for (; it != end; ++it) {
-    if (std::find(cells.begin(), cells.end(), *it) != cells.end() && g_windowMgr.FindSnapExcludedWindow(*it) == nullptr) {
+    if (cells.end() != std::find(cells.begin(), cells.end(), *it) && g_windowMgr.FindSnapExcludedWindow(*it) == nullptr) {
       break;
     }
   }
