@@ -52,12 +52,11 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
   }
 
   int first = 0;
-  int depth = 1;
   int count = static_cast<int>(this->entries.size());
   int best = -1;
-  int result;
+  bool arrived = false;
 
-  for (;;) {
+  for (int depth = 1; !arrived && depth < 100; ++depth) {
     for (int i = first; i < count; ++i) {
       NaviDataEntry& entry = this->entries[i];
       if (this->info != entry.link->GetLinkedInfo()) {
@@ -86,17 +85,12 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
         best = i;
       }
 
-      result = this->range;
-      std::vector<CNavi_Link*> path;
-      for (int index = best; index != -1; index = this->entries[index].previous) {
-        CNavi_Link* link = this->entries[index].link;
-        path.push_back(link);
-      }
-      route->clear();
-      for (int index = static_cast<int>(path.size()) - 1; index >= 0; --index) {
-        route->push_back(path[index]);
-      }
-      goto done;
+      arrived = true;
+      break;
+    }
+
+    if (arrived) {
+      continue;
     }
 
     for (int i = first; i < count; ++i) {
@@ -112,9 +106,7 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
           for (std::size_t j = count; j < this->entries.size(); ++j) {
             if (next == this->entries[j].link) {
               if (this->entries[j].cost > cost) {
-                this->entries[j].previous = i;
-                this->entries[j].link = next;
-                this->entries[j].cost = cost;
+                this->entries[j] = NaviDataEntry(i, next, cost);
               }
               break;
             }
@@ -133,7 +125,11 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
         if (type == 205 && !allowWarps) {
           continue;
         }
-        if (type == 202 || type == 203) {
+        if (type != 202 && type != 203) {
+          if (next->GetLinkedInfo()->IsVisited()) {
+            continue;
+          }
+        } else {
           if (allowGates != true) {
             continue;
           }
@@ -148,8 +144,6 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
           } else {
             continue;
           }
-        } else if (next->GetLinkedInfo()->IsVisited()) {
-          continue;
         }
         next->SetDepth(depth);
         NaviDataEntry entry = {i, next, this->entries[i].cost + it->cost};
@@ -162,14 +156,23 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
     if (first == count) {
       break;
     }
-    ++depth;
-    if (depth >= 100) {
-      break;
+  }
+
+  int result = 0;
+
+  if (arrived) {
+    result = this->range;
+    std::vector<CNavi_Link*> path;
+    for (int index = best; index != -1; index = this->entries[index].previous) {
+      CNavi_Link* link = this->entries[index].link;
+      path.push_back(link);
+    }
+    route->clear();
+    for (int index = static_cast<int>(path.size()) - 1; index >= 0; --index) {
+      route->push_back(path[index]);
     }
   }
-  result = 0;
 
-done:
   this->range = 50000;
   this->entries.clear();
   this->ResetLinkDepths();

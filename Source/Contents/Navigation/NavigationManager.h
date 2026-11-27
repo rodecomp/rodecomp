@@ -105,6 +105,14 @@ struct NaviDataEntry {
     this->cost = 0;
   }
 
+  // INLINED
+  NaviDataEntry& operator=(const NaviDataEntry& other) {
+    this->previous = other.previous;
+    this->link = other.link;
+    this->cost = other.cost;
+    return *this;
+  }
+
   void Reset();
   void Init();
   int GetPrevious() const;
