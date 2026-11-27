@@ -47,13 +47,11 @@ static const GGHashEntry* FindEntryImpl(const GGHashEntry* table, DWORD count, D
 // FUNCTION: fn_46728
 const GGHashEntry* __fastcall FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
   while (count != 0) {
-    const GGHashEntry* mid = &table[count >> 1];
-    DWORD midName = mid->nameHash;
-    DWORD midFile = mid->fileHash;
-    if (nameHash == midName && fileHash == midFile) {
+    const GGHashEntry* mid = table + (count >> 1);
+    if (nameHash == mid->nameHash && fileHash == mid->fileHash) {
       return mid;
     }
-    if (fileHash >= midFile && (fileHash != midFile || nameHash > midName)) {
+    if (fileHash >= mid->fileHash && (fileHash != mid->fileHash || nameHash > mid->nameHash)) {
       table = mid + 1;
       --count;
     }
