@@ -275,14 +275,15 @@ bool CRendererDX7::SaveLogo(std::string filename) {
 
   const int pixelBytes = locked.lPitch / locked.dwWidth;
   const int paddedWidth = locked.lPitch / pixelBytes;
-  const int size = 3 * paddedWidth * locked.dwHeight;
+  const int rowBytes = 3 * paddedWidth;
+  const int size = rowBytes * locked.dwHeight;
   auto* pixels = new unsigned char[size];
   const auto& image = logo->image;
 
   for (DWORD y = 0; y < locked.dwHeight; ++y) {
     const unsigned char* source = static_cast<const unsigned char*>(locked.lpSurface) + y * locked.lPitch;
-    unsigned char* destination = pixels + 3 * paddedWidth * y;
-    int remaining = size - 3 * paddedWidth * y;
+    unsigned char* destination = pixels + rowBytes * y;
+    int remaining = size - rowBytes * y;
 
     for (DWORD x = 0; x < locked.dwWidth && remaining > 0; ++x, destination += 3, remaining -= 3) {
       if (x >= locked.dwWidth - image.width && y >= locked.dwHeight - image.height) {
