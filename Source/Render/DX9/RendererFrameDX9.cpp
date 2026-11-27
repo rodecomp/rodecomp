@@ -29,27 +29,29 @@ bool CRendererDX9::Draw() {
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dLib\\RendererDX9.cpp";
   g_renderDiagnosticLine = 116;
   g_renderDiagnosticFile = source;
-  if (!this->device->Begin()) {
-    this->ClearFrame();
-    g_renderDiagnosticLine = 151;
+  CRendererDX9* renderer = this;
+  DeviceOwnerDX9* device = renderer->device;
+  if (device->Begin()) {
+    if (!CThemidaMgr::IsProtected()) {
+      return false;
+    }
+
+    g_renderDiagnosticLine = 131;
     g_renderDiagnosticFile = source;
-    return false;
+    renderer->DrawQueues();
+    g_renderDiagnosticLine = 134;
+    g_renderDiagnosticFile = source;
+    renderer->ClearFrame();
+    g_renderDiagnosticLine = 137;
+    g_renderDiagnosticFile = source;
+    device->End();
+    g_renderDiagnosticLine = 140;
+    g_renderDiagnosticFile = source;
+    return true;
   }
 
-  if (!CThemidaMgr::IsProtected()) {
-    return false;
-  }
-
-  g_renderDiagnosticLine = 131;
-  g_renderDiagnosticFile = source;
-  this->DrawQueues();
-  g_renderDiagnosticLine = 134;
-  g_renderDiagnosticFile = source;
   this->ClearFrame();
-  g_renderDiagnosticLine = 137;
+  g_renderDiagnosticLine = 151;
   g_renderDiagnosticFile = source;
-  this->device->End();
-  g_renderDiagnosticLine = 140;
-  g_renderDiagnosticFile = source;
-  return true;
+  return false;
 }
