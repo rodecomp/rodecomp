@@ -29,8 +29,8 @@ public:
   void Clear() override;
   virtual void AddText(const char* text, std::uint32_t color, const char* style);
   void AddTextWrapped(const char* text, std::uint32_t color, const char* style);
-  void AddItemLinkLine(const char* text, std::uint32_t& color, int& mode);
-  void AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode);
+  void AddItemLinkLine(const char* text, std::uint32_t& color, int mode);
+  void AddNavigationLinkLine(const char* text, std::uint32_t& color, int mode);
   std::string RenderItemLinks(const char* lineText, std::string& source);
   std::string RenderNavigationLinks(const char* text, std::string& source);
   void RewrapLinkLines(std::vector<std::string>& wrapped, int mode);

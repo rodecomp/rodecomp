@@ -2220,7 +2220,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int mode) 
 
 // OFFSET: 0x0089DC30
 // FUNCTION: fn_11598
-void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int& mode) {
+void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int mode) {
   if (!_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) ||
       !_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->UIListBox::AddLine(text);
@@ -2229,14 +2229,14 @@ void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int& 
 
   std::vector<std::string> wrapped;
   const std::string converted = this->Convert(text);
-  this->WrapLinkText(reinterpret_cast<int>(&mode), &wrapped, converted);
-  this->RewrapLinkLines(wrapped, reinterpret_cast<int>(&mode));
+  this->WrapLinkText(mode, &wrapped, converted);
+  this->RewrapLinkLines(wrapped, mode);
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     wrapped[line] = this->RenderItemLinks(wrapped[line].c_str(), source);
     if (line > 0) {
       this->lineColors.push_back(color);
-      this->history.push_back(std::string());
+      this->history.push_back("");
     }
     this->UIListBox::AddLine(wrapped[line].c_str());
   }
@@ -2244,17 +2244,16 @@ void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int& 
 
 // OFFSET: 0x0089E0F0
 // FUNCTION: fn_11599
-void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode) {
-  NavigationLinkParser* const parser = g_navigationLinkParser;
-  if (!parser->HasLink(text)) {
+void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color, int mode) {
+  if (!GetNavigationLinkParser()->HasLink(text)) {
     this->UIListBox::AddLine(text);
     return;
   }
 
   std::vector<std::string> wrapped;
-  std::string display = parser->DisplayNavigationLink(text);
-  this->WrapLinkText(reinterpret_cast<int>(&mode), &wrapped, display);
-  this->RewrapLinkLines(wrapped, reinterpret_cast<int>(&mode));
+  std::string display = GetNavigationLinkParser()->DisplayNavigationLink(text);
+  this->WrapLinkText(mode, &wrapped, display);
+  this->RewrapLinkLines(wrapped, mode);
   std::string source = text;
   for (unsigned int line = 0; line < wrapped.size(); ++line) {
     wrapped[line] = this->RenderNavigationLinks(wrapped[line].c_str(), source);

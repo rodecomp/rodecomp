@@ -172,9 +172,9 @@ void UIChatHisBox3::AddText(const char* text, std::uint32_t color) {
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
-    this->AddItemLinkLine(text, color, mode);
+    this->AddItemLinkLine(text, color, reinterpret_cast<int>(&mode));
   } else if (GetNavigationLinkParser()->HasLink(std::string(text))) {
-    this->AddNavigationLinkLine(text, color, mode);
+    this->AddNavigationLinkLine(text, color, reinterpret_cast<int>(&mode));
   } else {
     this->UIListBox::AddLine(text);
   }
@@ -215,10 +215,10 @@ void UIChatHisBox::AddText(const char* text, std::uint32_t color, const char* st
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     int mode = 4;
-    this->AddItemLinkLine(text, color, mode);
+    this->AddItemLinkLine(text, color, reinterpret_cast<int>(&mode));
   } else if (GetNavigationLinkParser()->HasLink(std::string(text))) {
     int mode = 4;
-    this->AddNavigationLinkLine(text, color, mode);
+    this->AddNavigationLinkLine(text, color, reinterpret_cast<int>(&mode));
   } else {
     this->UIListBox::AddLine(text);
   }
