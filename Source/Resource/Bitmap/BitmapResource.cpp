@@ -201,9 +201,10 @@ bool CGifRes::Load(const char* name) {
 // OFFSET: 0x00749B60
 // FUNCTION: fn_07854
 bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnly) {
-  constexpr char signature[] = {'G', 'I', 'F', '\0'};
-  if (std::memcmp(data, signature, 3) == 0) {
-    return this->DecodeGif(data, bytes, iconOnly);
+  CGifRes* volatile self = this;
+  const char* header = static_cast<const char*>(data);
+  if (*reinterpret_cast<const unsigned short*>(header) == 0x4947 && header[2] == 'F') {
+    return self->DecodeGif(data, bytes, iconOnly);
   }
 
   const char* extension = std::strrchr(name, '.');
@@ -212,19 +213,19 @@ bool CGifRes::Decode(const char* name, const void* data, int bytes, bool iconOnl
   }
 
   if (lstrcmpiA(extension, ".bmp") == 0) {
-    return this->DecodeBitmap(data, bytes, iconOnly);
+    return self->DecodeBitmap(data, bytes, iconOnly);
   }
 
   if (lstrcmpiA(extension, ".tga") == 0) {
-    return this->DecodeTga(data, bytes);
+    return self->DecodeTga(data, bytes);
   }
 
   if (lstrcmpiA(extension, ".jpg") == 0) {
-    return this->DecodeJpeg(data, bytes);
+    return self->DecodeJpeg(data, bytes);
   }
 
   if (lstrcmpiA(extension, ".png") == 0) {
-    return this->DecodePng(data, bytes, name);
+    return self->DecodePng(data, bytes, name);
   }
 
   ShowErrorDialog("Unsupport fileformat!", 0);
