@@ -1703,16 +1703,17 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     return 0;
   }
-  case UM_COMMAND:
+  case UM_COMMAND: {
+    MessengerMember member;
     switch (a) {
     case ID_SENDMSG:
       if (!g_session.m_lockMouse && this->selected != -1) {
-        MessengerMember member = this->MemberAtIndex(this->selected);
+        member = this->MemberAtIndex(this->selected);
       }
       return 0;
     case ID_TALK:
       if (!g_session.m_lockMouse && this->selected != -1) {
-        MessengerMember member = this->MemberAtIndex(this->selected);
+        member = this->MemberAtIndex(this->selected);
         if (member.valid && !(member.name == g_session.DecodePlayerName())) {
           const char* tag = nullptr;
           if (g_windowMgr.IsFriend(member.name.c_str())) {
@@ -1729,7 +1730,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_FRIEND_INFO:
       if (!g_session.m_lockMouse && this->selected != -1) {
-        MessengerMember member = this->MemberAtIndex(this->selected);
+        member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "메시지", 0x118, 0x78, 0);
         }
@@ -1766,7 +1767,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_DELETE_FRIEND:
       if (!g_session.m_lockMouse && this->selected != -1) {
-        MessengerMember member = this->MemberAtIndex(this->selected);
+        member = this->MemberAtIndex(this->selected);
         if (member.valid) {
           if (this->mode == MESSENGER_TAB_FRIEND) {
             if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
@@ -1785,7 +1786,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     case ID_LEAVE:
       if (!g_session.m_lockMouse && this->selected != -1) {
-        MessengerMember member = this->MemberAtIndex(this->selected);
+        member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "메시지", 0x118, 0x78, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
@@ -1945,6 +1946,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     return 0;
+  }
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
