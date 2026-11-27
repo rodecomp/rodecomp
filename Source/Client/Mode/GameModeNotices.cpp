@@ -4275,21 +4275,6 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\SR_RIDEINLIGHTNING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
-    case WM_LULLABY_DEEPSLEEP: {
-      g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      CRagEffect* effect = actor->LaunchEffect(EF_CHEMICAL_V2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (effect == nullptr) {
-        return;
-      }
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      float x;
-      float z;
-      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      const float y = mode->scene->terrain->Height(x, z);
-      vector3d position = {x, y, z};
-      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
-      break;
-    }
     case WM_DOMINION_IMPULSE: {
       CRagEffect* effect = actor->LaunchEffect(EF_CHEMICAL_V3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect == nullptr) {
@@ -4304,6 +4289,21 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, CAMERA_SHAKE_DEFAULT, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    }
+    case WM_LULLABY_DEEPSLEEP: {
+      g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      CRagEffect* effect = actor->LaunchEffect(EF_CHEMICAL_V2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (effect == nullptr) {
+        return;
+      }
+      CGameMode* mode = g_modeMgr.GetGameMode();
+      float x;
+      float z;
+      mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       break;
     }
     case SC_CHAOSPANIC:
@@ -4321,19 +4321,6 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       g_effectMgr->Spawn(actor->render.accountId, EF_BOOK_OF_CREATINGSTAR, actor->render.position, 0, -1, 0, 0);
       break;
-    default:
-      CSkillActionMgr::GetInstance()->OnGroundSkillEffect(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
-                                                   *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
-                                                   reinterpret_cast<int>(actor));
-      break;
-    case EM_TERRA_DRIVE: {
-      vector3d position = {0.0f, 0.0f, 0.0f};
-      this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
-      position.y = this->scene->terrain->Height(position.x, position.z);
-      g_effectMgr->Spawn(0, EF_TERRA_DRIVE_BOTTOM, position, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, EF_TERRA_DRIVE, position, 0, -1, 0, 0);
-      break;
-    }
     case EM_DIAMOND_STORM: {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
@@ -4342,6 +4329,19 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_effectMgr->Spawn(0, EF_DIAMOND_STORM, position, 0, -1, 0, 0);
       break;
     }
+    case EM_TERRA_DRIVE: {
+      vector3d position = {0.0f, 0.0f, 0.0f};
+      this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
+      position.y = this->scene->terrain->Height(position.x, position.z);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE_BOTTOM, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE, position, 0, -1, 0, 0);
+      break;
+    }
+    default:
+      CSkillActionMgr::GetInstance()->OnGroundSkillEffect(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
+                                                   *reinterpret_cast<const std::int16_t*>(packet + 0xC), *reinterpret_cast<const std::int16_t*>(packet + 8),
+                                                   reinterpret_cast<int>(actor));
+      break;
     }
 }
 
