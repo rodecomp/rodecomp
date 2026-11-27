@@ -79,8 +79,13 @@ struct PakObfuscated {
     FillRandomBytes(reinterpret_cast<char*>(this->m_mask), reinterpret_cast<char*>(this->m_mask) + sizeof(this->m_mask), random);
 
     const std::uint8_t* bytes = reinterpret_cast<const std::uint8_t*>(&value);
-    for (std::size_t i = 0; i < 48; ++i) {
-      this->m_data[i] = bytes[i] ^ this->m_mask[i % 4 + 1] ^ this->m_mask[i % 4];
+    for (std::size_t i = 0; i < 48; i += 6) {
+      this->m_data[i + 0] = bytes[i + 0] ^ this->m_mask[i & 3] ^ this->m_mask[(i & 3) + 1];
+      this->m_data[i + 1] = bytes[i + 1] ^ this->m_mask[(i + 1) & 3] ^ this->m_mask[((i + 1) & 3) + 1];
+      this->m_data[i + 2] = bytes[i + 2] ^ this->m_mask[(i + 2) & 3] ^ this->m_mask[((i + 2) & 3) + 1];
+      this->m_data[i + 3] = bytes[i + 3] ^ this->m_mask[(i + 3) & 3] ^ this->m_mask[((i + 3) & 3) + 1];
+      this->m_data[i + 4] = bytes[i + 4] ^ this->m_mask[(i + 4) & 3] ^ this->m_mask[((i + 4) & 3) + 1];
+      this->m_data[i + 5] = bytes[i + 5] ^ this->m_mask[(i + 5) & 3] ^ this->m_mask[((i + 5) & 3) + 1];
     }
 
     return *this;
