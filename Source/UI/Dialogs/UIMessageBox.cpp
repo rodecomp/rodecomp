@@ -1991,7 +1991,7 @@ void UISelectReplayDataWnd::OnCreate(int width, int height) {
   this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
-  const std::string prefix("유저인터페이스\\");
+  const std::string prefix(g_uiTexturePathPrefix);
   const char* names[4][3] = {
     {"btn_ok", "btn_ok_a", "btn_ok_b"},
     {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
