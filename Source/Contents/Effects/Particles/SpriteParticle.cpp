@@ -307,7 +307,9 @@ void CSpriteParticle::Draw(char mode) {
       destinationBlend = 6;
     }
     primitive->destinationBlend = destinationBlend;
-    g_renderer->Submit(primitive, this->flags);
+    using SubmitWithInt = void (CRenderer::*)(RenderCommand*, int);
+    auto submitWithInt = reinterpret_cast<SubmitWithInt>(&CRenderer::Submit);
+    (g_renderer->*submitWithInt)(primitive, this->flags);
   }
 }
 
