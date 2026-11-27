@@ -96,6 +96,11 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
+// INLINED
+static void DrawGradeIcon(UIWindow* window, int x, int y, CBitmapRes* icon) {
+  window->DrawBitmap(x, y, icon, true);
+}
+
 // OFFSET: 0x0082FD90
 // FUNCTION: fn_10391
 void UISwapEquipmentWnd::DrawEquipmentSlots() {
@@ -150,12 +155,12 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
         fromSwap = occupant.identity[1] > 0;
       }
 
+      char path[128];
       if (fromSwap == true) {
         continue;
       }
 
       this->SetSlotValue(slot, item.sprite);
-      char path[128];
       if (slot < 8) {
         const char* id = item.itemId.c_str();
         const int iconX = iconColumns[slot / 4];
@@ -168,10 +173,9 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
         }
         this->DrawItemName(nameColumns[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
         if (0 < item.grade) {
-          this->DrawBitmap(
-            iconX, row * 26 + 60,
-            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-            true
+          DrawGradeIcon(
+            this, iconX, row * 26 + 60,
+            static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str())))
           );
         }
       } else {
