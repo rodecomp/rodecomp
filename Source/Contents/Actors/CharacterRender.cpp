@@ -13,6 +13,7 @@
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Contents/Sprites/SpriteRidingPolicy.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
@@ -285,10 +286,11 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
           offsetY += g_headAnchorOffsetY;
         }
 
-        if (cell->scaleX != 1.0f) {
+        const float projectionDepthNumerator = g_projectionDepthNumerator;
+        if (projectionDepthNumerator != cell->scaleX) {
           offsetX = static_cast<int>(static_cast<float>(offsetX) / cell->scaleX);
         }
-        if (cell->scaleY != 1.0f) {
+        if (projectionDepthNumerator != cell->scaleY) {
           offsetY = static_cast<int>(static_cast<float>(offsetY) / cell->scaleY);
         }
         break;
