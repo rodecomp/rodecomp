@@ -57,6 +57,12 @@ float g_masterReachDistance = 3.0f;
 // GLOBAL: gl_26003
 float g_fireflyNormalDrift = 0.05f;
 
+// GLOBAL: gl_26023
+float g_unshadedColorScale = 255.0f;
+
+// GLOBAL: gl_26002
+float g_fireflyWideDrift = 0.2f;
+
 // GLOBAL: gl_26024
 float g_layeredGlowModeTwentyScale = 1.3f;
 
@@ -3184,8 +3190,8 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
   }
 
   int rpCnt = 0;
-  float rx = (static_cast<float>(slot.alphaB) / 255.0f * 0.2f + 1.0f) * slot.distance
-    + slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f;
+  float rx = (static_cast<float>(slot.alphaB) / g_unshadedColorScale * g_fireflyWideDrift + g_projectionDepthNumerator) * slot.distance
+    + slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * g_fireflyNormalDrift;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -3205,7 +3211,7 @@ void CEffectPrim::RenderGlowDisc(matrix& wtm) {
   glowTm.AppendTranslate(offset);
   this->RenderTeiRect(&rpCnt, slot.alphaB, p1, p2, p3, p4, glowTm, 0, 0, 0, 180, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-  rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
+  rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * g_fireflyNormalDrift + slot.distance;
   vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
   vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
   vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
