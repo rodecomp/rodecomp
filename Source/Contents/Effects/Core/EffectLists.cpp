@@ -350,7 +350,7 @@ CEffect* EffectLists::Spawn(int actor, int id, vector3d position, std::uint32_t 
     case EF_EARTHSHAKER_BODY:
       break;
     default:
-      return nullptr;
+      return effect;
     }
   } else if (id == EF_LEVEL150 || id == EF_LEVEL150_SUB) {
     if (this->Find(actor, EF_LEVEL99)) {
@@ -370,7 +370,9 @@ CEffect* EffectLists::Spawn(int actor, int id, vector3d position, std::uint32_t 
     }
   }
 
-  const auto allocator = this->allocators.find(id);
+  int key;
+  key = id;
+  const auto allocator = this->allocators.find(key);
   if (allocator == this->allocators.end()) {
     return nullptr;
   }
