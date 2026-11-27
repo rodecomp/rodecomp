@@ -2757,7 +2757,7 @@ void CCharacterNpc::Render(int) {
   }
 
   for (std::list<CharacterRenderDrawItem>::iterator it = drawList.begin(); it != drawList.end(); ++it) {
-    static_cast<CRendererDX9*>(g_renderer)->Submit(it->command, static_cast<std::uint16_t>(it->flags));
+    static_cast<CRendererDX9*>(g_renderer)->Submit(it->command, it->flags);
   }
 }
 

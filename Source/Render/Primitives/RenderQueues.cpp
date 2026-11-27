@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00559CA0
 // FUNCTION: fn_02073
-void CRenderer::Submit(RenderCommand* primitive, std::uint16_t flags) {
+void CRenderer::Submit(RenderCommand* primitive, int flags) {
   if (this->fog.supported) {
     primitive->ApplyDepthAlpha();
   }

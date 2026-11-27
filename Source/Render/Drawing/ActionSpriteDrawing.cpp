@@ -33,7 +33,7 @@ struct PrimitivePoolAccess : RenderPrimitivePool {
 // OFFSET: 0x00AD5A70
 // FUNCTION: fn_17825
 void CMode::DrawActionSprite(
-  int x, int y, const CActRes* action, const CSprRes* sprite, int animation, int frame, float scale, float angle, std::uint32_t color, std::uint16_t flags
+  int x, int y, const CActRes* action, const CSprRes* sprite, int animation, int frame, float scale, float angle, std::uint32_t color, int flags
 ) {
   if (!action || !sprite) {
     return;

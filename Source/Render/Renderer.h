@@ -56,7 +56,7 @@ public:
   float UiScaleX() const;
   float UiScaleY() const;
   std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay);
-  void Submit(RenderCommand* primitive, std::uint16_t flags);
+  void Submit(RenderCommand* primitive, int flags);
   void SubmitTriangle(RenderTriangle& triangle, int flags);
   void SubmitAuxiliaryPrimitive(LightmappedCommand* primitive);
   void DrawBattleFieldIcon();

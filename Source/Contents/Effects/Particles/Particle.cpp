@@ -926,7 +926,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   this->primitive.texture = this->texture;
   this->primitive.sourceBlend = this->sourceBlend;
   this->primitive.destinationBlend = this->destinationBlend;
-  g_renderer->Submit(&this->primitive, static_cast<std::uint16_t>(this->flags));
+  g_renderer->Submit(&this->primitive, this->flags);
 }
 
 // OFFSET: 0x00B40100
@@ -974,5 +974,5 @@ void CParticle::SetRenderFlag(unsigned char value) {
 // OFFSET: 0x00B40210
 // FUNCTION: fn_18846
 void SubmitParticlePrimitive(RenderCommand* primitive, int flags) {
-  static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, static_cast<std::uint16_t>(flags));
+  static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, flags);
 }

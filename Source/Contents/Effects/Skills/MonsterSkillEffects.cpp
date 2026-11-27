@@ -1743,7 +1743,7 @@ void CFullScreenEffect::Render() {
 
     primitive.sourceBlend = particle->sourceBlend;
     primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
+    g_renderer->Submit(&primitive, particle->flags);
   }
 }
 

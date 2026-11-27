@@ -94,7 +94,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 
   while (face != faceEnd) {
     const std::uint16_t texture = face->texture;
-    std::uint16_t flags = 0;
+    int flags = 0;
 
     while (face != faceEnd && face != nullptr && face->texture == texture) {
       const RenderVertex& a = projected[face->vertices[0]];
@@ -217,7 +217,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   ModelFaceState* state = this->faceState.empty() ? nullptr : &this->faceState[0];
 
   while (face != faceEnd) {
-    std::uint16_t flags = 0;
+    int flags = 0;
     const std::uint16_t texture = face->texture;
 
     while (face != faceEnd && face && face->texture == texture) {
