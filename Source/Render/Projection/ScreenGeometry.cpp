@@ -64,13 +64,13 @@ void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture*
 void DrawDashedScreenLine(
   float startX, float startY, float endX, float endY, int dashLength, int thickness, CTexture* texture, std::uint32_t color
 ) {
-  const float length = SquareRoot((endY - startY) * (endY - startY) + (endX - startX) * (endX - startX));
+  const float deltaX = endX - startX;
+  const float deltaY = endY - startY;
+  const float length = SquareRoot(deltaX * deltaX + deltaY * deltaY);
   if (0.0f == length) {
     return;
   }
 
-  const float deltaX = endX - startX;
-  const float deltaY = endY - startY;
   const float inverseLength = 1.0f / SquareRoot(deltaY * deltaY + deltaX * deltaX);
   const float directionX = inverseLength * deltaX;
   const float directionY = inverseLength * deltaY;
