@@ -3699,7 +3699,8 @@ void UIWindow::DrawActionSprite(
   int index = 0;
   if (interval > 0) {
     const float elapsed = static_cast<float>(timeGetTime() % static_cast<unsigned>(interval));
-    const int frame = std::max(static_cast<int>(elapsed * (static_cast<float>(count) / static_cast<float>(interval))), 0);
+    const int scaledFrame = static_cast<int>(elapsed * (static_cast<float>(count) / static_cast<float>(interval)));
+    const int frame = scaledFrame > 0 ? scaledFrame : 0;
     index = count > frame ? frame : count - 1;
   }
 
