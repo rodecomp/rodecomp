@@ -32,9 +32,10 @@ namespace {
 
   // INLINED
   __forceinline void Light(const float* normal, const matrix transform, const float* direction, const float* diffuse, const float* ambient, float* output) {
-    const float x = ((normal[0] * transform.values[0] + normal[1] * transform.values[3]) + normal[2] * transform.values[6]) + 0.0f;
-    const float y = ((normal[0] * transform.values[1] + normal[1] * transform.values[4]) + normal[2] * transform.values[7]) + 0.0f;
-    const float z = ((normal[0] * transform.values[2] + normal[1] * transform.values[5]) + normal[2] * transform.values[8]) + 0.0f;
+    const float zero = 0.0f;
+    const float x = ((normal[0] * transform.values[0] + normal[1] * transform.values[3]) + normal[2] * transform.values[6]) + zero;
+    const float y = ((normal[0] * transform.values[1] + normal[1] * transform.values[4]) + normal[2] * transform.values[7]) + zero;
+    const float z = ((normal[0] * transform.values[2] + normal[1] * transform.values[5]) + normal[2] * transform.values[8]) + zero;
     const float inverse = InverseLength((y * y + x * x) + z * z);
     const float dot = ((y * inverse) * direction[1] + (x * inverse) * direction[0]) + (z * inverse) * direction[2];
     const float amount = dot > 0.0f ? dot : 0.0f;
