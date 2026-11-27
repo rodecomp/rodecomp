@@ -95,6 +95,7 @@ namespace {
 
 // OFFSET: 0x00AC8BF0
 // FUNCTION: fn_17680
+// VIRTUALIZED: emulated 0x02777774
 DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
   s_threadIds.insert(GetCurrentThreadId());
   CWorld* world = static_cast<CWorld*>(parameter);
