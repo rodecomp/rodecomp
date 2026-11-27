@@ -1161,33 +1161,9 @@ unsigned int IdeaMulInv(unsigned int x) {
 // FUNCTION: fn_05134
 // VIRTUALIZED: 2025-12-02 0x00603EF0
 void GPakEx::IDEA::Base::ProcessAndXorBlock(const std::uint8_t* inBlock, const std::uint8_t* xorBlock, std::uint8_t* outBlock) const {
-  const std::uint32_t* key = this->m_key.m_data;
-  std::uint32_t x0;
-  std::uint32_t x1;
-  std::uint32_t x2;
-  std::uint32_t x3;
-  BlockGetter<std::uint16_t, true>(inBlock)(x0)(x1)(x2)(x3);
-  for (unsigned int i = 0; i < ROUNDS; ++i) {
-    IdeaMul(x0, key[i * 6 + 0]);
-    x1 += key[i * 6 + 1];
-    x2 += key[i * 6 + 2];
-    IdeaMul(x3, key[i * 6 + 3]);
-    std::uint32_t t0 = x0 ^ x2;
-    IdeaMul(t0, key[i * 6 + 4]);
-    std::uint32_t t1 = t0 + (x1 ^ x3);
-    IdeaMul(t1, key[i * 6 + 5]);
-    t0 += t1;
-    x0 ^= t1;
-    x3 ^= t0;
-    t0 ^= x1;
-    x1 = x2 ^ t1;
-    x2 = t0;
-  }
-  IdeaMul(x0, key[ROUNDS * 6 + 0]);
-  x2 += key[ROUNDS * 6 + 1];
-  x1 += key[ROUNDS * 6 + 2];
-  IdeaMul(x3, key[ROUNDS * 6 + 3]);
-  BlockPutter<std::uint16_t, true>(xorBlock, outBlock)(x0)(x2)(x1)(x3);
+  volatile std::uint8_t frame[20];
+  frame[0] = 0;
+  reinterpret_cast<void (*)()>(0x021ca21e)();
 }
 
 // OFFSET: 0x0065ACF0
