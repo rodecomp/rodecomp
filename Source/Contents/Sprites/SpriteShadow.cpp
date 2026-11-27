@@ -60,14 +60,16 @@ RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) 
   }
 
   SpriteQuad quad;
-  quad.top = top;
-  quad.left = left;
-  quad.bottom = bottom;
-  quad.right = right;
   quad.image = image;
+  quad.top = top;
+  quad.bottom = bottom;
+  quad.left = left;
   quad.color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
-  quad.bottomRhw = 1.0f / (depth - (bottom - screenY) * g_cotangent) + 0.00001f;
-  quad.topRhw = 1.0f / (depth - (top - screenY) * g_cotangent) + 0.00001f;
+  const float topRhw = 1.0f / (depth - (top - screenY) * g_cotangent);
+  const float bottomRhw = 1.0f / (depth - (bottom - screenY) * g_cotangent);
+  quad.right = right;
+  quad.bottomRhw = bottomRhw + 0.00001f;
+  quad.topRhw = topRhw + 0.00001f;
   quad.angle = static_cast<float>(cell.rotation);
 
   return this->BuildSpriteQuad(quad, sprite->palette, 257, 0.0f, 0.0f);
