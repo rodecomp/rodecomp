@@ -90,6 +90,27 @@ namespace {
     /* 0008 */ int size;
   };
 
+  struct MessengerMemberCopy {
+    /* 0000 */ std::int32_t valid;
+    /* 0004 */ std::uint32_t accountId;
+    /* 0008 */ std::uint32_t characterId;
+    /* 000C */ std::string name;
+    /* 0024 */ std::string map;
+    /* 003C */ std::int32_t leader;
+    /* 0040 */ std::int32_t offline;
+    /* 0044 */ std::int32_t color;
+    /* 0048 */ std::uint16_t job;
+    /* 004A */ std::uint16_t level;
+    /* 004C */ std::int32_t dead;
+
+    // INLINED
+    __forceinline MessengerMemberCopy(const MessengerMember& other)
+        : valid(other.valid), accountId(other.accountId), characterId(other.characterId),
+          name(other.name), map(other.map), leader(other.leader), offline(other.offline),
+          color(other.color), job(other.job), level(other.level), dead(other.dead) {
+    }
+  };
+
 }
 
 class UIDragMiniPartyWnd : public UIFrameWnd {
@@ -104,7 +125,7 @@ public:
   void SetDragStartPosition(int first, int second);
   void SetGaugeValues(int current, int maximum);
 
-  /* 00B4 */ MessengerMember member;
+  /* 00B4 */ MessengerMemberCopy member;
   /* 0104 */ UIPcGage* gauge;
   /* 0108 */ int memberIndex;
   /* 010C */ int dragStartX;
