@@ -20,31 +20,40 @@ int InsertIntro(lua_State* state) {
   if (!lua_isnumber(state, -4)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "argment 1st is must number");
-  } else if (!lua_isstring(state, -3)) {
+    return 2;
+  }
+
+  if (!lua_isstring(state, -3)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "argment 2nd is must string");
-  } else if (!lua_isstring(state, -2)) {
+    return 2;
+  }
+
+  if (!lua_isstring(state, -2)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "argment 3th is must string");
-  } else if (!lua_isstring(state, -1)) {
+    return 2;
+  }
+
+  if (!lua_isstring(state, -1)) {
     lua_pushboolean(state, 0);
     lua_pushstring(state, "argment 4th is must string");
-  } else {
-    const double id = lua_tonumber(state, -4);
-    const std::string_view name = lua_tostring(state, -3);
-    const std::string_view title = lua_tostring(state, -2);
-    const std::string_view text = lua_tostring(state, -1);
-    CAdventureGuideMgr* const mgr = g_adventureGuideMgr;
-    mgr->SetIntroTitle(title);
-    const AdventureGuideResult result = mgr->InsertGuideMenu(0, static_cast<int>(id), name, text);
+    return 2;
+  }
 
-    if (!result.ok) {
-      lua_pushboolean(state, 0);
-      lua_pushstring(state, FormatString("InsertInfo : %s", result.message.c_str()));
-    } else {
-      lua_pushboolean(state, 1);
-      lua_pushstring(state, "good");
-    }
+  const double id = lua_tonumber(state, -4);
+  const std::string_view name = lua_tostring(state, -3);
+  const std::string_view title = lua_tostring(state, -2);
+  const std::string_view text = lua_tostring(state, -1);
+  g_adventureGuideMgr->SetIntroTitle(title);
+  const AdventureGuideResult result = g_adventureGuideMgr->InsertGuideMenu(0, static_cast<int>(id), name, text);
+
+  if (!result.ok) {
+    lua_pushboolean(state, 0);
+    lua_pushstring(state, FormatString("InsertInfo : %s", result.message.c_str()));
+  } else {
+    lua_pushboolean(state, 1);
+    lua_pushstring(state, "good");
   }
 
   return 2;
