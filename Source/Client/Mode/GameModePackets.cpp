@@ -18217,6 +18217,7 @@ static int RandomScatterOffset() {
 // OFFSET: 0x00D7B640
 // FUNCTION: fn_22208
 void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t sourceAid, std::uint32_t targetAid, bool result) {
+  std::uint32_t skill = skillId;
   CGameActor* source;
   if (sourceAid == g_session.m_aid) {
     source = this->scene->player;
@@ -18231,20 +18232,20 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     if (g_session.IsMonsterActor(source) == 0 && skillId != MG_SRECOVERY) {
       if (skillId == WE_MALE || skillId == WE_FEMALE) {
-        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
+        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skill, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
       } else {
-        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
+        this->SendMsg(MM_MAKE_SKILL_USED_MSG, skill, reinterpret_cast<std::intptr_t>(source), level, 0);
       }
     } else {
       int loopType;
-      g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
+      g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skill, &action, &loopType);
       if (action != -1) {
         loopType = loopType == 0;
         source->SetAction(action * 8 - 8, 1, loopType);
       }
     }
     if (g_session.IsMonsterActor(source) == 1) {
-      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), level, 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skill, reinterpret_cast<std::intptr_t>(source), level, 0);
     }
     if (action == -1) {
       switch (skillId) {
@@ -18263,13 +18264,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       default: {
         int effectId;
         int motion;
-        g_session.GetSkillActionInfo2(skillId, effectId, motion);
+        g_session.GetSkillActionInfo2(skill, effectId, motion);
         if (source->render.state != ST_MOVE && motion == 1) {
           source->SetState(ST_SKILL, motion);
         } else {
           if (motion == 2 || motion == 9) {
             source->SendMsg(nullptr, AM_SET_TARGET_AID, targetAid, 0, 0, 0, 0, 0);
-            if (CSkillActionMgr::GetInstance()->SuppressSupportSkillArrow(skillId)) {
+            if (CSkillActionMgr::GetInstance()->SuppressSupportSkillArrow(skill)) {
               source->SetArrowEffectSuppressed(true);
             }
           }
@@ -21491,8 +21492,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SC_FEINTBOMB:
     break;
   default:
-    LaunchLuaSkillEffect(skillId, level, source, target);
-    CSkillActionMgr::GetInstance()->OnSkillEffect(skillId, level, source, target);
+    LaunchLuaSkillEffect(skill, level, source, target);
+    CSkillActionMgr::GetInstance()->OnSkillEffect(skill, level, source, target);
     break;
   }
 }
