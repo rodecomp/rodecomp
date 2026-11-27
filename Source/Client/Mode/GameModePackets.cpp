@@ -11518,10 +11518,10 @@ void CGameMode::ReceiveGuildBanList2(const unsigned char* data) {
   const PacketLengthHeader* packet = reinterpret_cast<const PacketLengthHeader*>(data);
   const int count = (packet->length - sizeof(PacketLengthHeader)) / sizeof(GuildBanCharacterRecord);
   guildInfo->bannedMembers.clear();
+  int i = 0;
 
   if (count > 0) {
     const GuildBanCharacterRecord* records = reinterpret_cast<const GuildBanCharacterRecord*>(packet + 1);
-    int i = 0;
     do {
       const GuildBanCharacterRecord* record = &records[i];
       char reason[41];
