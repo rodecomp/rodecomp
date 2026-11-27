@@ -1780,8 +1780,13 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
     }
 
     const std::size_t length = remaining.size();
-    const bool removePair = (remaining[length - 2] & 0x80) != 0 && (remaining[length - 1] & 0x80) != 0;
-    remaining.resize(length - (removePair ? 2 : 1));
+    std::size_t newLength;
+    if ((remaining[length - 2] & 0x80) != 0 && (remaining[length - 1] & 0x80) != 0) {
+      newLength = length - 2;
+    } else {
+      newLength = length - 1;
+    }
+    remaining.resize(newLength);
 
     fitted = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
     extent = this->TextWidth(fitted.c_str(), 0, family, height, bold, 0);
