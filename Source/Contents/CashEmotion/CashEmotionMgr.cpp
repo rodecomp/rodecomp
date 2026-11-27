@@ -3213,8 +3213,8 @@ int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
       int x = 8;
       int y = 63;
       int index = 0;
-      for (const int& emotionId : emotions) {
-        auto it = table->find(emotionId);
+      for (auto emotion = emotions.begin(); emotion != emotions.end(); ++emotion) {
+        auto it = table->find(*emotion);
         if (it == table->end()) {
           continue;
         }
