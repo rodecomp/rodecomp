@@ -21,9 +21,7 @@ void CWorld::LoadMapEffects() {
   std::string name = reinterpret_cast<const char*>(this->gameMode->SendMsg(MM_QUERYRSWNAME, 0, 0, 0, 0));
   C3dWorldRes* resource = static_cast<C3dWorldRes*>(ResourceMgr::Instance().Load(name.c_str()));
 
-  for (auto it = resource->effects.begin(); it != resource->effects.end(); ++it) {
-    WorldEffectRecord* record = *it;
-
+  for (WorldEffectRecord* record : resource->effects) {
     if (g_effectMgr->HasAllocator(record->id)) {
       g_effectMgr->Spawn(0, record->id, record->position, 0, -1, 0, 0);
     } else {
@@ -37,8 +35,7 @@ void CWorld::LoadMapEffects() {
   g_effectMgr->LoadMapEffectScript(true);
 
   if (g_soundConfiguration.mode != SOUND_MODE_DISABLED) {
-    for (auto it = resource->sounds.begin(); it != resource->sounds.end(); ++it) {
-      WorldSoundRecord* record = *it;
+    for (WorldSoundRecord* record : resource->sounds) {
       CSoundMaker* sound = new CSoundMaker;
       const int address = reinterpret_cast<int>(record);
       sound->SendMsg(nullptr, AM_SETPOS, address, 0, 0, 0, 0, 0);
