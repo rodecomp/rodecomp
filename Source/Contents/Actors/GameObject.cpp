@@ -2927,13 +2927,15 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           g_screenShakeMode = 2;
           CGameMode* gameMode = g_modeMgr.GetGameMode();
           if (gameMode) {
-            gameMode->camera->SetUp(vector3d{0.0f, -1.0f, 0.0f});
+            const vector3d up{0.0f, -1.0f, 0.0f};
+            gameMode->camera->SetUp(up);
           }
         } else {
           g_screenShakeDuration = 0;
           CGameMode* gameMode = g_modeMgr.GetGameMode();
           if (gameMode) {
-            gameMode->camera->SetUp(vector3d{0.0f, 1.0f, 0.0f});
+            const vector3d up{0.0f, 1.0f, 0.0f};
+            gameMode->camera->SetUp(up);
           }
         }
       }
@@ -2943,7 +2945,8 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER4, 0, 0, 0, 0, 0);
       }
       if (on == true) {
-        this->LaunchEffect(EF_CIRCLEPOWER4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        const vector3d effectPosition{0.0f, 0.0f, 0.0f};
+        this->LaunchEffect(EF_CIRCLEPOWER4, effectPosition, 0.0f);
       }
       break;
     }
