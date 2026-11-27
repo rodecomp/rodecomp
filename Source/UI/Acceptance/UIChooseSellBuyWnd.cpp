@@ -6487,6 +6487,7 @@ void UInCashWnd::OnCreate(int width, int height) {
     {this->geometry.width - 100, this->geometry.height - 40}, {this->geometry.width - 50, this->geometry.height - 40},
     {this->m_searchEdit->geometry.x + this->m_searchEdit->geometry.width + 10, 22}, {-100, -100}};
 
+  {
   const std::string interfacePrefix("유저인터페이스\\basic_interface\\");
   const std::string prefix("유저인터페이스\\");
   for (int index = 0; index < 20; ++index) {
@@ -6555,6 +6556,7 @@ void UInCashWnd::OnCreate(int width, int height) {
       break;
     }
     this->AddChild(this->m_buttons[index]);
+  }
   }
 
   this->m_pointEdit = new UIEditCtrl2();
