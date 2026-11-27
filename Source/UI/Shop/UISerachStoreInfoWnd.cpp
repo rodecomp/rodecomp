@@ -259,7 +259,8 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
 
         const int count = static_cast<int>(itemIds.size() + cardIds.size());
-        if (this->m_searchPending != 0) {
+        const unsigned char pending = this->m_searchPending;
+        if (pending != 0) {
           if (count > 20) {
             this->SendMsg(this, UM_REFRESH, 1, 1, 0, 0);
             return 0;
