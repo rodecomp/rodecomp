@@ -619,6 +619,7 @@ public:
   void SetFollowTicks(int updateTick, int lostTick);
   bool IsMenuWindowOpen() const;
   static bool ShowRestrictedNotice(int grade);
+  void RecordWhisper(const void* info, const unsigned char* data);
   void AddNotificationWindow(UIWindow* window);
   void RequestAdminStatus();
   void RecordChatRoomSettings();

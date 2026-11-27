@@ -1549,7 +1549,6 @@ bool CGameMode::ShowRestrictedNotice(int grade) {
   return true;
 }
 
-void __stdcall RecordWhisper(const void* info, const unsigned char* data);
 int ConfirmGameModeAction96();
 
 // OFFSET: 0x00CF10B0
@@ -5666,7 +5665,7 @@ void __stdcall LaunchBulletSpriteEffect(const vector3d* position, int actorId, f
 
 // OFFSET: 0x00CE8F10
 // FUNCTION: fn_21344
-void __stdcall RecordWhisper(const void* info, const unsigned char* data) {
+void CGameMode::RecordWhisper(const void* info, const unsigned char* data) {
   if (Replay::Instance().state != REPLAY_STATE_RECORDING) {
     return;
   }
@@ -10069,7 +10068,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     char text[364];
     int party = 0;
     int alternate = 0;
-    std::strcpy(text, g_windowMgr.chatInputText.c_str());
+    std::strcpy(text, g_windowMgr.ChatInputText());
     if (text[0] == '%') {
       if (std::strlen(text) <= 1) {
         break;
@@ -10173,7 +10172,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       std::sprintf(text, "[ To Friends ] : (Hi) *^_^*");
     } else {
       std::string copy;
-      char* message = const_cast<char*>(g_windowMgr.chatInputText.c_str());
+      char* message = const_cast<char*>(g_windowMgr.ChatInputText());
       copy = message;
       g_session.HiFriends(message);
       if (g_serviceType == ServiceKorea) {
