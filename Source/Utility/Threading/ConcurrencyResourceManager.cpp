@@ -234,13 +234,16 @@ bool sub_E916F0(LogWriter* writer, const char* format, ...) {
 }
 
 // INLINED
-static void DecodeText(char* text) {
-  const char seed = text[1];
-  text[2] ^= static_cast<char>(seed * 3 + 0x65);
-  text[3] ^= static_cast<char>(seed * 9 + 0x68);
+static __forceinline void DecodeText(char* text) {
+  int key = text[1];
+  key *= 3;
+  text[2] = static_cast<char>((key + 0x65) ^ text[2]);
+  ++key;
+  key *= 3;
+  text[3] = static_cast<char>((key + 0x65) ^ text[3]);
+  ++key;
   const int length = (static_cast<unsigned char>(text[2]) << 8) | static_cast<unsigned char>(text[3]);
 
-  char key = static_cast<char>(seed * 9 + 4);
   for (int index = 0; index < length; ++index) {
     key *= 3;
     text[index] = static_cast<char>((key + 0x65) ^ text[index + 4]);
@@ -277,14 +280,18 @@ char* sub_E939D0(char* text) {
       lstrcpynA(plain, previous, sizeof(plain));
       const int length = lstrlenA(plain);
       if (length != 0) {
-        const unsigned char seed = static_cast<unsigned char>(reinterpret_cast<std::uintptr_t>(plain));
+        const int seed = static_cast<unsigned char>(reinterpret_cast<std::uintptr_t>(plain));
         previous[0] = 1;
         previous[1] = static_cast<char>(seed);
-        const unsigned char lengthKey = static_cast<unsigned char>(seed * 3 + 0x65);
-        const unsigned char lowKey = static_cast<unsigned char>(seed * 9 + 0x68);
+        int key = seed;
+        key *= 3;
+        const int lengthKey = key + 0x65;
+        ++key;
+        key *= 3;
+        const int lowKey = key + 0x65;
+        ++key;
 
         int out = 4;
-        int key = seed * 9 + 4;
         for (int index = 0; index < length; ++index) {
           key *= 3;
           previous[out] = static_cast<char>((key + 0x65) ^ plain[index]);
@@ -292,8 +299,9 @@ char* sub_E939D0(char* text) {
           ++out;
         }
         previous[out] = '\0';
-        previous[2] = static_cast<char>((out - 4) >> 8 ^ lengthKey);
-        previous[3] = static_cast<char>((out - 4) ^ lowKey);
+        const int written = out - 4;
+        previous[2] = static_cast<char>(written >> 8 ^ lengthKey);
+        previous[3] = static_cast<char>(written ^ lowKey);
       }
     }
   }
