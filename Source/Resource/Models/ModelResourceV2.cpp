@@ -228,6 +228,7 @@ void C3dModelResV2::ReadVersion1(CFile& input) {
 // OFFSET: 0x0075AB20
 // FUNCTION: fn_08021
 void C3dModelResV2::ReadVersion2(CFile& input) {
+  unsigned bytes = 0;
   input.Read(&this->animationLength, 4);
   input.Read(&this->shade, 4);
   input.Read(&this->alpha, 1);
@@ -237,7 +238,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
   std::vector<std::string> textureNames;
 
   for (int index = 0; index < textureCount; ++index) {
-    unsigned bytes = 0;
+    bytes = 0;
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
@@ -248,7 +249,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
   input.Read(&rootCount, 4);
 
   for (int index = 0; index < rootCount; ++index) {
-    unsigned bytes = 0;
+    bytes = 0;
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
@@ -262,7 +263,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     auto* node = new ModelNodeV2;
     node->model = this;
     node->mesh = new ModelMesh;
-    unsigned bytes = 0;
+    bytes = 0;
     input.Read(&bytes, 4);
     char name[40]{};
     input.Read(name, bytes);
@@ -310,11 +311,11 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
 
     for (int face = 0; face < faceCount; ++face) {
       ModelFace& target = faces[face];
-      unsigned size = 0;
-      input.Read(&size, 4);
+      bytes = 0;
+      input.Read(&bytes, 4);
       std::vector<unsigned char> buffer;
-      buffer.resize(size);
-      input.Read(buffer.data(), size);
+      buffer.resize(bytes);
+      input.Read(buffer.data(), bytes);
       ModelFaceRecord record;
       std::memcpy(&record, buffer.data(), 20);
       for (int corner = 0; corner < 3; ++corner) {
