@@ -5239,29 +5239,38 @@ int CLuaInstance::GetFieldStringArray(std::vector<std::string>& values, const ch
   return result;
 }
 
+// INLINED
+static int ReadUnsigned(const CLuaInstance& script, unsigned int& value, int index) {
+  const int type = lua_type(script.GetState(), index);
+  if (type == LUA_TNUMBER) {
+    value = static_cast<unsigned int>(lua_tonumber(script.GetState(), index));
+    return 0;
+  }
+  return (type != LUA_TNIL) + 1;
+}
+
 // OFFSET: 0x0069CE90
 // FUNCTION: fn_05928
 int CLuaInstance::GetFieldUIntMap(std::map<unsigned int, unsigned int>& values, const char* name) {
   lua_pushstring(this->m_state, name);
   lua_gettable(this->m_state, -2);
-  int type = lua_type(this->m_state, -1);
+  const int type = lua_type(this->m_state, -1);
   int result;
   if (type == LUA_TTABLE) {
     lua_pushnil(this->m_state);
     result = 0;
     while (lua_next(this->m_state, -2) != 0) {
-      type = lua_type(this->m_state, -2);
-      if (type != LUA_TNUMBER) {
-        result = (type != LUA_TNIL) + 1;
+      unsigned int key;
+      result = ReadUnsigned(*this, key, -2);
+      if (result != 0) {
         break;
       }
-      const unsigned int key = static_cast<unsigned int>(lua_tonumber(this->m_state, -2));
-      type = lua_type(this->m_state, -1);
-      if (type != LUA_TNUMBER) {
-        result = (type != LUA_TNIL) + 1;
+      unsigned int value;
+      result = ReadUnsigned(*this, value, -1);
+      if (result != 0) {
         break;
       }
-      values[key] = static_cast<unsigned int>(lua_tonumber(this->m_state, -1));
+      values[key] = value;
       lua_settop(this->m_state, -2);
     }
   } else {
