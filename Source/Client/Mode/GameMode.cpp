@@ -8957,7 +8957,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
 
     if (g_session.homunAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->skillId)) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
-      if (homun && homun->HasActiveHomunculusAI()) {
+      if (homun && homun->homunAI && homun->homunAI->state) {
         AiMessage message = {};
         message.type = SKILL_OBJECT_CMD;
         message.level = this->skillUseLevel;
