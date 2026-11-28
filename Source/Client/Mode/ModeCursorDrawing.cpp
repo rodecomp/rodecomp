@@ -160,13 +160,13 @@ void CMode::DrawCursor() {
     quad[0].y = y0;
     quad[1].x = x1;
     quad[1].y = y0;
+    quad[0].u = record.u0;
     quad[2].x = x0;
     quad[2].y = y1;
     quad[3].x = x1;
     quad[3].y = y1;
     quad[0].z = 0.000001f;
     quad[0].rhw = 0.999999f;
-    quad[0].u = record.u0;
     quad[0].v = record.v0;
     quad[0].diffuse = 0xFAFFFFFF;
     quad[1].z = 0.000001f;
