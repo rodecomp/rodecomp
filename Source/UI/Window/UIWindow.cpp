@@ -3582,8 +3582,8 @@ void UINavigationV4Wnd::SelectRoute(int route) {
     }
 
     const int icon = target.type;
-    const char* line = text.c_str();
     UIListBox_NaviSearch* list = this->searchList;
+    const char* line = text.c_str();
     list->icons.push_back(icon);
     list->AddLine(line);
     list->Invalidate();
