@@ -1265,30 +1265,26 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 // OFFSET: 0x00841A10
 // FUNCTION: fn_10552
 void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
-  UIResizer* resizer = new UIResizer();
-  this->resizer = resizer;
-  resizer->SetSize(16, 16);
-  resizer->SetDirection(3);
-  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
-  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
-  this->AddChild(resizer);
+  this->resizer = new UIResizer();
+  this->resizer->SetSize(16, 16);
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
   this->scrollBar = scrollBar;
   scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(scrollBar);
 
+  const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {
     {"btn_buy", "btn_buy_a", "btn_buy_b"},
     {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
   };
-  const std::string prefix = "유저인터페이스\\";
-  const POINT positions[2] = {
-    {this->geometry.width - 106, this->geometry.height - 24},
-    {this->geometry.width - 61, this->geometry.height - 24},
-  };
-  const int ids[2] = {ID_OK, ID_CANCEL};
+  int ids[2] = {ID_OK, ID_CANCEL};
+  int positions[2][2] = {{this->geometry.width - 106, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
 
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = index == 0 ? static_cast<UIBitmapButton*>(new UIPurchaseButton) : new UIBitmapButton();
@@ -1296,7 +1292,7 @@ void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
     this->buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     this->buttons[index]->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
     this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
-    this->buttons[index]->Move(positions[index].x, positions[index].y);
+    this->buttons[index]->Move(positions[index][0], positions[index][1]);
     this->buttons[index]->SetId(ids[index]);
     this->AddChild(this->buttons[index]);
   }
