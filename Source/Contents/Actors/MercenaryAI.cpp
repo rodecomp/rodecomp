@@ -107,7 +107,9 @@ int ClampTargetAttackRange(std::uint32_t aid, int distance) {
       g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(actor->homunMsg.target))
     );
     if (target) {
-      return distance < target->GetNpcLocationRadius() ? target->GetNpcLocationRadius() : distance;
+      if (distance < target->GetNpcLocationRadius()) {
+        distance = target->GetNpcLocationRadius();
+      }
     }
   }
   return distance;
