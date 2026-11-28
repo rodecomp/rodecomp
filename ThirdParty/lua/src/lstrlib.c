@@ -492,6 +492,8 @@ static int push_captures (MatchState *ms, const char *s, const char *e) {
 }
 
 
+// OFFSET: 0x00538380
+// FUNCTION: fn_01609
 static int str_find_aux (lua_State *L, int find) {
   size_t l1, l2;
   const char *s = luaL_checklstring(L, 1, &l1);
