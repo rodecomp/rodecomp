@@ -40,11 +40,11 @@ namespace {
 // OFFSET: 0x00553850
 // FUNCTION: fn_02019
 __declspec(noinline) int Intersects(const float* ray, const OrientedBounds& bounds) {
+  const float deltaZ = bounds.center[2] - ray[2];
   const float deltaX = bounds.center[0] - ray[0];
   const float deltaY = bounds.center[1] - ray[1];
-  const float deltaZ = bounds.center[2] - ray[2];
-  float near = -999999.0f;
   float far = 999999.0f;
+  float near = -999999.0f;
 
   auto& axesRef = bounds.axes;
   if (!ClipSlab(ray, deltaX, deltaY, deltaZ, axesRef[0], bounds.halfSize[0], near, far)) {
