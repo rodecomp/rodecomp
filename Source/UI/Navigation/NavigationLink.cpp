@@ -1,3 +1,5 @@
+#include <atlbase.h>
+#include <statreg.h>
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Navigation/NavigationLink.h"
