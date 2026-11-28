@@ -4,12 +4,7 @@
 #include "Render/Primitives/LightmappedPrimitive.h"
 
 struct LightmappedBuffer : LightmappedCommand {
-  // INLINED
-  ~LightmappedBuffer() {
-    this->Clear();
-  }
-
-  void Clear();
+  ~LightmappedBuffer();
 };
 
 #endif

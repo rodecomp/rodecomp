@@ -40,7 +40,7 @@ inline void ReleaseArray(T*& buffer) {
 
 // OFFSET: 0x00569310
 // FUNCTION: fn_02254
-void LightmappedBuffer::Clear() {
+LightmappedBuffer::~LightmappedBuffer() {
   ReleaseArray(this->vertices);
   ReleaseArray(this->indices);
 }
