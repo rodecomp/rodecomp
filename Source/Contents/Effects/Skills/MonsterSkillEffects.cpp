@@ -205,8 +205,8 @@ void CSprArrowEffect::OnProcess() {
     const float dz = this->sourcePosition[2] - this->spriteParticle->position.z;
     const vector3d velocity{dx * 0.125f, dy * 0.125f, dz * 0.125f};
     this->velocityX = velocity.x;
-    this->velocityY = velocity.y;
     this->velocityZ = velocity.z;
+    this->velocityY = velocity.y;
 
     const float lengthSquared = dy * dy + dx * dx + dz * dz;
     const float length = SquareRoot(lengthSquared);
@@ -243,9 +243,10 @@ void CSprArrowEffect::OnProcess() {
   const vector3d travelled{time * this->velocityX + this->startX, this->velocityY * time + this->startY,
                            this->velocityZ * time + this->startZ};
   CSpriteParticle* sprite = this->spriteParticle;
-  sprite->position.x = travelled.x + sprite->velocity.x;
-  sprite->position.y = travelled.y + sprite->velocity.y;
-  sprite->position.z = travelled.z + sprite->velocity.z;
+  auto& position = sprite->position;
+  position.x = travelled.x + sprite->velocity.x;
+  position.y = travelled.y + sprite->velocity.y;
+  position.z = travelled.z + sprite->velocity.z;
   if (time > 8.0f / this->travelSpeedScale) {
     this->alive = false;
   }
@@ -2763,10 +2764,10 @@ void CRandomOptEffect::Init() {
         const int angle =
             static_cast<int>(static_cast<float>(step * segment) + particle->angle) %
             360;
-        const float spread = height * g_cosTable[particle->phaseParameter];
         const float lift = height * g_sinTable[particle->phaseParameter];
-        const float cosine = g_cosTable[angle];
         const float sine = g_sinTable[angle];
+        const float cosine = g_cosTable[angle];
+        const float spread = height * g_cosTable[particle->phaseParameter];
         const float spreadX = spread * cosine;
         const float spreadZ = spread * sine;
         EffectPoint points[2];
@@ -2777,9 +2778,9 @@ void CRandomOptEffect::Init() {
         points[1].y = points[0].y - lift;
         points[1].z = points[0].z + spreadZ;
 
-        particle->vertices[3].x = points[0].x;
         particle->vertices[3].y = points[0].y;
         particle->vertices[3].z = points[0].z;
+        particle->vertices[3].x = points[0].x;
         particle->vertices[1].x = points[1].x;
         particle->vertices[1].y = points[1].y;
         particle->vertices[1].z = points[1].z;
