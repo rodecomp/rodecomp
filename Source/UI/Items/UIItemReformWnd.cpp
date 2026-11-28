@@ -390,9 +390,9 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   }
 
   this->resultItem.SetItemId(info->resultItem);
+  this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
   this->resultItem.identity[0] = 5;
   this->resultItem.identified = 1;
-  this->resultItem.refiningLevel = this->selectedItem->refiningLevel + static_cast<int>(info->changeRefineValue);
   SecureZeroMemory(this->resultItem.options, sizeof(this->resultItem.options));
   if (info->randomOptionCode.size() == 0) {
     this->resultItem.optionCount = this->selectedItem->optionCount;
