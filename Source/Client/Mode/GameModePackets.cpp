@@ -1809,8 +1809,8 @@ __declspec(noinline) void CGameMode::ReceiveMemorialDungeonInfo(const unsigned c
   const auto* p = reinterpret_cast<const PACKET_ZC_MEMORIALDUNGEON_INFO*>(packet);
   g_session.memorialDungeonName = p->name;
   g_session.memorialCreationTime = p->creationTime;
-  g_session.memorialExpirationTime = p->expirationTime;
   const int state = p->expirationTime != 0 ? 1 : 2;
+  g_session.memorialExpirationTime = p->expirationTime;
   const int previous = g_session.memorialDungeonState;
   g_session.memorialDungeonState = state;
   if (state != previous || previous != 2 || g_session.memorialWindowOpen != 0) {
