@@ -1,6 +1,7 @@
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Map/MapSkyMgr.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Utility/Math/AffineMatrix.h"
 
 // GLOBAL: gl_26017
@@ -27,7 +28,7 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
       continue;
     }
 
-    const unsigned char shade = slot.height[3] == 1.0f ? 30 : 155;
+    const unsigned char shade = slot.height[3] == g_projectionDepthNumerator ? 30 : 155;
 
     {
       const float dist = slot.distance;
