@@ -11374,8 +11374,8 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
     } else if (kind == 2) {
       this->state.lastPrim->state.slots[ec].maxHeight = 32.0f;
       this->state.lastPrim->state.slots[ec].rotStart = 0;
-      this->state.lastPrim->state.slots[ec].alphaB = 30;
       this->state.lastPrim->state.slots[ec].alphaT = 29999;
+      this->state.lastPrim->state.slots[ec].alphaB = 30;
       this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
       this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
     } else if (kind == 3) {
@@ -11384,8 +11384,8 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
       this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
       this->state.lastPrim->state.slots[ec].height[1] = 2.5f;
     } else if (kind == 4) {
-      this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
       this->state.lastPrim->state.slots[ec].rotStart = 0;
+      this->state.lastPrim->state.slots[ec].maxHeight = 16.0f;
       this->state.lastPrim->state.slots[ec].alphaB = 120;
       this->state.lastPrim->state.slots[ec].alphaT = 1880;
       this->state.lastPrim->state.slots[ec].height[0] = 2.5f;
