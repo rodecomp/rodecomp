@@ -103,8 +103,8 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
         break;
       }
 
-      int bright = 0;
       int dark = 0;
+      int bright = 0;
 
       for (int k = 0; k < 16; ++k) {
         int x = static_cast<int>(j % columns) * 4 + k % 4;
