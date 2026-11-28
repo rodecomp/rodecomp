@@ -249,6 +249,7 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(&nodeCount, 4);
 
   for (int nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex) {
+    auto faceLess = [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; };
     ModelNodeV1* node = new ModelNodeV1;
     node->model = this;
     node->alpha = this->alpha;
@@ -339,7 +340,7 @@ bool C3dModelResV1::Load(const char* name) {
     }
 
     node->mesh->faces = faces;
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, faceLess);
     node->mesh->CalculateNormals();
     node->rotationKeys.Read(file);
 
