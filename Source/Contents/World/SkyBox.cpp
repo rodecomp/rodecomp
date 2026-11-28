@@ -407,7 +407,7 @@ __declspec(noinline) void CLensFlare::Update(float unused, vector3d eye, vector3
   vector3d view;
   view = vector3d{target.x - eye.x, target.y - eye.y, target.z - eye.z};
   float inverse = 1.0f / SquareRoot(view.y * view.y + view.x * view.x + view.z * view.z);
-  view *= inverse;
+  view = view * inverse;
 
   vector3d light;
   light.x = this->m_position.x - target.x;
@@ -432,9 +432,10 @@ __declspec(noinline) void CLensFlare::Update(float unused, vector3d eye, vector3
 
   for (int i = 0; i < 12; ++i) {
     FlareElement& element = this->m_elements[i];
-    element.position.y = element.distance * light.y + center.y;
-    element.position.x = element.distance * light.x + center.x;
-    element.position.z = element.distance * light.z + center.z;
+    auto& position = element.position;
+    position.y = element.distance * light.y + center.y;
+    position.z = element.distance * light.z + center.z;
+    position.x = element.distance * light.x + center.x;
     element.scaledSize = scale * element.size;
   }
 }
