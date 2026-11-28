@@ -84,22 +84,20 @@ void UIRequestJoinPartyMgr::Advance() {
   }
 
   const std::list<PartyJoinRequest>::iterator first = this->m_pending.begin();
-  if (first == this->m_pending.end()) {
-    return;
-  }
+  if (first != this->m_pending.end()) {
+    UIWindow* window = g_windowMgr.LookupWindow(WID_REQUESTJOINPARTYWND);
+    if (!window) {
+      return;
+    }
 
-  UIWindow* window = g_windowMgr.LookupWindow(WID_REQUESTJOINPARTYWND);
-  if (!window) {
-    return;
-  }
+    PartyJoinRequest request = *first;
+    if (std::find_if(this->m_blocked.begin(), this->m_blocked.end(), [&](int accountId) { return request.accountId == accountId; }) != this->m_blocked.end()) {
+      this->m_pending.pop_front();
+      this->Advance();
+      return;
+    }
 
-  PartyJoinRequest request = *first;
-  if (std::find_if(this->m_blocked.begin(), this->m_blocked.end(), [&](int accountId) { return request.accountId == accountId; }) != this->m_blocked.end()) {
+    window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
     this->m_pending.pop_front();
-    this->Advance();
-    return;
   }
-
-  window->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, reinterpret_cast<std::intptr_t>(&request), 0, 0, 0);
-  this->m_pending.pop_front();
 }
