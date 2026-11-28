@@ -2415,16 +2415,16 @@ void UIWindowMgr::DrawLoginOverlay() {
     rect.left = x;
     x += step;
     rect.right = x;
-    rect.bottom = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * g_masterReachDistance);
     rect.top = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * 2.5f);
+    rect.bottom = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * g_masterReachDistance);
     this->loginBottomPanelOffset.y = static_cast<short>(rect.top);
     std::sprintf(name, "유저인터페이스\\T_테입%d.tga", tape);
     g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
   }
 
   rect.left = this->gradeImageX;
-  rect.top = this->gradeImageY;
   rect.right = this->gradeImageWidth + this->gradeImageX;
+  rect.top = this->gradeImageY;
   rect.bottom = this->gradeImageHeight + this->gradeImageY;
   g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\T_GameGrade.tga", 0, false, true, false), region);
 
