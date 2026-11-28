@@ -190,49 +190,49 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
   CRenderObject* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAidIncludeMe(aid);
   if (actor == nullptr) {
     return true;
-  }
+  } else {
+    int titleRow = 0;
+    int titleColumn = 0;
+    int actorColumn = 0;
+    int actorRow = 0;
+    C3dAttr*& terrain = g_modeMgr.GetGameMode()->scene->terrain;
+    terrain->SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
+    for (UIWindow*& window : this->rendered) {
+      if (typeid(*window) == typeid(UIMerchantShopTitle)) {
+        CRenderObject* owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
+        if (owner == nullptr) {
+          return true;
+        }
 
-  int titleRow = 0;
-  int titleColumn = 0;
-  int actorRow = 0;
-  int actorColumn = 0;
-  C3dAttr*& terrain = g_modeMgr.GetGameMode()->scene->terrain;
-  terrain->SpatialCell(actor->render.position.x, actor->render.position.z, actorColumn, actorRow);
-  for (UIWindow*& window : this->rendered) {
-    if (typeid(*window) == typeid(UIMerchantShopTitle)) {
-      CRenderObject* owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
-      if (owner == nullptr) {
-        return true;
-      }
+        terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+        if (actorColumn == titleColumn && titleRow == actorRow) {
+          return true;
+        }
+      } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
+        const int roomId = static_cast<UIChatRoomTitle*>(window)->info.id;
+        if (roomId == 0) {
+          return true;
+        }
 
-      terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-      if (actorColumn == titleColumn && titleRow == actorRow) {
-        return true;
-      }
-    } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
-      const int roomId = static_cast<UIChatRoomTitle*>(window)->info.id;
-      if (roomId == 0) {
-        return true;
-      }
+        const std::uint32_t ownerAid = g_modeMgr.GetGameMode()->FindChatRoomActorId(roomId);
+        if (ownerAid == 0) {
+          return true;
+        }
 
-      const std::uint32_t ownerAid = g_modeMgr.GetGameMode()->FindChatRoomActorId(roomId);
-      if (ownerAid == 0) {
-        return true;
-      }
+        CRenderObject* owner = g_session.FindGameActor(ownerAid);
+        if (owner == nullptr) {
+          return true;
+        }
 
-      CRenderObject* owner = g_session.FindGameActor(ownerAid);
-      if (owner == nullptr) {
-        return true;
-      }
-
-      terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-      if (actorColumn == titleColumn && titleRow == actorRow) {
-        return true;
+        terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
+        if (actorColumn == titleColumn && titleRow == actorRow) {
+          return true;
+        }
       }
     }
-  }
 
-  return false;
+    return false;
+  }
 }
 
 // OFFSET: 0x00A97490
