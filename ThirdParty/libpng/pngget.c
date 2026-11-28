@@ -36,6 +36,8 @@ png_get_rowbytes(png_const_structrp png_ptr, png_const_inforp info_ptr)
 }
 
 #ifdef PNG_INFO_IMAGE_SUPPORTED
+// OFFSET: 0x00E7B820
+// FUNCTION: fn_47603
 png_bytepp PNGAPI
 png_get_rows(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -201,6 +203,8 @@ png_get_pixel_aspect_ratio(png_const_structrp png_ptr, png_const_inforp
 #endif
 
 #ifdef PNG_FIXED_POINT_SUPPORTED
+// OFFSET: 0x00E7B720
+// FUNCTION: fn_47601
 png_fixed_point PNGAPI
 png_get_pixel_aspect_ratio_fixed(png_const_structrp png_ptr,
     png_const_inforp info_ptr)
@@ -345,6 +349,8 @@ ppi_from_ppm(png_uint_32 ppm)
 #endif
 }
 
+// OFFSET: 0x00E7B780
+// FUNCTION: fn_47602
 png_uint_32 PNGAPI
 png_get_pixels_per_inch(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -473,6 +479,8 @@ png_get_channels(png_const_structrp png_ptr, png_const_inforp info_ptr)
 }
 
 #ifdef PNG_READ_SUPPORTED
+// OFFSET: 0x00E7BA10
+// FUNCTION: fn_47608
 png_const_bytep PNGAPI
 png_get_signature(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -720,6 +728,8 @@ png_get_gAMA(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #endif
 
 #ifdef PNG_sRGB_SUPPORTED
+// OFFSET: 0x00E7B9D0
+// FUNCTION: fn_47607
 png_uint_32 PNGAPI
 png_get_sRGB(png_const_structrp png_ptr, png_const_inforp info_ptr,
     int *file_srgb_intent)
@@ -766,6 +776,8 @@ png_get_iCCP(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 #ifdef PNG_sPLT_SUPPORTED
+// OFFSET: 0x00E7B9A0
+// FUNCTION: fn_47606
 int PNGAPI
 png_get_sPLT(png_const_structrp png_ptr, png_inforp info_ptr,
     png_sPLT_tpp spalettes)
@@ -962,6 +974,8 @@ png_get_sCAL(png_const_structrp png_ptr, png_const_inforp info_ptr,
    return(0);
 }
 #  endif /* FLOATING POINT */
+// OFFSET: 0x00E7B950
+// FUNCTION: fn_47605
 png_uint_32 PNGAPI
 png_get_sCAL_s(png_const_structrp png_ptr, png_const_inforp info_ptr,
     int *unit, png_charpp width, png_charpp height)
@@ -1033,6 +1047,8 @@ png_get_PLTE(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 #ifdef PNG_sBIT_SUPPORTED
+// OFFSET: 0x00E7B840
+// FUNCTION: fn_47604
 png_uint_32 PNGAPI
 png_get_sBIT(png_const_structrp png_ptr, png_inforp info_ptr,
     png_color_8p *sig_bit)
