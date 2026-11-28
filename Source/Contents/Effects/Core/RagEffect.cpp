@@ -8198,9 +8198,9 @@ __declspec(safebuffers) void CRagEffect::TintedRisingSparkles(char) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   auto& state = this->state;
   g_renderer->Project(&state.parent->render.position.x, view, vertex);
-  state.tlvertX = vertex.x;
-  state.tlvertY = vertex.y;
-  const RenderObjectState& parent = state.parent->render;
+  this->state.tlvertX = vertex.x;
+  this->state.tlvertY = vertex.y;
+  const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
 
   if ((state.stateCnt & 1) != 0) {
