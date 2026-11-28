@@ -4708,10 +4708,10 @@ void CGameMode::ReceiveTradeItems(int count, const TradeItemRecord* records) {
     const TradeItemRecord& record = records[i];
     ITEM_INFO item;
     item.SetItemId(record.itemId);
-    item.identity[0] = record.type;
     item.quantity = record.quantity;
     item.prices[0] = record.price;
     item.prices[1] = record.price;
+    item.identity[0] = record.type;
     item.priceFactor = record.weight / 10;
     item.refiningLevel = record.refine;
     item.cards[0] = record.card0;
