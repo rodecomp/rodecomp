@@ -74,6 +74,8 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
   }
 }
 
+// OFFSET: 0x006CE530
+// FUNCTION: fn_47492
 // OFFSET: 0x006CE6A0
 // FUNCTION: fn_06483
 CMapInfoMgr::~CMapInfoMgr() {
