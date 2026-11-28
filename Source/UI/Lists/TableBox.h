@@ -3,6 +3,8 @@
 
 #include "UI/Window/UIWindow.h"
 
+#include <vector>
+
 class TableBox : public UIWindow {
 public:
   TableBox();
@@ -21,9 +23,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ int unknown_007C;
-  /* 0080 */ int unknown_0080;
-  /* 0084 */ int unknown_0084;
+  /* 007C */ std::vector<int> rows;
 };
 
 #endif
