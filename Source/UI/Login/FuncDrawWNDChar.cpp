@@ -161,13 +161,13 @@ void FuncDrawWNDChar::Draw(bool option) {
       );
     } else {
       CTexture* texture;
-      if (cell.imageType == 0) {
+      if (cell.imageType != 0) {
+        texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
+      } else {
         texture = g_renderer->atlas.Find(image, palette, record);
         if (!texture) {
           texture = g_renderer->atlas.Insert(image, palette, record);
         }
-      } else {
-        texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
       }
 
       int x = this->m_x + cell.x + offset.x;
