@@ -175,8 +175,8 @@ void CStarEmperorEffect::UpdateRing(CParticle* particle) {
   particle->vertices[0].x = outerStartX;
   particle->vertices[0].y = outerStartY;
   particle->vertices[0].z = 0.0f;
-  particle->vertices[1].x = outerEndX;
   particle->vertices[1].y = outerEndY;
+  particle->vertices[1].x = outerEndX;
   particle->vertices[1].z = 0.0f;
   particle->vertices[2].x = innerStartX;
   particle->vertices[2].y = innerStartY;
