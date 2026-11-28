@@ -333,13 +333,13 @@ std::vector<unsigned char> Replay::BuildMetadata() {
   AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_MAP_NAME, this->header.mapName, sizeof(this->header.mapName)));
   AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_ACCOUNT_ID, &this->header.accountId, sizeof(this->header.accountId)));
   AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CELL_X, &this->header.cellX, sizeof(this->header.cellX)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CELL_Y, &this->header.cellY, sizeof(this->header.cellY)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_PLAYER_DIRECTION, &this->header.playerDirection, sizeof(this->header.playerDirection)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_DURATION, &this->header.duration, sizeof(this->header.duration)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_RECORDS, &this->header.records, sizeof(this->header.records)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_FILE_OFFSET, &this->header.fileOffset, sizeof(this->header.fileOffset)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_OPTIONS, &this->header.options, sizeof(this->header.options)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CLOSING_SIGNATURE, &this->header.closingSignature, sizeof(this->header.closingSignature)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CELL_Y, &this->header.cellY, sizeof(this->header.cellY)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_PLAYER_DIRECTION, &this->header.playerDirection, sizeof(this->header.playerDirection)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_DURATION, &this->header.duration, sizeof(this->header.duration)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_RECORDS, &this->header.records, sizeof(this->header.records)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_FILE_OFFSET, &this->header.fileOffset, sizeof(this->header.fileOffset)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_OPTIONS, &this->header.options, sizeof(this->header.options)));
+  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CLOSING_SIGNATURE, &this->header.closingSignature, sizeof(this->header.closingSignature)));
   AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_END, nullptr, 0));
   return metadata;
 }
