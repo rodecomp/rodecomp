@@ -1814,7 +1814,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
 
     const int itemId = ItemLinkMessageId(link);
     const bool isTip = link.substr(0, 6) == "00000T";
-    if (isTip && itemId <= g_itemTagOwner->maxTipId) {
+    if (isTip && g_itemTagOwner->maxTipId >= itemId) {
       offset += static_cast<int>(link.size() + g_parserItemLinkTag.size() + g_parserItemLinkCloseTag.size());
       continue;
     }
