@@ -689,8 +689,8 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   std::string map(record + offset, record + offset + length);
   offset += length;
 
-  const int linkedCellX = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->cellX;
   const int linkedCellY = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->cellY;
+  const int linkedCellX = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->cellX;
   length = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->nameLength;
   offset += 10;
   std::string linkedMap(record + offset, record + offset + length);
