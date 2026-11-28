@@ -83,8 +83,8 @@ void UIRPData::Draw(int x, int y, CTexture* texture, std::uint32_t color, int wi
     primitive->quad[0].y = static_cast<float>(y);
     primitive->quad[0].u = g_textureOffsetX / textureWidth;
     primitive->quad[0].v = g_textureOffsetY / textureHeight;
-    primitive->quad[1].x = static_cast<float>(right);
     primitive->quad[1].y = static_cast<float>(y);
+    primitive->quad[1].x = static_cast<float>(right);
     primitive->quad[1].u = ((width <= imageWidth ? static_cast<float>(width) : static_cast<float>(imageWidth)) + g_textureOffsetX) / textureWidth;
     primitive->quad[1].v = g_textureOffsetY / textureHeight;
     primitive->quad[2].x = static_cast<float>(x);
