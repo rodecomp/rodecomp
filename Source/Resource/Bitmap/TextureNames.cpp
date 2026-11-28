@@ -49,7 +49,7 @@ const char* Resolve(const char* name) {
       selectedPath.clear();
       const int length = static_cast<int>(size) - 15;
       for (int index = 0; index < length; ++index) {
-        selectedPath.push_back(path[index + 15]);
+        selectedPath.push_back(path.data()[index + 15]);
       }
 
       g_skinInfo.ExtractFilesIfZipSkin();
@@ -73,7 +73,7 @@ const char* Resolve(const char* name) {
       uiPath.clear();
       const int length = static_cast<int>(size) - 15;
       for (int index = 0; index < length; ++index) {
-        uiPath.push_back(path[index + 15]);
+        uiPath.push_back(path.data()[index + 15]);
       }
 
       uiPath = "UI\\" + uiPath;
