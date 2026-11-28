@@ -163,8 +163,8 @@ bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
       return false;
     }
 
-    this->image.width = width;
     this->image.height = height;
+    this->image.width = width;
     rgb = new unsigned char[width * height * 3];
     this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
