@@ -136,9 +136,9 @@ void UIRPData::DrawNamed(int x, int y, std::string name, std::uint32_t color, in
 
   const int textureWidth = texture->TextureWidth();
   const int textureHeight = texture->TextureHeight();
-  primitive->quad[0].x = static_cast<float>(x);
   primitive->quad[0].y = static_cast<float>(y);
   primitive->quad[0].u = g_textureOffsetX / static_cast<float>(textureWidth);
+  primitive->quad[0].x = static_cast<float>(x);
   primitive->quad[0].v = g_textureOffsetY / static_cast<float>(textureHeight);
   primitive->quad[1].x = static_cast<float>(x + width);
   primitive->quad[1].y = static_cast<float>(y);
