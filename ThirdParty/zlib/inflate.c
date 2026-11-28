@@ -116,6 +116,8 @@ z_streamp strm;
     return 0;
 }
 
+// OFFSET: 0x00E69810
+// FUNCTION: fn_47548
 int ZEXPORT inflateResetKeep(strm)
 z_streamp strm;
 {
@@ -247,6 +249,8 @@ int stream_size;
     return inflateInit2_(strm, DEF_WBITS, version, stream_size);
 }
 
+// OFFSET: 0x00E695A0
+// FUNCTION: fn_47547
 int ZEXPORT inflatePrime(strm, bits, value)
 z_streamp strm;
 int bits;
@@ -1315,6 +1319,8 @@ z_streamp strm;
     return Z_OK;
 }
 
+// OFFSET: 0x00E692C0
+// FUNCTION: fn_47544
 int ZEXPORT inflateGetDictionary(strm, dictionary, dictLength)
 z_streamp strm;
 Bytef *dictionary;
@@ -1338,6 +1344,8 @@ uInt *dictLength;
     return Z_OK;
 }
 
+// OFFSET: 0x00E698F0
+// FUNCTION: fn_47549
 int ZEXPORT inflateSetDictionary(strm, dictionary, dictLength)
 z_streamp strm;
 const Bytef *dictionary;
@@ -1373,6 +1381,8 @@ uInt dictLength;
     return Z_OK;
 }
 
+// OFFSET: 0x00E69340
+// FUNCTION: fn_47545
 int ZEXPORT inflateGetHeader(strm, head)
 z_streamp strm;
 gz_headerp head;
@@ -1424,6 +1434,8 @@ unsigned len;
     return next;
 }
 
+// OFFSET: 0x00E699C0
+// FUNCTION: fn_47550
 int ZEXPORT inflateSync(strm)
 z_streamp strm;
 {
@@ -1482,6 +1494,8 @@ z_streamp strm;
    block. When decompressing, PPP checks that at the end of input packet,
    inflate is waiting for these length bytes.
  */
+// OFFSET: 0x00E69B10
+// FUNCTION: fn_47551
 int ZEXPORT inflateSyncPoint(strm)
 z_streamp strm;
 {
@@ -1492,6 +1506,8 @@ z_streamp strm;
     return state->mode == STORED && state->bits == 0;
 }
 
+// OFFSET: 0x00E690D0
+// FUNCTION: fn_47543
 int ZEXPORT inflateCopy(dest, source)
 z_streamp dest;
 z_streamp source;
@@ -1539,6 +1555,8 @@ z_streamp source;
     return Z_OK;
 }
 
+// OFFSET: 0x00E69B60
+// FUNCTION: fn_47552
 int ZEXPORT inflateUndermine(strm, subvert)
 z_streamp strm;
 int subvert;
@@ -1572,6 +1590,8 @@ int check;
     return Z_OK;
 }
 
+// OFFSET: 0x00E69520
+// FUNCTION: fn_47546
 long ZEXPORT inflateMark(strm)
 z_streamp strm;
 {
@@ -1585,6 +1605,8 @@ z_streamp strm;
             (state->mode == MATCH ? state->was - state->length : 0));
 }
 
+// OFFSET: 0x00E69080
+// FUNCTION: fn_47542
 unsigned long ZEXPORT inflateCodesUsed(strm)
 z_streamp strm;
 {
