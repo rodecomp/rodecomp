@@ -14480,11 +14480,12 @@ void CGameMode::SpawnMovingActor(
   entry.headDir = headDir;
   entry.guildId = guildId;
   entry.guildVersion = guildVersion;
+  const int shield = static_cast<int>(weapon >> 32);
   entry.honor = honor;
-  entry.shield = static_cast<int>(weapon >> 32);
   entry.virtue = virtue;
   entry.gid = gid;
   entry.body = body;
+  entry.shield = shield;
   DecodeSrcDst(moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
@@ -14530,9 +14531,12 @@ void CGameMode::SpawnMovingActor(
   g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
 
   std::int64_t bossFlag = 0;
-  if (isBoss && actor->hpGaugeFlags <= 0) {
-    actor->hpGaugeFlags = isBoss;
-    bossFlag = 1;
+  if (isBoss) {
+    bossFlag = 0;
+    if (actor->hpGaugeFlags <= 0) {
+      actor->hpGaugeFlags = isBoss;
+      bossFlag = 1;
+    }
   }
   actor->characterLevel = level;
   actor->render.font = font;
@@ -14567,10 +14571,7 @@ void CGameMode::SpawnMovingActor(
   }
 
   if (objectType == PC_TYPE) {
-    CellFloatPos position;
-    position.x = actor->render.position.x;
-    position.z = actor->render.position.z;
-    this->scene->AddPcPosUnindexed(aid, position);
+    this->scene->AddPcPosUnindexed(aid, CellFloatPos(actor->render.position.x, actor->render.position.z));
   }
 }
 
@@ -15342,8 +15343,8 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.honor = packet->honor;
   entry.shield = static_cast<int>(weapon >> 32);
   entry.virtue = packet->virtue;
-  entry.guildVersion = packet->guildVersion;
   entry.aid = packet->aid;
+  entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   if (packet->objectType == PC_TYPE) {
     entry.state = 0;
@@ -15354,27 +15355,24 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
 
   CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
-    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (packet->objectType == PC_TYPE) {
-      actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
-      actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_STANDENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     }
   } else {
-    CGameActor* created;
     if (packet->objectType == PC_TYPE) {
-      created = new CPc;
+      actor = new CPc;
     } else {
-      created = this->NewActor(packet->job);
+      actor = this->NewActor(packet->job);
     }
-    if (!created) {
+    if (!actor) {
       return;
     }
 
-    created->objectType = packet->objectType;
-    this->scene->objects.push_back(created);
-    this->scene->actors.push_back(created);
-    actor = created;
+    actor->objectType = packet->objectType;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     if (packet->objectType == PC_TYPE) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -15388,9 +15386,12 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   }
 
   std::int64_t bossFlag = 0;
-  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
-    actor->hpGaugeFlags = packet->isBoss;
-    bossFlag = 1;
+  if (packet->isBoss) {
+    bossFlag = 0;
+    if (actor->hpGaugeFlags <= 0) {
+      actor->hpGaugeFlags = packet->isBoss;
+      bossFlag = 1;
+    }
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
