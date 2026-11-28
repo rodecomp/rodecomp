@@ -57,9 +57,9 @@ void CEvilLandEffect::Open() {
       particle->texture2 = alpha;
 
       const float left = static_cast<float>(column);
-      const float top = static_cast<float>(row);
       const float right = static_cast<float>(column + 1);
       const float bottom = static_cast<float>(row + 1);
+      const float top = static_cast<float>(row);
 
       particle->uv1[0][0] = left * textureStepU;
       particle->uv1[0][1] = top * textureStepV;
