@@ -228,9 +228,10 @@ void CUIAdventureGuide::OnCreate(int width, int height) {
   this->AddChild(this->monster);
 
   this->item = new AdventureGuide::CUIItem();
-  this->item->SetSize(627, 387);
-  this->item->Move(122, 81);
-  this->AddChild(this->item);
+  auto& item = this->item;
+  item->SetSize(627, 387);
+  item->Move(122, 81);
+  this->AddChild(item);
 
   this->tabs = new CUIListBox<AdventureGuide::CUITab>();
   this->tabs->SetSize(106, 372);
@@ -1020,10 +1021,11 @@ void CUICharacterInfo::OnCreate(int width, int height) {
 // FUNCTION: fn_14003
 void AdventureGuide::CUIItemInfo::OnCreate(int width, int height) {
   this->image = new CUIStaticImage();
-  this->image->SetSize(75, 100);
-  this->image->Move(45, 14);
-  this->image->SetImage(std::string(""));
-  this->AddChild(this->image);
+  auto& image = this->image;
+  image->SetSize(75, 100);
+  image->Move(45, 14);
+  image->SetImage(std::string(""));
+  this->AddChild(image);
 
   this->nameText = new CUIStaticText();
   this->nameText->SetSize(280, 12);
