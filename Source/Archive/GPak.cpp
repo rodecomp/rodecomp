@@ -1953,16 +1953,22 @@ bool GPakEx::Crypter_SUB_XOR_AES_A<ID, AES_MODE, KEY_OFFSET, IV_OFFSET, MASK_CIP
     XorWithKey16(mask, input, output);
   } else if (input.size() <= PLAIN_SIZE + encryptedSize) {
     XorWithKey16(mask, input.first(PLAIN_SIZE), output.first(PLAIN_SIZE));
-    const std::size_t expectedSize = output.size() - PLAIN_SIZE;
-    if (aes.Decrypt(MutableBytes(input.subspan(PLAIN_SIZE)), output.subspan(PLAIN_SIZE), BCRYPT_BLOCK_PADDING) != expectedSize) {
+    const std::span<const std::uint8_t> encryptedInput = input.subspan(PLAIN_SIZE);
+    const std::span<std::uint8_t> decryptedOutput = output.subspan(PLAIN_SIZE);
+    const std::size_t expectedSize = decryptedOutput.size();
+    if (expectedSize != aes.Decrypt(MutableBytes(encryptedInput), decryptedOutput, BCRYPT_BLOCK_PADDING)) {
       return false;
     }
   } else {
     XorWithKey16(mask, input.first(PLAIN_SIZE), output.first(PLAIN_SIZE));
-    if (aes.Decrypt(MutableBytes(input.subspan(PLAIN_SIZE, encryptedSize)), output.subspan(PLAIN_SIZE, BLOCK_SIZE), BCRYPT_BLOCK_PADDING) != BLOCK_SIZE) {
+    const std::span<const std::uint8_t> encryptedInput = input.subspan(PLAIN_SIZE, encryptedSize);
+    const std::span<std::uint8_t> decryptedOutput = output.subspan(PLAIN_SIZE, BLOCK_SIZE);
+    if (aes.Decrypt(MutableBytes(encryptedInput), decryptedOutput, BCRYPT_BLOCK_PADDING) != BLOCK_SIZE) {
       return false;
     }
-    XorWithKey16(mask, input.subspan(PLAIN_SIZE + encryptedSize), output.subspan(PLAIN_SIZE + BLOCK_SIZE));
+    const std::span<const std::uint8_t> remainingInput = input.subspan(PLAIN_SIZE + encryptedSize);
+    const std::span<std::uint8_t> remainingOutput = output.subspan(PLAIN_SIZE + BLOCK_SIZE);
+    XorWithKey16(mask, remainingInput, remainingOutput);
   }
   return true;
 }
