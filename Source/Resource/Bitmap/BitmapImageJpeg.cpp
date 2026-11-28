@@ -49,8 +49,8 @@ bool CBitmapRes::DecodeJpeg(const void* data, int bytes) {
 
     for (int x = 0; x < this->image.width; ++x) {
       const unsigned red = input[2];
-      const unsigned blue = input[0];
       const unsigned green = input[1];
+      const unsigned blue = input[0];
       *out++ = red >= 254 && green <= 3 && blue >= 254 ? 0x000A0A0Au : (((((0xFFu << 8) + red) << 8) + green) << 8) + blue;
       input += 3;
     }
