@@ -7782,8 +7782,8 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
     column -= 3;
     row -= 3;
 
-    const float sn = g_sinTable[this->state.slots[ec].rotStart];
     const float cs = g_cosTable[this->state.slots[ec].rotStart];
+    const float sn = g_sinTable[this->state.slots[ec].rotStart];
 
     for (int z = 0; z < 7; ++z) {
       const float z0 = static_cast<float>(z) - 3.5f;
