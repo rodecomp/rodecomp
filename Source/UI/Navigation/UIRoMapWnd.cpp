@@ -957,9 +957,9 @@ bool CFlyingShipRouteInfo::UpdateRoute(WorldViewRecord* record) {
 
   if (this->m_moving) {
     this->routeReset = 1;
+    this->routeState = 0;
     this->segmentIndex = 0;
     this->travelledDistance = 0.0f;
-    this->routeState = 0;
   }
   return false;
 }
