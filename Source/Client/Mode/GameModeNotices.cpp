@@ -1,3 +1,5 @@
+#include <atlbase.h>
+#include <statreg.h>
 #include "Client/Mode/GameModeEnums.h"
 #include "Client/Mode/GameModeResultEnums.h"
 #include "UI/Chat/UINewChatWnd.h"
@@ -5289,16 +5291,14 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   std::string name;
   name.assign(packet->name, 24);
   std::string itemName;
-  {
-    ITEM_INFO item;
-    item.SetItemId(packet->itemId);
-    item.identified = 1;
-    itemName = item.DisplayName(0);
-  }
+  ITEM_INFO item;
+  item.SetItemId(packet->itemId);
+  item.identified = 1;
+  itemName = item.DisplayName(0);
 
   std::string grade;
   if (1 == packet->grade) {
-    grade.assign(1, 'D');
+    grade = "D";
   } else if (2 == packet->grade) {
     grade = "C";
   } else if (3 == packet->grade) {
