@@ -33,9 +33,16 @@ struct BarterTree {
 
   void EraseSubtree(BarterTree* owner, BarterTreeNode* node) noexcept;
   void Clear() noexcept;
-  ~BarterTree();
+  __declspec(noinline) ~BarterTree();
 };
 
+struct BarterIntMap : BarterTree {
+  __declspec(noinline) ~BarterIntMap();
+};
+
+// OFFSET: 0x005D7530
+// FUNCTION: fn_47476
+__declspec(noinline) BarterIntMap::~BarterIntMap() {}
 
 struct BarterTreeIterator {
   /* 0000 */ BarterTreeNode* node;
@@ -231,7 +238,7 @@ void BarterTree::EraseSubtree(BarterTree* owner, BarterTreeNode* root) noexcept
 
 // OFFSET: 0x005D7390
 // FUNCTION: fn_03720
-BarterTree::~BarterTree()
+__declspec(noinline) BarterTree::~BarterTree()
 {
   EraseSubtree(this, this->head->parent);
   std::allocator<BarterTreeNode>().deallocate(this->head, 1);
