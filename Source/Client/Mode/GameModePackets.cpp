@@ -16026,7 +16026,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
       }
     }
     if (entry.head == 0x2E) {
-      if (g_session.petGid == packet->aid) {
+      if (packet->aid == g_session.petGid) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
