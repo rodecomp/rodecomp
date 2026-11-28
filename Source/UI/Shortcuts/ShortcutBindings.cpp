@@ -81,7 +81,7 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
     if (record != cooldowns.end() && record->end > timeGetTime()) {
       const int position = index + 9 * this->m_hotkeyPage - rowStart;
       const auto value = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == position; });
-      if (value != record->main.end()) {
+      if (record->main.end() != value) {
         record->main.erase(value);
       }
     }
