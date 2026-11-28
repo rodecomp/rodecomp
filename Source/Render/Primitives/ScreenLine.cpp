@@ -87,11 +87,11 @@ void UIRoMapWnd::DrawDashedArrow(
   }
 
   if (progress < g_projectionDepthNumerator) {
-    const float tipBaseX = (sideX * 0.5f + next.x) - static_cast<float>(thickness) * direction.x;
     const float tipBaseY = (sideY * 0.5f + next.y) - static_cast<float>(thickness) * direction.y;
+    const float tipBaseX = (sideX * 0.5f + next.x) - static_cast<float>(thickness) * direction.x;
     const float headX = static_cast<float>(headSize);
-    const float tipX = tipBaseX + headX * normal.x;
     const float otherBaseX = tipBaseX - headX * normal.x;
+    const float tipX = tipBaseX + headX * normal.x;
     const float tipY = tipBaseY + headX * normal.y;
     const float otherBaseY = tipBaseY - headX * normal.y;
     const float doubledStepX = headX * direction.x + headX * direction.x;
