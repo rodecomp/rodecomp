@@ -1414,15 +1414,15 @@ void CFootprintStrEffect::SpawnFootprint() {
 
   const std::string& top = this->leftFoot ? this->topFiles.first : this->topFiles.second;
   if (top.size() != 0) {
-    spawn.x = point.x + 0.0f;
     spawn.y = point.y + static_cast<float>(-this->topHeight);
+    spawn.x = point.x + 0.0f;
     spawn.z = point.z + 0.0f;
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
     CEZ2STRParticle* emitter = particle;
     if (particle) {
       particle->Open(top);
-      particle->depthOffset = 0.000035f;
       particle->m_scale = static_cast<float>(this->topScale);
+      particle->depthOffset = 0.000035f;
       this->topEmitters.push_back(std::move(emitter));
     }
   }
