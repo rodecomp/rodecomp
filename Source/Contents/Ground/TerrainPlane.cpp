@@ -24,8 +24,8 @@ float C3dAttr::PlaneHeight(float x, float z) const {
   };
   Point corners[4];
   const int dx = column - columns / 2;
-  const int dz = row - rows / 2;
   const float left = static_cast<float>(dx) * size;
+  const int dz = row - rows / 2;
   const float right = static_cast<float>(dx + 1) * size;
   const float top = static_cast<float>(dz) * size;
   const float bottom = static_cast<float>(dz + 1) * size;
