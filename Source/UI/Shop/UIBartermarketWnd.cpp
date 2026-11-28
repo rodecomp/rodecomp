@@ -1352,15 +1352,18 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     CBarterMarketItemMgr* itemMgr = g_barterMarketItemMgr;
     if (itemMgr->HasItemByName(mode->drag.name) == true) {
+      int messageId = 0;
       if (g_session.IsEquipItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EQUIPITEM_OLNY_ONE)), 255, 0, 0, 0);
-        break;
+        messageId = MSI_EQUIPITEM_OLNY_ONE;
       } else if (g_session.IsShadowItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        messageId = MSI_BUY_ONE_AT_A_TIME;
+      }
+      if (messageId != 0) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_ONE_AT_A_TIME)), 255, 0, 0, 0);
+        const char* message = LookupMessage(messageId);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 255, 0, 0, 0);
         break;
       }
     }
