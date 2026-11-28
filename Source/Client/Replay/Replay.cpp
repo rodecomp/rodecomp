@@ -1443,7 +1443,7 @@ std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
   AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_NAME, this->memorialDungeonName.c_str(), this->memorialDungeonName.size()));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_QUEUE_POSITION, &this->memorialQueuePosition, sizeof(this->memorialQueuePosition)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_CREATION_TIME, &this->memorialCreationTime, sizeof(this->memorialCreationTime)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_EXPIRATION_TIME, &this->memorialExpirationTime, sizeof(this->memorialExpirationTime)));
+  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_EXPIRATION_TIME, &this->memorialExpirationTime, sizeof(this->memorialExpirationTime)));
   AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_END, nullptr, 0));
   return records;
 }
