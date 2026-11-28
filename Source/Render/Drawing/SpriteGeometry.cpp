@@ -49,8 +49,8 @@ bool CCharacterRender::ProjectCell(
 
   bottomDepth = 1.0f / ((bottom - y) * g_tangent + position[2]) + (layer + 3) * g_cameraScaleY + depthBias;
   topDepth = 1.0f / ((top - y) * g_tangent + position[2]) + (layer + 3) * g_cameraScaleY + depthBias;
-  quad.left = left + shift;
   quad.top = top;
+  quad.left = left + shift;
   quad.bottom = bottom;
   quad.right = right + shift;
   quad.bottomRhw = bottomDepth;
