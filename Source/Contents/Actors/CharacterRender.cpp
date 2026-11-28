@@ -216,8 +216,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
 
     int offsetX = 0;
     int offsetY = 0;
-    SpriteQuad quad{};
-    quad.image = sprites[type]->images[cell->imageType][imageIndex];
+    const SpriteRleImage* image = sprites[type]->images[cell->imageType][imageIndex];
     if (g_session.IsDoramJob(this->job) == true) {
       int doramX = 0;
       int doramY = 0;
@@ -263,7 +262,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
         if (layerFrame != nullptr && syncedIndex != this->frameIndex) {
           cell = &layerFrame->Cell(cellIndex);
           if (cell->image != -1) {
-            quad.image = sprites[type]->images[cell->imageType][cell->image];
+            image = sprites[type]->images[cell->imageType][cell->image];
           }
         } else {
           layerFrame = frame;
@@ -301,12 +300,14 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     float topDepth = 0.0f;
     SpriteColor color = {};
     SpriteCellBounds rect;
+    SpriteQuad quad{};
     if (!this->ProjectCell(
-          index, layer, distanceScale, *cell, this->screenX, this->screenY, &position.x, 0.0f, bottomDepth, topDepth, *quad.image,
+          index, layer, distanceScale, *cell, this->screenX, this->screenY, &position.x, 0.0f, bottomDepth, topDepth, *image,
           quad, rect, color, offsetX, offsetY, 0
         )) {
       continue;
     }
+    quad.image = image;
 
     *boundsUpdated = 1;
     ++layer;
