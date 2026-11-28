@@ -33,9 +33,7 @@ public:
     CReassemblyPacketImpl::Destroy();
   }
 
-  bool Init() {
-    return CReassemblyPacketImpl::Create() != false;
-  }
+  bool Init();
 
   static bool CreateInstance();
   static void DestroyInstance();

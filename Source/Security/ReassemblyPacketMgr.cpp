@@ -74,6 +74,12 @@ int CReassemblyPacketImpl::Notify(int event) {
   return 0;
 }
 
+// OFFSET: 0x00B156D0
+// FUNCTION: fn_47503
+bool CReassemblyPacketMgr::Init() {
+  return CReassemblyPacketImpl::Create() != false;
+}
+
 // OFFSET: 0x00B156E0
 // FUNCTION: fn_18424
 bool CReassemblyPacketMgr::CreateInstance() {
