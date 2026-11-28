@@ -28,7 +28,7 @@ static_assert(sizeof(ReplayCipherWord) == 4);
 
 // OFFSET: 0x00B86880
 // FUNCTION: fn_19332
-bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
+__forceinline bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uint32_t delay) {
   if (0 == bytes || !packet) {
     return false;
   }
@@ -126,74 +126,12 @@ bool Replay::WriteFinalSection() {
 
 // OFFSET: 0x00B86660
 // FUNCTION: fn_19331
-bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay) {
-  const unsigned char* data = packet.data();
-  const std::uint16_t bytes = static_cast<std::uint16_t>(packet.size());
-  if (0 == bytes || !data) {
+__declspec(noinline) bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay) {
+  if (packet.end() == packet.begin()) {
     return false;
   }
-
-  std::uint16_t id;
-  std::memcpy(&id, data, sizeof(id));
-
-  if (ID_CC_REPLAYPACKET != id) {
-    if (g_packetLengths.IsRecorded(id) == 0) {
-      return false;
-    }
-
-    switch (id) {
-    case ID_ZC_NOTIFY_CHAT:
-    case ID_ZC_NOTIFY_PLAYERCHAT:
-    case ID_ZC_WHISPER:
-    case ID_ZC_NOTIFY_CHAT_PARTY:
-    case ID_ZC_GUILD_CHAT:
-    case ID_ZC_BATTLEFIELD_CHAT:
-    case ID_ZC_ALLY_CHAT:
-      if (this->header.options.Get(ReplayRecordOption::Chatting) == 0) {
-        return false;
-      }
-
-      break;
-    default:
-      break;
-    }
-  }
-
-  std::vector<unsigned char> record(static_cast<std::size_t>(bytes) + 10, 0);
-  RecordHeader* recordHeader = reinterpret_cast<RecordHeader*>(record.data());
-  recordHeader->bytes = bytes;
-  recordHeader->frame = 0;
-  recordHeader->tick = 0;
-
-  if (event == 43) {
-    recordHeader->frame = this->frame - this->baseFrame;
-    recordHeader->tick = timeGetTime() + (delay - this->started);
-  } else if (event == 42) {
-    recordHeader->frame = this->frame - this->baseFrame;
-    recordHeader->tick = timeGetTime() - this->started;
-  }
-
-  std::memcpy(record.data() + 10, data, bytes);
-
-  auto* words = reinterpret_cast<ReplayCipherWord*>(record.data() + 10);
-  if (words) {
-    const int count = bytes / 4;
-    this->cipherKey = this->header.key1 >> 3;
-    this->cipherIndex = 0;
-    this->cipherBase = this->header.key0 >> 5;
-    for (int index = 0; index < count; ++index) {
-      words[index].value ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
-    }
-  }
-
-  std::fseek(this->file, static_cast<long>(this->fileOffset), SEEK_SET);
-  std::fwrite(record.data(), record.size(), 1, this->file);
-  this->fileOffset += static_cast<std::uint32_t>(record.size());
-  ++this->records;
-
-  return true;
+  return this->Record(static_cast<std::uint16_t>(packet.size()), &packet[0], event, delay);
 }
-
 // OFFSET: 0x00B86500
 // FUNCTION: fn_19330
 void Replay::RecordCachedPackets() {
