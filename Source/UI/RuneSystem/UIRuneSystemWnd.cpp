@@ -2147,7 +2147,7 @@ void UIRune_Decom::Paint() {
 
       ITEM_INFO item;
       item.identified = 1;
-      item.SetItemId((*this->m_decomList)[index].m_itemId);
+      item.SetItemId(this->m_decomList->data()[index].m_itemId);
       char iconPath[128];
       std::memset(iconPath, 0, sizeof(iconPath));
       g_session.IconPath(item.itemId.c_str(), iconPath, 1);
@@ -2159,7 +2159,7 @@ void UIRune_Decom::Paint() {
         this->DrawBitmap(x + 7, y, static_cast<CBitmapRes*>(icon), true);
       }
 
-      const int percent = (*this->m_decomList)[index].m_percent;
+      const int percent = this->m_decomList->data()[index].m_percent;
       const int fraction = percent % 1000;
       const int whole = static_cast<int>(static_cast<float>(percent) * 0.001f);
       std::string text;
@@ -2189,7 +2189,7 @@ void UIRune_Decom::Paint() {
       this->DrawTextAt(x - width + 0x23, y + 0x13, text.c_str(), 0, 0, 12, 0xFFF7E7, 0, 0);
       this->DrawTextAt(x - width + 0x22, y + 0x12, text.c_str(), 0, 0, 12, 0x875F51, 0, 0);
 
-      text = static_cast<const std::string&>(FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount));
+      text = static_cast<const std::string&>(FormatOwnedString("%d ~ %d", this->m_decomList->data()[index].m_minCount, this->m_decomList->data()[index].m_maxCount));
       width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
       const int halfWidth = static_cast<int>(static_cast<float>(width) * 0.5f);
       this->DrawTextAt(x - halfWidth + 0x13, y + 0x23, text.c_str(), 0, 0, 11, 0x875F51, 0, 0);
