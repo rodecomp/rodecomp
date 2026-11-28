@@ -251,6 +251,8 @@ png_warning_parameter(png_warning_parameters p, int number,
       (void)png_safecat(p[number-1], (sizeof p[number-1]), 0, string);
 }
 
+// OFFSET: 0x00E753E0
+// FUNCTION: fn_47574
 void
 png_warning_parameter_unsigned(png_warning_parameters p, int number, int format,
     png_alloc_size_t value)
