@@ -173,7 +173,6 @@ void WrapRichText(
         }
 
         begin = split;
-        limit = begin + width;
       } else {
         {
           const std::string line(begin, current);
@@ -181,8 +180,8 @@ void WrapRichText(
         }
 
         begin = current;
-        limit = begin + width;
       }
+      limit = begin + width;
     }
   }
 
