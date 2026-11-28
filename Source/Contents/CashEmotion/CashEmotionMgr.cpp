@@ -2863,6 +2863,8 @@ UICashEmotionMiniWnd::UICashEmotionMiniWnd()
   this->m_action = new (std::nothrow) CCashEmotionAction_SelectedUnPurchasedPack;
 }
 
+// OFFSET: 0x007C8FD0
+// FUNCTION: fn_47485
 // OFFSET: 0x007C90B0
 // FUNCTION: fn_09427
 UICashEmotionMiniWnd::~UICashEmotionMiniWnd() {
@@ -3384,6 +3386,8 @@ UICashEmotionPack_Purchase::UICashEmotionPack_Purchase() : UICashEmotionPack() {
   this->m_background = Resolve("유저인터페이스\\cashemotion\\bg_list_bought.bmp");
 }
 
+// OFFSET: 0x007CABB0
+// FUNCTION: fn_47486
 // OFFSET: 0x007CAC40
 // FUNCTION: fn_09458
 UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
