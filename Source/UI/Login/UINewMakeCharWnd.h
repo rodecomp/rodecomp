@@ -5,6 +5,7 @@
 #include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/Buttons/UIBmpTextButton.h"
 #include "UI/Login/UIDescriptRace.h"
+#include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Window/InputFocus.h"
@@ -61,22 +62,7 @@ public:
   void UpdatePreviewResources();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  struct PreviewResources {
-    /* 0000 */ int viewX;
-    /* 0004 */ int viewY;
-    /* 0008 */ std::string actions[5];
-    /* 0080 */ std::string sprites[5];
-    /* 00F8 */ std::string offsets;
-    /* 0110 */ int paletteEnabled[2];
-    /* 0118 */ std::string headPalette;
-    /* 0130 */ std::string bodyPalette;
-  };
-
-  /* 00B4 */ PreviewResources m_preview;
-  /* 01FC */ int actionBase;
-  /* 0200 */ int m_action;
-  /* 0204 */ int m_frame;
-  /* 0208 */ unsigned char padding_0208[0x8];
+  /* 00B4 */ CharSlotInfo m_view;
   /* 0210 */ CharacterInfo m_character;
   /* 02BF */ unsigned char padding_02BF;
   union {

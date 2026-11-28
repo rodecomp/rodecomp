@@ -94,37 +94,37 @@ UINewMakeCharWnd::UINewMakeCharWnd()
     this->m_character.accessory3 = 0;
     this->m_character.bodyCostume = 0;
     this->m_character.sex = static_cast<unsigned char>(g_session.m_sex);
-    this->m_preview.viewX = 500;
-    this->m_preview.viewY = 228;
-    this->actionBase = 0;
-    this->m_action = 0;
-    this->m_frame = 0;
+    this->m_view.x = 500;
+    this->m_view.y = 228;
+    this->m_view.actionBase = 0;
+    this->m_view.action = 0;
+    this->m_view.frame = 0;
 
-    this->m_preview.actions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, 0, 0));
-    this->m_preview.sprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, 0, 0));
+    this->m_view.actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, 0, 0));
+    this->m_view.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, 0, 0));
 
     if (!g_session.IsDoramJob(this->m_character.job) && this->m_character.sex == 1 && 13 == this->m_character.head) {
       this->m_character.head = 14;
     }
 
     int head = this->m_character.head;
-    this->m_preview.actions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
-    this->m_preview.sprites[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
+    this->m_view.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
+    this->m_view.spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
 
     const int bodyPalette = this->m_character.bodyStyle;
     this->m_character.head = static_cast<short>(head);
-    this->m_preview.paletteEnabled[1] = bodyPalette;
+    this->m_view.bodyPalette = bodyPalette;
     if (bodyPalette > 0) {
-      this->m_preview.bodyPalette = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0));
+      this->m_view.bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0));
     }
 
     const int headPalette = this->m_character.headPalette;
-    this->m_preview.paletteEnabled[0] = headPalette;
+    this->m_view.headPalette = headPalette;
     if (headPalette > 0) {
-      this->m_preview.headPalette = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
+      this->m_view.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
     }
 
-    this->m_preview.offsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
+    this->m_view.imfName = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
   }
 
   this->previewState = 0;
@@ -200,15 +200,15 @@ void UINewMakeCharWnd::Paint() {
   this->DrawTextAt(0x2C, 0x11, LookupMessage(MSI_MAKECHARWND_TITLE), 0, 0, 0xC, 0x5F5F5F, 1, 0);
 
   for (int i = 0; i < 2; ++i) {
-    CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_preview.offsets.c_str()));
-    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_preview.actions[i].c_str()));
-    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_preview.sprites[i].c_str()));
-    const ActionFrame& frame = action->Frame(this->m_action, this->m_frame);
-    POINT offset = offsets->GetLongPoint(i, this->m_action, this->m_frame);
+    CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_view.imfName.c_str()));
+    CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[i].c_str()));
+    CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
+    const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
+    POINT offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
 
     if (i == SPRITE_LAYER_HEAD) {
-      CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_preview.actions[SPRITE_LAYER_BODY].c_str()));
-      const ActionFrame& firstFrame = first->Frame(this->m_action, this->m_frame);
+      CActRes* first = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[SPRITE_LAYER_BODY].c_str()));
+      const ActionFrame& firstFrame = first->Frame(this->m_view.action, this->m_view.frame);
       if (frame.anchorCount != 0 && firstFrame.anchorCount != 0 && frame.anchors[0].attachmentId == firstFrame.anchors[0].attachmentId) {
         offset.x += firstFrame.anchors[0].x - frame.anchors[0].x;
         offset.y += firstFrame.anchors[0].y - frame.anchors[0].y;
@@ -218,13 +218,13 @@ void UINewMakeCharWnd::Paint() {
     const std::uint32_t* palette = sprite->palette;
     switch (i) {
     case SPRITE_LAYER_BODY:
-      if (this->m_preview.paletteEnabled[1] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_preview.bodyPalette.c_str()))->palette;
+      if (this->m_view.bodyPalette > 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.bodyPaletteName.c_str()))->palette;
       }
       break;
     case SPRITE_LAYER_HEAD:
-      if (this->m_preview.paletteEnabled[0] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_preview.headPalette.c_str()))->palette;
+      if (this->m_view.headPalette > 0) {
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_view.headPaletteName.c_str()))->palette;
       }
       break;
     }
@@ -247,7 +247,7 @@ void UINewMakeCharWnd::Paint() {
     }
 
     this->geometry.surface->DrawSurface(
-      this->m_preview.viewX + offset.x + cell.x, this->m_preview.viewY + offset.y + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
+      this->m_view.x + offset.x + cell.x, this->m_view.y + offset.y + cell.y, texture, static_cast<int>(record.u0 * 256.0f),
       static_cast<int>(record.v0 * 256.0f), image->width, image->height, cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
     );
   }
@@ -339,26 +339,26 @@ void UIHairStyleButton::OnCreate(int width, int height) {
 // OFFSET: 0x007DBFD0
 // FUNCTION: fn_09626
 void UINewMakeCharWnd::UpdatePreviewResources() {
-  this->m_preview.actions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
-  this->m_preview.sprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
+  this->m_view.actionNames[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
+  this->m_view.spriteNames[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
   int head = this->m_character.head;
-  this->m_preview.actions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
-  this->m_preview.sprites[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
+  this->m_view.actionNames[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
+  this->m_view.spriteNames[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
 
   const int bodyPalette = this->m_character.bodyStyle;
   this->m_character.head = static_cast<short>(head);
-  this->m_preview.paletteEnabled[1] = bodyPalette;
+  this->m_view.bodyPalette = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_preview.bodyPalette = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, this->m_character.job, 0, 0));
+    this->m_view.bodyPaletteName = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, this->m_character.job, 0, 0));
   }
 
   const int headPalette = this->m_character.headPalette;
-  this->m_preview.paletteEnabled[0] = headPalette;
+  this->m_view.headPalette = headPalette;
   if (headPalette > 0) {
-    this->m_preview.headPalette = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
+    this->m_view.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
   }
 
-  this->m_preview.offsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
+  this->m_view.imfName = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
 }
 
 // OFFSET: 0x007DA340
@@ -695,9 +695,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case ID_RIGHT:
     if (argument2 == 0) {
-      --this->m_action;
-      if (this->m_action < this->actionBase) {
-        this->m_action = this->actionBase + 7;
+      --this->m_view.action;
+      if (this->m_view.action < this->m_view.actionBase) {
+        this->m_view.action = this->m_view.actionBase + 7;
       }
       this->Invalidate();
     }
@@ -754,9 +754,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case ID_LEFT:
     if (argument2 == 0) {
-      ++this->m_action;
-      if (this->m_action >= this->actionBase + 8) {
-        this->m_action = this->actionBase;
+      ++this->m_view.action;
+      if (this->m_view.action >= this->m_view.actionBase + 8) {
+        this->m_view.action = this->m_view.actionBase;
       }
       this->Invalidate();
     }
