@@ -1165,11 +1165,12 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
               RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(entry->second);
-              if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender <= 0) {
-                continue;
+              if (mail == g_rodexMailStore->m_mails0.end() || mail->second.isKnownSender > 0) {
+                this->RequestMailAttachments(entry->first, entry->second);
               }
+            } else {
+              this->RequestMailAttachments(entry->first, entry->second);
             }
-            this->RequestMailAttachments(entry->first, entry->second);
           }
         } else {
           const int mailType = g_rodexMailStore->inboxType;
