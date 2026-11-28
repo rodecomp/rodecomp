@@ -291,8 +291,8 @@ int UIBattleMsgOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->Invalidate();
       }
       this->UpdateScrollBar();
-      break;
     }
+    break;
     case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_BATTLEMSGOPTIONWND);
       return 0;
