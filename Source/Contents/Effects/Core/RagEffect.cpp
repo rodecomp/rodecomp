@@ -21513,8 +21513,9 @@ bool CRagEffect::OnProcess3() {
         const float radius = 15.0f;
         this->state.lastPrim = this->LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 20;
-        SetVector(this->state.lastPrim->state.deltaPos2, radius * sine, -20.0f, -radius * cosine);
-        this->state.lastPrim->state.deltaPosAccel.y = 0.1f;
+        CEffectPrim* prim = this->state.lastPrim;
+        SetVector(prim->state.deltaPos2, radius * sine, -20.0f, -radius * cosine);
+        prim->state.deltaPosAccel.y = 0.1f;
         this->state.lastPrim->state.animSpeed = 3;
         this->state.lastPrim->state.size = 2.5f;
         this->state.lastPrim->state.sizeSpeed = -0.1f;
@@ -22319,18 +22320,19 @@ bool CRagEffect::OnProcess3() {
         this->state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
         this->state.lastPrim->state.duration = this->state.duration;
         this->state.lastPrim->state.slots[0].life = 1;
-        this->state.lastPrim->state.slots[0].height[0] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[1] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[2] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[3] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[4] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[5] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle / 4);
-        this->state.lastPrim->state.slots[0].height[7] = -8.0f;
-        this->state.lastPrim->state.slots[0].height[8] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[9] = 0.0f;
-        this->state.lastPrim->state.slots[0].height[10] = 0.0f;
-        this->state.lastPrim->state.slots[0].distance = 8.0f;
+        CEffectPrim* prim = this->state.lastPrim;
+        prim->state.slots[0].height[0] = 0.0f;
+        prim->state.slots[0].height[1] = 0.0f;
+        prim->state.slots[0].height[2] = 0.0f;
+        prim->state.slots[0].height[3] = 0.0f;
+        prim->state.slots[0].height[4] = 0.0f;
+        prim->state.slots[0].height[5] = 0.0f;
+        prim->state.slots[0].height[6] = static_cast<float>(angle / 4);
+        prim->state.slots[0].height[7] = -8.0f;
+        prim->state.slots[0].height[8] = 0.0f;
+        prim->state.slots[0].height[9] = 0.0f;
+        prim->state.slots[0].height[10] = 0.0f;
+        prim->state.slots[0].distance = 8.0f;
         this->state.lastPrim->state.slots[0].flag1[0] = 1;
         this->state.lastPrim->state.slots[0].alphaB = 0;
         this->state.lastPrim->state.slots[0].process = 0;
@@ -22601,7 +22603,11 @@ bool CRagEffect::OnProcess3() {
           const float x = m[0] * static_cast<float>(distance) + m[3] * offset.x + m[6] * offset.x + m[9] + this->render.position.x;
           const float y = m[1] * static_cast<float>(distance) + m[4] * offset.x + m[7] * offset.x + m[10] + this->render.position.y;
           const float z = m[2] * static_cast<float>(distance) + m[5] * offset.x + m[8] * offset.x + m[11] + this->render.position.z;
-          g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_JACKFROST_RUNE : EF_NEW_JACKFROST_RUNE, vector3d{x, y, z}, 0, -1, 0, 0);
+          int effectId = EF_NEW_JACKFROST_RUNE;
+          if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+            effectId = EF_MINEFFECT_JACKFROST_RUNE;
+          }
+          g_effectMgr->Spawn(0, effectId, vector3d{x, y, z}, 0, -1, 0, 0);
         }
       }
       if (this->state.stateCnt == 0) {
@@ -23107,8 +23113,9 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_FORCE_ANIM_27:
     if (this->state.stateCnt == 5) {
-      this->render.position = this->state.parent->render.position;
-      this->state.parent->render.state = 27;
+      EffectActor* parent = this->state.parent;
+      this->render.position = parent->render.position;
+      parent->render.state = 27;
       this->state.parent->SetFrameSequence(96, 5, 5, 96, 5, 1, 25, 0);
     } else if (this->state.stateCnt == 35) {
       if (this->state.parent->render.state == 27) {
