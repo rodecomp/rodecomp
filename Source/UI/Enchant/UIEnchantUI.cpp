@@ -664,6 +664,10 @@ void CUINormal::OnCreate(int width, int height) {
   this->tab->Select(firstButton);
 }
 
+// OFFSET: 0x009F8440
+// FUNCTION: fn_47522
+CUISlot::~CUISlot() = default;
+
 // OFFSET: 0x009FF700
 // FUNCTION: fn_14827
 void CUISlot::OnCreate(int width, int height) {

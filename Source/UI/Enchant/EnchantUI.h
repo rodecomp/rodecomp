@@ -258,6 +258,7 @@ public:
   // INLINED
   explicit CUISlot() : CUIControl(), radioButton(nullptr), itemIcon(nullptr), description(nullptr) {
   }
+  ~CUISlot() override;
 
   /* 0080 */ CUIRadioButton* radioButton;
   /* 0084 */ CUIGameItem* itemIcon;
