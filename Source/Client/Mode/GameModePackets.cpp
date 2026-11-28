@@ -5570,7 +5570,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     break;
   case SP_MANNER:
     if (packet->value < 0) {
-      text = FormatOwnedString(LookupMessage(MSI_BAD_MANNER_REMAIN), -packet->value);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BAD_MANNER_REMAIN), -packet->value));
       const int emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::ChatProhibit);
       this->scene->player->SendMsg(nullptr, AM_CASH_EMOTION, 0, emotion, 0, 0, 0, 0);
     } else {
