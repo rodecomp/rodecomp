@@ -222,8 +222,8 @@ __declspec(noinline) bool UIScrollWnd::UpdateChild(UIWindow* child, int redraw) 
   int width = child->geometry.width;
   int y = child->geometry.y;
   int height = child->geometry.height;
-  int sourceY = 0;
   int sourceX = 0;
+  int sourceY = 0;
 
   const int right = width + x;
   if (child->geometry.x < 0) {
