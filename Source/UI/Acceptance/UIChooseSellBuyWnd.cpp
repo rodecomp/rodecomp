@@ -7519,6 +7519,10 @@ UINpcEditDialogWnd::UINpcEditDialogWnd()
     : UIFrameWnd(0) {
 }
 
+// OFFSET: 0x008CB480
+// FUNCTION: fn_47518
+__declspec(noinline) UINpcEditDialogWnd::~UINpcEditDialogWnd() = default;
+
 // OFFSET: 0x008C8890
 // FUNCTION: fn_11962
 UINpcTextEditDialogWnd::UINpcTextEditDialogWnd()
