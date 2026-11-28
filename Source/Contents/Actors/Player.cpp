@@ -3221,12 +3221,11 @@ void CPlayer::ReapplySkillEffects() {
     }
   }
 
-  for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
+  for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
     const int argument3 = it->value2;
     volatile int type = it->id;
     const int value = it->value1;
     const int argument4 = it->value3;
-    ++it;
 
     switch (type) {
     case EFST_TWOHANDQUICKEN: {
