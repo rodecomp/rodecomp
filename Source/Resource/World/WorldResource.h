@@ -66,6 +66,8 @@ struct WorldLighting {
 };
 extern WorldLighting g_worldLighting;
 
+unsigned char IsUnsupportedWorldVersion(unsigned major, unsigned minor, unsigned build, char* message, unsigned capacity);
+
 class C3dWorldRes : public CRes {
 public:
   C3dWorldRes();

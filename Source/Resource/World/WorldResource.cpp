@@ -56,8 +56,6 @@ namespace {
     color[1] = value.y;
     color[2] = value.z;
   }
-
-  unsigned char IsUnsupportedWorldVersion(unsigned major, unsigned minor, unsigned build, char* message, unsigned capacity);
 }
 
 // OFFSET: 0x00763060
@@ -363,9 +361,3 @@ C3dWorldRes::C3dWorldRes(const char* extension, const char* prefix) {
 
 // GLOBAL: gl_25564
 C3dWorldRes g_rswPrototype("rsw", "");
-
-// OFFSET: 0x00763740
-// FUNCTION: fn_08079
-__declspec(noinline) unsigned char IsUnsupportedWorldVersion(unsigned major, unsigned minor, unsigned build, char* message, unsigned capacity) {
-  return 0;
-}

@@ -874,6 +874,7 @@
   "Source/Resource/World/GroundResource.cpp": 3,
   "Source/Resource/World/TerrainResource.cpp": 3,
   "Source/Resource/World/WorldResource.cpp": 3,
+  "Source/Resource/World/WorldVersion.cpp": 3,
   "Source/Resource/Xml/XmlNode.cpp": 3,
   "Source/Script/LuaFileOperations.cpp": 5,
   "Source/Script/LuaInstance.cpp": 5,
