@@ -246,90 +246,78 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
 
   for (int ec = 0; ec < 4; ++ec) {
     EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1 || slot.alphaB <= 0) {
-      continue;
-    }
+    if (slot.life == 1 && slot.alphaB > 0) {
+      const int angle = slot.riseAngle;
+      const int angle1 = angle + (angle >= 2 ? -2 : 358);
+      const int angle2 = angle + (angle < 358 ? 2 : -358);
+      const int angle3 = angle + (angle >= 182 ? -182 : 178);
+      const int angle4 = angle + (angle >= 178 ? -178 : 182);
+      const float distance = slot.distance;
+      const float height = slot.height[0];
+      const float cosRot = g_cosTable[slot.rotStart];
+      const float sinRot = g_sinTable[slot.rotStart];
+      const float baseY = slot.vecBNow.y;
+      const float baseX = slot.vecBNow.x;
+      const float baseZ = slot.vecBNow.z;
 
-    const int angle = slot.riseAngle;
-    const int angle1 = angle + (angle >= 2 ? -2 : 358);
-    const int angle2 = angle + (angle < 358 ? 2 : -358);
-    const int angle3 = angle + (angle >= 182 ? -182 : 178);
-    const int angle4 = angle + (angle >= 178 ? -178 : 182);
-    const float distance = slot.distance;
-    const float height = slot.height[0];
-    const float cosRot = g_cosTable[slot.rotStart];
-    const float sinRot = g_sinTable[slot.rotStart];
-    const float baseY = slot.vecBNow.y;
-    const float baseX = slot.vecBNow.x;
-    const float baseZ = slot.vecBNow.z;
+      vec1.x = distance * g_cosTable[angle1] * cosRot + baseX;
+      vec1.y = distance * g_cosTable[angle1] * sinRot + height + baseY;
+      vec1.z = distance * g_sinTable[angle1] + baseZ;
+      vec2.x = distance * g_cosTable[angle2] * cosRot + baseX;
+      vec2.y = distance * g_cosTable[angle2] * sinRot + height + baseY;
+      vec2.z = distance * g_sinTable[angle2] + baseZ;
+      vec3.x = distance * g_cosTable[angle3] * cosRot + baseX;
+      vec3.y = distance * g_cosTable[angle3] * sinRot + height + baseY;
+      vec3.z = distance * g_sinTable[angle3] + baseZ;
+      vec4.x = distance * g_cosTable[angle4] * cosRot + baseX;
+      vec4.y = distance * g_cosTable[angle4] * sinRot + height + baseY;
+      vec4.z = distance * g_sinTable[angle4] + baseZ;
 
-    vec1.x = distance * g_cosTable[angle1] * cosRot + baseX;
-    vec1.y = distance * g_cosTable[angle1] * sinRot + height + baseY;
-    vec1.z = distance * g_sinTable[angle1] + baseZ;
-    vec2.x = distance * g_cosTable[angle2] * cosRot + baseX;
-    vec2.y = distance * g_cosTable[angle2] * sinRot + height + baseY;
-    vec2.z = distance * g_sinTable[angle2] + baseZ;
-    vec3.x = distance * g_cosTable[angle3] * cosRot + baseX;
-    vec3.y = distance * g_cosTable[angle3] * sinRot + height + baseY;
-    vec3.z = distance * g_sinTable[angle3] + baseZ;
-    vec4.x = distance * g_cosTable[angle4] * cosRot + baseX;
-    vec4.y = distance * g_cosTable[angle4] * sinRot + height + baseY;
-    vec4.z = distance * g_sinTable[angle4] + baseZ;
+      if (slot.flag1[2] == BLADE_QUAD_CYAN_AND_RED) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_WHITE_AND_YELLOW) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_RED_AND_PINK) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_PALE_BLUE_AND_BLUE) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
 
-    switch (slot.flag1[2]) {
-    case BLADE_QUAD_CYAN_AND_RED:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_WHITE_AND_YELLOW:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_RED_AND_PINK:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_PALE_BLUE_AND_BLUE:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 200, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    }
+      const int angleB = slot.riseAngle;
+      const int angleB1 = angleB + (angleB >= 8 ? -8 : 352);
+      const int angleB2 = angleB + (angleB < 352 ? 8 : -352);
+      const int angleB3 = angleB + (angleB >= 188 ? -188 : 172);
+      const int angleB4 = angleB + (angleB >= 172 ? -172 : 188);
+      const float distanceB = slot.distance;
+      const float heightB = slot.height[0];
+      const float cosRotB = g_cosTable[slot.rotStart];
+      const float sinRotB = g_sinTable[slot.rotStart];
+      const float baseXB = slot.vecBNow.x;
+      const float baseYB = slot.vecBNow.y;
+      const float baseZB = slot.vecBNow.z;
 
-    const int angleB = slot.riseAngle;
-    const int angleB1 = angleB + (angleB >= 8 ? -8 : 352);
-    const int angleB2 = angleB + (angleB < 352 ? 8 : -352);
-    const int angleB3 = angleB + (angleB >= 188 ? -188 : 172);
-    const int angleB4 = angleB + (angleB >= 172 ? -172 : 188);
-    const float distanceB = slot.distance;
-    const float heightB = slot.height[0];
-    const float cosRotB = g_cosTable[slot.rotStart];
-    const float sinRotB = g_sinTable[slot.rotStart];
-    const float baseXB = slot.vecBNow.x;
-    const float baseYB = slot.vecBNow.y;
-    const float baseZB = slot.vecBNow.z;
+      vec1.x = distanceB * g_cosTable[angleB1] * cosRotB + baseXB;
+      vec1.y = distanceB * g_cosTable[angleB1] * sinRotB + heightB + baseYB;
+      vec1.z = distanceB * g_sinTable[angleB1] + baseZB;
+      vec2.x = distanceB * g_cosTable[angleB2] * cosRotB + baseXB;
+      vec2.y = distanceB * g_cosTable[angleB2] * sinRotB + heightB + baseYB;
+      vec2.z = distanceB * g_sinTable[angleB2] + baseZB;
+      vec3.x = distanceB * g_cosTable[angleB3] * cosRotB + baseXB;
+      vec3.y = distanceB * g_cosTable[angleB3] * sinRotB + heightB + baseYB;
+      vec3.z = distanceB * g_sinTable[angleB3] + baseZB;
+      vec4.x = distanceB * g_cosTable[angleB4] * cosRotB + baseXB;
+      vec4.y = distanceB * g_cosTable[angleB4] * sinRotB + heightB + baseYB;
+      vec4.z = distanceB * g_sinTable[angleB4] + baseZB;
 
-    vec1.x = distanceB * g_cosTable[angleB1] * cosRotB + baseXB;
-    vec1.y = distanceB * g_cosTable[angleB1] * sinRotB + heightB + baseYB;
-    vec1.z = distanceB * g_sinTable[angleB1] + baseZB;
-    vec2.x = distanceB * g_cosTable[angleB2] * cosRotB + baseXB;
-    vec2.y = distanceB * g_cosTable[angleB2] * sinRotB + heightB + baseYB;
-    vec2.z = distanceB * g_sinTable[angleB2] + baseZB;
-    vec3.x = distanceB * g_cosTable[angleB3] * cosRotB + baseXB;
-    vec3.y = distanceB * g_cosTable[angleB3] * sinRotB + heightB + baseYB;
-    vec3.z = distanceB * g_sinTable[angleB3] + baseZB;
-    vec4.x = distanceB * g_cosTable[angleB4] * cosRotB + baseXB;
-    vec4.y = distanceB * g_cosTable[angleB4] * sinRotB + heightB + baseYB;
-    vec4.z = distanceB * g_sinTable[angleB4] + baseZB;
-
-    switch (slot.flag1[2]) {
-    case BLADE_QUAD_CYAN_AND_RED:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_WHITE_AND_YELLOW:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_RED_AND_PINK:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 166, 210, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
-    case BLADE_QUAD_PALE_BLUE_AND_BLUE:
-      this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      break;
+      if (slot.flag1[2] == BLADE_QUAD_CYAN_AND_RED) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_WHITE_AND_YELLOW) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 250, 250, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_RED_AND_PINK) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 166, 210, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else if (slot.flag1[2] == BLADE_QUAD_PALE_BLUE_AND_BLUE) {
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      }
     }
   }
 }
