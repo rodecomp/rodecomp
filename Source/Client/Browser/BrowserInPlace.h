@@ -36,7 +36,8 @@ private:
 
 class BrowserInPlaceSite final : public IOleInPlaceSite {
 public:
-  // INLINED
+  // OFFSET: 0x00AB1280
+  // FUNCTION: fn_47484
   explicit BrowserInPlaceSite(BrowserClientSite* site) : unknown_0004(0), m_frame(new BrowserInPlaceFrame(site)), m_site(site) {
   }
   // INLINED
