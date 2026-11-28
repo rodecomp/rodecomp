@@ -551,16 +551,14 @@ void CGameActor::UpdateGaugePositions() {
       if (x < -3) {
         x = -3;
       }
-      const int maximumX = g_renderer->viewport.width - this->actorWindows[0]->geometry.width + 3;
-      if (x > maximumX) {
-        x = maximumX;
+      if (x > g_renderer->viewport.width - this->actorWindows[0]->geometry.width + 3) {
+        x = g_renderer->viewport.width - this->actorWindows[0]->geometry.width + 3;
       }
       if (y < -3) {
         y = -3;
       }
-      const int maximumY = g_renderer->viewport.height - this->actorWindows[0]->geometry.height + 3;
-      if (y > maximumY) {
-        y = maximumY;
+      if (y > g_renderer->viewport.height - this->actorWindows[0]->geometry.height + 3) {
+        y = g_renderer->viewport.height - this->actorWindows[0]->geometry.height + 3;
       }
       this->actorWindows[0]->Move(x, y);
     } else {
