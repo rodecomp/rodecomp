@@ -122,8 +122,8 @@ void CSteal::OnProcess() {
     const float scale = particle->scale;
     float* params = &particle->animationParameter;
     const float scaleStep = params[5];
-    const vector3d origin = this->positionVector;
     const int index = particle->columnIndex;
+    const vector3d origin = this->positionVector;
     float x = particle->velocity.x;
     float y = particle->velocity.y;
     float z = particle->velocity.z;
