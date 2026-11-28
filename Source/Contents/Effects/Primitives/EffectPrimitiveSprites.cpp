@@ -63,9 +63,10 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
     vec4.z = rx * g_sinTable[315];
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    const float baseX = slot.vecBPre.x;
-    const float baseY = slot.vecBPre.y;
-    const float baseZ = slot.vecBPre.z;
+    auto& vecBPre = slot.vecBPre;
+    const float baseX = vecBPre.x;
+    const float baseY = vecBPre.y;
+    const float baseZ = vecBPre.z;
     vec1 = vector3d{baseX + vec1.x, baseY + vec1.y, baseZ + vec1.z};
     vec2 = vector3d{baseX + vec2.x, baseY + vec2.y, baseZ + vec2.z};
     vec3 = vector3d{baseX + vec3.x, baseY + vec3.y, baseZ + vec3.z};
