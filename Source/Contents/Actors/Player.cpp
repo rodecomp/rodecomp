@@ -4587,11 +4587,12 @@ void CPc::SetState(int state, int resetPosition) {
     if (usesArrow == true) {
       if (this->IsArrowEffectSuppressed() == true) {
         this->SetArrowEffectSuppressed(false);
+        this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
       } else {
         CGameMode* mode = g_modeMgr.GetGameMode();
         mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->render.speed * this->attackMotion, 0);
+        this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
       }
-      this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
 
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->alternateDoramAppearance[0] == 1) {
