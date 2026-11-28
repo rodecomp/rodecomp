@@ -5,6 +5,7 @@
 
 #include <windows.h>
 #include <utility>
+#include <string_view>
 
 namespace {
   // INLINED
@@ -117,8 +118,9 @@ std::string UIWindow::ExpandTextEscapes(const std::string& text) {
 // OFFSET: 0x00A7EDC0
 // FUNCTION: fn_16961
 std::string UIWindow::RemoveTextColors(const char* text) {
-  const char* end = text + std::char_traits<char>::length(text);
-  const char* current = text;
+  const std::string_view view(text);
+  const char* end = view.data() + view.size();
+  const char* current = view.data();
   std::string result;
 
   while (current < end) {
