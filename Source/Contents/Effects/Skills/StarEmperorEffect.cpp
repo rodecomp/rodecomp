@@ -244,7 +244,11 @@ __forceinline void CStarEmperorEffect::UpdateSphereParticle(CParticle* particle)
     int step = frame + 1;
     if (this->id == EF_STAR_EMPEROR) {
       const int half = this->effectLifetime / 2;
-      step = half > frame ? half - frame : frame - half;
+      if (half > frame) {
+        step = half - frame;
+      } else {
+        step = frame - half;
+      }
     }
 
     const float acceleration = -(1.15f / static_cast<float>(this->effectLifetime));
