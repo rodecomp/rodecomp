@@ -9438,23 +9438,24 @@ int CGameMode::ProcessGroundClick(int result) {
   }
 
   if (g_session.m_showEffects != 0) {
+    g_groundOverlaySkip = 0;
     g_groundOverlayA = column;
     g_groundOverlayB = row;
-    int skip = 0;
-    g_groundOverlaySkip = skip;
     int color;
     const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
     if (!cell || cell->type == TERRAIN_CELL_BLOCKED) {
       color = 0xFEFF0000;
-      skip = 1;
+      g_groundOverlaySkip = 1;
     } else if (cell->type == TERRAIN_CELL_CLIFF) {
       color = 0xFEFFFF00;
-      skip = 1;
+      g_groundOverlaySkip = 1;
     } else {
       color = 0x6600FFAA;
     }
     g_groundOverlayC = color;
-    g_groundOverlaySkip = shopSuspended == true ? 1 : skip;
+    if (shopSuspended) {
+      g_groundOverlaySkip = 1;
+    }
   }
 
   std::uint32_t& clickTick = this->leftBtnClickTick;
