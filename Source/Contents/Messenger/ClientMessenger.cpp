@@ -511,11 +511,20 @@ __declspec(noinline) EquipmentProperties::CEquipmentExpansion::CEquipmentExpansi
   this->m_pretend = true;
 }
 
-// OFFSET: 0x0068B1F0
 // OFFSET: 0x0068B6C0
 // FUNCTION: fn_05612
 EquipmentProperties::CEquipment::~CEquipment() {
   this->m_properties.Clear();
+}
+
+struct CEquipmentDestroy47495 {
+  void Destroy();
+};
+
+// OFFSET: 0x0068B1F0
+// FUNCTION: fn_47495
+void CEquipmentDestroy47495::Destroy() {
+  reinterpret_cast<EquipmentProperties::CEquipment*>(this)->CEquipment::~CEquipment();
 }
 
 // OFFSET: 0x0068CE10
