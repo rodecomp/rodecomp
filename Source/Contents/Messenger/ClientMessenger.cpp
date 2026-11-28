@@ -2312,10 +2312,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
         break;
       }
     }
+    lua_settop(state, -2);
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
+    lua_settop(state, -2);
   }
-  lua_settop(state, -2);
   if (!this->loadValid) {
     ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
