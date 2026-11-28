@@ -293,12 +293,12 @@ void CHealEffect::UpdateParticleVertices(CParticle* particle) {
 
   particle->vertices[0].x = corner3.x;
   particle->vertices[0].y = corner3.y;
-  particle->vertices[0].z = corner3.z;
   particle->vertices[1].x = corner0.x;
+  particle->vertices[0].z = corner3.z;
   particle->vertices[1].y = corner0.y;
   particle->vertices[1].z = corner0.z;
-  particle->vertices[2].x = corner2.x;
   particle->vertices[2].y = corner2.y;
+  particle->vertices[2].x = corner2.x;
   particle->vertices[2].z = corner2.z;
   particle->vertices[3].x = corner1.x;
   particle->vertices[3].y = corner1.y;
