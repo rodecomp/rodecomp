@@ -244,6 +244,8 @@ png_free(png_const_structrp png_ptr, png_voidp ptr)
       png_free_default(png_ptr, ptr);
 }
 
+// OFFSET: 0x00E7E140
+// FUNCTION: fn_47523
 PNG_FUNCTION(void,PNGAPI
 png_free_default,(png_const_structrp png_ptr, png_voidp ptr),PNG_DEPRECATED)
 {
