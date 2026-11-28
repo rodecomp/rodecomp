@@ -717,8 +717,8 @@ void CEffectPrim::RenderFanWedge(matrix& wtm) {
     left.z = dist * g_sinTable[leftAngle];
     const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
     const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
-    left.x = leftSpread * rotCos;
     left.y = leftSpread * rotSin + base;
+    left.x = leftSpread * rotCos;
     const float rightSpread = dist * g_cosTable[rightAngle];
     right.z = dist * g_sinTable[rightAngle];
     right.x = rightSpread * rotCos;
