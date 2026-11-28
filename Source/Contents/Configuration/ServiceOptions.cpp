@@ -400,6 +400,8 @@ __declspec(noinline) CGameSettingsMgr::CGameSettingsMgr() {
 void Noop() {
 }
 
+// OFFSET: 0x006C0950
+// FUNCTION: fn_47488
 // OFFSET: 0x006C0B80
 // FUNCTION: fn_06311
 CGameSettingsMgr::~CGameSettingsMgr() {
