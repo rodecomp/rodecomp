@@ -282,8 +282,8 @@ bool CRendererDX7::SaveLogo(std::string filename) {
 
   for (DWORD y = 0; y < locked.dwHeight; ++y) {
     const unsigned char* source = static_cast<const unsigned char*>(locked.lpSurface) + y * locked.lPitch;
-    unsigned char* destination = pixels + rowBytes * y;
     int remaining = size - rowBytes * y;
+    unsigned char* destination = pixels + rowBytes * y;
 
     for (DWORD x = 0; x < locked.dwWidth && remaining > 0; ++x, destination += 3, remaining -= 3) {
       if (x >= locked.dwWidth - image.width && y >= locked.dwHeight - image.height) {
