@@ -1811,28 +1811,28 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   display = g_navigationLinkParser->DisplayNavigationLink(display);
   display = DisplayQuestTextTag(display);
 
-  if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
+  if (height >= this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold)) {
     return display;
+  } else {
+    const char* begin = display.c_str();
+    std::size_t length = display.size();
+    std::string fitted(display);
+    int extent;
+
+    do {
+      fitted.resize(length);
+      fitted += ".";
+
+      if (CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length) <= 1) {
+        break;
+      }
+
+      extent = this->VerticalTextHeight(fitted.c_str(), fitted.size(), family, fontHeight, bold);
+      length = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, begin + length, 0) - begin;
+    } while (height < extent);
+
+    return fitted;
   }
-
-  const char* begin = display.c_str();
-  std::size_t length = display.size();
-  std::string fitted(display);
-  int extent;
-
-  do {
-    fitted.resize(length);
-    fitted += ".";
-
-    if (CountCharacters(static_cast<WORD>(g_textCodePage), begin, begin + length) <= 1) {
-      break;
-    }
-
-    extent = this->VerticalTextHeight(fitted.c_str(), fitted.size(), family, fontHeight, bold);
-    length = CharPrevExA(static_cast<WORD>(g_textCodePage), begin, begin + length, 0) - begin;
-  } while (height < extent);
-
-  return fitted;
 }
 
 // OFFSET: 0x00A81E10
