@@ -43,6 +43,8 @@ typedef png_libpng_version_1_6_36 Your_png_h_is_not_version_1_6_36;
  */
 
 #ifdef PNG_READ_SUPPORTED
+// OFFSET: 0x00E70540
+// FUNCTION: fn_47569
 void PNGAPI
 png_set_sig_bytes(png_structrp png_ptr, int num_bytes)
 {
@@ -448,6 +450,8 @@ png_info_init_3,(png_infopp ptr_ptr, size_t png_info_struct_size),
 }
 
 /* The following API is not called internally */
+// OFFSET: 0x00E6F0D0
+// FUNCTION: fn_47566
 void PNGAPI
 png_data_freer(png_const_structrp png_ptr, png_inforp info_ptr,
     int freer, png_uint_32 mask)
@@ -787,6 +791,8 @@ png_convert_to_rfc1123_buffer(char out[29], png_const_timep ptime)
  * Deprecated because it causes png_struct to carry a spurious temporary
  * buffer (png_struct::time_buffer), better to have the caller pass this in.
  */
+// OFFSET: 0x00E6ED20
+// FUNCTION: fn_47565
 png_const_charp PNGAPI
 png_convert_to_rfc1123(png_structrp png_ptr, png_const_timep ptime)
 {
@@ -970,6 +976,8 @@ png_chunk_unknown_handling(png_const_structrp png_ptr, png_uint_32 chunk_name)
 
 #ifdef PNG_READ_SUPPORTED
 /* This function, added to libpng-1.0.6g, is untested. */
+// OFFSET: 0x00E704B0
+// FUNCTION: fn_47567
 int PNGAPI
 png_reset_zstream(png_structrp png_ptr)
 {
@@ -2892,12 +2900,10 @@ png_pow10(int power)
  * precision.
  */
 #if GCC_STRICT_OVERFLOW
-#pragma GCC diagnostic push
 /* The problem arises below with exp_b10, which can never overflow because it
  * comes, originally, from frexp and is therefore limited to a range which is
  * typically +/-710 (log2(DBL_MAX)/log2(DBL_MIN)).
  */
-#pragma GCC diagnostic warning "-Wstrict-overflow=2"
 #endif /* GCC_STRICT_OVERFLOW */
 void /* PRIVATE */
 png_ascii_from_fp(png_const_structrp png_ptr, png_charp ascii, size_t size,
@@ -3221,7 +3227,6 @@ png_ascii_from_fp(png_const_structrp png_ptr, png_charp ascii, size_t size,
    png_error(png_ptr, "ASCII conversion buffer too small");
 }
 #if GCC_STRICT_OVERFLOW
-#pragma GCC diagnostic pop
 #endif /* GCC_STRICT_OVERFLOW */
 
 #  endif /* FLOATING_POINT */
@@ -3342,8 +3347,6 @@ png_fixed(png_const_structrp png_ptr, double fp, png_const_charp text)
  * reveal any tests which have the form GCC complains about, so presumably the
  * optimizer is moving an add or subtract into the 'if' somewhere.
  */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic warning "-Wstrict-overflow=2"
 #endif /* GCC_STRICT_OVERFLOW */
 int
 png_muldiv(png_fixed_point_p res, png_fixed_point a, png_int_32 times,
@@ -3460,7 +3463,6 @@ png_muldiv(png_fixed_point_p res, png_fixed_point a, png_int_32 times,
    return 0;
 }
 #if GCC_STRICT_OVERFLOW
-#pragma GCC diagnostic pop
 #endif /* GCC_STRICT_OVERFLOW */
 #endif /* READ_GAMMA || INCH_CONVERSIONS */
 
@@ -4328,6 +4330,8 @@ png_build_gamma_table(png_structrp png_ptr, int bit_depth)
 
 /* HARDWARE OR SOFTWARE OPTION SUPPORT */
 #ifdef PNG_SET_OPTION_SUPPORTED
+// OFFSET: 0x00E704E0
+// FUNCTION: fn_47568
 int PNGAPI
 png_set_option(png_structrp png_ptr, int option, int onoff)
 {
