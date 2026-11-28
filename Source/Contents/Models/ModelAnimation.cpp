@@ -291,8 +291,8 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     float dot = ((bx * ax + by * ay) + bz * az) + bw * aw;
 
     if (dot < 0.0f) {
-      ax = -ax;
       ay = -ay;
+      ax = -ax;
       az = -az;
       aw = -aw;
       dot = -dot;
@@ -316,9 +316,9 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
       }
     } else {
       bx = -ay;
-      by = ax;
       bz = -aw;
       bw = az;
+      by = ax;
       firstWeight = ClientSin((g_depthAverageHalf - amount) * g_piApprox);
       secondWeight = ClientSin(amount * g_piApprox);
     }
