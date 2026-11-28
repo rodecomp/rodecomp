@@ -380,12 +380,12 @@ void UIRoMapWnd::DrawDungeonLinks() {
       x = field->left;
     } else {
       const WorldViewRecord* selected = this->selectedRecord;
+      height = map->bottom - map->top;
+      x = map->left;
       isSelected = selected != nullptr && map->left == selected->left && map->right == selected->right && map->top == selected->top &&
                    map->bottom == selected->bottom;
-      x = map->left;
       y = map->top;
       width = map->right - map->left;
-      height = map->bottom - map->top;
     }
 
     if (isSelected) {
