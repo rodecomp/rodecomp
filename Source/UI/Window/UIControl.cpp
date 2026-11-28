@@ -60,9 +60,9 @@ const char* g_uiInfoPath = "savedata\\UIInfo.lua";
 const char* g_uiInfoScriptPath = "Lua Files\\OptionInfo\\UIInfo_F";
 
 // INLINED
-template <class Signature>
-static __forceinline void AssignHandler(std::function<Signature>& target, std::function<Signature> source) {
-  std::function<Signature>(source).swap(target);
+static __forceinline void SetOnDrag(CUIThumb* thumb, std::function<void(int)> handler) {
+  std::function<void(int)>& target = thumb->onDrag;
+  std::function<void(int)>(handler).swap(target);
 }
 
 class CUIListBoxItemSelector {
@@ -3658,8 +3658,7 @@ void CUIHScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIHThumb();
     this->thumb->Show(WINDOW_HIDDEN);
-    auto& onDrag = this->thumb->onDrag;
-    AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
+    SetOnDrag(this->thumb, [this](int value) { this->ScrollBy(value); });
     this->AddChild(this->thumb);
   }
 }
@@ -3682,8 +3681,7 @@ void CUIVScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(WINDOW_HIDDEN);
-    auto& onDrag = this->thumb->onDrag;
-    AssignHandler(onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
+    SetOnDrag(this->thumb, [this](int value) { this->ScrollBy(value); });
     this->AddChild(this->thumb);
   }
 }
