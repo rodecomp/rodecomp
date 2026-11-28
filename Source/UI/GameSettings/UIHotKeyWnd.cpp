@@ -415,8 +415,8 @@ void UIHotKeyWnd::Paint() {
       const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
       const int textX = (keyColumnWidth - textWidth) / 2;
       const int column = visibleRow / this->m_rowsPerPage;
-      const int rowY = this->m_rowHeight * (visibleRow % this->m_rowsPerPage) + this->m_verticalMargin + this->m_tabHeight + this->m_titleHeight;
       const int halfWidth = this->geometry.width / 2;
+      const int rowY = this->m_rowHeight * (visibleRow % this->m_rowsPerPage) + this->m_verticalMargin + this->m_tabHeight + this->m_titleHeight;
 
       const int backgroundX = column ? this->geometry.width - keyColumnWidth - this->m_horizontalMargin
                                      : halfWidth - keyColumnWidth;
@@ -599,8 +599,8 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
         info.text = "";
         this->SetHotkey(this->m_tab, entry.index, info);
       } else {
-        info.key1 = g_windowMgr.keyCode;
         info.key2 = g_windowMgr.modifierKey;
+        info.key1 = g_windowMgr.keyCode;
         const char* text = nullptr;
         if (g_session.m_hotkeyScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
           info.text = text;
