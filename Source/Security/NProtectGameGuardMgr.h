@@ -24,7 +24,8 @@ public:
     /* 0008 */ std::vector<unsigned char> bytes;
   };
 
-  // INLINED
+  // OFFSET: 0x0076C240
+  // FUNCTION: fn_47506
   CNProtectGameGuardMgr() : unknown_0008(0), m_gameLib(nullptr), m_hasError(false) {
     this->m_initialized = false;
     InitializeCriticalSection(&this->m_lock);
