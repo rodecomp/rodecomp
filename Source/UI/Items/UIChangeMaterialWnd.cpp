@@ -57,7 +57,8 @@ struct ChangeMaterialPacketItem {
 static_assert(sizeof(ChangeMaterialPacket) == 0xC);
 static_assert(sizeof(ChangeMaterialPacketItem) == 4);
 
-// INLINED
+// OFFSET: 0x005E12A0
+// FUNCTION: fn_47507
 inline const MaterialListEntry* UIChangeMaterialWnd_List::GetEntry(unsigned int index) const {
   if (index >= this->m_items.size()) {
     return nullptr;
