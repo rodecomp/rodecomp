@@ -1911,10 +1911,10 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
         remaining = this->taggedText.substr(0, absolute);
       }
       int end = absolute;
-      if (after.find(">") == std::string::npos) {
-        end += bytes;
-      } else {
+      if (after.find(">") != std::string::npos) {
         end += bytes + 1;
+      } else {
+        end += bytes;
       }
       remaining += this->taggedText.substr(end);
       g_serverLanguage->ReplaceInput(remaining.c_str());
