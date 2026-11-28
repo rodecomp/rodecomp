@@ -819,16 +819,16 @@ void CVolcanoEffect::OnProcess() {
       const float sine = g_sinTable[angle];
       const float spread = radius * g_cosTable[tilt];
       const float height = radius * g_sinTable[tilt];
-      const float spreadX = spread * cosine;
       const float spreadZ = spread * sine;
+      const float spreadX = spread * cosine;
 
       EffectPoint corners[2];
       corners[0].x = scale * cosine;
       corners[0].y = 0.0f;
       corners[0].z = scale * sine;
       corners[1].x = corners[0].x + spreadX;
-      corners[1].y = 0.0f - height;
       corners[1].z = corners[0].z + spreadZ;
+      corners[1].y = 0.0f - height;
 
       particle->vertices[3].x = corners[0].x;
       particle->vertices[3].y = corners[0].y;
