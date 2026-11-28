@@ -5267,10 +5267,11 @@ int CLuaInstance::GetFieldUIntMap(std::map<unsigned int, unsigned int>& values, 
       values[key] = value;
       lua_settop(this->m_state, -2);
     }
+    lua_settop(this->m_state, -2);
   } else {
     result = (type != LUA_TNIL) + 1;
+    lua_settop(this->m_state, -2);
   }
-  lua_settop(this->m_state, -2);
   return result;
 }
 
