@@ -3920,8 +3920,8 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       int y = 44;
       this->ToScreen(x, y);
       menu->Move(x, y);
-      break;
     }
+    break;
     case ID_MESSAGEBOX_RESULT: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->feedConfirmationWnd && b == ID_YES) {
