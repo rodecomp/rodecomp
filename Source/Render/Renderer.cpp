@@ -189,8 +189,8 @@ void CRenderer::DrawOverlays() {
   }
 
   for (int y = this->viewport.height - 1; y >= 0; --y) {
-    char* row = static_cast<char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
     const unsigned char period = s_screenShakeStep > 10 ? 20 - s_screenShakeStep : s_screenShakeStep;
+    char* row = static_cast<char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
     if (y == this->viewport.height - 1) {
       std::memcpy(line, row, this->backBuffer.pitch);
     }
