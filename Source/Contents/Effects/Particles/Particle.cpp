@@ -601,8 +601,8 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
     }
     x += screenX;
     y += screenY;
-    vertices[i].x = x;
     vertices[i].y = y;
+    vertices[i].x = x;
   }
 
   if (this->m_angle > 0.0f || this->m_pitch > 0.0f || this->m_yaw > 0.0f) {
