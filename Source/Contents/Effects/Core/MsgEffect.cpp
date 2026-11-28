@@ -1788,10 +1788,10 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       }
 
       this->render.spriteOffsetX = static_cast<int>(d);
-      this->m_digit = static_cast<int>(d);
+      this->render.depthLayer = static_cast<std::uint32_t>(-2);
       this->render.scale = 5.0f;
       this->m_scale = 5.0f;
-      this->render.depthLayer = static_cast<std::uint32_t>(-2);
+      this->m_digit = static_cast<int>(d);
       this->render.motionStartTime = timeGetTime();
       return;
     }
@@ -1824,9 +1824,9 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           break;
 
         case MET_GUARD:
+          this->render.curMotion = 0;
           this->render.position = *position;
           this->render.position.y -= 2.0f;
-          this->render.curMotion = 0;
           this->render.scale = 1.0f;
           this->m_scale = 1.0f;
           this->render.depthLayer = static_cast<std::uint32_t>(-5);
@@ -1837,20 +1837,20 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->render.position = *position;
           this->m_baseX = this->render.position.x;
           this->render.position.y -= 12.0f;
+          this->m_baseY = this->render.position.y;
           this->render.curMotion = 0;
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->render.scale = 5.0f;
           this->m_scale = 5.0f;
-          this->m_baseY = this->render.position.y;
-          this->render.depthLayer = static_cast<std::uint32_t>(-5);
           break;
 
         case MET_CRITICAL_EFFECT:
         case MET_BLUE_EFFECT:
           this->render.position = *position;
+          this->m_scale = 3.0f;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 1;
           this->render.scale = 3.0f;
-          this->m_scale = 3.0f;
           this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->m_baseY = this->render.position.y;
           this->render.color = 0xFFAAAAAA;
@@ -1865,8 +1865,8 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         case MET_BIRDEFFECT:
           this->render.position = *position;
           this->render.position.y -= 12.0f;
-          this->render.curMotion = 0;
           this->render.depthLayer = static_cast<std::uint32_t>(-5);
+          this->render.curMotion = 0;
           this->m_baseY = this->render.position.y;
           break;
 
