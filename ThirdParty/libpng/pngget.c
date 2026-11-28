@@ -508,6 +508,8 @@ png_get_bKGD(png_const_structrp png_ptr, png_inforp info_ptr,
  * cHRM chunk in 1.5.4
  */
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E7ADF0
+// FUNCTION: fn_47583
 png_uint_32 PNGAPI
 png_get_cHRM(png_const_structrp png_ptr, png_const_inforp info_ptr,
     double *white_x, double *white_y, double *red_x, double *red_y,
@@ -554,6 +556,8 @@ png_get_cHRM(png_const_structrp png_ptr, png_const_inforp info_ptr,
    return (0);
 }
 
+// OFFSET: 0x00E7AEF0
+// FUNCTION: fn_47584
 png_uint_32 PNGAPI
 png_get_cHRM_XYZ(png_const_structrp png_ptr, png_const_inforp info_ptr,
     double *red_X, double *red_Y, double *red_Z, double *green_X,
@@ -600,6 +604,8 @@ png_get_cHRM_XYZ(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #  endif
 
 #  ifdef PNG_FIXED_POINT_SUPPORTED
+// OFFSET: 0x00E7B000
+// FUNCTION: fn_47585
 png_uint_32 PNGAPI
 png_get_cHRM_XYZ_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_fixed_point *int_red_X, png_fixed_point *int_red_Y,
