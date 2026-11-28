@@ -250,8 +250,8 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
     }
   }
 
-  int job = 0;
   int sex = 0;
+  int job = 0;
   int accessory0 = 0;
   int accessory1 = 0;
   int accessory2 = 0;
