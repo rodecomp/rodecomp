@@ -349,6 +349,12 @@ void CTableMng::Release() {
   this->Clear();
 }
 
+// OFFSET: 0x00CA4420
+// FUNCTION: fn_47502
+bool CTableMng::WriteEntryQueue() {
+  return this->WriteEntryQueueXls() != false;
+}
+
 // OFFSET: 0x00CA4430
 // FUNCTION: fn_20938
 bool CTableMng::WriteEntryQueueXls() {

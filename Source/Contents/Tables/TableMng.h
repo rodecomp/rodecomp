@@ -44,6 +44,7 @@ public:
   bool ReadEntryQueue();
   bool ReadEntryQueueFromXls();
   bool ReadEntryQueueXls(void* excel);
+  bool WriteEntryQueue();
   bool WriteEntryQueueXls();
 
   /* 0004 */ std::map<unsigned int, EntryQueueInfo*> m_entryQueue;
