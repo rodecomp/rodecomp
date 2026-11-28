@@ -34,7 +34,7 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
       const float edge = 12.0f - slot.height[9] * 24.0f;
       const float cs = g_cosTable[slot.riseAngle];
       const float sn = g_sinTable[slot.riseAngle];
-      const int angle = slot.riseAngle + (slot.riseAngle < 270 ? 90 : -270);
+      const int angle = slot.riseAngle + (slot.riseAngle >= 270 ? -270 : 90);
       vec[0].x = dist;
       vec[0].z = -12.0f;
       vec[1].x = dist;
@@ -57,7 +57,7 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
     const float edge = 12.0f - slot.height[9] * 24.0f;
     const float cs = g_cosTable[slot.riseAngle];
     const float sn = g_sinTable[slot.riseAngle];
-    const int angle = slot.riseAngle + (slot.riseAngle < 270 ? 90 : -270);
+    const int angle = slot.riseAngle + (slot.riseAngle >= 270 ? -270 : 90);
     vec[0].x = dist;
     vec[0].z = edge;
     vec[1].x = dist;
