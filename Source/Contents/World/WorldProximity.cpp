@@ -282,7 +282,7 @@ __declspec(noinline) void CWorld::AddPcPos(std::uint32_t aid, const CellFloatPos
 
   this->RemovePcPosForMove(aid, false);
   const float key = this->ActorCellKey(cell);
-  this->actorCells[key].emplace_back(aid);
+  this->actorCells[key].push_back(aid);
   this->PcApproachToPlayer(aid, cell);
 }
 
@@ -302,7 +302,7 @@ __forceinline void CWorld::AddPcPosUnindexed(std::uint32_t aid, const CellFloatP
   this->RemovePcPos(aid, false);
 
   this->RemovePcPosForMove(aid, false);
-  this->unindexedActorIds.emplace_back(aid);
+  this->unindexedActorIds.push_back(aid);
   this->PcApproachToPlayer(aid, cell);
 }
 
