@@ -412,8 +412,8 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       &flag
     );
 
-    const float spanX = static_cast<float>(mapWidth) / static_cast<float>(count + 1);
     const float spanZ = static_cast<float>(mapHeight) / static_cast<float>(count + 1);
+    const float spanX = static_cast<float>(mapWidth) / static_cast<float>(count + 1);
     for (int index = 0; index < count; ++index) {
       const int signX = ClampedRandom(2);
       const int offsetX = ClampedRandom(static_cast<int>(static_cast<float>(mapWidth) * 0.5f));
