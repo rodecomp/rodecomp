@@ -436,14 +436,13 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
   if (std::string(LookupMessage(MSI_BANK_MAX)) == text) {
-    const long long balance = g_session.m_bankBalance;
     const long long cash = g_session.m_zeny;
     long long excess = 0;
-    if (cash + balance > 0x7FFFFFFF) {
-      excess = cash + balance - 0x7FFFFFFF;
+    if (cash + g_session.m_bankBalance > 0x7FFFFFFF) {
+      excess = cash + g_session.m_bankBalance - 0x7FFFFFFF;
     }
     if (deposit) {
-      if (balance >= 0x7FFFFFFF) {
+      if (g_session.m_bankBalance >= 0x7FFFFFFF) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_7_MINI)), 255, 0, 0, 0);
         this->m_status = LookupMessage(MSI_BANK_3_MINI);
         return 0;
@@ -461,12 +460,12 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
       }
       return amount;
     }
-    if (0 == balance) {
+    if (0 == g_session.m_bankBalance) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_0_MONEY)), 255, 0, 0, 0);
       this->m_status = LookupMessage(MSI_BANK_0_MINI);
       return 0;
     }
-    const long long amount = balance - excess;
+    const long long amount = g_session.m_bankBalance - excess;
     return cash + amount > 0x7FFFFFFF ? static_cast<long long>(0x7FFFFFFF - g_session.m_zeny) : amount;
   }
   if (text.empty()) {
@@ -3341,6 +3340,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->SaveLogin();
       break;
     case ID_CLASSCOMBO: {
+      int x = 60;
       if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
@@ -3350,14 +3350,13 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       for (unsigned int index = 0; index < this->savedAccounts.size(); ++index) {
         list->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->savedAccounts[index].c_str()), 0, 0, 0);
       }
-      list->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       int height = count * 16;
+      list->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
       if (height > 48) {
         height = 48;
       }
       list->Resize(74, height);
       list->SendMsg(nullptr, UM_SET_CALLER_WID, 3, 0, 0, 0);
-      int x = 60;
       int y = 96;
       this->ToScreen(x, y);
       list->Move(x + 1, y);
