@@ -12,6 +12,8 @@ class UIComboBoxDefWnd;
 class UIListBox;
 
 struct SecondCostumeEntry {
+  // OFFSET: 0x00947290
+  // FUNCTION: fn_47508
   SecondCostumeEntry(const char* entryName, int entryValue) {
     this->name = entryName;
     this->value = entryValue;
