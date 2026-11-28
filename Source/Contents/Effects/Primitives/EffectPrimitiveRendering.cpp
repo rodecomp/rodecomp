@@ -1459,7 +1459,7 @@ void CEffectPrim::RenderPentaRing(matrix& wtm) {
         if (pass == 0) {
           radius = slot.maxHeight;
         } else if (pass == 1) {
-          if (slot.height[4] == 3.0f) {
+          if (slot.height[4] == g_masterReachDistance) {
             radius = slot.maxHeight + slot.maxHeight;
           } else {
             radius = slot.maxHeight + 0.25f;
