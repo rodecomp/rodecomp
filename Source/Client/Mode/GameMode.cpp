@@ -11229,7 +11229,11 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     timeText = this->GetActiveSkillEffectTimeText(id, &activeId);
   }
 
-  if (this->hoveredStatusIconId != id || !this->statusIconTooltip || id == 0x175 || id == EFST_CLIENT_ONLY_EQUIP_ARROW) {
+  if (this->hoveredStatusIconId == id && this->statusIconTooltip && id != 0x175 && id != EFST_CLIENT_ONLY_EQUIP_ARROW) {
+    if (this->statusIconTooltip->GetLine(0).size() != 0) {
+      this->statusIconTooltip->Show(WINDOW_VISIBLE);
+    }
+  } else {
     if (!this->statusIconTooltip) {
       this->statusIconTooltip = new UITransBalloonText();
       this->statusIconTooltip->SetSize(50, 50);
@@ -11316,10 +11320,6 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     }
 
     this->hoveredStatusIconId = id;
-  } else {
-    if (this->statusIconTooltip->GetLine(0).size() != 0) {
-      this->statusIconTooltip->Show(WINDOW_VISIBLE);
-    }
   }
 
   if (hasLimit != 0 && timeText.size() != 0 && limitLine != -1 && this->statusIconTooltip) {
