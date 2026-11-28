@@ -10,7 +10,7 @@
 class UIGage : public UIWindow {
 public:
   UIGage();
-  __declspec(noinline) ~UIGage() override;
+  ~UIGage() override;
   bool CanHitTest() override;
   __declspec(noinline) void SetColor(std::uint32_t color);
 
@@ -20,6 +20,7 @@ public:
 class UIPcGage : public UIGage {
 public:
   UIPcGage();
+  ~UIPcGage() override;
   void Paint() override;
   __declspec(noinline) void SetValues(int current, int maximum);
   void SetLimits(int first, int second);

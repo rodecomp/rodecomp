@@ -30,6 +30,10 @@ UIPcGage::UIPcGage() : current(0), maximum(0), secondaryValue(0), secondaryMaxim
   this->displayMode = 0;
 }
 
+// OFFSET: 0x008714F0
+// FUNCTION: fn_47520
+UIPcGage::~UIPcGage() = default;
+
 // OFFSET: 0x0086E3A0
 // FUNCTION: fn_11069
 UIRechargeGage::UIRechargeGage() : current(0), maximum(100) {
