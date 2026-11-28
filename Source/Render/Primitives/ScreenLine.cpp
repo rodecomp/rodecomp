@@ -215,10 +215,14 @@ void UIRoMapWnd::DrawKafraIcon(ScreenPoint point) {
   const int halfWidth = static_cast<int>(static_cast<float>(image->width) * scale * g_depthAverageHalf);
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
-  vertices[2].x = vertices[0].x = point.x - static_cast<float>(halfWidth);
-  vertices[1].y = vertices[0].y = point.y - static_cast<float>(height) - static_cast<float>(lift);
-  vertices[3].y = vertices[2].y = point.y - static_cast<float>(lift);
-  vertices[3].x = vertices[1].x = static_cast<float>(halfWidth) + point.x;
+  vertices[0].x = point.x - static_cast<float>(halfWidth);
+  vertices[0].y = point.y - static_cast<float>(height) - static_cast<float>(lift);
+  vertices[1].x = static_cast<float>(halfWidth) + point.x;
+  vertices[1].y = vertices[0].y;
+  vertices[2].x = vertices[0].x;
+  vertices[2].y = point.y - static_cast<float>(lift);
+  vertices[3].x = vertices[1].x;
+  vertices[3].y = vertices[2].y;
   vertices[0].z = vertices[1].z = vertices[2].z = vertices[3].z = 0.8f;
   vertices[0].rhw = vertices[1].rhw = vertices[2].rhw = vertices[3].rhw = 1.0f;
   vertices[0].diffuse = vertices[1].diffuse = vertices[2].diffuse = vertices[3].diffuse = 0xFFFFFFFF;
