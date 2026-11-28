@@ -3222,9 +3222,9 @@ void CPlayer::ReapplySkillEffects() {
   }
 
   for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end();) {
-    const int type = it->id;
-    const int value = it->value1;
     const int argument3 = it->value2;
+    volatile int type = it->id;
+    const int value = it->value1;
     const int argument4 = it->value3;
     ++it;
 
