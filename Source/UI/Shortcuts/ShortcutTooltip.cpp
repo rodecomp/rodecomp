@@ -72,13 +72,14 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
   window.ToScreen(tooltipX, tooltipY);
 
   std::string text = "";
-  if (this->m_slots[index]->itemId != ITEMID_NONE) {
-    if (this->m_slots[index]->enabled != 0) {
-      CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
-      if (!this->MatchesShortcut(skill, this->m_slots[index])) {
+  auto& slots = this->m_slots;
+  if (slots[index]->itemId != ITEMID_NONE) {
+    if (slots[index]->enabled != 0) {
+      CSkillInfo skill = g_session.LookupSkill(slots[index]->itemId);
+      if (!this->MatchesShortcut(skill, slots[index])) {
         text = shortcut;
       } else {
-        int level = this->m_slots[index]->value;
+        int level = slots[index]->value;
         if (IsIndexedSkill(static_cast<int>(skill.id)) && skill.level < level) {
           level = skill.level;
         }
@@ -92,7 +93,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
         }
       }
     } else {
-      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slots[index]->itemId), 1);
       if (item.quantity == 0) {
         text = shortcut;
       } else {
