@@ -208,6 +208,19 @@ void InitializeServiceStrings(char* protection) {
   }
 
   switch (g_serviceMode) {
+  case ServerPrimary:
+  default: {
+    if (std::strstr(g_launchServerName, OBFUSCATE_BYTES_TEXT("Dev", 0x3F5315DFE32B4FAFULL))) {
+      g_clientExeName = OBFUSCATE_BYTES_TEXT("RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
+      g_patcherExeName = OBFUSCATE_BYTES_TEXT("PatchupQM.exe", 0x7D750DADBDE9C3F1ULL);
+      g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagnarokQM.exe", 0xED5143E7C1B39315ULL);
+    } else {
+      g_clientExeName = OBFUSCATE_BYTES_TEXT("Ragnarok.exe", 0xFF7D83CB791339D9ULL);
+      g_patcherExeName = OBFUSCATE_BYTES_TEXT("Patchup.exe", 0x31956551B311FD95ULL);
+      g_runPatcherMessage = OBFUSCATE_TEXT("Please run Ragnarok.exe", 0x393D916561BDC391ULL);
+    }
+    break;
+  }
   case ServerSakray: {
     g_clientExeName = OBFUSCATE_BYTES_TEXT("sakray.exe", 0x955D4DF94DE9BB07ULL);
     g_patcherExeName = OBFUSCATE_BYTES_TEXT("Sakup.exe", 0x8741152D8FB34B4FULL);
@@ -224,19 +237,6 @@ void InitializeServiceStrings(char* protection) {
     g_clientExeName = OBFUSCATE_BYTES_TEXT("RagGuild.exe", 0x7FCD77F9C7CBD14DULL);
     g_patcherExeName = OBFUSCATE_BYTES_TEXT("Guildup.exe", 0xCB3FBD4183DB8323ULL);
     g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagGuild.exe", 0x3B915119EFD523EFULL);
-    break;
-  }
-  case ServerPrimary:
-  default: {
-    if (std::strstr(g_launchServerName, OBFUSCATE_BYTES_TEXT("Dev", 0x3F5315DFE32B4FAFULL))) {
-      g_clientExeName = OBFUSCATE_BYTES_TEXT("RagnarokQM.exe", 0x33832D4D3FDFBDBFULL);
-      g_patcherExeName = OBFUSCATE_BYTES_TEXT("PatchupQM.exe", 0x7D750DADBDE9C3F1ULL);
-      g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagnarokQM.exe", 0xED5143E7C1B39315ULL);
-    } else {
-      g_clientExeName = OBFUSCATE_BYTES_TEXT("Ragnarok.exe", 0xFF7D83CB791339D9ULL);
-      g_patcherExeName = OBFUSCATE_BYTES_TEXT("Patchup.exe", 0x31956551B311FD95ULL);
-      g_runPatcherMessage = OBFUSCATE_TEXT("Please run Ragnarok.exe", 0x393D916561BDC391ULL);
-    }
     break;
   }
   }
