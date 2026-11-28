@@ -796,6 +796,10 @@ void CUIEnchantPage::SetSlot(int value) {
   this->selectedSlot = value;
 }
 
+// OFFSET: 0x009F8670
+// FUNCTION: fn_47524
+CUIUpgradeEnchantPage::~CUIUpgradeEnchantPage() = default;
+
 // OFFSET: 0x00A05190
 // FUNCTION: fn_14970
 void CUIUpgradeEnchantPage::OnSelectSlot(int value) {

@@ -189,6 +189,7 @@ public:
 class CUIUpgradeEnchantPage : public CUIEnchantPage {
 public:
   using CUIEnchantPage::CUIEnchantPage;
+  ~CUIUpgradeEnchantPage() override;
 
   void OnSelectSlot(int value) override;
   void SetSlot(int value) override;
