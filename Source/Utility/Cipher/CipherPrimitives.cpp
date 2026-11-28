@@ -895,18 +895,30 @@ int KeyedBoxFeistel(const unsigned char* input, unsigned char* output, int lengt
 // OFFSET: 0x00B134A0
 // FUNCTION: fn_18415
 int SealGenerate(const SealContext* key, unsigned int in, unsigned int* out) {
-  unsigned int a = in ^ key->r[12];
-  unsigned int b = SEAL_ROT8(in) ^ key->r[13];
-  unsigned int c = SEAL_ROT16(in) ^ key->r[14];
-  unsigned int d = SEAL_ROT24(in) ^ key->r[15];
+  int i;
+  int j;
+  int l;
+  unsigned int a;
+  unsigned int b;
+  unsigned int c;
+  unsigned int d;
   unsigned int n1;
   unsigned int n2;
   unsigned int n3;
   unsigned int n4;
+  unsigned int* wp;
   unsigned short p;
   unsigned short q;
 
-  for (int j = 0; j < 2; ++j) {
+  wp = out;
+  for (l = 0; l < 4; l++) {
+    a = in ^ key->r[4 * l];
+    b = SEAL_ROT8(in) ^ key->r[4 * l + 1];
+    c = SEAL_ROT16(in) ^ key->r[4 * l + 2];
+    d = SEAL_ROT24(in) ^ key->r[4 * l + 3];
+  }
+
+  for (j = 0; j < 2; j++) {
     p = a & 0x7FC;
     b += key->t[p / 4];
     a = SEAL_ROT9(a);
@@ -938,7 +950,7 @@ int SealGenerate(const SealContext* key, unsigned int in, unsigned int* out) {
     a += key->t[p / 4];
     d = SEAL_ROT9(d);
 
-    for (int i = 0; i < 64; ++i) {
+    for (i = 0; i < 64; i++) {
       p = a & 0x7FC;
       b += key->t[p / 4];
       a = SEAL_ROT9(a);
@@ -968,10 +980,10 @@ int SealGenerate(const SealContext* key, unsigned int in, unsigned int* out) {
       a += key->t[q / 4];
       d = SEAL_ROT9(d);
 
-      *out++ = b + key->s[4 * i];
-      *out++ = c ^ key->s[4 * i + 1];
-      *out++ = d + key->s[4 * i + 2];
-      *out++ = a ^ key->s[4 * i + 3];
+      *wp++ = b + key->s[4 * i];
+      *wp++ = c ^ key->s[4 * i + 1];
+      *wp++ = d + key->s[4 * i + 2];
+      *wp++ = a ^ key->s[4 * i + 3];
 
       if (i & 1) {
         a += n3;
