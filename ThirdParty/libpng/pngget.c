@@ -280,6 +280,8 @@ png_get_y_offset_microns(png_const_structrp png_ptr, png_const_inforp info_ptr)
    return (0);
 }
 
+// OFFSET: 0x00E7BC90
+// FUNCTION: fn_47615
 png_int_32 PNGAPI
 png_get_x_offset_pixels(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -300,6 +302,8 @@ png_get_x_offset_pixels(png_const_structrp png_ptr, png_const_inforp info_ptr)
    return (0);
 }
 
+// OFFSET: 0x00E7BDA0
+// FUNCTION: fn_47616
 png_int_32 PNGAPI
 png_get_y_offset_pixels(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -387,6 +391,8 @@ png_fixed_inches_from_microns(png_const_structrp png_ptr, png_int_32 microns)
    return png_muldiv_warn(png_ptr, microns, 500, 127);
 }
 
+// OFFSET: 0x00E7BC40
+// FUNCTION: fn_47614
 png_fixed_point PNGAPI
 png_get_x_offset_inches_fixed(png_const_structrp png_ptr,
     png_const_inforp info_ptr)
@@ -407,6 +413,8 @@ png_get_y_offset_inches_fixed(png_const_structrp png_ptr,
 #endif
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E7BC00
+// FUNCTION: fn_47613
 float PNGAPI
 png_get_x_offset_inches(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -1089,6 +1097,8 @@ png_get_sBIT(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 #ifdef PNG_TEXT_SUPPORTED
+// OFFSET: 0x00E7BB00
+// FUNCTION: fn_47611
 int PNGAPI
 png_get_text(png_const_structrp png_ptr, png_inforp info_ptr,
     png_textp *text_ptr, int *num_text)
@@ -1115,6 +1125,8 @@ png_get_text(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 #ifdef PNG_tIME_SUPPORTED
+// OFFSET: 0x00E7BA30
+// FUNCTION: fn_47609
 png_uint_32 PNGAPI
 png_get_tIME(png_const_structrp png_ptr, png_inforp info_ptr,
     png_timep *mod_time)
@@ -1133,6 +1145,8 @@ png_get_tIME(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 #ifdef PNG_tRNS_SUPPORTED
+// OFFSET: 0x00E7BA70
+// FUNCTION: fn_47610
 png_uint_32 PNGAPI
 png_get_tRNS(png_const_structrp png_ptr, png_inforp info_ptr,
     png_bytep *trans_alpha, int *num_trans, png_color_16p *trans_color)
@@ -1179,6 +1193,8 @@ png_get_tRNS(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif
 
 #ifdef PNG_STORE_UNKNOWN_CHUNKS_SUPPORTED
+// OFFSET: 0x00E7BB50
+// FUNCTION: fn_47612
 int PNGAPI
 png_get_unknown_chunks(png_const_structrp png_ptr, png_inforp info_ptr,
     png_unknown_chunkpp unknowns)
