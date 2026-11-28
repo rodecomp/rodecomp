@@ -8645,7 +8645,7 @@ void CRagEffect::TetraVortexPillar(char kind) {
 }
 
 // INLINED
-template <int Turn> static __forceinline void LaunchFireballVolley(CRagEffect& effect, int shade, int fade) {
+static __forceinline void LaunchFireballVolley(CRagEffect& effect, int turn, int shade, int fade) {
   g_modeMgr.GetGameMode();
   effect.state.lastPrim = effect.LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = RSF_ALPHA | RSF_CUSTOM_BLEND;
@@ -8653,8 +8653,8 @@ template <int Turn> static __forceinline void LaunchFireballVolley(CRagEffect& e
   effect.state.lastPrim->state.pattern |= 0x120u;
   effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
   effect.state.lastPrim->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
-  if (Turn != 0) {
-    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + static_cast<float>(Turn);
+  if (turn != 0) {
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + static_cast<float>(turn);
     if (effect.state.lastPrim->render.angle < 0.0f) {
       effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
     }
@@ -8691,15 +8691,15 @@ void CRagEffect::BlueFireballVolley() {
   }
 
   if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
-    LaunchFireballVolley<0>(*this, 55, 5);
+    LaunchFireballVolley(*this, 0, 55, 5);
   }
 
   if (this->state.stateCnt == 6 || this->state.stateCnt == 7 || this->state.stateCnt == 8 || this->state.stateCnt == 9) {
-    LaunchFireballVolley<-5>(*this, 30, 11);
+    LaunchFireballVolley(*this, -5, 30, 11);
   }
 
   if (this->state.stateCnt == 12 || this->state.stateCnt == 13 || this->state.stateCnt == 14 || this->state.stateCnt == 15) {
-    LaunchFireballVolley<5>(*this, 5, 17);
+    LaunchFireballVolley(*this, 5, 5, 17);
   }
 }
 
@@ -8711,15 +8711,15 @@ void CRagEffect::PaleFireballVolley() {
   }
 
   if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
-    LaunchFireballVolley<0>(*this, 155, 5);
+    LaunchFireballVolley(*this, 0, 155, 5);
   }
 
   if (this->state.stateCnt == 6 || this->state.stateCnt == 7 || this->state.stateCnt == 8 || this->state.stateCnt == 9) {
-    LaunchFireballVolley<-5>(*this, 130, 11);
+    LaunchFireballVolley(*this, -5, 130, 11);
   }
 
   if (this->state.stateCnt == 12 || this->state.stateCnt == 13 || this->state.stateCnt == 14 || this->state.stateCnt == 15) {
-    LaunchFireballVolley<5>(*this, 105, 17);
+    LaunchFireballVolley(*this, 5, 105, 17);
   }
 }
 
@@ -13332,15 +13332,15 @@ void CRagEffect::StoneWall() {
 
 
 // INLINED
-template <int Turn> static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, int red, int green, int blue, int fade) {
+static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, int turn, int red, int green, int blue, int fade) {
   g_modeMgr.GetGameMode();
   effect.state.lastPrim = effect.LaunchEffectPrim(PP_3DPARTICLE, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
   effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
   effect.state.lastPrim->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
-  if (Turn != 0) {
-    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + static_cast<float>(Turn);
+  if (turn != 0) {
+    effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + static_cast<float>(turn);
     if (effect.state.lastPrim->render.angle < 0.0f) {
       effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + 360.0f;
     }
@@ -13364,8 +13364,8 @@ template <int Turn> static __forceinline void LaunchTintedFireballVolley(CRagEff
   effect.state.lastPrim->state.green = green;
   effect.state.lastPrim->state.blue = blue;
   effect.state.lastPrim->state.alpha = static_cast<float>((fade - effect.state.stateCnt) * 40);
-  effect.state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\fireball.spr");
-  effect.state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\fireball.act");
+  effect.state.lastPrim->SetSpriteName("이팩트\\fireball.spr");
+  effect.state.lastPrim->SetActionName("이팩트\\fireball.act");
   effect.state.lastPrim->InitSegment();
 }
 
@@ -13377,15 +13377,15 @@ void CRagEffect::ShadedFireballVolley() {
   }
 
   if (this->state.stateCnt == 0 || this->state.stateCnt == 1 || this->state.stateCnt == 2 || this->state.stateCnt == 3) {
-    LaunchTintedFireballVolley<0>(*this, 155, 155, 255, 5);
+    LaunchTintedFireballVolley(*this, 0, 155, 155, 255, 5);
   }
 
   if (this->state.stateCnt == 6 || this->state.stateCnt == 7 || this->state.stateCnt == 8 || this->state.stateCnt == 9) {
-    LaunchTintedFireballVolley<-5>(*this, 155, 255, 155, 11);
+    LaunchTintedFireballVolley(*this, -5, 155, 255, 155, 11);
   }
 
   if (this->state.stateCnt == 12 || this->state.stateCnt == 13 || this->state.stateCnt == 14 || this->state.stateCnt == 15) {
-    LaunchTintedFireballVolley<5>(*this, 255, 155, 155, 17);
+    LaunchTintedFireballVolley(*this, 5, 255, 155, 155, 17);
   }
 }
 
