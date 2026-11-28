@@ -92,8 +92,8 @@ bool CRC32::UpdateFile(const WCHAR* filename, LONG offset, DWORD length, DWORD* 
 // OFFSET: 0x00403630
 // FUNCTION: fn_00146
 DWORD CRC32::Calculate(const char* text) {
-  DWORD checksum = 0xFFFFFFFF;
   const char* current = text;
+  DWORD checksum = 0xFFFFFFFF;
   while (*current++ != 0) {
   }
   Update(reinterpret_cast<const BYTE*>(text), static_cast<int>(current - (text + 1)), &checksum);
