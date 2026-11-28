@@ -1179,28 +1179,22 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     type = MET_SILENCE_EFFECT;
     break;
   case MAKETYPE_ANGELUS_EFFECT: {
-    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-
-    names.sprite = std::move(formatted);
-    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
+    names.sprite = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names.action = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 1;
     type = MET_ANGELUS_EFFECT;
     break;
   }
   case MAKETYPE_CRUSIS_EFFECT: {
-    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-
-    names.sprite = std::move(formatted);
-    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
+    names.sprite = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names.action = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 2;
     type = MET_CRUSIS_EFFECT;
     break;
   }
   case MAKETYPE_CRITICAL_EFFECT: {
-    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-
-    names.sprite = std::move(formatted);
-    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
+    names.sprite = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names.action = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 2;
     type = MET_CRITICAL_EFFECT;
     break;
@@ -1219,19 +1213,15 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     break;
   }
   case MAKETYPE_LUCKY_EFFECT: {
-    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-
-    names.sprite = std::move(formatted);
-    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
+    names.sprite = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names.action = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 3;
     type = MET_LUCKY_EFFECT;
     break;
   }
   case MAKETYPE_GUARD_EFFECT: {
-    std::string formatted = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
-
-    names.sprite = std::move(formatted);
-    names.action = static_cast<const std::string&>(FormatOwnedString("%s.act", g_session.GetDamageSpriteName()));
+    names.sprite = FormatOwnedString("%s.spr", g_session.GetDamageSpriteName());
+    names.action = FormatOwnedString("%s.act", g_session.GetDamageSpriteName());
     animation = 1;
     type = MET_GUARD;
     break;
