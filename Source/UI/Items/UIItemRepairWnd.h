@@ -33,7 +33,7 @@ protected:
 public:
   /* 00B4 */ UIListBox* m_list;
   /* 00B8 */ std::vector<int> itemIds;
-  /* 00C4 */ std::vector<int> indices;
+  /* 00C4 */ std::vector<unsigned int> indices;
   /* 00D0 */ std::list<UIItemRepairEntry> entries;
 };
 
