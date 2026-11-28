@@ -16,8 +16,6 @@
 
 // OFFSET: 0x00870770
 // FUNCTION: fn_47471
-// OFFSET: 0x00872C00
-// FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;
 
 // OFFSET: 0x0087B5A0
