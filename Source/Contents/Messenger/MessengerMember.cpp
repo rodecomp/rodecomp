@@ -976,8 +976,11 @@ void UIMessengerGroupWnd::Paint() {
 
   int shown = 0;
   int index = 0;
-  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+  auto it = this->members.begin();
+  while (it != this->members.end()) {
     if (index < this->scrollTop * this->columns) {
+      it++;
+      index++;
       continue;
     }
 
@@ -1118,9 +1121,13 @@ void UIMessengerGroupWnd::Paint() {
       }
     }
 
-    if (++shown == this->visibleRows * this->columns) {
-      break;
+    if (shown + 1 == this->visibleRows * this->columns) {
+      return;
     }
+
+    it++;
+    shown++;
+    index++;
   }
 }
 
@@ -1392,11 +1399,14 @@ void UIMessengerGroupWnd::UpdateGauges() {
 
   int shown = 0;
   int index = 0;
-  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+  auto it = this->members.begin();
+  while (it != this->members.end()) {
     if (index < this->scrollTop * this->columns) {
       if (this->gauges[index]->geometry.x != -100) {
         this->gauges[index]->Move(-100, -100);
       }
+      it++;
+      index++;
       continue;
     }
 
@@ -1419,9 +1429,13 @@ void UIMessengerGroupWnd::UpdateGauges() {
       }
     }
 
-    if (++shown > this->visibleRows * this->columns && this->gauges[index]->geometry.x != -100) {
+    if (shown + 1 > this->visibleRows * this->columns && this->gauges[index]->geometry.x != -100) {
       this->gauges[index]->Move(-100, -100);
     }
+
+    it++;
+    shown++;
+    index++;
   }
 }
 
