@@ -1966,8 +1966,8 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
   std::string remaining = source;
   std::string result = "";
   unsigned previous = 0;
-  unsigned position = 0;
   std::vector<UIItemTagButton*> buttons;
+  unsigned position = 0;
 
   for (;;) {
     std::string encoded = "";
