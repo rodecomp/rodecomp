@@ -260,8 +260,8 @@ char* sub_E939D0(char* text) {
   if (text != nullptr && *text == 1) {
     DecodeText(text);
 
-    unsigned int slot = 0;
     const DWORD threadId = GetCurrentThreadId();
+    unsigned int slot = 0;
     for (unsigned int index = 1; index < 20; ++index) {
       if (g_logTextThreadIds[index] == threadId) {
         slot = index;
