@@ -31,6 +31,7 @@ bool PakRegistry::Add(const char* filename) {
 
 // OFFSET: 0x00AE9BF0
 // FUNCTION: fn_18112
+// VIRTUALIZED: emulated 0x0271DE3A
 void* PakRegistry::Read(const char* filename, std::uint32_t* size, bool looseOnly) {
   if (!looseOnly) {
     void* result = this->ReadArchive(filename, size);
