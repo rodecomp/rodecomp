@@ -58,6 +58,8 @@ LUALIB_API int luaL_argerror (lua_State *L, int narg, const char *extramsg) {
 }
 
 
+// OFFSET: 0x005252E0
+// FUNCTION: fn_47563
 LUALIB_API int luaL_typerror (lua_State *L, int narg, const char *tname) {
   const char *msg = lua_pushfstring(L, "%s expected, got %s",
                                     tname, luaL_typename(L, narg));
@@ -239,6 +241,8 @@ static int libsize (const luaL_Reg *l) {
 }
 
 
+// OFFSET: 0x00524E10
+// FUNCTION: fn_47562
 LUALIB_API void luaI_openlib (lua_State *L, const char *libname,
                               const luaL_Reg *l, int nup) {
   if (libname) {
@@ -503,6 +507,8 @@ LUALIB_API int luaL_ref (lua_State *L, int t) {
 }
 
 
+// OFFSET: 0x00525320
+// FUNCTION: fn_47564
 LUALIB_API void luaL_unref (lua_State *L, int t, int ref) {
   if (ref >= 0) {
     t = abs_index(L, t);
@@ -617,6 +623,8 @@ LUALIB_API int luaL_loadbuffer (lua_State *L, const char *buff, size_t size,
 }
 
 
+// OFFSET: 0x00524D40
+// FUNCTION: fn_47561
 LUALIB_API int (luaL_loadstring) (lua_State *L, const char *s) {
   return luaL_loadbuffer(L, s, strlen(s), s);
 }
