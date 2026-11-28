@@ -36,17 +36,17 @@ bool CRendererDX9::Draw() {
       return false;
     }
 
+    g_renderDiagnosticFile = source;
     g_renderDiagnosticLine = 131;
-    g_renderDiagnosticFile = source;
     renderer->DrawQueues();
+    g_renderDiagnosticFile = source;
     g_renderDiagnosticLine = 134;
-    g_renderDiagnosticFile = source;
     renderer->ClearFrame();
+    g_renderDiagnosticFile = source;
     g_renderDiagnosticLine = 137;
-    g_renderDiagnosticFile = source;
     device->End();
-    g_renderDiagnosticLine = 140;
     g_renderDiagnosticFile = source;
+    g_renderDiagnosticLine = 140;
     return true;
   }
 
