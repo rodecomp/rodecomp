@@ -3955,9 +3955,9 @@ void UISelectServerWnd::OnCreate(int width, int height) {
   const int listWidth = width - 24;
   this->m_serverList = new UIServerListBox();
   this->m_serverList->Configure(12, 22, listWidth, height - 55, 0);
-  this->m_serverList->backgroundRed = 240;
   this->m_serverList->backgroundGreen = 240;
   this->m_serverList->backgroundBlue = 240;
+  this->m_serverList->backgroundRed = 240;
   this->m_serverList->SetId(ID_OK);
   this->AddChild(this->m_serverList);
 
