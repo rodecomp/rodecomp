@@ -2706,8 +2706,7 @@ void CRandomOptEffect::SetParticleTexture(std::string name) {
 // FUNCTION: fn_07368
 void CRandomOptEffect::Init() {
   int ring = 0;
-  int baseAngle = 0;
-  for (int alpha = 50; alpha > 20; alpha -= 10) {
+  for (int baseAngle = 0, alpha = 50; alpha > 20; alpha -= 10, baseAngle += 120) {
     for (int i = 0; i <= 21; ++i) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
@@ -2764,26 +2763,25 @@ void CRandomOptEffect::Init() {
         const int angle =
             static_cast<int>(static_cast<float>(step * segment) + particle->angle) %
             360;
-        const float lift = height * g_sinTable[particle->phaseParameter];
-        const float sine = g_sinTable[angle];
         const float cosine = g_cosTable[angle];
-        const float spread = height * g_cosTable[particle->phaseParameter];
-        const float spreadX = spread * cosine;
-        const float spreadZ = spread * sine;
+        const float sine = g_sinTable[angle];
+        const float spreadX = height * g_cosTable[particle->phaseParameter] * cosine;
+        const float spreadZ = height * g_cosTable[particle->phaseParameter] * sine;
+        const float lift = height * g_sinTable[particle->phaseParameter];
         EffectPoint points[2];
-        points[0].x = particle->scale * cosine;
-        points[0].y = 0.0f;
-        points[0].z = particle->scale * sine;
-        points[1].x = points[0].x + spreadX;
-        points[1].y = points[0].y - lift;
-        points[1].z = points[0].z + spreadZ;
+        const float innerX = particle->scale * cosine;
+        const float innerZ = particle->scale * sine;
 
-        particle->vertices[3].y = points[0].y;
-        particle->vertices[3].z = points[0].z;
-        particle->vertices[3].x = points[0].x;
-        particle->vertices[1].x = points[1].x;
-        particle->vertices[1].y = points[1].y;
-        particle->vertices[1].z = points[1].z;
+        particle->vertices[3].y = 0.0f;
+        particle->vertices[3].z = innerZ;
+        particle->vertices[3].x = innerX;
+
+        const float outerX = innerX + spreadX;
+        const float outerY = 0.0f - lift;
+        const float outerZ = innerZ + spreadZ;
+        particle->vertices[1].x = outerX;
+        particle->vertices[1].y = outerY;
+        particle->vertices[1].z = outerZ;
 
         if (segment != 0) {
           particle->vertices[0].x = this->offsets[1].x;
@@ -2794,17 +2792,16 @@ void CRandomOptEffect::Init() {
           particle->vertices[2].z = this->offsets[0].z;
         }
 
-        this->offsets[0].x = points[0].x;
-        this->offsets[0].y = points[0].y;
-        this->offsets[0].z = points[0].z;
-        this->offsets[1].x = points[1].x;
-        this->offsets[1].y = points[1].y;
-        this->offsets[1].z = points[1].z;
+        this->offsets[0].x = innerX;
+        this->offsets[0].y = 0.0f;
+        this->offsets[0].z = innerZ;
+        this->offsets[1].x = outerX;
+        this->offsets[1].y = outerY;
+        this->offsets[1].z = outerZ;
       }
     }
 
     ++ring;
-    baseAngle += 120;
   }
 }
 
