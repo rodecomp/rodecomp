@@ -18,7 +18,7 @@ struct TipBoxImage {
 };
 
 struct TipBoxEntry {
-  TipBoxEntry();
+  TipBoxEntry() noexcept;
   ~TipBoxEntry();
   /* 0000 */ std::string title;
   /* 0018 */ unsigned char randomEligible;

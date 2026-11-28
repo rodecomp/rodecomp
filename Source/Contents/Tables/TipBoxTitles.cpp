@@ -55,7 +55,7 @@ namespace {
 
 // OFFSET: 0x007ABEC0
 // FUNCTION: fn_09118
-TipBoxEntry::TipBoxEntry() {
+TipBoxEntry::TipBoxEntry() noexcept {
 }
 
 // OFFSET: 0x007AC380
