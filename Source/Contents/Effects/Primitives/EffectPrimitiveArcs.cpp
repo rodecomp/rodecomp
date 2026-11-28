@@ -818,8 +818,8 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
     vector3d right;
     right.z = size * g_sinTable[rightAngle];
     const float rightX = size * g_cosTable[rightAngle];
-    right.x = rightX * rotCos;
     right.y = rightX * rotSin + this->state.slots[ec].height[0];
+    right.x = rightX * rotCos;
 
     const int backRightAngle = side[1] - 180 < 0 ? side[1] - 180 + 360 : side[1] - 180;
     vector3d backRight;
