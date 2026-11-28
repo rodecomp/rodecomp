@@ -11305,13 +11305,16 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (g_session.HasRequiredItems()) {
         mode->SendMsg(MM_REQ_SELL, 0, 0, 0, 0);
       }
-      [[fallthrough]];
-    case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
       g_windowMgr.CloseWindow(WID_ITEMSELLWND);
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
       break;
+    case ID_CANCEL:
+      g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
+      g_windowMgr.CloseWindow(WID_ITEMSELLWND);
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+      g_session.ClearTradeItems();
     }
     break;
   }
@@ -11358,7 +11361,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetStorageItemInfoBySequence(i);
       if (item.itemIndex > 0) {
-        totalPrice += item.quantity * item.realPrice;
+        totalPrice += item.realPrice * item.quantity;
         this->items.push_back(item);
       }
     }
