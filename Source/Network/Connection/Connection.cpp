@@ -299,7 +299,8 @@ bool CConnection::Send(int bytes, const void* data) {
   }
 
   g_session.m_lastSendTick = timeGetTime();
-  g_packetReassembler->Notify(0);
+  const unsigned short obfuscation = static_cast<unsigned short>(g_packetReassembler->Notify(0));
+  *static_cast<unsigned short*>(const_cast<void*>(data)) ^= obfuscation;
   if (this->m_socket == INVALID_SOCKET) {
     return true;
   }
