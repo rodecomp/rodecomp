@@ -24,26 +24,42 @@ CView::CView() {
 // FUNCTION: fn_17914
 WorldViewSpatial::~WorldViewSpatial() = default;
 
+struct plane3d {
+  float x;
+  float y;
+  float z;
+  float w;
+
+  // INLINED
+  plane3d() {}
+  // INLINED
+  void Set(float nx, float ny, float nz, float nw) {
+    x = nx;
+    y = ny;
+    z = nz;
+    w = nw;
+  }
+};
+
 // OFFSET: 0x00ADB0D0
 // FUNCTION: fn_17919
 void WorldViewSpatial::Collect(float horizontal, float vertical, const float* matrix, WorldSpatialTree& root) {
-  float viewPlanes[6][4] = {
-    {-horizontal, 0.0f, 1.0f, 0.0f},
-    {horizontal, 0.0f, 1.0f, 0.0f},
-    {0.0f, -vertical, 1.0f, 0.0f},
-    {0.0f, vertical, 1.0f, 0.0f},
-    {0.0f, 0.0f, 1.0f, -10.0f},
-    {0.0f, 0.0f, -1.0f, 1500.0f},
-  };
+  plane3d viewPlanes[6];
+  viewPlanes[0].Set(-horizontal, 0.0f, 1.0f, 0.0f);
+  viewPlanes[1].Set(horizontal, 0.0f, 1.0f, 0.0f);
+  viewPlanes[2].Set(0.0f, -vertical, 1.0f, 0.0f);
+  viewPlanes[3].Set(0.0f, vertical, 1.0f, 0.0f);
+  viewPlanes[4].Set(0.0f, 0.0f, 1.0f, -10.0f);
+  viewPlanes[5].Set(0.0f, 0.0f, -1.0f, 1500.0f);
 
   for (int i = 0; i < 6; ++i) {
-    const float* plane = viewPlanes[i];
+    const plane3d& plane = viewPlanes[i];
     float* out = this->planes.planes[i];
 
-    out[0] = plane[0] * matrix[0] + plane[1] * matrix[1] + plane[2] * matrix[2];
-    out[1] = plane[0] * matrix[3] + plane[1] * matrix[4] + plane[2] * matrix[5];
-    out[2] = plane[0] * matrix[6] + plane[1] * matrix[7] + plane[2] * matrix[8];
-    out[3] = plane[0] * matrix[9] + plane[1] * matrix[10] + plane[2] * matrix[11] + plane[3];
+    out[0] = plane.x * matrix[0] + plane.y * matrix[1] + plane.z * matrix[2];
+    out[1] = plane.x * matrix[3] + plane.y * matrix[4] + plane.z * matrix[5];
+    out[2] = plane.x * matrix[6] + plane.y * matrix[7] + plane.z * matrix[8];
+    out[3] = plane.x * matrix[9] + plane.y * matrix[10] + plane.z * matrix[11] + plane.w;
 
     this->planes.normals[i].x = out[0];
     this->planes.normals[i].y = out[1];
