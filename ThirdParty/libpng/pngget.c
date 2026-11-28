@@ -86,6 +86,8 @@ png_get_color_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
    return (0);
 }
 
+// OFFSET: 0x00E7B270
+// FUNCTION: fn_47589
 png_byte PNGAPI
 png_get_filter_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -104,6 +106,8 @@ png_get_interlace_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
    return (0);
 }
 
+// OFFSET: 0x00E7B1E0
+// FUNCTION: fn_47587
 png_byte PNGAPI
 png_get_compression_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -370,6 +374,8 @@ png_get_y_pixels_per_inch(png_const_structrp png_ptr, png_const_inforp info_ptr)
 }
 
 #ifdef PNG_FIXED_POINT_SUPPORTED
+// OFFSET: 0x00E7AC90
+// FUNCTION: fn_47580
 static png_fixed_point
 png_fixed_inches_from_microns(png_const_structrp png_ptr, png_int_32 microns)
 {
@@ -492,6 +498,8 @@ png_get_signature(png_const_structrp png_ptr, png_const_inforp info_ptr)
 #endif
 
 #ifdef PNG_bKGD_SUPPORTED
+// OFFSET: 0x00E7ADA0
+// FUNCTION: fn_47582
 png_uint_32 PNGAPI
 png_get_bKGD(png_const_structrp png_ptr, png_inforp info_ptr,
     png_color_16p *background)
@@ -711,6 +719,8 @@ png_get_gAMA_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #  endif
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E7B290
+// FUNCTION: fn_47590
 png_uint_32 PNGAPI
 png_get_gAMA(png_const_structrp png_ptr, png_const_inforp info_ptr,
     double *file_gamma)
@@ -1038,6 +1048,8 @@ png_get_pHYs(png_const_structrp png_ptr, png_const_inforp info_ptr,
 }
 #endif /* pHYs */
 
+// OFFSET: 0x00E7AD60
+// FUNCTION: fn_47581
 png_uint_32 PNGAPI
 png_get_PLTE(png_const_structrp png_ptr, png_inforp info_ptr,
     png_colorp *palette, int *num_palette)
