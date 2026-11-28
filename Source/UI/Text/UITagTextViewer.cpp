@@ -323,8 +323,9 @@ void UITagTextViewer::Layout() {
   );
   const std::vector<LineWindows> lines = info.m_lines;
 
-  int offset = std::max(this->m_topMargin, 0);
-  const unsigned int content = static_cast<unsigned int>(this->m_topMargin) + static_cast<unsigned int>(info.m_height);
+  int topMargin = this->m_topMargin;
+  int offset = std::max(topMargin, 0);
+  const unsigned int content = static_cast<unsigned int>(topMargin) + static_cast<unsigned int>(info.m_height);
   if (static_cast<unsigned int>(this->geometry.height) > content) {
     if (this->m_verticalAlign == 5) {
       offset = this->geometry.height - info.m_height - this->m_topMargin;
