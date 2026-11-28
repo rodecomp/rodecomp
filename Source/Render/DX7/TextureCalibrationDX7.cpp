@@ -77,7 +77,7 @@ bool DeviceOwnerDX7::CalibrateTextureCoordinates() {
       ScreenPoint xy[2] = {ScreenPoint(static_cast<float>(x), static_cast<float>(y)), ScreenPoint(static_cast<float>(x + 4), static_cast<float>(y + 4))};
       ScreenPoint uv[2] = {
         ScreenPoint((tu + 0.0f) / texture.TextureWidth(), (tv + 0.0f) / texture.TextureHeight()),
-        ScreenPoint((tu + g_effectIconRadius) / texture.TextureWidth(), (tv + g_effectIconRadius) / texture.TextureHeight())};
+        ScreenPoint((tu + 4.0f) / texture.TextureWidth(), (tv + 4.0f) / texture.TextureHeight())};
       RenderVertex vertices[4] = {
         {xy[0].x, xy[0].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[0].x, uv[0].y},
         {xy[0].x, xy[1].y, 0.00001f, 0.99999f, 0xFFFFFFFF, 0xFFFFFFFF, uv[0].x, uv[1].y},
