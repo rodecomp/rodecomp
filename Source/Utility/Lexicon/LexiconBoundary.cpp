@@ -196,10 +196,10 @@ std::uint32_t LexiconSerializer::Serialize(LexiconNode* node, std::uint32_t offs
       }
     } else {
       this->buffer[next++] = node->value;
-      if (node->child != nullptr) {
-        next = this->Serialize(node->child, next, node->terminal);
-      } else {
+      if (node->child == nullptr) {
         this->buffer[next++] = 0xC0;
+      } else {
+        next = this->Serialize(node->child, next, node->terminal);
       }
     }
 
