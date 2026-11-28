@@ -55,9 +55,9 @@ void UIPreviewEquipWnd::DrawCharacter() {
   view.AppendYRotation(this->m_render->cameraYaw / g_angleDivisor * g_piApprox);
 
   vector3d offset;
-  offset.x = 0.0f;
   offset.y = 0.0f;
   offset.z = -this->m_render->cameraDistance;
+  offset.x = 0.0f;
   vector3d eye;
   eye.x = offset.x * view.values[0] + offset.y * view.values[3] + offset.z * view.values[6] + view.values[9];
   eye.y = offset.x * view.values[1] + offset.y * view.values[4] + offset.z * view.values[7] + view.values[10];
