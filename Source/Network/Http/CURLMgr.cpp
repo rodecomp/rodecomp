@@ -6,7 +6,8 @@
 // GLOBAL: gl_24354
 CCURLMgr* g_curlMgr;
 
-// INLINED
+// OFFSET: 0x005E8E30
+// FUNCTION: fn_47504
 CCURLMgr::CCURLMgr() : m_module(nullptr) {
   this->m_enabled = false;
   this->m_module = LoadLibraryA("libcurl.dll");
