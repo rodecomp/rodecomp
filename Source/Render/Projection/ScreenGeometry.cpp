@@ -84,18 +84,18 @@ void DrawDashedScreenLine(
   const float sideX = ClientCos(angle) * width;
   const float dash = static_cast<float>(dashLength);
   const float dashY = dash * directionY;
-  const float dashX = dash * directionX;
   float currentX = start.x;
-  float nextX = dashX + currentX;
+  const float dashX = dash * directionX;
   float currentY = start.y;
   float nextY = dashY + currentY;
+  float nextX = dashX + currentX;
   float distance = SquareRoot((nextY - start.y) * (nextY - start.y) + (nextX - start.x) * (nextX - start.x));
   if (!(length > distance)) {
     return;
   }
 
-  const float halfDashY = dashY * g_depthAverageHalf;
   const float halfDashX = dashX * g_depthAverageHalf;
+  const float halfDashY = dashY * g_depthAverageHalf;
   do {
     const ScreenPoint p0 = {currentX, currentY};
     const ScreenPoint p1 = {currentX + sideX, currentY + sideY};
