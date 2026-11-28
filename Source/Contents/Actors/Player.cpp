@@ -1166,13 +1166,13 @@ void CPc::ApplyLayerEffects(
       double left;
       double right;
       if ((cell->mirrored & 1) != 0) {
-        left = static_cast<double>((static_cast<short>(image->doubleWidth) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
         right = static_cast<double>(offsetX + cell->x) * factor * cell->scaleX;
-        if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || box->right >= g_renderer->viewport.width || box->left <= 0) {
+        left = static_cast<double>((static_cast<short>(image->doubleWidth) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
+        if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || g_renderer->viewport.width <= box->right || box->left <= 0) {
           continue;
         }
       } else {
-        if (boxTop >= g_renderer->viewport.height || box->bottom <= 0 || box->left >= g_renderer->viewport.width || box->right <= 0) {
+        if (boxTop >= g_renderer->viewport.height || box->bottom <= 0 || g_renderer->viewport.width <= box->left || box->right <= 0) {
           continue;
         }
         left = static_cast<double>(cell->x + offsetX) * factor * cell->scaleX;
@@ -1180,8 +1180,8 @@ void CPc::ApplyLayerEffects(
       }
 
       jitter.image = image;
-      jitter.left = static_cast<float>(scale * left + screenX) + shift;
       jitter.right = static_cast<float>(scale * right + screenX + 1.0) + shift;
+      jitter.left = static_cast<float>(scale * left + screenX) + shift;
       jitter.top = top - static_cast<float>(hover);
       jitter.bottom = (static_cast<float>(boxTop) - top) * g_depthAverageHalf + bottom - static_cast<float>(hover);
       jitter.bottomRhw = static_cast<float>(depth) * 0.000005f + bottomRhw + 0.00001f;
@@ -1208,8 +1208,8 @@ void CPc::ApplyLayerEffects(
     const short alpha = static_cast<short>(255 - level * 20);
     CGameMode* mode = g_modeMgr.GetGameMode();
     const float rise = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(level * 20);
-    quad->top = static_cast<float>(box->top) - rise;
     quad->bottom = static_cast<float>(box->bottom) - rise;
+    quad->top = static_cast<float>(box->top) - rise;
     quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
   }
 
@@ -1224,8 +1224,8 @@ void CPc::ApplyLayerEffects(
       alpha = 0;
     }
     const float rise = std::max(400.0f / mode->camera->camera.desiredDistance * static_cast<float>(riseUnits), 0.0f);
-    quad->top = static_cast<float>(box->top) - rise;
     quad->color = (alpha << 24) + 0xFFFFFF;
+    quad->top = static_cast<float>(box->top) - rise;
     quad->bottom = static_cast<float>(box->bottom) - rise;
   }
 
