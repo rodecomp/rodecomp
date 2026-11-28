@@ -3659,10 +3659,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   static_cast<UIWindow*>(this->m_pages[2])->Move(0, 34);
 
   this->m_tab = new CUITab();
-  this->m_tab->SetSize(400, 18);
-  this->m_tab->Move(0, 17);
-  this->m_tab->SetOnChange([this](CUITabButton* button) { this->OnTabChanged(button); });
-  this->AddChild(this->m_tab);
+  auto& tab = this->m_tab;
+  tab->SetSize(400, 18);
+  tab->Move(0, 17);
+  tab->SetOnChange([this](CUITabButton* button) { this->OnTabChanged(button); });
+  this->AddChild(tab);
 
   CUITabButton* basicButton = new CUITabButton();
   basicButton->SetSize(72, 18);
@@ -3685,7 +3686,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   basicButton->SetShadow(0, 0xFFFFFF);
   basicButton->SetOutline(0, 0xFFFFFF);
   basicButton->SetSkinColors(0, 0, 0, 0, 3, 1);
-  this->m_tab->AddChild(basicButton);
+  tab->AddChild(basicButton);
 
   CUITabButton* effectButton = new CUITabButton();
   effectButton->SetSize(72, 18);
@@ -3710,7 +3711,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   effectButton->SetShadow(0, 0xFFFFFF);
   effectButton->SetOutline(0, 0xFFFFFF);
   effectButton->useSkinColors = 1;
-  this->m_tab->AddChild(effectButton);
+  tab->AddChild(effectButton);
 
   CUITabButton* controlButton = new CUITabButton();
   controlButton->SetSize(72, 18);
@@ -3735,7 +3736,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   controlButton->SetShadow(0, 0xFFFFFF);
   controlButton->SetOutline(0, 0xFFFFFF);
   controlButton->SetSkinColors(0, 0, 0, 0, 3, 1);
-  this->m_tab->AddChild(controlButton);
+  tab->AddChild(controlButton);
 
   CUITabButton* graphicsButton = new CUITabButton();
   graphicsButton->SetSize(72, 18);
@@ -3760,7 +3761,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   graphicsButton->SetShadow(0, 0xFFFFFF);
   graphicsButton->SetOutline(0, 0xFFFFFF);
   graphicsButton->SetSkinColors(0, 0, 0, 0, 3, 1);
-  this->m_tab->AddChild(graphicsButton);
+  tab->AddChild(graphicsButton);
 
   CUITabButton* etcButton = new CUITabButton();
   etcButton->SetSize(72, 18);
@@ -3785,7 +3786,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   etcButton->SetShadow(0, 0xFFFFFF);
   etcButton->SetOutline(0, 0xFFFFFF);
   etcButton->SetSkinColors(0, 0, 0, 0, 3, 1);
-  this->m_tab->AddChild(etcButton);
+  tab->AddChild(etcButton);
 
   this->m_pageContainer = new CUIImageButton();
   this->m_pageContainer->SetSize(42, 20);
@@ -3849,7 +3850,7 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   effectButton->page = this->m_pages[0];
   controlButton->page = this->m_pages[1];
   etcButton->page = this->m_pages[2];
-  this->m_tab->Select(basicButton);
+  tab->Select(basicButton);
 }
 
 // OFFSET: 0x00A40C40
