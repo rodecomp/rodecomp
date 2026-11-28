@@ -100,8 +100,8 @@ __forceinline void CMagnumBreak::AdvanceRing(CParticle* ring) {
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
   ring->scale = scale;
-  ring->speedParameter = speed;
   ring->animationParameters[1] = angle + speed;
+  ring->speedParameter = speed;
   ring->alpha = this->alpha;
   ring->transform = rotation;
 }
