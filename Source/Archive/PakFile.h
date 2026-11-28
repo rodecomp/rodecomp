@@ -36,13 +36,16 @@ namespace myGPack {
 
   class CWritePakFile : public CReadPakFile {
   public:
+    // OFFSET: 0x005EF470
+    // FUNCTION: fn_47482
     ~CWritePakFile() override = default;
 
     bool Open(const char* filename);
     bool Write(std::uint64_t offset, const void* bytes, std::uint32_t length);
   };
 
-  // INLINED
+  // OFFSET: 0x005EF400
+  // FUNCTION: fn_47481
   inline CReadPakFile::~CReadPakFile() {
     this->Close();
   }

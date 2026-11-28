@@ -50,7 +50,8 @@ namespace GPakEx {
   public:
     /* 0000 */ std::vector<std::uint32_t> m_words;
 
-    // INLINED
+    // OFFSET: 0x0064A1C0
+    // FUNCTION: fn_47483
     ~SecureWordBuffer() { SecureZeroMemory(this->m_words.data(), this->m_words.size() * sizeof(std::uint32_t)); }
 
     // INLINED
