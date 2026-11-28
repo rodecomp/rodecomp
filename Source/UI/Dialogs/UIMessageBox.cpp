@@ -4218,7 +4218,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
         g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "메시지", 280, 120, 0);
         this->m_nameEdit->SetText("");
-        return 0;
+        break;
       }
 
       if (this->m_nameEdit->Length() >= 4) {
@@ -4253,23 +4253,23 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         } else if (this->m_nameEdit->Length() >= 24) {
           g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "메시지", 280, 120, 0);
           this->m_nameEdit->SetText("");
-          return 0;
+          break;
         } else {
           char name[24] = {};
           std::strcpy(name, this->m_nameEdit->Text());
           std::memcpy(this->m_info.name, name, sizeof(this->m_info.name));
           memcpy_s(&g_charInfo, sizeof(g_charInfo), &this->m_info, sizeof(this->m_info));
           if (std::strstr(g_charInfo.name, "그라비티")) {
-            return 0;
+            break;
           }
 
           _strlwr(name);
           if (std::strstr(name, "gravity")) {
-            return 0;
+            break;
           }
           if ((name[0] == '[' && name[1] == 'g' && name[2] == 'm') || (name[1] == '[' && name[2] == 'g' && name[3] == 'm') ||
               (name[2] == '[' && name[3] == 'g' && name[4] == 'm')) {
-            return 0;
+            break;
           }
 
           g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
@@ -4293,12 +4293,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         values[7] = this->m_info.head;
         mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
       }
-      return 0;
+      break;
     }
     case ID_CANCEL:
       g_windowMgr.Schedule(this);
       g_modeMgr.currentMode->SendMsg(MM_COMMAND, LMM_SELECTCHARACTER, 0, 0, 0);
-      return 0;
+      break;
     case ID_LEFT: {
       const int action = this->m_view.action + 1;
       if (action < this->m_view.actionBase + 8) {
@@ -4307,7 +4307,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         this->m_view.action = this->m_view.actionBase;
       }
       this->Invalidate();
-      return 0;
+      break;
     }
     case ID_RIGHT: {
       const int action = this->m_view.action - 1;
@@ -4316,11 +4316,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         this->m_view.action = this->m_view.actionBase + 7;
       }
       this->Invalidate();
-      return 0;
+      break;
     }
     default:
-      return 0;
+      break;
     }
+    return 0;
   case UM_DEFPUSH: {
     char name[25] = {};
     std::strcpy(name, this->m_nameEdit->Text());
@@ -4430,8 +4431,8 @@ void UILoginWnd::OnCreate(int, int) {
   this->AddChild(button);
 
   button = new UIBmpTextButton();
-  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_normal.bmp", 0x758F1D0B4F7705B9ULL, joinNormalName), 0, 0);
-  button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_over.bmp", 0x891B232D09451965ULL, joinOverName), 1, 0);
+  button->SetBitmap(OBFUSCATE_SOURCE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_normal.bmp", 0x758F1D0B4F7705B9ULL, joinNormalName), 0, 0);
+  button->SetBitmap(OBFUSCATE_SOURCE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_over.bmp", 0x891B232D09451965ULL, joinOverName), 1, 0);
   button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_press.bmp", 0xF161095D0DE18F95ULL, joinPressName), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(87, 104);
