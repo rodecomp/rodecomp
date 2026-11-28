@@ -3596,7 +3596,7 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
 
   if (window->m_ownsBorderColor) {
     auto size = this->windowSizes.find(key);
-    if (this->windowSizes.end() != size) {
+    if (size != this->windowSizes.end()) {
       window->Grow(size->second.cx - window->geometry.width, size->second.cy - window->geometry.height);
     }
   }
