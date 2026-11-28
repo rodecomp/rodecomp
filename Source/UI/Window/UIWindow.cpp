@@ -1358,8 +1358,8 @@ void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int widt
     break;
   }
 
-  int offset = 0;
   unsigned char currentBold = bold;
+  int offset = 0;
   const char* current = text.c_str();
   const char* const end = current + std::strlen(current);
 
