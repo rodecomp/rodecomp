@@ -272,103 +272,161 @@ std::uint64_t g_tigerTable3[256] = {
   0x7F9104B99B1FDA70ULL, 0x75322ED46A4FC212ULL, 0x32292F69BA724FE9ULL, 0x2CCF70DEF530D75DULL,
 };
 
-// INLINED
-static __forceinline void TigerRound(std::uint64_t& a, std::uint64_t& b, std::uint64_t& c, std::uint64_t x, int pass) {
-  c ^= x;
-  const std::uint32_t cLow = static_cast<std::uint32_t>(c);
-  const std::uint32_t cHigh = static_cast<std::uint32_t>(c >> 32);
-  const std::uint32_t subLow = static_cast<std::uint32_t>(g_tigerTable[cLow & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable2[cHigh & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable1[(cLow >> 16) & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable3[(cHigh >> 16) & 0xff]);
-  const std::uint32_t subHigh = static_cast<std::uint32_t>(g_tigerTable[cLow & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable2[cHigh & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable1[(cLow >> 16) & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable3[(cHigh >> 16) & 0xff] >> 32);
-  const std::uint32_t aLow = static_cast<std::uint32_t>(a);
-  const std::uint32_t newLow = aLow - subLow;
-  const std::uint32_t newHigh = static_cast<std::uint32_t>(a >> 32) - subHigh - (aLow < subLow);
-  a = (static_cast<std::uint64_t>(newHigh) << 32) | newLow;
-  const std::uint32_t addLow = static_cast<std::uint32_t>(g_tigerTable2[(cLow >> 24) & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable[(cHigh >> 24) & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable3[(cLow >> 8) & 0xff])
-    ^ static_cast<std::uint32_t>(g_tigerTable1[(cHigh >> 8) & 0xff]);
-  const std::uint32_t addHigh = static_cast<std::uint32_t>(g_tigerTable2[(cLow >> 24) & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable[(cHigh >> 24) & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable3[(cLow >> 8) & 0xff] >> 32)
-    ^ static_cast<std::uint32_t>(g_tigerTable1[(cHigh >> 8) & 0xff] >> 32);
-  const std::uint32_t bLow = static_cast<std::uint32_t>(b);
-  const std::uint32_t resultLow = bLow + addLow;
-  const std::uint32_t resultHigh = static_cast<std::uint32_t>(b >> 32) + addHigh + (resultLow < addLow);
-  b = (static_cast<std::uint64_t>(resultHigh) << 32) | resultLow;
-  switch (pass) {
-  case 0:
-    b *= 5;
-    break;
-  case 1:
-    b *= 7;
-    break;
-  default:
-    b *= 9;
-    break;
-  }
+typedef unsigned long word32;
+typedef unsigned char byte;
+
+#define PASSES 3
+
+#define t1 (reinterpret_cast<word32(*)[2]>(g_tigerTable))
+#define t2 (reinterpret_cast<word32(*)[2]>(g_tigerTable1))
+#define t3 (reinterpret_cast<word32(*)[2]>(g_tigerTable2))
+#define t4 (reinterpret_cast<word32(*)[2]>(g_tigerTable3))
+
+#define sub64(s0, s1, p0, p1) \
+      temps0 = (p0); \
+      tcarry = s0 < temps0; \
+      s0 -= temps0; \
+      s1 -= (p1) + tcarry;
+
+#define add64(s0, s1, p0, p1) \
+      temps0 = (p0); \
+      s0 += temps0; \
+      tcarry = s0 < temps0; \
+      s1 += (p1) + tcarry;
+
+#define xor64(s0, s1, p0, p1) \
+      s0 ^= (p0); \
+      s1 ^= (p1);
+
+#define mul5(s0, s1) \
+      tempt0 = s0<<2; \
+      tempt1 = (s1<<2)|(s0>>30); \
+      add64(s0, s1, tempt0, tempt1);
+
+#define mul7(s0, s1) \
+      tempt0 = s0<<3; \
+      tempt1 = (s1<<3)|(s0>>29); \
+      sub64(tempt0, tempt1, s0, s1); \
+      s0 = tempt0; \
+      s1 = tempt1;
+
+#define mul9(s0, s1) \
+      tempt0 = s0<<3; \
+      tempt1 = (s1<<3)|(s0>>29); \
+      add64(s0, s1, tempt0, tempt1);
+
+#define save_abc \
+      aa0 = a0; \
+      aa1 = a1; \
+      bb0 = b0; \
+      bb1 = b1; \
+      cc0 = c0; \
+      cc1 = c1;
+
+#define round(a0,a1,b0,b1,c0,c1,x0,x1,mul) \
+      xor64(c0, c1, x0, x1); \
+      temp0  = t1[((c0)>>(0*8))&0xFF][0] ; \
+      temp1  = t1[((c0)>>(0*8))&0xFF][1] ; \
+      temp0 ^= t2[((c0)>>(2*8))&0xFF][0] ; \
+      temp1 ^= t2[((c0)>>(2*8))&0xFF][1] ; \
+      temp0 ^= t3[((c1)>>(0*8))&0xFF][0] ; \
+      temp1 ^= t3[((c1)>>(0*8))&0xFF][1] ; \
+      temp0 ^= t4[((c1)>>(2*8))&0xFF][0] ; \
+      temp1 ^= t4[((c1)>>(2*8))&0xFF][1] ; \
+      sub64(a0, a1, temp0, temp1); \
+      temp0  = t4[((c0)>>(1*8))&0xFF][0] ; \
+      temp1  = t4[((c0)>>(1*8))&0xFF][1] ; \
+      temp0 ^= t3[((c0)>>(3*8))&0xFF][0] ; \
+      temp1 ^= t3[((c0)>>(3*8))&0xFF][1] ; \
+      temp0 ^= t2[((c1)>>(1*8))&0xFF][0] ; \
+      temp1 ^= t2[((c1)>>(1*8))&0xFF][1] ; \
+      temp0 ^= t1[((c1)>>(3*8))&0xFF][0] ; \
+      temp1 ^= t1[((c1)>>(3*8))&0xFF][1] ; \
+      add64(b0, b1, temp0, temp1); \
+      if((mul)==5) \
+	{mul5(b0, b1);} \
+      else \
+	if((mul)==7) \
+	  {mul7(b0, b1);} \
+	else \
+	  {mul9(b0, b1)};
+
+#define pass(a0,a1,b0,b1,c0,c1,mul) \
+      round(a0,a1,b0,b1,c0,c1,x00,x01,mul); \
+      round(b0,b1,c0,c1,a0,a1,x10,x11,mul); \
+      round(c0,c1,a0,a1,b0,b1,x20,x21,mul); \
+      round(a0,a1,b0,b1,c0,c1,x30,x31,mul); \
+      round(b0,b1,c0,c1,a0,a1,x40,x41,mul); \
+      round(c0,c1,a0,a1,b0,b1,x50,x51,mul); \
+      round(a0,a1,b0,b1,c0,c1,x60,x61,mul); \
+      round(b0,b1,c0,c1,a0,a1,x70,x71,mul);
+
+#define key_schedule \
+      sub64(x00, x01, x70^0xA5A5A5A5, x71^0xA5A5A5A5); \
+      xor64(x10, x11, x00, x01); \
+      add64(x20, x21, x10, x11); \
+      sub64(x30, x31, x20^((~x10)<<19), ~x21^(((x11)<<19)|((x10)>>13))); \
+      xor64(x40, x41, x30, x31); \
+      add64(x50, x51, x40, x41); \
+      sub64(x60, x61, ~x50^(((x40)>>23)|((x41)<<9)), x51^((~x41)>>23)); \
+      xor64(x70, x71, x60, x61); \
+      add64(x00, x01, x70, x71); \
+      sub64(x10, x11, x00^((~x70)<<19), ~x01^(((x71)<<19)|((x70)>>13))); \
+      xor64(x20, x21, x10, x11); \
+      add64(x30, x31, x20, x21); \
+      sub64(x40, x41, ~x30^(((x20)>>23)|((x21)<<9)), x31^((~x21)>>23)); \
+      xor64(x50, x51, x40, x41); \
+      add64(x60, x61, x50, x51); \
+      sub64(x70, x71, x60^0x89ABCDEF, x61^0x01234567);
+
+#define feedforward \
+      xor64(a0, a1, aa0, aa1); \
+      sub64(b0, b1, bb0, bb1); \
+      add64(c0, c1, cc0, cc1);
+
+#define compress \
+      save_abc \
+      for(pass_no=0; pass_no<PASSES; pass_no++) { \
+        if(pass_no != 0) {key_schedule} \
+	pass(a0,a1,b0,b1,c0,c1,(pass_no==0?5:pass_no==1?7:9)) \
+	tmpa=a0; a0=c0; c0=b0; b0=tmpa; \
+	tmpa=a1; a1=c1; c1=b1; b1=tmpa;} \
+      feedforward
+
+#define tiger_compress_macro(str, state) \
+{ \
+  register word32 a0, a1, b0, b1, c0, c1, tmpa; \
+  word32 aa0, aa1, bb0, bb1, cc0, cc1; \
+  word32 x00, x01, x10, x11, x20, x21, x30, x31, \
+         x40, x41, x50, x51, x60, x61, x70, x71; \
+  register word32 temp0, temp1, tempt0, tempt1, temps0, tcarry; \
+  word32 i; \
+  int pass_no; \
+\
+  a0 = state[0]; \
+  a1 = state[1]; \
+  b0 = state[2]; \
+  b1 = state[3]; \
+  c0 = state[4]; \
+  c1 = state[5]; \
+\
+  x00=str[0*2]; x01=str[0*2+1]; x10=str[1*2]; x11=str[1*2+1]; \
+  x20=str[2*2]; x21=str[2*2+1]; x30=str[3*2]; x31=str[3*2+1]; \
+  x40=str[4*2]; x41=str[4*2+1]; x50=str[5*2]; x51=str[5*2+1]; \
+  x60=str[6*2]; x61=str[6*2+1]; x70=str[7*2]; x71=str[7*2+1]; \
+\
+  compress; \
+\
+  state[0] = a0; \
+  state[1] = a1; \
+  state[2] = b0; \
+  state[3] = b1; \
+  state[4] = c0; \
+  state[5] = c1; \
 }
 
 // OFFSET: 0x00B13CC0
 // FUNCTION: fn_18416
 void TigerCompress(const std::uint64_t* block, std::uint64_t* state) {
-  std::uint64_t a = state[0];
-  std::uint64_t b = state[1];
-  std::uint64_t c = state[2];
-  const std::uint64_t aa = a;
-  const std::uint64_t bb = b;
-  const std::uint64_t cc = c;
-
-  std::uint64_t x0 = block[0];
-  std::uint64_t x1 = block[1];
-  std::uint64_t x2 = block[2];
-  std::uint64_t x3 = block[3];
-  std::uint64_t x4 = block[4];
-  std::uint64_t x5 = block[5];
-  std::uint64_t x6 = block[6];
-  std::uint64_t x7 = block[7];
-
-  for (int pass = 0; pass != 3; ++pass) {
-    if (pass != 0) {
-      x0 -= x7 ^ 0xA5A5A5A5A5A5A5A5ULL;
-      x1 ^= x0;
-      x2 += x1;
-      x3 -= x2 ^ (~x1 << 19);
-      x4 ^= x3;
-      x5 += x4;
-      x6 -= x5 ^ (~x4 >> 23);
-      x7 ^= x6;
-      x0 += x7;
-      x1 -= x0 ^ (~x7 << 19);
-      x2 ^= x1;
-      x3 += x2;
-      x4 -= x3 ^ (~x2 >> 23);
-      x5 ^= x4;
-      x6 += x5;
-      x7 -= x6 ^ 0x0123456789ABCDEFULL;
-    }
-
-    TigerRound(a, b, c, x0, pass);
-    TigerRound(b, c, a, x1, pass);
-    TigerRound(c, a, b, x2, pass);
-    TigerRound(a, b, c, x3, pass);
-    TigerRound(b, c, a, x4, pass);
-    TigerRound(c, a, b, x5, pass);
-    TigerRound(a, b, c, x6, pass);
-    TigerRound(b, c, a, x7, pass);
-
-    const std::uint64_t temp = a;
-    a = c;
-    c = b;
-    b = temp;
-  }
-
-  state[0] = a ^ aa;
-  state[1] = b - bb;
-  state[2] = c + cc;
+  tiger_compress_macro(((const word32*)block), ((word32*)state));
 }
