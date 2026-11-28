@@ -27,25 +27,9 @@ static const DWORD* FindHash(const DWORD* table, DWORD count, DWORD value) {
   return nullptr;
 }
 
-// INLINED
-static const GGHashEntry* FindEntryImpl(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
-  while (count != 0) {
-    const GGHashEntry* mid = &table[count >> 1];
-    if (nameHash == mid->nameHash && fileHash == mid->fileHash) {
-      return mid;
-    }
-    if (fileHash > mid->fileHash || (fileHash == mid->fileHash && nameHash > mid->nameHash)) {
-      table = mid + 1;
-      --count;
-    }
-    count >>= 1;
-  }
-  return nullptr;
-}
-
 // OFFSET: 0x004016E0
 // FUNCTION: fn_46728
-const GGHashEntry* __fastcall FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
+__declspec(noinline) const GGHashEntry* __fastcall FindEntry(const GGHashEntry* table, DWORD count, DWORD nameHash, DWORD fileHash) {
   while (count != 0) {
     const GGHashEntry* mid = table + (count >> 1);
     if (nameHash == mid->nameHash && fileHash == mid->fileHash) {
@@ -208,7 +192,7 @@ int CGGHash::VerifyHash(const wchar_t* name, DWORD hash) {
     return 1;
   }
   const GGHashEntry* entries = reinterpret_cast<const GGHashEntry*>(&table[count + 1]);
-  return FindEntryImpl(entries, count, nameCrc, nameHash) != nullptr ? 0 : 2;
+  return FindEntry(entries, count, nameCrc, nameHash) != nullptr ? 0 : 2;
 }
 
 // OFFSET: 0x00401870
