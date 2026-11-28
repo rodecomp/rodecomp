@@ -2,7 +2,8 @@
 
 #include "Network/NIPAddr.h"
 
-// INLINED
+// OFFSET: 0x007352B0
+// FUNCTION: fn_47505
 inline void NIPAddr::SetAddress(std::string text) {
   this->address = inet_addr(text.c_str());
 }
