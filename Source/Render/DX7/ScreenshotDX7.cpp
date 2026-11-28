@@ -239,8 +239,8 @@ int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   }
 
   properties.dibWidth = this->viewport.width;
-  properties.dibHeight = this->viewport.height;
   properties.dibBytes = pixels;
+  properties.dibHeight = this->viewport.height;
   properties.dibPadding = ((3 * this->viewport.width + 3) & ~3) - 3 * this->viewport.width;
   properties.jpegFile = filename;
   properties.dibChannels = 3;
