@@ -285,9 +285,9 @@ HRESULT DeviceOwnerDX7::CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags) 
   this->renderTarget->AddRef();
   SurfaceDescription(&description, DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT, 0);
   description.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-  description.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
   description.dwWidth = this->width;
   description.dwHeight = this->height;
+  description.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
   status = this->draw->CreateSurface(&description, &this->captureSurface, nullptr);
 
   return FAILED(status) ? E_OUTOFMEMORY : S_OK;
