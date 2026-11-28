@@ -121,6 +121,7 @@ public:
   // INLINED
   explicit UIStylingshopTabParentWnd() : UIWindow(0), m_display(nullptr), m_showInfo(nullptr) {
   }
+  ~UIStylingshopTabParentWnd() override;
   void UpdateFavoriteButton(const bool& favorite);
   bool IsBuyable() const;
 

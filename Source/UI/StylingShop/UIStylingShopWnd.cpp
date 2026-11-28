@@ -26,6 +26,10 @@
 // STRING: st_00939
 static const char g_messageTitle[] = "Message";
 
+// OFFSET: 0x00823C90
+// FUNCTION: fn_47478
+UIStylingshopTabParentWnd::~UIStylingshopTabParentWnd() = default;
+
 // OFFSET: 0x00829B50
 // FUNCTION: fn_10341
 void UIStylingshopTabParentWnd::OnCreate(int, int) {
