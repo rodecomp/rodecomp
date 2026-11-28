@@ -1384,8 +1384,8 @@ __declspec(safebuffers) void CEffectPrim::RenderPillarSquares(matrix& wtm) {
     this->state.slots[ec].vecTPre += slot.vecBNow;
     this->state.slots[ec].vecTNow += slot.vecBNow;
 
-    vec2 = this->state.slots[ec].vecTNow;
     vec1 = this->state.slots[ec].vecTPre;
+    vec2 = this->state.slots[ec].vecTNow;
     vec2.y -= this->state.slots[ec].height[12];
     vec1.y -= this->state.slots[ec].height[12];
 
