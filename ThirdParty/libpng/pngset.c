@@ -98,6 +98,8 @@ png_set_cHRM_XYZ_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E81690
+// FUNCTION: fn_47630
 void PNGAPI
 png_set_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
     double white_x, double white_y, double red_x, double red_y,
@@ -114,6 +116,8 @@ png_set_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
        png_fixed(png_ptr, blue_y, "cHRM Blue Y"));
 }
 
+// OFFSET: 0x00E81790
+// FUNCTION: fn_47631
 void PNGAPI
 png_set_cHRM_XYZ(png_const_structrp png_ptr, png_inforp info_ptr, double red_X,
     double red_Y, double red_Z, double green_X, double green_Y, double green_Z,
@@ -196,6 +200,8 @@ png_set_gAMA_fixed(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 
 #  ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E81B80
+// FUNCTION: fn_47633
 void PNGAPI
 png_set_gAMA(png_const_structrp png_ptr, png_inforp info_ptr, double file_gamma)
 {
@@ -684,6 +690,8 @@ png_set_sRGB_gAMA_and_cHRM(png_const_structrp png_ptr, png_inforp info_ptr,
 
 
 #ifdef PNG_iCCP_SUPPORTED
+// OFFSET: 0x00E81C90
+// FUNCTION: fn_47634
 void PNGAPI
 png_set_iCCP(png_const_structrp png_ptr, png_inforp info_ptr,
     png_const_charp name, int compression_type,
@@ -1325,6 +1333,8 @@ png_set_unknown_chunk_location(png_const_structrp png_ptr, png_inforp info_ptr,
 #endif /* STORE_UNKNOWN_CHUNKS */
 
 #ifdef PNG_MNG_FEATURES_SUPPORTED
+// OFFSET: 0x00E81450
+// FUNCTION: fn_47629
 png_uint_32 PNGAPI
 png_permit_mng_features (png_structrp png_ptr, png_uint_32 mng_features)
 {
@@ -1562,6 +1572,8 @@ png_set_rows(png_const_structrp png_ptr, png_inforp info_ptr,
 }
 #endif
 
+// OFFSET: 0x00E81A30
+// FUNCTION: fn_47632
 void PNGAPI
 png_set_compression_buffer_size(png_structrp png_ptr, size_t size)
 {
