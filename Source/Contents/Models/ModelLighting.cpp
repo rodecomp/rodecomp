@@ -65,13 +65,14 @@ namespace {
   }
 
   // INLINED
-  __forceinline void GroundColor(const C3dNode* node, const GroundGeometry& ground, const float* matrix, const std::array<float, 3>& vertex, std::uint32_t* output) {
+  __forceinline void GroundPosition(vector3d& world, const C3dNode* node, const float* matrix, const std::array<float, 3>& vertex) {
     const vector3d position{
       ((vertex[1] * matrix[3] + vertex[0] * matrix[0]) + vertex[2] * matrix[6]) + matrix[9],
       ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + vertex[2] * matrix[7]) + matrix[10],
       ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + vertex[2] * matrix[8]) + matrix[11]};
-    const vector3d world{position.x + node->model->GetPosition().x, position.y + node->model->GetPosition().y, position.z + node->model->GetPosition().z};
-    ground.WorldColor(world, output);
+    world.x = position.x + node->model->GetPosition().x;
+    world.y = position.y + node->model->GetPosition().y;
+    world.z = position.z + node->model->GetPosition().z;
   }
 
   // INLINED
@@ -113,23 +114,27 @@ void C3dNode::SampleGroundColors(const CRenderer*, const float* matrix, const Gr
   const std::array<float, 3>* vertices = this->mesh->vertices;
   const ModelFace* faces = this->mesh->faces;
 
+  vector3d world;
   std::uint32_t sampled[3];
 
   for (int index = 0; index < this->mesh->faceCount; ++index) {
     const ModelFace& face = faces[index];
     const ModelFaceState& state = this->faceState[index];
 
-    GroundColor(this, ground, matrix, vertices[face.vertices[0]], sampled);
+    GroundPosition(world, this, matrix, vertices[face.vertices[0]]);
+    ground.WorldColor(world, sampled);
     this->faceValues[index * 9] = AddChannel(sampled[0], (state.colors[0] >> 16) & 255u);
     this->faceValues[index * 9 + 1] = AddChannel(sampled[1], (state.colors[0] >> 8) & 255u);
     this->faceValues[index * 9 + 2] = AddChannel(sampled[2], state.colors[0] & 255u);
 
-    GroundColor(this, ground, matrix, vertices[face.vertices[1]], sampled);
+    GroundPosition(world, this, matrix, vertices[face.vertices[1]]);
+    ground.WorldColor(world, sampled);
     this->faceValues[index * 9 + 3] = AddChannel(sampled[0], (state.colors[1] >> 16) & 255u);
     this->faceValues[index * 9 + 4] = AddChannel(sampled[1], (state.colors[1] >> 8) & 255u);
     this->faceValues[index * 9 + 5] = AddChannel(sampled[2], state.colors[1] & 255u);
 
-    GroundColor(this, ground, matrix, vertices[face.vertices[2]], sampled);
+    GroundPosition(world, this, matrix, vertices[face.vertices[2]]);
+    ground.WorldColor(world, sampled);
     this->faceValues[index * 9 + 6] = AddChannel(sampled[0], (state.colors[2] >> 16) & 255u);
     this->faceValues[index * 9 + 7] = AddChannel(sampled[1], (state.colors[2] >> 8) & 255u);
     this->faceValues[index * 9 + 8] = AddChannel(sampled[2], state.colors[2] & 255u);
