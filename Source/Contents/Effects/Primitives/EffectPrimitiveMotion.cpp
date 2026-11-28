@@ -5677,11 +5677,14 @@ void CEffectPrim::PrimWaveSpin() {
 
     const int process = slot.process + 1;
     slot.process = process;
-    const int rotStart = slot.rotStart;
-    const std::int16_t rot = static_cast<std::int16_t>(rotStart + (this->state.accel != 99.0f ? 5 : 3));
-    slot.rotStart = rot;
-    if (rot >= 360) {
-      slot.rotStart = static_cast<std::int16_t>(rot - 360);
+    if (this->state.accel != 99.0f) {
+      slot.rotStart += 5;
+    } else {
+      slot.rotStart += 3;
+    }
+
+    if (slot.rotStart >= 360) {
+      slot.rotStart -= 360;
     }
 
     slot.distance = Advanced(this->state.accel != 99.0f ? 0.3f : 0.1f, slot.distance);
@@ -5721,12 +5724,8 @@ void CEffectPrim::PrimWaveSpin() {
     const int phase = index * 90;
     for (int point = 0; point < 21; ++point) {
       const int wave = (phase + slot.process) % 360;
-      float base = g_sinTable[9 * point];
-      base *= slot.maxHeight;
-      slot.height[point] = base;
-      float swing = g_sinTable[9 * point];
-      swing *= slot.maxHeight;
-      slot.height[point] = swing * 0.15f * g_sinTable[wave] + base;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight;
+      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.15f * g_sinTable[wave] + slot.height[point];
     }
   }
 }
@@ -7213,13 +7212,10 @@ void CEffectPrim::PrimSTIN3() {
 // OFFSET: 0x00BE8CE0
 // FUNCTION: fn_19947
 bool CEffectPrim::PrimDriftingSparks() {
-  EffectPrimitiveSlot* slots = this->state.slots;
-  FaceCamera(slots);
+  FaceCamera(this->state.slots);
+  FollowMaster(*this);
 
-  const CRagEffect* master = this->state.master;
-  this->render.position = master->render.position;
-
-  EffectPrimitiveSlot& slot = slots[0];
+  EffectPrimitiveSlot& slot = this->state.slots[0];
 
   if (slot.life != 1) {
     return true;
@@ -7464,95 +7460,94 @@ bool CEffectPrim::PrimDriftingOrbs() {
 
   FollowMaster(*this);
 
-  for (int ec = 0; ec < 1; ++ec) {
-    if (this->state.slots[ec].life == 1) {
-      ++this->state.slots[ec].process;
+  int ec = 0;
+  if (this->state.slots[ec].life == 1) {
+    ++this->state.slots[ec].process;
 
-      if (this->state.slots[ec].process <= 200) {
-        ++this->state.slots[ec].alphaB;
-      }
+    if (this->state.slots[ec].process <= 200) {
+      ++this->state.slots[ec].alphaB;
+    }
 
-      DriftSlotAngles(this->state.slots[ec], 3);
+    DriftSlotAngles(this->state.slots[ec], 3);
 
-      if (this->state.slots[ec].flag1[0] != DRIFTING_ORB_STYLE_DEFAULT && this->state.slots[ec].flag1[0] < DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
-        if (this->state.slots[ec].flag1[0] >= DRIFTING_ORB_STYLE_FIRE) {
-          switch (this->state.isChangeProcessed) {
-          case DRIFTING_ORB_IDLE:
-            if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
-              this->state.slots[ec].height[6] += 1.0f;
+    if (this->state.slots[ec].flag1[0] != DRIFTING_ORB_STYLE_DEFAULT && this->state.slots[ec].flag1[0] < DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
+      if (this->state.slots[ec].flag1[0] >= DRIFTING_ORB_STYLE_FIRE) {
+        switch (this->state.isChangeProcessed) {
+        case DRIFTING_ORB_IDLE:
+          if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
+            this->state.slots[ec].height[6] += 1.0f;
 
-              if (this->state.slots[ec].height[6] >= 360.0f) {
-                this->state.slots[ec].height[6] -= 360.0f;
-              }
+            if (this->state.slots[ec].height[6] >= 360.0f) {
+              this->state.slots[ec].height[6] -= 360.0f;
             }
-
-            this->state.slots[ec].distance = 6.0f;
-            this->state.slots[ec].height[7] = -15.0f;
-            break;
-          case DRIFTING_ORB_DISPERSING:
-            if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
-              this->state.slots[ec].height[6] += 15.0f;
-
-              if (this->state.slots[ec].height[6] >= 360.0f) {
-                this->state.slots[ec].height[6] -= 360.0f;
-              }
-            }
-
-            this->state.slots[ec].height[7] -= 0.1f;
-
-            if (this->state.slots[ec].height[7] <= -30.0f) {
-              this->state.slots[ec].height[7] = -30.0f;
-            }
-
-            this->state.slots[ec].distance += 0.02f;
-
-            if (this->state.slots[ec].distance >= 10.0f) {
-              this->state.slots[ec].distance = 10.0f;
-            }
-            break;
           }
-        } else if (this->state.slots[ec].process % 2 == 0) {
-          this->state.slots[ec].height[6] += 1.0f;
 
-          if (this->state.slots[ec].height[6] >= 360.0f) {
-            this->state.slots[ec].height[6] -= 360.0f;
+          this->state.slots[ec].distance = 6.0f;
+          this->state.slots[ec].height[7] = -15.0f;
+          break;
+        case DRIFTING_ORB_DISPERSING:
+          if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
+            this->state.slots[ec].height[6] += 15.0f;
+
+            if (this->state.slots[ec].height[6] >= 360.0f) {
+              this->state.slots[ec].height[6] -= 360.0f;
+            }
           }
+
+          this->state.slots[ec].height[7] -= 0.1f;
+
+          if (this->state.slots[ec].height[7] <= -30.0f) {
+            this->state.slots[ec].height[7] = -30.0f;
+          }
+
+          this->state.slots[ec].distance += 0.02f;
+
+          if (this->state.slots[ec].distance >= 10.0f) {
+            this->state.slots[ec].distance = 10.0f;
+          }
+          break;
         }
-      } else {
+      } else if (this->state.slots[ec].process % 2 == 0) {
         this->state.slots[ec].height[6] += 1.0f;
 
         if (this->state.slots[ec].height[6] >= 360.0f) {
           this->state.slots[ec].height[6] -= 360.0f;
         }
       }
+    } else {
+      this->state.slots[ec].height[6] += 1.0f;
 
-      if (this->state.slots[ec].height[10] == 1.0f) {
-        this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * 0.7f;
-        this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])] * 0.7f;
-        this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])] * 0.7f;
-        this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[6])] * 5.5f + this->state.slots[ec].vecBNow.x;
-        this->state.slots[ec].vecBNow.z = g_cosTable[static_cast<int>(this->state.slots[ec].height[6])] * 5.5f + this->state.slots[ec].vecBNow.z;
+      if (this->state.slots[ec].height[6] >= 360.0f) {
+        this->state.slots[ec].height[6] -= 360.0f;
+      }
+    }
+
+    if (this->state.slots[ec].height[10] == 1.0f) {
+      this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * 0.7f;
+      this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])] * 0.7f;
+      this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])] * 0.7f;
+      this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[6])] * 5.5f + this->state.slots[ec].vecBNow.x;
+      this->state.slots[ec].vecBNow.z = g_cosTable[static_cast<int>(this->state.slots[ec].height[6])] * 5.5f + this->state.slots[ec].vecBNow.z;
+    } else {
+      if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_DEFAULT || this->state.slots[ec].flag1[0] >= DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
+        this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
+        this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
+        this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
       } else {
-        if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_DEFAULT || this->state.slots[ec].flag1[0] >= DRIFTING_ORB_STYLE_ONE_EXTRA_GLOW) {
-          this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
-          this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
-          this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
-        } else {
-          this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * 0.5f;
-          this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])] * 0.5f;
-          this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])] * 0.5f;
-        }
-
-        this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[6])] * 7.0f + this->state.slots[ec].vecBNow.x;
-        this->state.slots[ec].vecBNow.z = g_cosTable[static_cast<int>(this->state.slots[ec].height[6])] * 7.0f + this->state.slots[ec].vecBNow.z;
+        this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * 0.5f;
+        this->state.slots[ec].vecBNow.z = g_sinTable[static_cast<int>(this->state.slots[ec].height[2])] * 0.5f;
+        this->state.slots[ec].vecBNow.y = g_sinTable[static_cast<int>(this->state.slots[ec].height[4])] * 0.5f;
       }
 
-      this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[7] + this->state.slots[ec].vecBNow.y;
-      this->state.slots[ec].height[8] += static_cast<float>(ClampedRandom(5) + 5);
+      this->state.slots[ec].vecBNow.x = g_sinTable[static_cast<int>(this->state.slots[ec].height[6])] * 7.0f + this->state.slots[ec].vecBNow.x;
+      this->state.slots[ec].vecBNow.z = g_cosTable[static_cast<int>(this->state.slots[ec].height[6])] * 7.0f + this->state.slots[ec].vecBNow.z;
+    }
 
-      if (this->state.slots[ec].height[8] >= 360.0f) {
-        this->state.slots[ec].height[8] -= 360.0f;
-      }
+    this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[7] + this->state.slots[ec].vecBNow.y;
+    this->state.slots[ec].height[8] += static_cast<float>(ClampedRandom(5) + 5);
+
+    if (this->state.slots[ec].height[8] >= 360.0f) {
+      this->state.slots[ec].height[8] -= 360.0f;
     }
   }
 
