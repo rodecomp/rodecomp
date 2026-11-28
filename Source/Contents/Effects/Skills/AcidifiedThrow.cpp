@@ -229,8 +229,8 @@ void CAcidifiedThrow::OnProcess() {
         this->impactEmitters[i] = nullptr;
       } else {
         vector3d position = this->impactPosition;
-        position.y -= 14.0f;
         position.x -= g_projectionDepthNumerator;
+        position.y -= 14.0f;
         emitter->position = position;
         this->impactEmitters[i]->Process(0.0f, 0.0f, 0.0f);
         ++activeCount;
