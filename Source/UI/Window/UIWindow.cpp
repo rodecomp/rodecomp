@@ -1983,8 +1983,8 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
 
       if (*current == '^') {
         const unsigned char red = static_cast<unsigned char>(g_hexDigits[current[1]] * 16 + g_hexDigits[current[2]]);
-        const unsigned char green = static_cast<unsigned char>(g_hexDigits[current[3]] * 16 + g_hexDigits[current[4]]);
         const unsigned char blue = static_cast<unsigned char>(g_hexDigits[current[5]] * 16 + g_hexDigits[current[6]]);
+        const unsigned char green = static_cast<unsigned char>(g_hexDigits[current[3]] * 16 + g_hexDigits[current[4]]);
         const std::uint32_t color = red | (green << 8) | (blue << 16);
 
         if (color != 0) {
