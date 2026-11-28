@@ -15335,11 +15335,11 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.headDirection = packet->headDir;
   entry.guildId = packet->guildId;
   entry.honor = packet->honor;
-  entry.virtue = packet->virtue;
   entry.shield = static_cast<int>(weapon >> 32);
+  entry.virtue = packet->virtue;
   entry.guildVersion = packet->guildVersion;
-  entry.robe = packet->robe;
   entry.aid = packet->aid;
+  entry.robe = packet->robe;
   if (packet->objectType == PC_TYPE) {
     entry.state = 0;
   } else {
