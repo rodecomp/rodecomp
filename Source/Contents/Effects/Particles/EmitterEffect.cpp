@@ -178,8 +178,8 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
       particle->SetColor(static_cast<short>(this->red), static_cast<short>(this->green), static_cast<short>(this->blue));
 
       if (!this->fixedAlpha) {
-        const float fade = this->timeScale * 255.0f;
         const float value = static_cast<float>(particle->alpha);
+        const float fade = this->timeScale * 255.0f;
 
         if (60.0f > particle->life * 60.0f - static_cast<float>(age)) {
           const int faded = static_cast<int>(value - fade);
