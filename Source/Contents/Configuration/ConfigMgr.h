@@ -6,7 +6,8 @@
 // VTABLE: vt_00751
 class CConfigMgr {
 public:
-  // INLINED
+  // OFFSET: 0x007A6F80
+  // FUNCTION: fn_47487
   CConfigMgr() : m_initialized(false), m_hasPerformanceCounter(true) {
     if (!QueryPerformanceFrequency(&this->m_frequency)) {
       this->m_hasPerformanceCounter = false;
