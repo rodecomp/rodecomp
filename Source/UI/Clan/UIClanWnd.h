@@ -13,6 +13,7 @@ public:
   // FUNCTION: fn_46565
   UIClanWnd() : UIFrameWnd(0), m_saved(nullptr), m_title(nullptr) {
   }
+  ~UIClanWnd() override;
   void StoreInfo() override;
   void DrawTabBackground();
   void OnCreate(int width, int height) override = 0;

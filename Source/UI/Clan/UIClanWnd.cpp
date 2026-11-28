@@ -25,6 +25,10 @@
 // FUNCTION: fn_10625
 UIClanInfoManageWnd::UIClanInfoManageWnd() : UIClanWnd(), m_emblem(nullptr) {}
 
+// OFFSET: 0x0084CD30
+// FUNCTION: fn_47517
+UIClanWnd::~UIClanWnd() {}
+
 // OFFSET: 0x0084CEF0
 // FUNCTION: fn_10628
 int UIClanInfoManageWnd::Tab() {
