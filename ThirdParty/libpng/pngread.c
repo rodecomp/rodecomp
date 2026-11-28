@@ -641,6 +641,8 @@ png_read_row(png_structrp png_ptr, png_bytep row, png_bytep dsp_row)
  * [*] png_handle_alpha() does not exist yet, as of this version of libpng
  */
 
+// OFFSET: 0x00E74840
+// FUNCTION: fn_47573
 void PNGAPI
 png_read_rows(png_structrp png_ptr, png_bytepp row,
     png_bytepp display_row, png_uint_32 num_rows)
@@ -1462,6 +1464,8 @@ png_image_read_header(png_voidp argument)
 }
 
 #ifdef PNG_STDIO_SUPPORTED
+// OFFSET: 0x00E714C0
+// FUNCTION: fn_47571
 int PNGAPI
 png_image_begin_read_from_stdio(png_imagep image, FILE* file)
 {
@@ -1561,6 +1565,8 @@ png_image_memory_read(png_structp png_ptr, png_bytep out, size_t need)
    }
 }
 
+// OFFSET: 0x00E71430
+// FUNCTION: fn_47570
 int PNGAPI png_image_begin_read_from_memory(png_imagep image,
     png_const_voidp memory, size_t size)
 {
@@ -4098,6 +4104,8 @@ png_image_read_direct(png_voidp argument)
    }
 }
 
+// OFFSET: 0x00E71530
+// FUNCTION: fn_47572
 int PNGAPI
 png_image_finish_read(png_imagep image, png_const_colorp background,
     void *buffer, png_int_32 row_stride, void *colormap)
