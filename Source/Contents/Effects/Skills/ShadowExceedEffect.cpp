@@ -119,7 +119,7 @@ void CShadowExceed::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     if (IsParticleActive(*it) == true) {
       this->UpdateEmitter(*it);
-      ++it;
+      it++;
     } else {
       FreeParticle(*it);
       it = this->emitters.erase(it);
