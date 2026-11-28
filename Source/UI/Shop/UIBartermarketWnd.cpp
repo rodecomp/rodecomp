@@ -966,7 +966,10 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
     if (found.second.value == 0) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
-    } else if (CGameMode* mode = g_modeMgr.GetGameMode()) {
+      return;
+    }
+
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterEntry(DRAG_BARTER_MARKET, found.second, 1, -1);
     }
   }
