@@ -651,6 +651,8 @@ png_get_cHRM_XYZ_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
    return (0);
 }
 
+// OFFSET: 0x00E7B0A0
+// FUNCTION: fn_47618
 png_uint_32 PNGAPI
 png_get_cHRM_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_fixed_point *white_x, png_fixed_point *white_y, png_fixed_point *red_x,
@@ -688,6 +690,8 @@ png_get_cHRM_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
 
 #ifdef PNG_gAMA_SUPPORTED
 #  ifdef PNG_FIXED_POINT_SUPPORTED
+// OFFSET: 0x00E7B2D0
+// FUNCTION: fn_47591
 png_uint_32 PNGAPI
 png_get_gAMA_fixed(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_fixed_point *file_gamma)
@@ -748,6 +752,8 @@ png_get_sRGB(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #endif
 
 #ifdef PNG_iCCP_SUPPORTED
+// OFFSET: 0x00E7B330
+// FUNCTION: fn_47593
 png_uint_32 PNGAPI
 png_get_iCCP(png_const_structrp png_ptr, png_inforp info_ptr,
     png_charpp name, int *compression_type,
@@ -803,6 +809,8 @@ png_get_eXIf(png_const_structrp png_ptr, png_inforp info_ptr,
   return 0;
 }
 
+// OFFSET: 0x00E7B220
+// FUNCTION: fn_47588
 png_uint_32 PNGAPI
 png_get_eXIf_1(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_uint_32 *num_exif, png_bytep *exif)
@@ -822,6 +830,8 @@ png_get_eXIf_1(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #endif
 
 #ifdef PNG_hIST_SUPPORTED
+// OFFSET: 0x00E7B300
+// FUNCTION: fn_47592
 png_uint_32 PNGAPI
 png_get_hIST(png_const_structrp png_ptr, png_inforp info_ptr,
     png_uint_16p *hist)
@@ -1187,6 +1197,8 @@ png_get_user_chunk_ptr(png_const_structrp png_ptr)
 }
 #endif
 
+// OFFSET: 0x00E7B1B0
+// FUNCTION: fn_47586
 size_t PNGAPI
 png_get_compression_buffer_size(png_const_structrp png_ptr)
 {
