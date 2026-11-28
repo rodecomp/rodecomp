@@ -13,7 +13,7 @@ class DeviceOwnerDX9;
 struct RenderAdapter {
   // OFFSET: 0x00A3D0A0
   // FUNCTION: fn_15905
-  RenderAdapter() : backend(RENDER_BACKEND_DEFAULT), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
+  RenderAdapter() noexcept : backend(RENDER_BACKEND_DEFAULT), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
   }
 
   // INLINED
