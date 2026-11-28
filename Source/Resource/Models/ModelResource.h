@@ -168,8 +168,6 @@ public:
   bool Load(const char* name) override;
   int animationLength;
 
-private:
-  void ReadNode(CFile& file, unsigned minor, const std::vector<std::string>& textureNames);
 };
 
 class C3dModelResV2 : public C3dModelRes {

@@ -182,106 +182,10 @@ void C3dModelRes::Unload() {
 }
 
 // INLINED
-__forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const std::vector<std::string>& textureNames) {
-  ModelNodeV1* node = new ModelNodeV1;
-  node->model = this;
-  node->alpha = this->alpha;
-  char field[40]{};
-  file.Read(field, sizeof(field));
-  node->name = field;
-  file.Read(field, sizeof(field));
-  node->parentName = field;
-  int textureCount = 0;
-  file.Read(&textureCount, 4);
-
-  for (int index = 0; index < textureCount; ++index) {
-    int textureIndex = 0;
-    file.Read(&textureIndex, 4);
-    CTexture* texture = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
-    node->textures.push_back(texture);
-
-    if (texture) {
-      texture->Retain();
-    }
-  }
-
-  float matrix[12];
-  file.Read(matrix, sizeof(matrix));
-  file.Read(node->position, sizeof(node->position));
-  file.Read(&node->angle, 4);
-  file.Read(node->axis, sizeof(node->axis));
-  file.Read(node->scale, sizeof(node->scale));
-  node->mesh = new ModelMesh;
-  ModelMesh& mesh = *node->mesh;
-  int vertexCount = 0;
-  file.Read(&vertexCount, 4);
-  mesh.vertexCount = vertexCount;
-  ShadeVector* vertices = new ShadeVector[vertexCount];
-  file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-  mesh.vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
-
-  for (int index = 0; index < vertexCount; ++index) {
-    ShadeVector transformed;
-    transformed.x = vertices[index].x * matrix[0] + vertices[index].y * matrix[3] + vertices[index].z * matrix[6] + matrix[9];
-    transformed.y = vertices[index].x * matrix[1] + vertices[index].y * matrix[4] + vertices[index].z * matrix[7] + matrix[10];
-    transformed.z = vertices[index].x * matrix[2] + vertices[index].y * matrix[5] + vertices[index].z * matrix[8] + matrix[11];
-    vertices[index] = transformed;
-  }
-
-  int textureVertexCount = 0;
-  file.Read(&textureVertexCount, 4);
-  mesh.textureVertexCount = textureVertexCount;
-  ModelTextureVertex* textureVertices = new ModelTextureVertex[textureVertexCount];
-
-  if (minor == 1) {
-    for (int index = 0; index < textureVertexCount; ++index) {
-      float uv[2];
-      file.Read(uv, sizeof(uv));
-      textureVertices[index].shaded = 0xFFFFFFFFu;
-      textureVertices[index].u = uv[0];
-      textureVertices[index].v = uv[1];
-    }
-  } else {
-    file.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
-  }
-
-  mesh.textureVertices = textureVertices;
-  int faceCount = 0;
-  file.Read(&faceCount, 4);
-  mesh.faceCount = faceCount;
-  ModelFace* faces = new ModelFace[faceCount];
-
-  if (minor == 1) {
-    for (int index = 0; index < faceCount; ++index) {
-      ModelFace& face = faces[index];
-      ModelFaceRecordV1 record;
-      file.Read(&record, sizeof(record));
-      record.CopyTo(face);
-
-      if (face.smoothing.empty()) {
-        face.smoothing.push_back(0);
-      }
-    }
-  } else {
-    for (int index = 0; index < faceCount; ++index) {
-      ModelFace& face = faces[index];
-      ModelFaceRecord record;
-      file.Read(&record, sizeof(record));
-      record.CopyTo(face);
-
-      if (face.smoothing.empty()) {
-        face.smoothing.push_back(record.smoothGroup);
-      }
-    }
-  }
-
-  mesh.faces = faces;
-  std::sort(mesh.faces, mesh.faces + mesh.faceCount);
-  mesh.CalculateNormals();
-  node->rotationKeys.Read(file);
-
-  this->nodes.push_back(node);
-  this->meshes[node->name] = node->mesh;
+inline void MatrixMult(ShadeVector& result, const ShadeVector& vertex, const matrix& transform) {
+  result.x = vertex.x * transform.values[0] + vertex.y * transform.values[3] + vertex.z * transform.values[6] + transform.values[9];
+  result.y = vertex.x * transform.values[1] + vertex.y * transform.values[4] + vertex.z * transform.values[7] + transform.values[10];
+  result.z = vertex.x * transform.values[2] + vertex.y * transform.values[5] + vertex.z * transform.values[8] + transform.values[11];
 }
 
 // OFFSET: 0x00750B10
@@ -344,8 +248,103 @@ bool C3dModelResV1::Load(const char* name) {
   int nodeCount = 0;
   file.Read(&nodeCount, 4);
 
-  for (int index = 0; index < nodeCount; ++index) {
-    this->ReadNode(file, minor, textureNames);
+  for (int nodeIndex = 0; nodeIndex < nodeCount; ++nodeIndex) {
+    ModelNodeV1* node = new ModelNodeV1;
+    node->model = this;
+    node->alpha = this->alpha;
+    char field[40]{};
+    file.Read(field, sizeof(field));
+    node->name = field;
+    file.Read(field, sizeof(field));
+    node->parentName = field;
+    int textureCount = 0;
+    file.Read(&textureCount, 4);
+
+    for (int index = 0; index < textureCount; ++index) {
+      int textureIndex = 0;
+      file.Read(&textureIndex, 4);
+      CTexture* texture = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+      node->textures.push_back(texture);
+
+      if (texture) {
+        texture->Retain();
+      }
+    }
+
+    matrix transform;
+    file.Read(&transform, sizeof(transform));
+    file.Read(node->position, sizeof(node->position));
+    file.Read(&node->angle, 4);
+    file.Read(node->axis, sizeof(node->axis));
+    file.Read(node->scale, sizeof(node->scale));
+    node->mesh = new ModelMesh;
+    int vertexCount = 0;
+    file.Read(&vertexCount, 4);
+    node->mesh->vertexCount = vertexCount;
+    ShadeVector* vertices = new ShadeVector[vertexCount];
+    file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
+    node->mesh->vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
+
+    for (int index = 0; index < vertexCount; ++index) {
+      ShadeVector transformed;
+      MatrixMult(transformed, vertices[index], transform);
+      vertices[index] = transformed;
+    }
+
+    int textureVertexCount = 0;
+    file.Read(&textureVertexCount, 4);
+    node->mesh->textureVertexCount = textureVertexCount;
+    ModelTextureVertex* textureVertices = new ModelTextureVertex[textureVertexCount];
+
+    if (minor == 1) {
+      for (int index = 0; index < textureVertexCount; ++index) {
+        float uv[2];
+        file.Read(uv, sizeof(uv));
+        textureVertices[index].shaded = 0xFFFFFFFFu;
+        textureVertices[index].u = uv[0];
+        textureVertices[index].v = uv[1];
+      }
+    } else {
+      file.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
+    }
+
+    node->mesh->textureVertices = textureVertices;
+    int faceCount = 0;
+    file.Read(&faceCount, 4);
+    node->mesh->faceCount = faceCount;
+    ModelFace* faces = new ModelFace[faceCount];
+
+    if (minor == 1) {
+      for (int index = 0; index < faceCount; ++index) {
+        ModelFace& face = faces[index];
+        ModelFaceRecordV1 record;
+        file.Read(&record, sizeof(record));
+        record.CopyTo(face);
+
+        if (face.smoothing.empty()) {
+          face.smoothing.push_back(0);
+        }
+      }
+    } else {
+      for (int index = 0; index < faceCount; ++index) {
+        ModelFace& face = faces[index];
+        ModelFaceRecord record;
+        file.Read(&record, sizeof(record));
+        record.CopyTo(face);
+
+        if (face.smoothing.empty()) {
+          face.smoothing.push_back(record.smoothGroup);
+        }
+      }
+    }
+
+    node->mesh->faces = faces;
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
+    node->mesh->CalculateNormals();
+    node->rotationKeys.Read(file);
+
+    this->nodes.push_back(node);
+    this->meshes[node->name] = node->mesh;
   }
 
   for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
