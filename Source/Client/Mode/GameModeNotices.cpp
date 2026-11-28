@@ -4444,7 +4444,7 @@ void CGameMode::ReceiveRodexMailList(const unsigned char* packet) {
       if (mails->find(entry->mailId) == mails->end() && !mail.isRead) {
         ++g_rodexMailStore->unreadCount;
       }
-      mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+      mails->insert(std::make_pair(entry->mailId, mail));
     }
 
     offset += entry->titleLength + 0x29;
@@ -5463,7 +5463,7 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
     mail.sender.assign(entry->sender, (std::min)(static_cast<std::size_t>(24), std::strlen(entry->sender)));
     mail.title.assign(entry->title, entry->titleLength);
     if (mails->find(entry->mailId) == mails->end()) {
-      mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
+      mails->insert(std::make_pair(entry->mailId, mail));
     }
     entry = reinterpret_cast<const RodexMailPageEntry*>(entry->title + entry->titleLength);
   }
