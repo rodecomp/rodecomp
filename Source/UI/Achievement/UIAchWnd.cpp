@@ -223,11 +223,11 @@ void UIAchievementWnd::CreateTab() {
   tab->tabWidth = 102;
   tab->groupHeight = 40;
   tab->subHeight = 26;
-  tab->tabState = 0;
   tab->selectedGroupColor = 0x9C1810;
   tab->groupColor = 0x9C6B5A;
   tab->selectedSubColor = 0x9B6A59;
   tab->subColor = 0x9B6A59;
+  tab->tabState = 0;
   tab->ClearGroups();
 
   tab->scrollBar = new UIAchScrollBar();
