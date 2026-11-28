@@ -3011,42 +3011,42 @@ void CPlayer::UpdatePendingAction() {
     }
     if (target == nullptr) {
       break;
-    }
+    } else {
+      int column;
+      int row;
+      mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
+      const float x = target->render.position.x;
+      const float z = target->render.position.z;
+      int cellX = target->movementState[5];
+      int cellY = target->destCellY;
+      const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
+      mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
+      const int state = static_cast<int>(this->render.state);
+      if (state != ST_MOVE && state != ST_STAND && state != ST_DAMAGE && state < 16) {
+        return;
+      }
 
-    int column;
-    int row;
-    mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
-    const float x = target->render.position.x;
-    const float z = target->render.position.z;
-    int cellX = target->movementState[5];
-    int cellY = target->destCellY;
-    const int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
-    mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, range);
-    const int state = static_cast<int>(this->render.state);
-    if (state != ST_MOVE && state != ST_STAND && state != ST_DAMAGE && state < 16) {
+      const float targetDistance = target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z);
+      const float distance = this->AdjustFollowDistance(target, targetDistance);
+      const bool inRange = distance <= static_cast<float>(range * 5) + 5.5f;
+      const bool atDestination = this->destCellX == column && this->destCellZ == row;
+      if (inRange || atDestination) {
+        this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0);
+        break;
+      }
+
+      if (this->destCellX == cellX && this->destCellZ == cellY) {
+        return;
+      }
+      if (this->render.state == ST_ATTACK) {
+        return;
+      }
+      this->destCellZ = cellY;
+      this->destCellX = cellX;
+      this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
+      this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, cellX, cellY, 0, 0, 0, 0);
       return;
     }
-
-    const float targetDistance = target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z);
-    const float distance = this->AdjustFollowDistance(target, targetDistance);
-    const bool inRange = distance <= static_cast<float>(range * 5) + 5.5f;
-    const bool atDestination = this->destCellX == column && this->destCellZ == row;
-    if (inRange || atDestination) {
-      this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0);
-      break;
-    }
-
-    if (this->destCellX == cellX && this->destCellZ == cellY) {
-      return;
-    }
-    if (this->render.state == ST_ATTACK) {
-      return;
-    }
-    this->destCellZ = cellY;
-    this->destCellX = cellX;
-    this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
-    this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, cellX, cellY, 0, 0, 0, 0);
-    return;
   }
   case PT_GROUNDSKILL: {
     int groundX = this->gSkillDx;
