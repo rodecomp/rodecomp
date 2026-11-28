@@ -38,30 +38,19 @@ __declspec(noinline) CMiniPartyWndSortArea::~CMiniPartyWndSortArea() {
 void __stdcall Nullsub228() {
 }
 
-// OFFSET: 0x00A91870
-// FUNCTION: fn_17165
-UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
-  for (UIWindow* window : this->snapExcluded) {
-    if (cell == static_cast<UIMiniPartyWnd*>(window)->m_cell) {
-      return window;
-    }
-  }
-  return nullptr;
-}
-
 // OFFSET: 0x00737B00
 // FUNCTION: fn_07657
 int CMiniPartyWndAreaMgr::FindFreeCell() {
   CMiniPartyWndSortArea area(g_windowMgr.GetMiniPartyUsableArea());
   const std::list<int>& cells = area.GetCells();
 
-  const auto end = this->available.end();
-  auto it = this->available.begin();
-  for (; it != end; ++it) {
+  int result = -1;
+  for (auto it = this->available.begin(); it != this->available.end(); ++it) {
     if (cells.end() != std::find(cells.begin(), cells.end(), *it) && g_windowMgr.FindSnapExcludedWindow(*it) == nullptr) {
+      result = *it;
       break;
     }
   }
 
-  return it != end ? *it : -1;
+  return result;
 }

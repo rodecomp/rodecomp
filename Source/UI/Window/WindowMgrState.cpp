@@ -122,6 +122,17 @@ UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
   return nullptr;
 }
 
+// OFFSET: 0x00A91870
+// FUNCTION: fn_17165
+UIWindow* UIWindowMgr::FindSnapExcludedWindow(int cell) {
+  for (UIWindow* window : this->snapExcluded) {
+    if (cell == static_cast<UIMiniPartyWnd*>(window)->m_cell) {
+      return window;
+    }
+  }
+  return nullptr;
+}
+
 // OFFSET: 0x00AA64D0
 // FUNCTION: fn_17230
 void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
