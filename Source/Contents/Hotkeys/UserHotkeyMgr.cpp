@@ -109,6 +109,8 @@ CUserHotkeyMgr::CUserHotkeyMgr() : m_loaded(false), m_changes(0), m_version2(fal
   this->m_enabled = true;
 }
 
+// OFFSET: 0x005F7BD0
+// FUNCTION: fn_47490
 CUserHotkeyMgr::~CUserHotkeyMgr() = default;
 
 // OFFSET: 0x005F7F70
