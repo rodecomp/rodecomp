@@ -56,7 +56,7 @@ void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture*
   const ScreenPoint p1 = {start.x + offsetX, start.y + offsetY};
   const ScreenPoint p2 = {end.x - offsetX, end.y - offsetY};
   const ScreenPoint p3 = {end.x + offsetX, end.y + offsetY};
-  DrawScreenQuad(p0, p1, p2, p3, texture, color);
+  DrawLineQuad(p0, p1, p2, p3, texture, color);
 }
 
 // OFFSET: 0x0054E6D0
