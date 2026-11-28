@@ -1777,8 +1777,8 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int nameWidth = this->TextWidth(it->DisplayName(), 0, 0, 11, 0, 0);
     int nameOffset = 0;
+    const int nameWidth = this->TextWidth(it->DisplayName(), 0, 0, 11, 0, 0);
     if (nameWidth < 48) {
       nameOffset = (48 - nameWidth) / 2;
     }
