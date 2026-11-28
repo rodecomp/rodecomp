@@ -3983,9 +3983,9 @@ void CGrannyCorpse3d::Render(int argument) {
   float lightY = inverse.values[1] * 0.0f - inverse.values[4] * 300.0f + inverse.values[7] * 0.0f + inverse.values[10];
   float lightZ = inverse.values[2] * 0.0f - inverse.values[5] * 300.0f + inverse.values[8] * 0.0f + inverse.values[11];
   const float scale = 1.0f / SquareRoot(lightY * lightY + lightX * lightX + lightZ * lightZ);
+  lightZ *= scale;
   lightX *= scale;
   lightY *= scale;
-  lightZ *= scale;
 
   float screenX;
   float screenY;
