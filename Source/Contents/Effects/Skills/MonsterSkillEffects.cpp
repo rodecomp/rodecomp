@@ -1482,11 +1482,11 @@ void CFootprintStrEffect::Render() {
 // OFFSET: 0x00714250
 // FUNCTION: fn_07259
 CFromTheAbyssEffect::CFromTheAbyssEffect() : CEffect(EF_NONE), maxLevel(5), level(0) {
-  this->waves[0] = AbyssWave(0.8f, vector3d{-4.8f, -9.1f, 0.0f});
-  this->waves[1] = AbyssWave(0.6f, vector3d{-3.4f, -12.8f, 0.0f});
-  this->waves[2] = AbyssWave(0.5f, vector3d{-0.7f, -14.0f, 0.0f});
-  this->waves[3] = AbyssWave(0.7f, vector3d{2.7f, -14.0f, 0.0f});
-  this->waves[4] = AbyssWave(0.4f, vector3d{4.3f, -10.0f, 0.0f});
+  this->waves[0] = AbyssWave(0.8f, vector3d{-4.8f, -9.1f});
+  this->waves[1] = AbyssWave(0.6f, vector3d{-3.4f, -12.8f});
+  this->waves[2] = AbyssWave(0.5f, vector3d{-0.7f, -14.0f});
+  this->waves[3] = AbyssWave(0.7f, vector3d{2.7f, -14.0f});
+  this->waves[4] = AbyssWave(0.4f, vector3d{4.3f, -10.0f});
 }
 
 // OFFSET: 0x00715160
