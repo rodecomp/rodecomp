@@ -1098,7 +1098,7 @@ void NaviDataEntry::Init() {
 // OFFSET: 0x00B88AB0
 // FUNCTION: fn_19383
 __declspec(noinline) bool CNaviData::Search(std::string query, int type, std::vector<NavigationTarget>& out) {
-  if (query.size() == 0) {
+  if (query.empty()) {
     return false;
   }
   std::vector<std::string> tokens;
