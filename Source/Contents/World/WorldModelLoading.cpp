@@ -216,7 +216,7 @@ void CWorld::InitWorld() {
     DWORD lastNoticeTime = 0;
     int loaded = 0;
 
-    for (; placementIt != worldRes->models.end(); ++placementIt) {
+    while (placementIt != worldRes->models.end()) {
       ++loaded;
       DWORD now = timeGetTime();
       int percent = loaded * 100 / modelCount;
@@ -244,39 +244,44 @@ void CWorld::InitWorld() {
 
       if (distance > 200.0f) {
         g_deferredWorldModels.push_back({distance, placement});
-      } else {
-        auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
-        if (!modelRes) {
-          continue;
-        }
-
-        modelRes->RegisterMovies(placement->position);
-
-        if (!modelRes->FindNode(placement->node) && modelRes->nodes.front() == nullptr) {
-          continue;
-        }
-
-        C3dActor* actor = nullptr;
-
-        if (modelRes->major == 1) {
-          actor = new C3dActorV1;
-        } else if (modelRes->major == 2) {
-          actor = new C3dActorV2;
-        }
-
-        actor->CopyVolumes(modelRes->volumes);
-        actor->SetSpeed(placement->animationSpeed);
-        actor->playback = placement->animation;
-        actor->SetPosition(placement->position);
-        actor->SetRotation(placement->rotation);
-        actor->SetScale(placement->scale);
-        actor->commandMode = placement->flag;
-        actor->color = static_cast<std::uint32_t>(placement->index);
-        actor->Assign(*modelRes);
-        actor->occlusionEnabled = 0;
-        actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
-        this->models.push_back(actor);
+        ++placementIt;
+        continue;
       }
+
+      auto* modelRes = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement->model));
+      if (!modelRes) {
+        ++placementIt;
+        continue;
+      }
+
+      modelRes->RegisterMovies(placement->position);
+
+      if (!modelRes->FindNode(placement->node) && modelRes->nodes.front() == nullptr) {
+        ++placementIt;
+        continue;
+      }
+
+      C3dActor* actor = nullptr;
+
+      if (modelRes->major == 1) {
+        actor = new C3dActorV1;
+      } else if (modelRes->major == 2) {
+        actor = new C3dActorV2;
+      }
+
+      actor->CopyVolumes(modelRes->volumes);
+      actor->SetSpeed(placement->animationSpeed);
+      actor->playback = placement->animation;
+      actor->SetPosition(placement->position);
+      actor->SetRotation(placement->rotation);
+      actor->SetScale(placement->scale);
+      actor->commandMode = placement->flag;
+      actor->color = static_cast<std::uint32_t>(placement->index);
+      actor->Assign(*modelRes);
+      actor->occlusionEnabled = 0;
+      actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
+      this->models.push_back(actor);
+      ++placementIt;
     }
 
     this->InitializeSpatial();
