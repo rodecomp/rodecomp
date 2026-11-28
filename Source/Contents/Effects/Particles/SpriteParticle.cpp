@@ -262,11 +262,9 @@ void CSpriteParticle::Draw(char mode) {
     for (int v = 0; v < 4; ++v) {
       vector3d& worldVertex = worldVertices[v];
       const vector3d& point = cellVertices[v];
-      worldVertex = vector3d{
-          point.y * finalTransform.values[3] + point.x * finalTransform.values[0] + point.z * finalTransform.values[6] + finalTransform.values[9],
-          point.y * finalTransform.values[4] + point.x * finalTransform.values[1] + point.z * finalTransform.values[7] + finalTransform.values[10],
-          point.y * finalTransform.values[5] + point.x * finalTransform.values[2] + point.z * finalTransform.values[8] + finalTransform.values[11]
-      };
+      worldVertex.x = point.y * finalTransform.values[3] + point.x * finalTransform.values[0] + point.z * finalTransform.values[6] + finalTransform.values[9];
+      worldVertex.y = point.y * finalTransform.values[4] + point.x * finalTransform.values[1] + point.z * finalTransform.values[7] + finalTransform.values[10];
+      worldVertex.z = point.y * finalTransform.values[5] + point.x * finalTransform.values[2] + point.z * finalTransform.values[8] + finalTransform.values[11];
       g_renderer->Project(&worldVertex.x, view, primitive->vertices[v]);
     }
 
