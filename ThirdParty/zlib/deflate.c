@@ -665,6 +665,8 @@ int ZEXPORT deflateParams(strm, level, strategy)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66D40
+// FUNCTION: fn_47541
 int ZEXPORT deflateTune(strm, good_length, max_lazy, nice_length, max_chain)
     z_streamp strm;
     int good_length;
