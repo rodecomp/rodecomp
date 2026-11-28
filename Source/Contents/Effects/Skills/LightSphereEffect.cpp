@@ -362,14 +362,14 @@ void CLightSphereEffect::OnProcess() {
         corner2Z = 0.0f;
       }
 
+      particle->vertices[0].z = corner0Z;
       particle->vertices[0].x = corner0X;
       particle->vertices[0].y = corner0Y;
-      particle->vertices[0].z = corner0Z;
       particle->vertices[1].x = corner0X;
       particle->vertices[1].y = corner0Y;
       particle->vertices[1].z = corner0Z;
-      particle->vertices[2].x = corner1X;
       particle->vertices[2].y = corner1Y;
+      particle->vertices[2].x = corner1X;
       particle->vertices[2].z = corner1Z;
       particle->vertices[3].x = corner2X;
       particle->vertices[3].y = corner2Y;
