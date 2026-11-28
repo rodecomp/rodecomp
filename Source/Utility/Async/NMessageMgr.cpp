@@ -7,14 +7,16 @@
 // GLOBAL: gl_24361
 NMessageMgr* g_messageMgr;
 
-// INLINED
+// OFFSET: 0x007355F0
+// FUNCTION: fn_47513
 NMessageMgr::NMessageMgr() {
   this->m_enabled = false;
   InitializeCriticalSection(&this->m_criticalSection);
   this->m_enabled = true;
 }
 
-// INLINED
+// OFFSET: 0x00735850
+// FUNCTION: fn_47514
 NMessageMgr::~NMessageMgr() {
   DeleteCriticalSection(&this->m_criticalSection);
 }
