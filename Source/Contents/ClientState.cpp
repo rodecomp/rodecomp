@@ -1044,12 +1044,6 @@ void CSession::SetElementalGid(int value) {
   }
 }
 
-// OFFSET: 0x00E4A180
-// FUNCTION: fn_24249
-void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes) {
-  output.insert(output.end(), bytes.begin(), bytes.end());
-}
-
 // OFFSET: 0x00E44EE0
 // FUNCTION: fn_24208
 std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& data) {

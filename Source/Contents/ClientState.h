@@ -5,6 +5,11 @@
 
 
 void __stdcall SetPetInfoAlert(bool enabled);
-void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes);
+
+// OFFSET: 0x00E4A180
+// FUNCTION: fn_24249
+inline void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes) {
+  output.insert(output.end(), bytes.begin(), bytes.end());
+}
 
 #endif

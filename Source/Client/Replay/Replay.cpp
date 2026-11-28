@@ -131,40 +131,35 @@ static std::vector<unsigned char> MakeReplayRecord(std::uint16_t id, const void*
   return record;
 }
 
-// INLINED
-template <class Record> static void AppendRecord(std::vector<unsigned char>& records, const Record& record) {
-  records.insert(records.end(), record.begin(), record.end());
-}
-
 // OFFSET: 0x00E3DBA0
 // FUNCTION: fn_24195
 std::vector<unsigned char> CSession::BuildEntryQueueReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_BEGIN, nullptr, 0));
   if (g_entryQueueMgr->current != nullptr) {
     const int id = g_entryQueueMgr->current->id;
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_ID, &id, sizeof(id)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_ID, &id, sizeof(id)));
   }
   const unsigned char ready = g_entryQueueMgr->ready;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_READY, &ready, sizeof(ready)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_READY, &ready, sizeof(ready)));
   std::string text = g_entryQueueMgr->queueName.text;
   if (text.size() != 0) {
-    AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_NAME, text.c_str(), text.size()));
+    AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_NAME, text.c_str(), text.size()));
   }
   text = g_entryQueueMgr->characterName.text;
   if (text.size() != 0) {
-    AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_CHARACTER_NAME, text.c_str(), text.size()));
+    AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_CHARACTER_NAME, text.c_str(), text.size()));
   }
   if (UIEntryQueueWnd* window = dynamic_cast<UIEntryQueueWnd*>(g_windowMgr.LookupWindow(WID_JOINTO_BATTLEFIELDWND))) {
     const int selected = window->SelectedIndex();
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_SELECTION, &selected, sizeof(selected)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_SELECTION, &selected, sizeof(selected)));
   }
   if (UIEntryQueueStandByWnd* window = dynamic_cast<UIEntryQueueStandByWnd*>(g_windowMgr.LookupWindow(WID_ENTRYQUEUESTANDBYWND))) {
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_WAITING, &window->m_waiting, sizeof(window->m_waiting)));
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_RANKING, &window->m_ranking, sizeof(window->m_ranking)));
-    AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_STAND_BY_NAME, window->m_queueName.c_str(), window->m_queueName.size()));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_WAITING, &window->m_waiting, sizeof(window->m_waiting)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_RANKING, &window->m_ranking, sizeof(window->m_ranking)));
+    AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_ENTRY_QUEUE_STAND_BY_NAME, window->m_queueName.c_str(), window->m_queueName.size()));
   }
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ENTRY_QUEUE_END, nullptr, 0));
   return records;
 }
 
@@ -325,22 +320,22 @@ __declspec(noinline) int Replay::WriteHeader(int event) {
 // FUNCTION: fn_19328
 std::vector<unsigned char> Replay::BuildMetadata() {
   std::vector<unsigned char> metadata;
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_BEGIN, nullptr, 0));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SERVICE, &this->header.service, sizeof(this->header.service)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SERVICE_TYPE, &this->header.serviceType, sizeof(this->header.serviceType)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SESSION_SYNC_VALUE, &this->header.sessionSyncValue, sizeof(this->header.sessionSyncValue)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CHARACTER_NAME, this->header.characterName, sizeof(this->header.characterName)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_MAP_NAME, this->header.mapName, sizeof(this->header.mapName)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_ACCOUNT_ID, &this->header.accountId, sizeof(this->header.accountId)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CELL_X, &this->header.cellX, sizeof(this->header.cellX)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CELL_Y, &this->header.cellY, sizeof(this->header.cellY)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_PLAYER_DIRECTION, &this->header.playerDirection, sizeof(this->header.playerDirection)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_DURATION, &this->header.duration, sizeof(this->header.duration)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_RECORDS, &this->header.records, sizeof(this->header.records)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_FILE_OFFSET, &this->header.fileOffset, sizeof(this->header.fileOffset)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_OPTIONS, &this->header.options, sizeof(this->header.options)));
-  AppendRecord(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CLOSING_SIGNATURE, &this->header.closingSignature, sizeof(this->header.closingSignature)));
-  AppendRecord(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_END, nullptr, 0));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_BEGIN, nullptr, 0));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SERVICE, &this->header.service, sizeof(this->header.service)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SERVICE_TYPE, &this->header.serviceType, sizeof(this->header.serviceType)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_SESSION_SYNC_VALUE, &this->header.sessionSyncValue, sizeof(this->header.sessionSyncValue)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CHARACTER_NAME, this->header.characterName, sizeof(this->header.characterName)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_MAP_NAME, this->header.mapName, sizeof(this->header.mapName)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_ACCOUNT_ID, &this->header.accountId, sizeof(this->header.accountId)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_CELL_X, &this->header.cellX, sizeof(this->header.cellX)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CELL_Y, &this->header.cellY, sizeof(this->header.cellY)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_PLAYER_DIRECTION, &this->header.playerDirection, sizeof(this->header.playerDirection)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_DURATION, &this->header.duration, sizeof(this->header.duration)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_RECORDS, &this->header.records, sizeof(this->header.records)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_FILE_OFFSET, &this->header.fileOffset, sizeof(this->header.fileOffset)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_OPTIONS, &this->header.options, sizeof(this->header.options)));
+  AppendBytes(metadata, BuildReplayTaggedRecord(REPLAY_CHUNK_METADATA_CLOSING_SIGNATURE, &this->header.closingSignature, sizeof(this->header.closingSignature)));
+  AppendBytes(metadata, MakeReplayRecord(REPLAY_CHUNK_METADATA_END, nullptr, 0));
   return metadata;
 }
 
@@ -1074,19 +1069,19 @@ std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std:
 // FUNCTION: fn_24205
 std::vector<unsigned char> CSession::BuildRenewQuestReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_BEGIN, nullptr, 0));
   {
     const int version = 51;
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_PARAMETER, &version, sizeof(version)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_PARAMETER, &version, sizeof(version)));
   }
   const int size = g_renewQuestMgr->GetOngoingQuestsSize();
   char* buffer = new char[size];
   g_renewQuestMgr->WriteOngoingQuests(buffer);
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_QUESTS_ONGOING, buffer, size));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_QUESTS_ONGOING, buffer, size));
   if (buffer != nullptr) {
     delete buffer;
   }
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_QUESTS_END, nullptr, 0));
   return records;
 }
 
@@ -1094,10 +1089,10 @@ std::vector<unsigned char> CSession::BuildRenewQuestReplayRecords() {
 // FUNCTION: fn_24206
 std::vector<unsigned char> CSession::BuildShortcutReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_SLOTS, this->m_shortcutSlots, sizeof(this->m_shortcutSlots)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_QUICK_SLOT, &this->quickSlot, sizeof(this->quickSlot) + sizeof(this->alternateQuickSlot)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_SLOTS, this->m_shortcutSlots, sizeof(this->m_shortcutSlots)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_QUICK_SLOT, &this->quickSlot, sizeof(this->quickSlot) + sizeof(this->alternateQuickSlot)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHORTCUTS_END, nullptr, 0));
   return records;
 }
 
@@ -1138,33 +1133,33 @@ std::vector<unsigned char> CSession::BuildReservedReplayRecords() {
 // FUNCTION: fn_24200
 std::vector<unsigned char> CSession::BuildItemReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_EXCHANGE_MONEY, &this->exchangeMoney, sizeof(this->exchangeMoney)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_OTHER_EXCHANGE_MONEY, &this->otherExchangeMoney, sizeof(this->otherExchangeMoney)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_INVENTORY, SerializeItems(this->m_inventoryItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SHOP, SerializeItems(this->m_shopItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_PURCHASE, SerializeItems(this->m_purchaseItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SELL, SerializeItems(this->m_sellItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_STORAGE, SerializeItems(this->m_storageItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_CART, SerializeItems(this->m_cartItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_SHOP, SerializeItems(this->m_merchantShopItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_MIRROR, SerializeItems(this->m_merchantMirrorItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_MY_SHOP, SerializeItems(this->m_merchantMyShopItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE, SerializeItems(this->m_merchantPurchaseItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_HOPE_TO_SELL, SerializeItems(this->m_merchantHopeToSellItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE_SAVED, SerializeItems(this->m_merchantPurchaseSavedItems)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_FILTERED_INVENTORY, SerializeItems(this->m_filteredInventoryItems)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_EXCHANGE_MONEY, &this->exchangeMoney, sizeof(this->exchangeMoney)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_OTHER_EXCHANGE_MONEY, &this->otherExchangeMoney, sizeof(this->otherExchangeMoney)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_INVENTORY, SerializeItems(this->m_inventoryItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SHOP, SerializeItems(this->m_shopItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_PURCHASE, SerializeItems(this->m_purchaseItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SELL, SerializeItems(this->m_sellItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_STORAGE, SerializeItems(this->m_storageItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_CART, SerializeItems(this->m_cartItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_SHOP, SerializeItems(this->m_merchantShopItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_MIRROR, SerializeItems(this->m_merchantMirrorItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_MY_SHOP, SerializeItems(this->m_merchantMyShopItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE, SerializeItems(this->m_merchantPurchaseItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_HOPE_TO_SELL, SerializeItems(this->m_merchantHopeToSellItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_MERCHANT_PURCHASE_SAVED, SerializeItems(this->m_merchantPurchaseSavedItems)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_FILTERED_INVENTORY, SerializeItems(this->m_filteredInventoryItems)));
   auto& equippedItemsRef = this->equippedItems;
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_EQUIPPED, SerializeItems(std::list<ITEM_INFO>(std::begin(equippedItemsRef), std::end(equippedItemsRef)))));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_EQUIPPED, SerializeItems(std::list<ITEM_INFO>(std::begin(equippedItemsRef), std::end(equippedItemsRef)))));
   auto& alternateEquippedItemsRef = this->alternateEquippedItems;
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_ALTERNATE_EQUIPPED, SerializeItems(std::list<ITEM_INFO>(std::begin(alternateEquippedItemsRef), std::end(alternateEquippedItemsRef)))));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_ALTERNATE_EQUIPPED, SerializeItems(std::list<ITEM_INFO>(std::begin(alternateEquippedItemsRef), std::end(alternateEquippedItemsRef)))));
   auto& costumeItemsRef = this->costumeItems;
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_COSTUME, SerializeItems(std::list<ITEM_INFO>(std::begin(costumeItemsRef), std::end(costumeItemsRef)))));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_COSTUME, SerializeItems(std::list<ITEM_INFO>(std::begin(costumeItemsRef), std::end(costumeItemsRef)))));
   auto& alternateCostumeItemsRef = this->alternateCostumeItems;
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_ALTERNATE_COSTUME, SerializeItems(std::list<ITEM_INFO>(std::begin(alternateCostumeItemsRef), std::end(alternateCostumeItemsRef)))));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_EXCHANGE, SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_exchangeItems), std::end(this->m_exchangeItems)))));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SLOTS, SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_itemSlots), std::end(this->m_itemSlots)))));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_END, nullptr, 0));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_ALTERNATE_COSTUME, SerializeItems(std::list<ITEM_INFO>(std::begin(alternateCostumeItemsRef), std::end(alternateCostumeItemsRef)))));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_EXCHANGE, SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_exchangeItems), std::end(this->m_exchangeItems)))));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_ITEMS_SLOTS, SerializeItems(std::list<ITEM_INFO>(std::begin(this->m_itemSlots), std::end(this->m_itemSlots)))));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_ITEMS_END, nullptr, 0));
   return records;
 }
 
@@ -1172,86 +1167,86 @@ std::vector<unsigned char> CSession::BuildItemReplayRecords() {
 // FUNCTION: fn_24204
 std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_AID, &this->m_homunAid, sizeof(this->m_homunAid)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_NAME, this->m_homunName, sizeof(this->m_homunName)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_0, &this->m_homunStats[0], sizeof(this->m_homunStats[0])));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_1, &this->m_homunStats[1], sizeof(this->m_homunStats[1])));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_2, &this->m_homunStats[2], sizeof(this->m_homunStats[2])));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_3, &this->m_homunStats[3], sizeof(this->m_homunStats[3])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_4, &this->m_homunStats[4], sizeof(this->m_homunStats[4])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_5, &this->m_homunStats[5], sizeof(this->m_homunStats[5])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_6, &this->m_homunStats[6], sizeof(this->m_homunStats[6])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_7, &this->m_homunStats[7], sizeof(this->m_homunStats[7])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_JOB, &this->m_homunJob, sizeof(this->m_homunJob)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_LEVEL, &this->m_homunLevel, sizeof(this->m_homunLevel)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HP, &this->m_homunHp, sizeof(this->m_homunHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HP, &this->m_homunMaxHp, sizeof(this->m_homunMaxHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_SP, &this->m_homunSp, sizeof(this->m_homunSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_SP, &this->homunMaxSp, sizeof(this->homunMaxSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_FRIENDLY, &this->homunFriendly, sizeof(this->homunFriendly)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ACCESSORY, &this->homunAccessory, sizeof(this->homunAccessory)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_EXP, &this->m_homunExp, sizeof(this->m_homunExp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_EXP, &this->m_homunMaxExp, sizeof(this->m_homunMaxExp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER, &this->homunHunger, sizeof(this->homunHunger)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HUNGER, &this->homunMaxHunger, sizeof(this->homunMaxHunger)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_NAME_MODIFIED, &this->homunNameModified, sizeof(this->homunNameModified)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_GID, &this->homunEnemyGid, sizeof(this->homunEnemyGid)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_X, &this->homunEnemyX, sizeof(this->homunEnemyX)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_Y, &this->homunEnemyY, sizeof(this->homunEnemyY)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MOVE_ENEMY, &this->moveHomunEnemy, sizeof(this->moveHomunEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_SELECT_ENEMY, &this->selectHomunEnemy, sizeof(this->selectHomunEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_ENEMY, &this->attackHomunEnemy, sizeof(this->attackHomunEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ALIVE, &this->homunAlive, sizeof(this->homunAlive)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_TRACE_AI, &this->m_traceAi, sizeof(this->m_traceAi)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ACTION_STATE, &this->m_homunActionState, sizeof(this->m_homunActionState)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER_NOTIFIED, &this->m_homunHungerNotified, sizeof(this->m_homunHungerNotified)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_RANGE, &this->m_homunAttackRange, sizeof(this->m_homunAttackRange)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_AID, &this->m_mercenaryAid, sizeof(this->m_mercenaryAid)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_NAME, this->m_mercenaryName, sizeof(this->m_mercenaryName)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_0, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_1, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_2, &this->m_mercenaryStats[2], sizeof(this->m_mercenaryStats[2])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_3, &this->m_mercenaryStats[3], sizeof(this->m_mercenaryStats[3])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_4, &this->m_mercenaryStats[4], sizeof(this->m_mercenaryStats[4])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_5, &this->m_mercenaryStats[5], sizeof(this->m_mercenaryStats[5])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_6, &this->m_mercenaryStats[6], sizeof(this->m_mercenaryStats[6])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_7, &this->m_mercenaryStats[7], sizeof(this->m_mercenaryStats[7])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_HP, &this->m_mercenaryHp, sizeof(this->m_mercenaryHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_HP, &this->m_mercenaryMaxHp, sizeof(this->m_mercenaryMaxHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_CLASS, &this->m_mercenaryClass, sizeof(this->m_mercenaryClass)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_LEVEL, &this->m_mercenaryLevel, sizeof(this->m_mercenaryLevel)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SP, &this->m_mercenarySp, sizeof(this->m_mercenarySp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_SP, &this->m_mercenaryMaxSp, sizeof(this->m_mercenaryMaxSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_LOYALTY, &this->m_mercenaryLoyalty, sizeof(this->m_mercenaryLoyalty)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SUMMONS, &this->m_mercenarySummons, sizeof(this->m_mercenarySummons)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_KILLS, &this->m_mercenaryKills, sizeof(this->m_mercenaryKills)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_RANGE, &this->m_mercenaryAttackRange, sizeof(this->m_mercenaryAttackRange)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_EXPIRATION, &this->m_mercenaryExpiration, sizeof(this->m_mercenaryExpiration)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_GID, &this->mercenaryEnemyGid, sizeof(this->mercenaryEnemyGid)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_X, &this->mercenaryEnemyX, sizeof(this->mercenaryEnemyX)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_Y, &this->mercenaryEnemyY, sizeof(this->mercenaryEnemyY)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MOVE_ENEMY, &this->moveMercenaryEnemy, sizeof(this->moveMercenaryEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SELECT_ENEMY, &this->selectMercenaryEnemy, sizeof(this->selectMercenaryEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_ENEMY, &this->attackMercenaryEnemy, sizeof(this->attackMercenaryEnemy)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ALIVE, &this->mercenaryAlive, sizeof(this->mercenaryAlive)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ACTION_STATE, &this->m_mercenaryActionState, sizeof(this->m_mercenaryActionState)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_GID, &this->petGid, sizeof(this->petGid)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_NAME_MODIFIED, &this->m_petNameModified, sizeof(this->m_petNameModified)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_NAME, this->petName, 32));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_ACCESSORY, &this->petAccessory, sizeof(this->petAccessory)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_JOB, &this->petJob, sizeof(this->petJob)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_LEVEL, &this->petLevel, sizeof(this->petLevel)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_HUNGER, &this->petHunger, sizeof(this->petHunger)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_FRIENDLY, &this->m_petFriendly, sizeof(this->m_petFriendly)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_EGG_INDEX, &this->petEggIndex, sizeof(this->petEggIndex)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_PREVIOUS_HUNGER, &this->petPreviousHunger, sizeof(this->petPreviousHunger)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_GID, &this->elementalGid, sizeof(this->elementalGid)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_HP, &this->elementalHp, sizeof(this->elementalHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_SP, &this->elementalSp, sizeof(this->elementalSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_HP, &this->elementalMaxHp, sizeof(this->elementalMaxHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_SP, &this->elementalMaxSp, sizeof(this->elementalMaxSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_AID, &this->m_homunAid, sizeof(this->m_homunAid)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_NAME, this->m_homunName, sizeof(this->m_homunName)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_0, &this->m_homunStats[0], sizeof(this->m_homunStats[0])));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_1, &this->m_homunStats[1], sizeof(this->m_homunStats[1])));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_2, &this->m_homunStats[2], sizeof(this->m_homunStats[2])));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_3, &this->m_homunStats[3], sizeof(this->m_homunStats[3])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_4, &this->m_homunStats[4], sizeof(this->m_homunStats[4])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_5, &this->m_homunStats[5], sizeof(this->m_homunStats[5])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_6, &this->m_homunStats[6], sizeof(this->m_homunStats[6])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_STAT_7, &this->m_homunStats[7], sizeof(this->m_homunStats[7])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_JOB, &this->m_homunJob, sizeof(this->m_homunJob)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_LEVEL, &this->m_homunLevel, sizeof(this->m_homunLevel)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HP, &this->m_homunHp, sizeof(this->m_homunHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HP, &this->m_homunMaxHp, sizeof(this->m_homunMaxHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_SP, &this->m_homunSp, sizeof(this->m_homunSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_SP, &this->homunMaxSp, sizeof(this->homunMaxSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_FRIENDLY, &this->homunFriendly, sizeof(this->homunFriendly)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ACCESSORY, &this->homunAccessory, sizeof(this->homunAccessory)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_EXP, &this->m_homunExp, sizeof(this->m_homunExp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_EXP, &this->m_homunMaxExp, sizeof(this->m_homunMaxExp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER, &this->homunHunger, sizeof(this->homunHunger)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MAX_HUNGER, &this->homunMaxHunger, sizeof(this->homunMaxHunger)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_NAME_MODIFIED, &this->homunNameModified, sizeof(this->homunNameModified)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_GID, &this->homunEnemyGid, sizeof(this->homunEnemyGid)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_X, &this->homunEnemyX, sizeof(this->homunEnemyX)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ENEMY_Y, &this->homunEnemyY, sizeof(this->homunEnemyY)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_MOVE_ENEMY, &this->moveHomunEnemy, sizeof(this->moveHomunEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_SELECT_ENEMY, &this->selectHomunEnemy, sizeof(this->selectHomunEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_ENEMY, &this->attackHomunEnemy, sizeof(this->attackHomunEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ALIVE, &this->homunAlive, sizeof(this->homunAlive)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_TRACE_AI, &this->m_traceAi, sizeof(this->m_traceAi)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ACTION_STATE, &this->m_homunActionState, sizeof(this->m_homunActionState)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_HUNGER_NOTIFIED, &this->m_homunHungerNotified, sizeof(this->m_homunHungerNotified)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_HOMUN_ATTACK_RANGE, &this->m_homunAttackRange, sizeof(this->m_homunAttackRange)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_AID, &this->m_mercenaryAid, sizeof(this->m_mercenaryAid)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_NAME, this->m_mercenaryName, sizeof(this->m_mercenaryName)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_0, &this->m_mercenaryStats[0], sizeof(this->m_mercenaryStats[0])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_1, &this->m_mercenaryStats[1], sizeof(this->m_mercenaryStats[1])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_2, &this->m_mercenaryStats[2], sizeof(this->m_mercenaryStats[2])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_3, &this->m_mercenaryStats[3], sizeof(this->m_mercenaryStats[3])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_4, &this->m_mercenaryStats[4], sizeof(this->m_mercenaryStats[4])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_5, &this->m_mercenaryStats[5], sizeof(this->m_mercenaryStats[5])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_6, &this->m_mercenaryStats[6], sizeof(this->m_mercenaryStats[6])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_STAT_7, &this->m_mercenaryStats[7], sizeof(this->m_mercenaryStats[7])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_HP, &this->m_mercenaryHp, sizeof(this->m_mercenaryHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_HP, &this->m_mercenaryMaxHp, sizeof(this->m_mercenaryMaxHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_CLASS, &this->m_mercenaryClass, sizeof(this->m_mercenaryClass)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_LEVEL, &this->m_mercenaryLevel, sizeof(this->m_mercenaryLevel)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SP, &this->m_mercenarySp, sizeof(this->m_mercenarySp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MAX_SP, &this->m_mercenaryMaxSp, sizeof(this->m_mercenaryMaxSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_LOYALTY, &this->m_mercenaryLoyalty, sizeof(this->m_mercenaryLoyalty)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SUMMONS, &this->m_mercenarySummons, sizeof(this->m_mercenarySummons)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_KILLS, &this->m_mercenaryKills, sizeof(this->m_mercenaryKills)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_RANGE, &this->m_mercenaryAttackRange, sizeof(this->m_mercenaryAttackRange)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_EXPIRATION, &this->m_mercenaryExpiration, sizeof(this->m_mercenaryExpiration)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_GID, &this->mercenaryEnemyGid, sizeof(this->mercenaryEnemyGid)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_X, &this->mercenaryEnemyX, sizeof(this->mercenaryEnemyX)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ENEMY_Y, &this->mercenaryEnemyY, sizeof(this->mercenaryEnemyY)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_MOVE_ENEMY, &this->moveMercenaryEnemy, sizeof(this->moveMercenaryEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_SELECT_ENEMY, &this->selectMercenaryEnemy, sizeof(this->selectMercenaryEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ATTACK_ENEMY, &this->attackMercenaryEnemy, sizeof(this->attackMercenaryEnemy)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ALIVE, &this->mercenaryAlive, sizeof(this->mercenaryAlive)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_MERCENARY_ACTION_STATE, &this->m_mercenaryActionState, sizeof(this->m_mercenaryActionState)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_GID, &this->petGid, sizeof(this->petGid)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_NAME_MODIFIED, &this->m_petNameModified, sizeof(this->m_petNameModified)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_NAME, this->petName, 32));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_ACCESSORY, &this->petAccessory, sizeof(this->petAccessory)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_JOB, &this->petJob, sizeof(this->petJob)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_LEVEL, &this->petLevel, sizeof(this->petLevel)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_HUNGER, &this->petHunger, sizeof(this->petHunger)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_FRIENDLY, &this->m_petFriendly, sizeof(this->m_petFriendly)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_EGG_INDEX, &this->petEggIndex, sizeof(this->petEggIndex)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_PET_PREVIOUS_HUNGER, &this->petPreviousHunger, sizeof(this->petPreviousHunger)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_GID, &this->elementalGid, sizeof(this->elementalGid)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_HP, &this->elementalHp, sizeof(this->elementalHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_SP, &this->elementalSp, sizeof(this->elementalSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_HP, &this->elementalMaxHp, sizeof(this->elementalMaxHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_ELEMENTAL_MAX_SP, &this->elementalMaxSp, sizeof(this->elementalMaxSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_COMPANIONS_END, nullptr, 0));
   return records;
 }
 
@@ -1286,16 +1281,16 @@ struct ReplayShopFlagRecord {
 // FUNCTION: fn_24171
 std::vector<unsigned char> MessengerMember::Serialize() const {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(251, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(253, &this->valid, sizeof(this->valid)));
-  AppendRecord(records, MakeReplayRecord(254, &this->accountId, sizeof(this->accountId)));
-  AppendRecord(records, MakeReplayRecord(255, &this->characterId, sizeof(this->characterId)));
-  AppendRecord(records, MakeReplayRecord(258, &this->leader, sizeof(this->leader)));
-  AppendRecord(records, MakeReplayRecord(259, &this->offline, sizeof(this->offline)));
-  AppendRecord(records, MakeReplayRecord(260, &this->color, sizeof(this->color)));
-  AppendRecord(records, BuildReplayTaggedRecord(256, this->name.c_str(), this->name.size()));
-  AppendRecord(records, BuildReplayTaggedRecord(257, this->map.c_str(), this->map.size()));
-  AppendRecord(records, MakeReplayRecord(252, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(251, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(253, &this->valid, sizeof(this->valid)));
+  AppendBytes(records, MakeReplayRecord(254, &this->accountId, sizeof(this->accountId)));
+  AppendBytes(records, MakeReplayRecord(255, &this->characterId, sizeof(this->characterId)));
+  AppendBytes(records, MakeReplayRecord(258, &this->leader, sizeof(this->leader)));
+  AppendBytes(records, MakeReplayRecord(259, &this->offline, sizeof(this->offline)));
+  AppendBytes(records, MakeReplayRecord(260, &this->color, sizeof(this->color)));
+  AppendBytes(records, BuildReplayTaggedRecord(256, this->name.c_str(), this->name.size()));
+  AppendBytes(records, BuildReplayTaggedRecord(257, this->map.c_str(), this->map.size()));
+  AppendBytes(records, MakeReplayRecord(252, nullptr, 0));
   return records;
 }
 
@@ -1303,101 +1298,101 @@ std::vector<unsigned char> MessengerMember::Serialize() const {
 // FUNCTION: fn_24197
 std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_AID, &this->m_aid, sizeof(this->m_aid)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_GID, &this->m_gid, sizeof(this->m_gid)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1012, &this->unknown_1620[0], sizeof(this->unknown_1620[0])));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1013, &this->unknown_1620[1], sizeof(this->unknown_1620[1])));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_JOB, &this->m_job, sizeof(this->m_job)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_EXP, &this->m_exp, 8));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_LEVEL, &this->m_level, sizeof(this->m_level)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT, &this->m_statusPoint, sizeof(this->m_statusPoint)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_NEXT_EXP, &this->m_nextExp, 8));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_LEVEL, &this->m_jobLevel, sizeof(this->m_jobLevel)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SKILL_POINT, &this->m_skillPoint, 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_GUILD_SKILL_POINT, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HOMUN_SKILL_POINT, &this->m_homunSkillPoint, sizeof(this->m_homunSkillPoint)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MERCENARY_SKILL_POINT, &this->m_mercenarySkillPoint, sizeof(this->m_mercenarySkillPoint)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_0, &this->m_standardStats[0], sizeof(this->m_standardStats[0])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_1, &this->m_standardStats[1], sizeof(this->m_standardStats[1])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_2, &this->m_standardStats[2], sizeof(this->m_standardStats[2])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_3, &this->m_standardStats[3], sizeof(this->m_standardStats[3])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_4, &this->m_standardStats[4], sizeof(this->m_standardStats[4])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_5, &this->m_standardStats[5], sizeof(this->m_standardStats[5])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_0, &this->m_statusPointCost[0], sizeof(this->m_statusPointCost[0])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_1, &this->m_statusPointCost[1], sizeof(this->m_statusPointCost[1])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_2, &this->m_statusPointCost[2], sizeof(this->m_statusPointCost[2])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_3, &this->m_statusPointCost[3], sizeof(this->m_statusPointCost[3])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_4, &this->m_statusPointCost[4], sizeof(this->m_statusPointCost[4])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_5, &this->m_statusPointCost[5], sizeof(this->m_statusPointCost[5])));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ASPD, &this->m_aspd, sizeof(this->m_aspd)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ATK1, &this->m_atk1, sizeof(this->m_atk1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MDEF1, &this->m_mdef1, sizeof(this->m_mdef1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PLUS_ASPD, &this->m_sp36, sizeof(this->m_sp36)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_DEF1, &this->m_def1, sizeof(this->m_def1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_DEF2, &this->m_def2, sizeof(this->m_def2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ATK2, &this->m_atk2, sizeof(this->m_atk2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MATK1, &this->m_matk1, sizeof(this->m_matk1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MATK2, &this->m_matk2, sizeof(this->m_matk2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MDEF2, &this->m_mdef2, sizeof(this->m_mdef2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HIT, &this->m_hit, sizeof(this->m_hit)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_FLEE1, &this->m_flee1, sizeof(this->m_flee1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CRITICAL, &this->m_critical, sizeof(this->m_critical)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_FLEE2, &this->m_flee2, sizeof(this->m_flee2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIPPED_ARROW_INDEX, &this->equippedArrowIndex, sizeof(this->equippedArrowIndex)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ZENY, &this->m_zeny, sizeof(this->m_zeny)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MOVE_SPEED, &this->m_moveSpeed, sizeof(this->m_moveSpeed)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MANNER, &this->m_manner, sizeof(this->m_manner)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_NEXT_JOB_EXP, &this->m_nextJobExp, 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_EXP, &this->m_jobExp, 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_KARMA, &this->m_karma, sizeof(this->m_karma)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MONSTER_INFO_ENABLED, &this->monsterInfoEnabled, sizeof(this->monsterInfoEnabled)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CLIENT_TIME_OFFSET, &this->m_clientTimeOffset, sizeof(this->m_clientTimeOffset)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHARACTER_FLAGS, &this->m_characterFlags, sizeof(this->m_characterFlags)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HEAD, &this->m_head, sizeof(this->m_head)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_WEAPON_LOOK, &this->m_weaponLook, sizeof(this->m_weaponLook)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SHIELD, &this->m_shield, sizeof(this->m_shield)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_STYLE, &this->m_bodyStyle, sizeof(this->m_bodyStyle)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HEAD_PALETTE, &this->m_headPalette, sizeof(this->m_headPalette)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY, &this->m_accessory, sizeof(this->m_accessory)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY2, &this->m_accessory2, sizeof(this->m_accessory2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY3, &this->m_accessory3, sizeof(this->m_accessory3)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_STATE, &this->m_bodyState, sizeof(this->m_bodyState)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EFFECT_STATE, &this->m_effectState, sizeof(this->m_effectState)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_FLAGS, &this->m_jobFlags, sizeof(this->m_jobFlags)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ROBE, &this->m_robe, sizeof(this->m_robe)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_0, &this->m_equipViewLook[0], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_1, &this->m_equipViewLook[1], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_2, &this->m_equipViewLook[2], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_3, &this->m_equipViewLook[3], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_4, &this->m_equipViewLook[4], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_5, &this->m_equipViewLook[5], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_6, &this->m_equipViewLook[6], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_7, &this->m_equipViewLook[7], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_8, &this->m_equipViewLook[8], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_NAME, this->m_equipViewName, 0x18));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PLAYER_TEAM, &this->playerTeam, 1));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SCORE1, &this->m_score1, sizeof(this->m_score1)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SCORE2, &this->m_score2, sizeof(this->m_score2)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHAT_FONT, &this->chatFont, 1));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_COUNT, &this->cartCount, sizeof(this->cartCount)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_MAX_COUNT, &this->cartMaxCount, sizeof(this->cartMaxCount)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_WEIGHT, &this->cartWeight, sizeof(this->cartWeight)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_MAX_WEIGHT, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_VENDING_SLOT_COUNT, &this->m_vendingSlotCount, 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BUYING_STORE_SLOT_COUNT, &this->m_buyingStoreSlotCount, 4));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHAT_TARGET, &this->m_chatTarget, sizeof(this->m_chatTarget)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_1093, &this->m_replayValue1093, sizeof(this->m_replayValue1093)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_EXP_SHARE, &this->partyExpShare, sizeof(this->partyExpShare)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_COLLECT, &this->partyItemCollect, sizeof(this->partyItemCollect)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_DISTRIBUTE, &this->partyItemDistribute, sizeof(this->partyItemDistribute)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STORE_TITLE, this->storeTitle.c_str(), this->storeTitle.size()));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_AID, &this->m_aid, sizeof(this->m_aid)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_GID, &this->m_gid, sizeof(this->m_gid)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1012, &this->unknown_1620[0], sizeof(this->unknown_1620[0])));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_1013, &this->unknown_1620[1], sizeof(this->unknown_1620[1])));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_JOB, &this->m_job, sizeof(this->m_job)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_CHARACTER_EXP, &this->m_exp, 8));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_LEVEL, &this->m_level, sizeof(this->m_level)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT, &this->m_statusPoint, sizeof(this->m_statusPoint)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_NEXT_EXP, &this->m_nextExp, 8));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_LEVEL, &this->m_jobLevel, sizeof(this->m_jobLevel)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SKILL_POINT, &this->m_skillPoint, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_GUILD_SKILL_POINT, &this->m_guildSkillPoint, sizeof(this->m_guildSkillPoint)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HOMUN_SKILL_POINT, &this->m_homunSkillPoint, sizeof(this->m_homunSkillPoint)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MERCENARY_SKILL_POINT, &this->m_mercenarySkillPoint, sizeof(this->m_mercenarySkillPoint)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_0, &this->m_standardStats[0], sizeof(this->m_standardStats[0])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_1, &this->m_standardStats[1], sizeof(this->m_standardStats[1])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_2, &this->m_standardStats[2], sizeof(this->m_standardStats[2])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_3, &this->m_standardStats[3], sizeof(this->m_standardStats[3])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_4, &this->m_standardStats[4], sizeof(this->m_standardStats[4])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STANDARD_STAT_5, &this->m_standardStats[5], sizeof(this->m_standardStats[5])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_0, &this->m_statusPointCost[0], sizeof(this->m_statusPointCost[0])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_1, &this->m_statusPointCost[1], sizeof(this->m_statusPointCost[1])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_2, &this->m_statusPointCost[2], sizeof(this->m_statusPointCost[2])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_3, &this->m_statusPointCost[3], sizeof(this->m_statusPointCost[3])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_4, &this->m_statusPointCost[4], sizeof(this->m_statusPointCost[4])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STATUS_POINT_COST_5, &this->m_statusPointCost[5], sizeof(this->m_statusPointCost[5])));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ASPD, &this->m_aspd, sizeof(this->m_aspd)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ATK1, &this->m_atk1, sizeof(this->m_atk1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MDEF1, &this->m_mdef1, sizeof(this->m_mdef1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PLUS_ASPD, &this->m_sp36, sizeof(this->m_sp36)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_DEF1, &this->m_def1, sizeof(this->m_def1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_DEF2, &this->m_def2, sizeof(this->m_def2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ATK2, &this->m_atk2, sizeof(this->m_atk2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MATK1, &this->m_matk1, sizeof(this->m_matk1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MATK2, &this->m_matk2, sizeof(this->m_matk2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MDEF2, &this->m_mdef2, sizeof(this->m_mdef2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HIT, &this->m_hit, sizeof(this->m_hit)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_FLEE1, &this->m_flee1, sizeof(this->m_flee1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CRITICAL, &this->m_critical, sizeof(this->m_critical)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_FLEE2, &this->m_flee2, sizeof(this->m_flee2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIPPED_ARROW_INDEX, &this->equippedArrowIndex, sizeof(this->equippedArrowIndex)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ZENY, &this->m_zeny, sizeof(this->m_zeny)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MOVE_SPEED, &this->m_moveSpeed, sizeof(this->m_moveSpeed)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MANNER, &this->m_manner, sizeof(this->m_manner)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_NEXT_JOB_EXP, &this->m_nextJobExp, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_EXP, &this->m_jobExp, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_KARMA, &this->m_karma, sizeof(this->m_karma)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_MONSTER_INFO_ENABLED, &this->monsterInfoEnabled, sizeof(this->monsterInfoEnabled)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CLIENT_TIME_OFFSET, &this->m_clientTimeOffset, sizeof(this->m_clientTimeOffset)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHARACTER_FLAGS, &this->m_characterFlags, sizeof(this->m_characterFlags)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HEAD, &this->m_head, sizeof(this->m_head)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_WEAPON_LOOK, &this->m_weaponLook, sizeof(this->m_weaponLook)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SHIELD, &this->m_shield, sizeof(this->m_shield)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_STYLE, &this->m_bodyStyle, sizeof(this->m_bodyStyle)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_HEAD_PALETTE, &this->m_headPalette, sizeof(this->m_headPalette)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY, &this->m_accessory, sizeof(this->m_accessory)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY2, &this->m_accessory2, sizeof(this->m_accessory2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ACCESSORY3, &this->m_accessory3, sizeof(this->m_accessory3)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_STATE, &this->m_bodyState, sizeof(this->m_bodyState)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EFFECT_STATE, &this->m_effectState, sizeof(this->m_effectState)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_JOB_FLAGS, &this->m_jobFlags, sizeof(this->m_jobFlags)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ROBE, &this->m_robe, sizeof(this->m_robe)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_0, &this->m_equipViewLook[0], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_1, &this->m_equipViewLook[1], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_2, &this->m_equipViewLook[2], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_3, &this->m_equipViewLook[3], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_4, &this->m_equipViewLook[4], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_5, &this->m_equipViewLook[5], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_6, &this->m_equipViewLook[6], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_7, &this->m_equipViewLook[7], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_LOOK_8, &this->m_equipViewLook[8], 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EQUIP_VIEW_NAME, this->m_equipViewName, 0x18));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PLAYER_TEAM, &this->playerTeam, 1));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SCORE1, &this->m_score1, sizeof(this->m_score1)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SCORE2, &this->m_score2, sizeof(this->m_score2)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHAT_FONT, &this->chatFont, 1));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_COUNT, &this->cartCount, sizeof(this->cartCount)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_MAX_COUNT, &this->cartMaxCount, sizeof(this->cartMaxCount)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_WEIGHT, &this->cartWeight, sizeof(this->cartWeight)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CART_MAX_WEIGHT, &this->cartMaxWeight, sizeof(this->cartMaxWeight)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_VENDING_SLOT_COUNT, &this->m_vendingSlotCount, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BUYING_STORE_SLOT_COUNT, &this->m_buyingStoreSlotCount, 4));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_CHAT_TARGET, &this->m_chatTarget, sizeof(this->m_chatTarget)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_1093, &this->m_replayValue1093, sizeof(this->m_replayValue1093)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_EXP_SHARE, &this->partyExpShare, sizeof(this->partyExpShare)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_COLLECT, &this->partyItemCollect, sizeof(this->partyItemCollect)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_PARTY_ITEM_DISTRIBUTE, &this->partyItemDistribute, sizeof(this->partyItemDistribute)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_STORE_TITLE, this->storeTitle.c_str(), this->storeTitle.size()));
   const unsigned char option = g_serviceOptions.Get(TT_SHOW_EMBLEM_ON_OFF);
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SHOW_EMBLEM, &option, sizeof(option)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ADOPTION_SKILL_AVAILABLE, &this->adoptionSkillAvailable, sizeof(this->adoptionSkillAvailable)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_COSTUME, &this->m_bodyCostume, sizeof(this->m_bodyCostume)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EXTRA_INVENTORY_SLOTS, &this->extraInventorySlots, sizeof(this->extraInventorySlots)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_END, nullptr, 0));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_SHOW_EMBLEM, &option, sizeof(option)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_ADOPTION_SKILL_AVAILABLE, &this->adoptionSkillAvailable, sizeof(this->adoptionSkillAvailable)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_BODY_COSTUME, &this->m_bodyCostume, sizeof(this->m_bodyCostume)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_EXTRA_INVENTORY_SLOTS, &this->extraInventorySlots, sizeof(this->extraInventorySlots)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_CHARACTER_END, nullptr, 0));
   return records;
 }
 
@@ -1405,28 +1400,28 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
 // FUNCTION: fn_24201
 std::vector<unsigned char> CSession::BuildShopReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_BEGIN, nullptr, 0));
   for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
     ReplayShopNameRecord value = {0};
     value.shopId = it->second;
     const std::size_t length = (std::min)(it->first.size(), sizeof(value.name));
     std::memcpy(value.name, it->first.c_str(), length);
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_NAME, &value, sizeof(value)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_NAME, &value, sizeof(value)));
   }
   for (const auto& shop : this->m_shops) {
     for (unsigned int index = 0; index < shop.second.items.size(); ++index) {
       const std::map<int, std::pair<int, int>>& items = shop.second.items[index];
       for (const auto& item : items) {
         const ReplayShopItemRecord value(shop.first, index, item.first, item.second.first, item.second.second);
-        AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_ITEM, &value, sizeof(value)));
+        AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_ITEM, &value, sizeof(value)));
       }
     }
     ReplayShopFlagRecord value;
     value.shopId = shop.first;
     value.flag = shop.second.flag;
-    AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_FLAG, &value, sizeof(value)));
+    AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_FLAG, &value, sizeof(value)));
   }
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_SHOPS_END, nullptr, 0));
   return records;
 }
 
@@ -1434,17 +1429,17 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
 // FUNCTION: fn_24202
 std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_OPEN, &this->memorialWindowOpen, sizeof(this->memorialWindowOpen)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_X, &this->memorialWindowX, sizeof(this->memorialWindowX)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_Y, &this->memorialWindowY, sizeof(this->memorialWindowY)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_STATE, &this->memorialDungeonState, sizeof(this->memorialDungeonState)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_5514, &this->memorialReplayValue, sizeof(this->memorialReplayValue)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_NAME, this->memorialDungeonName.c_str(), this->memorialDungeonName.size()));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_QUEUE_POSITION, &this->memorialQueuePosition, sizeof(this->memorialQueuePosition)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_CREATION_TIME, &this->memorialCreationTime, sizeof(this->memorialCreationTime)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_EXPIRATION_TIME, &this->memorialExpirationTime, sizeof(this->memorialExpirationTime)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_OPEN, &this->memorialWindowOpen, sizeof(this->memorialWindowOpen)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_X, &this->memorialWindowX, sizeof(this->memorialWindowX)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_WINDOW_Y, &this->memorialWindowY, sizeof(this->memorialWindowY)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_STATE, &this->memorialDungeonState, sizeof(this->memorialDungeonState)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_UNKNOWN_5514, &this->memorialReplayValue, sizeof(this->memorialReplayValue)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_DUNGEON_NAME, this->memorialDungeonName.c_str(), this->memorialDungeonName.size()));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_QUEUE_POSITION, &this->memorialQueuePosition, sizeof(this->memorialQueuePosition)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_CREATION_TIME, &this->memorialCreationTime, sizeof(this->memorialCreationTime)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MEMORIAL_EXPIRATION_TIME, &this->memorialExpirationTime, sizeof(this->memorialExpirationTime)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MEMORIAL_END, nullptr, 0));
   return records;
 }
 
@@ -1452,38 +1447,38 @@ std::vector<unsigned char> CSession::BuildExtraReplayRecords() {
 // FUNCTION: fn_24198
 std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_STRENGTH_BONUS, &this->strengthBonus, sizeof(this->strengthBonus)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_AGILITY_BONUS, &this->agilityBonus, sizeof(this->agilityBonus)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_VITALITY_BONUS, &this->vitalityBonus, sizeof(this->vitalityBonus)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_INTELLIGENCE_BONUS, &this->intelligenceBonus, sizeof(this->intelligenceBonus)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_DEXTERITY_BONUS, &this->dexterityBonus, sizeof(this->dexterityBonus)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_LUCK_BONUS, &this->luckBonus, sizeof(this->luckBonus)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_STORE_ITEM_LIMIT, &this->storeItemLimit, sizeof(this->storeItemLimit)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_WEIGHT, &this->m_weight, sizeof(this->m_weight)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_WEIGHT, &this->m_maxWeight, sizeof(this->m_maxWeight)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_A, &this->randomStatIndexA, sizeof(this->randomStatIndexA)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_B, &this->randomStatIndexB, sizeof(this->randomStatIndexB)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_C, &this->randomStatIndexC, sizeof(this->randomStatIndexC)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_D, &this->randomStatIndexD, sizeof(this->randomStatIndexD)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_E, &this->randomStatIndexE, sizeof(this->randomStatIndexE)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_VALUES, this->randomStatValues, sizeof(this->randomStatValues)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2025, this->replayStatValuesA, sizeof(this->replayStatValuesA)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2026, this->replayStatValuesB, sizeof(this->replayStatValuesB)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2027, this->replayStatValuesC, sizeof(this->replayStatValuesC)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2028, this->replayStatValuesD, 0x30));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_HP, &this->hp, sizeof(this->hp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_HP, &this->maxHp, sizeof(this->maxHp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_SP, &this->m_sp, sizeof(this->m_sp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_SP, &this->m_maxSp, sizeof(this->m_maxSp)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_PROHIBITION_TARGET, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_QUIT_BLOCKED, &this->quitBlocked, sizeof(this->quitBlocked)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_BATTLE_CHAT, &this->battleChat, sizeof(this->battleChat)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_QUIT_ALLOWED, &this->quitAllowed, sizeof(this->quitAllowed)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_SESSION_FLAG, &this->sessionFlag, sizeof(this->sessionFlag)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_ACCOUNT_NAME, this->m_accountName.c_str(), this->m_accountName.size()));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MADOGEAR_TYPE, &this->madogearType, sizeof(this->madogearType)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_STATS_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_STRENGTH_BONUS, &this->strengthBonus, sizeof(this->strengthBonus)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_AGILITY_BONUS, &this->agilityBonus, sizeof(this->agilityBonus)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_VITALITY_BONUS, &this->vitalityBonus, sizeof(this->vitalityBonus)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_INTELLIGENCE_BONUS, &this->intelligenceBonus, sizeof(this->intelligenceBonus)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_DEXTERITY_BONUS, &this->dexterityBonus, sizeof(this->dexterityBonus)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_LUCK_BONUS, &this->luckBonus, sizeof(this->luckBonus)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_STORE_ITEM_LIMIT, &this->storeItemLimit, sizeof(this->storeItemLimit)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_WEIGHT, &this->m_weight, sizeof(this->m_weight)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_WEIGHT, &this->m_maxWeight, sizeof(this->m_maxWeight)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_A, &this->randomStatIndexA, sizeof(this->randomStatIndexA)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_B, &this->randomStatIndexB, sizeof(this->randomStatIndexB)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_C, &this->randomStatIndexC, sizeof(this->randomStatIndexC)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_D, &this->randomStatIndexD, sizeof(this->randomStatIndexD)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_INDEX_E, &this->randomStatIndexE, sizeof(this->randomStatIndexE)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_RANDOM_STAT_VALUES, this->randomStatValues, sizeof(this->randomStatValues)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2025, this->replayStatValuesA, sizeof(this->replayStatValuesA)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2026, this->replayStatValuesB, sizeof(this->replayStatValuesB)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2027, this->replayStatValuesC, sizeof(this->replayStatValuesC)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_UNKNOWN_2028, this->replayStatValuesD, 0x30));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_HP, &this->hp, sizeof(this->hp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_HP, &this->maxHp, sizeof(this->maxHp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_SP, &this->m_sp, sizeof(this->m_sp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MAX_SP, &this->m_maxSp, sizeof(this->m_maxSp)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_PROHIBITION_TARGET, &this->m_prohibitionTarget, sizeof(this->m_prohibitionTarget)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_QUIT_BLOCKED, &this->quitBlocked, sizeof(this->quitBlocked)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_BATTLE_CHAT, &this->battleChat, sizeof(this->battleChat)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_QUIT_ALLOWED, &this->quitAllowed, sizeof(this->quitAllowed)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_SESSION_FLAG, &this->sessionFlag, sizeof(this->sessionFlag)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_ACCOUNT_NAME, this->m_accountName.c_str(), this->m_accountName.size()));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_STATS_MADOGEAR_TYPE, &this->madogearType, sizeof(this->madogearType)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_STATS_END, nullptr, 0));
   return records;
 }
 
@@ -1491,15 +1486,15 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
 // FUNCTION: fn_24199
 std::vector<unsigned char> CSession::BuildMessengerReplayRecords() {
   std::vector<unsigned char> records;
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_BEGIN, nullptr, 0));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_SESSION_FLAG, &this->replaySessionFlag, 1));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_PARTY_BLOCKED, &this->partyBlocked, sizeof(this->partyBlocked)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_PARTY_LEADER, &this->partyLeader, sizeof(this->partyLeader)));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MESSENGER_PARTY_REQUEST_NAME, this->partyRequestName.c_str(), this->partyRequestName.size()));
-  AppendRecord(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MESSENGER_PARTY_NAME, this->partyName.c_str(), this->partyName.size()));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_MESSENGER_PARTY_MEMBERS, SerializeMessengerMembers(this->m_partyMembers)));
-  AppendRecord(records, MakeFramedMessage(REPLAY_CHUNK_MESSENGER_FRIENDS, SerializeMessengerMembers(this->m_friends)));
-  AppendRecord(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_END, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_BEGIN, nullptr, 0));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_SESSION_FLAG, &this->replaySessionFlag, 1));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_PARTY_BLOCKED, &this->partyBlocked, sizeof(this->partyBlocked)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_PARTY_LEADER, &this->partyLeader, sizeof(this->partyLeader)));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MESSENGER_PARTY_REQUEST_NAME, this->partyRequestName.c_str(), this->partyRequestName.size()));
+  AppendBytes(records, BuildReplayTaggedRecord(REPLAY_CHUNK_MESSENGER_PARTY_NAME, this->partyName.c_str(), this->partyName.size()));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_MESSENGER_PARTY_MEMBERS, SerializeMessengerMembers(this->m_partyMembers)));
+  AppendBytes(records, MakeFramedMessage(REPLAY_CHUNK_MESSENGER_FRIENDS, SerializeMessengerMembers(this->m_friends)));
+  AppendBytes(records, MakeReplayRecord(REPLAY_CHUNK_MESSENGER_END, nullptr, 0));
   return records;
 }
 
