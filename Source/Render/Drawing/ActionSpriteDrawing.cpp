@@ -88,8 +88,8 @@ void CMode::DrawActionSprite(
       x3 = cosine * scaledLeft - sine * bottom + originX;
       y2 = cosine * bottom + sine * scaledRight + originY;
       x2 = cosine * scaledRight - sine * bottom + originX;
-      y1 = sine * scaledRight + cosine * top + originY;
       x1 = cosine * scaledRight - sine * top + originX;
+      y1 = sine * scaledRight + cosine * top + originY;
       y0 = sine * scaledLeft + cosine * top + originY;
       x0 = cosine * scaledLeft - sine * top + originX;
     } else {
@@ -102,9 +102,9 @@ void CMode::DrawActionSprite(
 
       const float originX = static_cast<float>(x);
       const float originY = static_cast<float>(y);
-      x0 = x2 = first + originX;
       y0 = y1 = originY + top;
       x1 = x3 = scaleX * second + originX;
+      x0 = x2 = first + originX;
       y2 = y3 = originY + bottom;
     }
 
