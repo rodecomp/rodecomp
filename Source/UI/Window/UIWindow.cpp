@@ -4286,19 +4286,7 @@ std::list<int> UIWindow::WrapText(std::string text, std::list<std::string>* line
     }
 
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const std::string character(current, next);
-    const char* const measured = character.c_str();
-    int characterWidth = 0;
-    if (measured) {
-      const unsigned bytes = static_cast<unsigned>(std::strlen(measured));
-      if (bytes) {
-        TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, bold, 0);
-        SIZE size;
-        context.Measure(measured, bytes, &size);
-        characterWidth = size.cx;
-      }
-    }
+    const int characterWidth = this->TextWidth(std::string(current, next).c_str(), 0, family, height, bold, 0);
 
     if (width + characterWidth > maxWidth) {
       lines->push_back(line);
