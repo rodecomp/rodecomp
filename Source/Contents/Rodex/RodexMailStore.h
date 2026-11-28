@@ -50,7 +50,8 @@ typedef std::map<std::int64_t, RodexMail, std::greater<std::int64_t>> RodexMailM
 
 class RodexMailStore {
 public:
-  // INLINED
+  // OFFSET: 0x007FE130
+  // FUNCTION: fn_47499
   RodexMailStore() {
     this->m_isValid = false;
     this->m_mails0.clear();
