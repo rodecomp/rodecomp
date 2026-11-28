@@ -4248,95 +4248,94 @@ bool CEffectPrim::PrimCHOOKGI() {
   FaceCamera(this->state.slots);
   FollowMaster(*this);
 
-  for (int ec = 0; ec < 1; ++ec) {
-    if (this->state.slots[ec].life == 1) {
-      ++this->state.slots[ec].process;
+  int ec = 0;
+  if (this->state.slots[ec].life == 1) {
+    ++this->state.slots[ec].process;
 
-      if (this->state.slots[ec].process <= 100) {
-        this->state.slots[ec].alphaB += 2;
+    if (this->state.slots[ec].process <= 100) {
+      this->state.slots[ec].alphaB += 2;
 
-        if (this->state.slots[ec].alphaB > 255) {
-          this->state.slots[ec].alphaB = 255;
+      if (this->state.slots[ec].alphaB > 255) {
+        this->state.slots[ec].alphaB = 255;
+      }
+    }
+
+    for (int value = 0; value < 6; value += 2) {
+      if (this->state.slots[ec].height[value + 1] > this->state.slots[ec].height[value]) {
+        this->state.slots[ec].height[value] += 1.0f;
+
+        if (this->state.slots[ec].height[value] > 359.0f) {
+          this->state.slots[ec].height[value] = 359.0f;
+        }
+
+        if (this->state.slots[ec].height[value] > this->state.slots[ec].height[value + 1]) {
+          this->state.slots[ec].height[value + 1] = static_cast<float>(SafeRandom(static_cast<int>(this->state.slots[ec].height[value])));
+        }
+      } else {
+        this->state.slots[ec].height[value] -= 1.0f;
+
+        if (this->state.slots[ec].height[value] < 0.0f) {
+          this->state.slots[ec].height[value] = 0.0f;
+        }
+
+        if (this->state.slots[ec].height[value] <= this->state.slots[ec].height[value + 1]) {
+          this->state.slots[ec].height[value + 1] = static_cast<float>(359 - SafeRandom(static_cast<int>(this->state.slots[ec].height[value])));
         }
       }
+    }
 
-      for (int value = 0; value < 6; value += 2) {
-        if (this->state.slots[ec].height[value + 1] > this->state.slots[ec].height[value]) {
-          this->state.slots[ec].height[value] += 1.0f;
+    if (this->state.slots[ec].flag1[0] == 0) {
+      this->state.slots[ec].height[6] += 1.0f;
 
-          if (this->state.slots[ec].height[value] > 359.0f) {
-            this->state.slots[ec].height[value] = 359.0f;
-          }
-
-          if (this->state.slots[ec].height[value] > this->state.slots[ec].height[value + 1]) {
-            this->state.slots[ec].height[value + 1] = static_cast<float>(SafeRandom(static_cast<int>(this->state.slots[ec].height[value])));
-          }
-        } else {
-          this->state.slots[ec].height[value] -= 1.0f;
-
-          if (this->state.slots[ec].height[value] < 0.0f) {
-            this->state.slots[ec].height[value] = 0.0f;
-          }
-
-          if (this->state.slots[ec].height[value] <= this->state.slots[ec].height[value + 1]) {
-            this->state.slots[ec].height[value + 1] = static_cast<float>(359 - SafeRandom(static_cast<int>(this->state.slots[ec].height[value])));
-          }
-        }
+      if (this->state.slots[ec].height[6] >= 360.0f) {
+        this->state.slots[ec].height[6] -= 360.0f;
       }
-
-      if (this->state.slots[ec].flag1[0] == 0) {
+    } else if (this->state.slots[ec].flag1[0] >= 10) {
+      if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
         this->state.slots[ec].height[6] += 1.0f;
 
         if (this->state.slots[ec].height[6] >= 360.0f) {
           this->state.slots[ec].height[6] -= 360.0f;
         }
-      } else if (this->state.slots[ec].flag1[0] >= 10) {
-        if (this->state.slots[ec].process % (this->state.slots[ec].flag1[0] - 9) == 0) {
-          this->state.slots[ec].height[6] += 1.0f;
+      }
+    } else {
+      if (this->state.slots[ec].process % 2 == 0) {
+        this->state.slots[ec].height[6] += 1.0f;
 
-          if (this->state.slots[ec].height[6] >= 360.0f) {
-            this->state.slots[ec].height[6] -= 360.0f;
-          }
+        if (this->state.slots[ec].height[6] >= 360.0f) {
+          this->state.slots[ec].height[6] -= 360.0f;
         }
+      }
+    }
+
+    if (this->state.slots[ec].height[10] == 1.0f) {
+      this->state.slots[ec].vecBNow.x = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
+      this->state.slots[ec].vecBNow.z = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
+      this->state.slots[ec].vecBNow.y = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
+
+      this->state.slots[ec].vecBNow.x += 5.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[6])];
+      this->state.slots[ec].vecBNow.z += 5.5f * g_cosTable[static_cast<int>(this->state.slots[ec].height[6])];
+    } else {
+      if (this->state.slots[ec].flag1[0] == 0) {
+        this->state.slots[ec].vecBNow.x = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
+        this->state.slots[ec].vecBNow.z = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
+        this->state.slots[ec].vecBNow.y = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
       } else {
-        if (this->state.slots[ec].process % 2 == 0) {
-          this->state.slots[ec].height[6] += 1.0f;
-
-          if (this->state.slots[ec].height[6] >= 360.0f) {
-            this->state.slots[ec].height[6] -= 360.0f;
-          }
-        }
+        this->state.slots[ec].vecBNow.x = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
+        this->state.slots[ec].vecBNow.z = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
+        this->state.slots[ec].vecBNow.y = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
       }
 
-      if (this->state.slots[ec].height[10] == 1.0f) {
-        this->state.slots[ec].vecBNow.x = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
-        this->state.slots[ec].vecBNow.z = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
-        this->state.slots[ec].vecBNow.y = 0.7f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
+      this->state.slots[ec].vecBNow.x += 7.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[6])];
+      this->state.slots[ec].vecBNow.z += 7.0f * g_cosTable[static_cast<int>(this->state.slots[ec].height[6])];
+    }
 
-        this->state.slots[ec].vecBNow.x += 5.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[6])];
-        this->state.slots[ec].vecBNow.z += 5.5f * g_cosTable[static_cast<int>(this->state.slots[ec].height[6])];
-      } else {
-        if (this->state.slots[ec].flag1[0] == 0) {
-          this->state.slots[ec].vecBNow.x = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
-          this->state.slots[ec].vecBNow.z = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
-          this->state.slots[ec].vecBNow.y = 1.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
-        } else {
-          this->state.slots[ec].vecBNow.x = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[0])];
-          this->state.slots[ec].vecBNow.z = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
-          this->state.slots[ec].vecBNow.y = 0.5f * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
-        }
+    this->state.slots[ec].vecBNow.y += this->state.slots[ec].height[7];
 
-        this->state.slots[ec].vecBNow.x += 7.0f * g_sinTable[static_cast<int>(this->state.slots[ec].height[6])];
-        this->state.slots[ec].vecBNow.z += 7.0f * g_cosTable[static_cast<int>(this->state.slots[ec].height[6])];
-      }
+    this->state.slots[ec].height[8] += static_cast<float>(5 + ClampedRandom(5));
 
-      this->state.slots[ec].vecBNow.y += this->state.slots[ec].height[7];
-
-      this->state.slots[ec].height[8] += static_cast<float>(5 + ClampedRandom(5));
-
-      if (this->state.slots[ec].height[8] >= 360.0f) {
-        this->state.slots[ec].height[8] -= 360.0f;
-      }
+    if (this->state.slots[ec].height[8] >= 360.0f) {
+      this->state.slots[ec].height[8] -= 360.0f;
     }
   }
 
