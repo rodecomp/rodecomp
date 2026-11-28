@@ -3750,9 +3750,9 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
       this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
+    lift = this->state.slots[ec].height[0];
     mode = this->state.slots[ec].height[4];
     length = this->state.slots[ec].distance;
-    lift = this->state.slots[ec].height[0];
     rotCos = g_cosTable[this->state.slots[ec].rotStart];
     rotSin = g_sinTable[this->state.slots[ec].rotStart];
     vec3 = {0.0f, lift, 0.0f};
@@ -3908,8 +3908,8 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
     do {
       const int next = segment + 1;
       const float sn = g_sinTable[this->state.slots[ec].riseAngle];
-      const float cs = g_cosTable[this->state.slots[ec].riseAngle];
       const float t0 = segment > 0 ? static_cast<float>(segment) / 5.0f * this->state.slots[ec].distance + 0.0f : 0.0f;
+      const float cs = g_cosTable[this->state.slots[ec].riseAngle];
       const float s0 = sn * t0 + jitterZ[segment];
       const float y0 = jitterY[segment] - 8.0f - g_sinTable[static_cast<short>(static_cast<int>(this->state.slots[ec].height[segment]))] * 15.0f * this->state.slots[ec].vecTNow.x;
       const float c0 = cs * t0 + jitterX[segment];
@@ -3964,14 +3964,14 @@ void CEffectPrim::RenderLightningTube(matrix& wtm) {
           }
 
           ++ring;
-          prevStart = ringStart;
           prevEnd = ringEnd;
+          prevStart = ringStart;
         }
       }
 
       segment = next;
-      fade -= 15;
       rise += 15;
+      fade -= 15;
     } while (this->state.slots[ec].vecTNow.y > static_cast<float>(segment));
   }
 }
