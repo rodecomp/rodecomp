@@ -101,8 +101,8 @@ bool FileSignatureVerifier::VerifyBuffer(const WCHAR* fileName, const BYTE* data
     const DWORD blockSize = footer.signatureSize + footer.fileNameSize + sizeof(footer);
     contentSize = dataSize - blockSize;
     hasSignature = true;
-    signatureBlockSize = blockSize;
     fileNameSize = footer.fileNameSize;
+    signatureBlockSize = blockSize;
   } else {
     footer = {};
     hasSignature = false;
