@@ -3674,15 +3674,15 @@ void UIWindow::DrawActionSprite(
     return;
   }
 
-  const std::vector<ActionFrame>& frames = action->Animation(0);
-  if (frames.empty()) {
+  const std::vector<ActionFrame>* frames = &action->Animation(0);
+  if (!frames || frames->empty()) {
     return;
   }
 
   int offsetX;
   int offsetY;
   float scale;
-  if (!FitSpriteFrame(&frames[0], sprite, width, height, &offsetX, &offsetY, &scale)) {
+  if (!FitSpriteFrame(&(*frames)[0], sprite, width, height, &offsetX, &offsetY, &scale)) {
     return;
   }
 
@@ -3695,7 +3695,7 @@ void UIWindow::DrawActionSprite(
     this->geometry.surface->Copy(offsetX - image.width / 2 + x, offsetY - image.height / 2 + y, image.width, image.height, image.pixels, true);
   }
 
-  const int count = static_cast<int>(frames.size());
+  const int count = static_cast<int>(frames->size());
   int index = 0;
   if (interval > 0) {
     const float elapsed = static_cast<float>(timeGetTime() % static_cast<unsigned>(interval));
@@ -3704,8 +3704,8 @@ void UIWindow::DrawActionSprite(
     index = count > frame ? frame : count - 1;
   }
 
-  if (frames.size() > static_cast<unsigned>(index)) {
-    this->geometry.surface->DrawScaledSprite(x, y, width, height, sprite, &frames[index], offsetX, offsetY, scale, nullptr);
+  if (frames->size() > static_cast<unsigned>(index)) {
+    this->geometry.surface->DrawScaledSprite(x, y, width, height, sprite, &(*frames)[index], offsetX, offsetY, scale, nullptr);
   }
 }
 
