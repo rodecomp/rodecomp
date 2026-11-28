@@ -10960,9 +10960,9 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   unsigned int attack;
   if (mode == SUT_TO_CHARACTER || mode == SUT_TO_ALL) {
     skillMode = 1;
+    support = IsSupportSkill(this->skillId);
     shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     optionalSelf = IsOptionalSelfTargetSkill(this->skillId);
-    support = IsSupportSkill(this->skillId);
     attack = shiftHeld;
     if (support) {
       skillMode = 1;
@@ -10970,9 +10970,9 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     }
   } else {
     skillMode = 0;
+    support = 0;
     shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
     attack = shiftHeld;
-    support = 0;
     optionalSelf = false;
   }
 
