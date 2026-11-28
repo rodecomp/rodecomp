@@ -489,8 +489,12 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
 
   const unsigned int endTime = ReloadCashEmotionMgr()->GetPackEndTime(packId);
   if (endTime) {
-    const char* key = now < endTime ? "EMSG_NOT_YET_SALE_START_TIME" : "EMSG_EMOTION_EXPANTION_FAIL_DATE";
-    const char* message = g_simpleStringMgr->GetString(key);
+    const char* message;
+    if (now < endTime) {
+      message = g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME");
+    } else {
+      message = g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_FAIL_DATE");
+    }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 255, 0, 0, 0);
   } else if (ReloadCashEmotionMgr()->GetPackStartTime(packId) > now) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_NOT_YET_SALE_START_TIME")), 255, 0, 0, 0);
