@@ -112,7 +112,7 @@ void CGndRes::ReadWater() {
       entry.frame = 0;
       entry.phase = 0.0f;
       entry.texture = nullptr;
-      this->water.push_back(entry);
+      this->water.push_back(std::move(entry));
     }
   } else if (this->minor == 9) {
     for (int index = 0; static_cast<float>(index) < count; ++index) {
@@ -121,7 +121,7 @@ void CGndRes::ReadWater() {
       entry.frame = 0;
       entry.phase = 0.0f;
       entry.texture = nullptr;
-      this->water.push_back(entry);
+      this->water.push_back(std::move(entry));
       this->waterHeights.push_back(parameters.level);
     }
   }
