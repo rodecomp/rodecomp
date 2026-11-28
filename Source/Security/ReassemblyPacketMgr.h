@@ -23,6 +23,8 @@ public:
 
 class CReassemblyPacketMgr {
 public:
+  // OFFSET: 0x00B15670
+  // FUNCTION: fn_47515
   CReassemblyPacketMgr() : m_valid(false) {
     if (this->Init()) {
       this->m_valid = true;
