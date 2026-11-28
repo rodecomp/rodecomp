@@ -2940,7 +2940,7 @@ void UISkillListWnd::Paint() {
   int spLevel;
   for (auto it = this->skills.begin(); it != this->skills.end(); ++index) {
     if (index < this->scroll * this->columns) {
-      ++it;
+      it++;
       continue;
     }
 
@@ -4618,7 +4618,7 @@ void UIEditCtrl3::DecodeLinkOptions(std::vector<int>& options, const char* text,
     const char byte = text[position];
     if (byte >= '0') {
       value += byte;
-    } else if (byte == separator || byte == alternate) {
+    } else if (separator == byte || alternate == byte) {
       options.push_back(this->DecodeLinkNumber(value));
       value.clear();
     } else {
@@ -10057,8 +10057,8 @@ void UIMerchantShopMakeWnd::Paint() {
     const int labelWidth = this->TextWidth(LookupMessage(MSI_BUYINGSTORE_MAKEWND_LIMITZENY), 0, 0, 12, 0, 0) + 10;
     this->zenyLimitEdit->Move(labelWidth, this->geometry.height - barHeight + 5);
     this->DrawTextAt(5, this->geometry.height - barHeight + 5, LookupMessage(MSI_BUYINGSTORE_MAKEWND_LIMITZENY), 0, 0, 12, 0, 0, 0);
-    const int unitX = this->zenyLimitEdit->geometry.width + (this->zenyLimitEdit->geometry.x + 5);
     const int unitY = this->geometry.height - barHeight;
+    const int unitX = this->zenyLimitEdit->geometry.width + (this->zenyLimitEdit->geometry.x + 5);
     this->DrawTextAt(unitX, unitY + 5, "Zeny", 0, 0, 12, 0, 0, 0);
 
     char grouped[16] = {};
@@ -10120,8 +10120,8 @@ void UIMerchantShopMakeWnd::Paint() {
     this->DrawTextAt(5, this->geometry.height - 43, LookupMessage(MSI_WARNING_METCHANT_SHOP_SELL), 0, 0, 12, 0xFF, 0, 0);
   }
 
-  int visible = 0;
   int index = 0;
+  int visible = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
