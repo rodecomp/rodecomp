@@ -1011,6 +1011,8 @@ void ZLIB_INTERNAL _tr_flush_block(s, buf, stored_len, last)
  * Save the match info and tally the frequency counts. Return true if
  * the current block must be flushed.
  */
+// OFFSET: 0x00E6A3F0
+// FUNCTION: fn_47553
 int ZLIB_INTERNAL _tr_tally(s, dist, lc)
     deflate_state *s;
     unsigned dist;  /* distance of matched string */
