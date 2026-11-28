@@ -1343,6 +1343,8 @@ png_set_write_user_transform_fn(png_structrp png_ptr, png_user_transform_ptr
 
 
 #ifdef PNG_INFO_IMAGE_SUPPORTED
+// OFFSET: 0x00E7DBB0
+// FUNCTION: fn_47626
 void PNGAPI
 png_write_png(png_structrp png_ptr, png_inforp info_ptr,
     int transforms, voidp params)
