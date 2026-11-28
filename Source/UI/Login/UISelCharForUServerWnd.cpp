@@ -89,13 +89,13 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
 
     const int slotIndex = info->slot;
     this->m_slots[slotIndex].job = info->job;
+    this->m_slots[slotIndex].action = 0;
+    this->m_slots[slotIndex].frame = 0;
     this->m_slots[slotIndex].robe = info->robe;
-    this->m_slotEnabled[slotIndex] = 0;
     this->m_slots[slotIndex].x = slotIndex % this->m_columns * 81 + 68;
     this->m_slots[slotIndex].y = slotIndex / this->m_columns * 149 + 191;
     this->m_slots[slotIndex].actionBase = 0;
-    this->m_slots[slotIndex].action = 0;
-    this->m_slots[slotIndex].frame = 0;
+    this->m_slotEnabled[slotIndex] = 0;
 
     const int sex = g_session.GetCurrentSex();
     const int costume = info->bodyCostume;
