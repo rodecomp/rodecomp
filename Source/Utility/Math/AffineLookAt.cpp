@@ -33,8 +33,8 @@ void matrix::LookAt(const float* origin, const float* target, const float* up) {
   const float sideZ = forwardY * up[0] - forwardX * up[1];
   const float sideLength = LengthRoot((sideY * sideY + sideX * sideX) + sideZ * sideZ);
   const float sideInverse = numerator / sideLength;
-  const float rightX = sideX * sideInverse;
   const float rightY = sideY * sideInverse;
+  const float rightX = sideX * sideInverse;
   const float rightZ = sideZ * sideInverse;
 
   const float crossX = rightZ * forwardY - rightY * forwardZ;
