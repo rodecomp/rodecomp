@@ -293,8 +293,8 @@ void UIRoMapWnd::DrawArrow(
     corner.x = mid.x + offsetX;
     corner.y = mid.y + offsetY;
   } else {
-    corner.x = (sideEnd.x - sideStart.x) + sideStart.x;
     corner.y = (sideEnd.y - sideStart.y) + sideStart.y;
+    corner.x = (sideEnd.x - sideStart.x) + sideStart.x;
   }
   DrawScreenQuad(start, sideStart, mid, corner, body, color);
 
