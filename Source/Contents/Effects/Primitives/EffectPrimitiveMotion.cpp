@@ -7587,8 +7587,8 @@ void CEffectPrim::PrimFallingPetals() {
     DriftSlotAngles(this->state.slots[index], 8);
 
     if (this->state.slots[index].vecBPre.y < 0.0f) {
-      this->state.slots[index].vecBPre.x = g_sinTable[static_cast<int>(this->state.slots[index].height[0])] * 0.01f + this->state.slots[index].vecBPre.x;
       this->state.slots[index].vecBPre.z = g_sinTable[static_cast<int>(this->state.slots[index].height[2])] * 0.01f + this->state.slots[index].vecBPre.z;
+      this->state.slots[index].vecBPre.x = g_sinTable[static_cast<int>(this->state.slots[index].height[0])] * 0.01f + this->state.slots[index].vecBPre.x;
 
       if (this->state.slots[index].vecBPre.y < -8.0f) {
         RespawnFallingPoint(this->state.slots[index], this->state.slots[index].vecBPre);
@@ -7598,8 +7598,8 @@ void CEffectPrim::PrimFallingPetals() {
     this->state.slots[index].vecBPre.y -= this->state.slots[index].maxHeight;
 
     if (this->state.slots[index].vecBNow.y < 0.0f) {
-      this->state.slots[index].vecBNow.x -= g_sinTable[static_cast<int>(this->state.slots[index].height[4])] * 0.01f;
       this->state.slots[index].vecBNow.z -= g_sinTable[static_cast<int>(this->state.slots[index].height[6])] * 0.01f;
+      this->state.slots[index].vecBNow.x -= g_sinTable[static_cast<int>(this->state.slots[index].height[4])] * 0.01f;
 
       if (this->state.slots[index].vecBNow.y < -8.0f) {
         RespawnFallingPoint(this->state.slots[index], this->state.slots[index].vecBNow);
