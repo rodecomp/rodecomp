@@ -153,8 +153,8 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
   RenderVertex vertex;
   point.x = tvert[0].x + this->render.position.x;
   point.y = tvert[0].y + this->render.position.y;
-  point.z = tvert[0].z + this->render.position.z;
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  point.z = tvert[0].z + this->render.position.z;
   g_renderer->Project(&point.x, wtm.values, vertex);
   this->state.triangles[0].vertices[0] = vertex;
   this->state.triangles[0].vertices[0].diffuse = this->state.argb;
@@ -200,8 +200,8 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
   this->state.triangles[1].vertices[1].u = 0.0f;
   point.x = tvert[1].x + this->render.position.x;
   point.y = tvert[1].y + this->render.position.y;
-  point.z = tvert[1].z + this->render.position.z;
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
+  point.z = tvert[1].z + this->render.position.z;
   g_renderer->Project(&point.x, wtm.values, vertex);
   this->state.triangles[1].vertices[2] = vertex;
   this->state.triangles[1].vertices[2].diffuse = this->state.argb;
