@@ -13,6 +13,8 @@ namespace {
 SnapObject::SnapObject() : window(nullptr), visited(0) {
 }
 
+// OFFSET: 0x007E24C0
+// FUNCTION: fn_47509
 SnapObject::~SnapObject() = default;
 
 // OFFSET: 0x007E2770
