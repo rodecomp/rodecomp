@@ -691,6 +691,18 @@ static void SetScrollRange(UIScrollBar* bar, int maximum, int visible, int total
   }
 }
 
+// INLINED
+__forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+
 // OFFSET: 0x00895AC0
 // FUNCTION: fn_11509
 void UIComboBox::Refresh() {
@@ -702,8 +714,11 @@ void UIComboBox::Refresh() {
   }
 
   this->verticalOverflow = overflow != 0;
+  auto& verticalBarRef = this->verticalBar;
+  auto* bar = verticalBarRef;
+
   if (overflow != 0) {
-    SetScrollRange(this->verticalBar, this->bottomMargin + overflow, visible, static_cast<int>(this->lines.size()));
+    SetBarRange(bar, this->bottomMargin + overflow, visible, static_cast<int>(this->lines.size()));
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
@@ -721,7 +736,7 @@ void UIComboBox::Refresh() {
 
     this->verticalBar->position = this->topLine;
   } else {
-    SetScrollRange(this->verticalBar, 0, visible, static_cast<int>(this->lines.size()));
+    SetBarRange(bar, 0, visible, static_cast<int>(this->lines.size()));
   }
 
   this->verticalBar->Invalidate();
@@ -1366,18 +1381,6 @@ void UIComboBoxID::Resize(int width, int height) {
     this->topLine = 0;
     this->verticalBar->position = this->topLine;
     this->verticalBar->Move(width - 13, 0);
-  }
-}
-
-// INLINED
-__forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
-  bar->maximum = maximum;
-  bar->visible = visible;
-  bar->total = total;
-  bar->Invalidate();
-
-  if (bar->position > bar->maximum) {
-    bar->position = bar->maximum;
   }
 }
 
