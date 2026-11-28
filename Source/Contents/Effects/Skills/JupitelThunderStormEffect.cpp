@@ -92,13 +92,13 @@ void CJupitelThunderStormEffect::Open() {
   for (int time = 80; time <= lastDelay; time += 80, ++index) {
     const int delay = time;
     CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+    int offsetX = 0;
     if (!bolt) {
       continue;
     }
 
     const int range = (rings * 10 + 25) / 2;
     const int corner = index % 4;
-    int offsetX = 0;
     float offsetZ;
     if (range == 0) {
       offsetZ = static_cast<float>(corners[corner][1]) * g_depthAverageHalf;
