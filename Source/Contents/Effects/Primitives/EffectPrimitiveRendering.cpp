@@ -3458,11 +3458,11 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
       this->state.slots[ec].alphaB = 100;
     }
 
-    if (this->state.slots[ec].height[8] >= 360.0f || this->state.slots[ec].height[8] < 0.0f) {
+    if (this->state.slots[ec].height[8] >= g_fullCircleAngle || this->state.slots[ec].height[8] < 0.0f) {
       this->state.slots[ec].height[8] = 0.0f;
     }
 
-    const float rx = this->state.slots[ec].distance * g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * 0.05f + this->state.slots[ec].distance;
+    const float rx = this->state.slots[ec].distance * g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * g_fireflyNormalDrift + this->state.slots[ec].distance;
     const int angle1 = this->state.slots[ec].fullDisplayAngle;
     const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
     const int angle3 = angle2 + (angle2 + 90 >= 360 ? -270 : 90);
@@ -3471,11 +3471,11 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
     vec2 = {rx * g_cosTable[angle2], 0.0f, rx * g_sinTable[angle2]};
     vec3 = {rx * g_cosTable[angle3], 0.0f, rx * g_sinTable[angle3]};
     vec4 = {rx * g_cosTable[angle4], 0.0f, rx * g_sinTable[angle4]};
-    if (this->state.slots[ec].height[9] == 10.0f) {
-      vec1.x += 4.0f;
-      vec2.x += 4.0f;
-      vec3.x += 4.0f;
-      vec4.x += 4.0f;
+    if (this->state.slots[ec].height[9] == g_projectionDepthOffset) {
+      vec1.x += g_effectIconRadius;
+      vec2.x += g_effectIconRadius;
+      vec3.x += g_effectIconRadius;
+      vec4.x += g_effectIconRadius;
     }
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
     vec1 = {this->state.slots[ec].vecBNow.x + vec1.x, this->state.slots[ec].vecBNow.y + vec1.y, this->state.slots[ec].vecBNow.z + vec1.z};
@@ -8134,7 +8134,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
       continue;
     }
 
-    const float dist = this->state.slots[ec].distance * g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * 0.05f + this->state.slots[ec].distance;
+    const float dist = this->state.slots[ec].distance * g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * g_fireflyNormalDrift + this->state.slots[ec].distance;
     const float shape = this->state.slots[ec].height[10];
 
     int angle = this->state.slots[ec].fullDisplayAngle;
