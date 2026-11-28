@@ -887,9 +887,9 @@ UIWindowMgr::UIWindowMgr()
   this->chatWndStickOn = 1;
   this->onStSubChat = 0;
   this->battleSubChatEnabled = 0;
+  this->loginGridX = 0;
   this->compactCompositionLayout = g_language == LANGUAGE_JAPANESE;
   this->skillDescriptionVisible = 0;
-  this->loginGridX = 0;
   if (g_serviceType == ServiceKorea) {
     this->loginGridY = -25;
   } else {
