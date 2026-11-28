@@ -40,9 +40,9 @@ void UISeekPartyMBWnd::LoadSubTypeOptions(int type) {
   const auto& subTypes = this->m_subTypes;
   auto found = subTypes.find(type);
   if (found != subTypes.end()) {
-    const std::vector<std::pair<std::string, int>> entries = found->second;
-    for (const std::pair<std::string, int> entry : entries) {
-      this->m_subTypeCombo->AddOption(entry.first.c_str(), entry.second);
+    const std::vector<SeekPartyMapEntry> entries = found->second;
+    for (const SeekPartyMapEntry entry : entries) {
+      this->m_subTypeCombo->AddOption(entry.name.c_str(), entry.color);
     }
   }
 }
@@ -153,9 +153,9 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       this->m_subTypeCombo->Clear();
       auto found = this->m_subTypes.find(key);
       if (found != this->m_subTypes.end()) {
-        const std::vector<std::pair<std::string, int>> entries = found->second;
-        for (const std::pair<std::string, int> entry : entries) {
-          this->m_subTypeCombo->AddOption(entry.first.c_str(), entry.second);
+        const std::vector<SeekPartyMapEntry> entries = found->second;
+        for (const SeekPartyMapEntry entry : entries) {
+          this->m_subTypeCombo->AddOption(entry.name.c_str(), entry.color);
         }
       }
 
@@ -411,10 +411,6 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
     int green;
     int blue;
   };
-  struct MapOption {
-    std::string name;
-    int color;
-  };
 
   g_session.m_hotkeyScript->HasTable("map_list");
   std::string unused;
@@ -433,19 +429,19 @@ void UISeekPartyMBWnd::LoadRegionMaps() {
   g_session.m_hotkeyScript->HasTable("map_list");
   for (int region = 2; region < regionCount; ++region) {
     MapInfo mapInfo = {};
-    std::vector<std::pair<std::string, int>> maps;
+    std::vector<SeekPartyMapEntry> maps;
     for (int index = 1;; ++index) {
       if (g_session.m_hotkeyScript->Call("queryMapInfo", "dd>ddsddd", region, index, &mapInfo.id, &mapInfo.level, &mapInfo.name, &mapInfo.red, &mapInfo.green, &mapInfo.blue)) {
         if (!mapInfo.name) {
           break;
         }
-        MapOption option;
+        SeekPartyMapEntry option;
         option.name = mapInfo.name;
         option.color = (static_cast<unsigned char>(mapInfo.blue) << 16) | (static_cast<unsigned char>(mapInfo.green) << 8) | static_cast<unsigned char>(mapInfo.red);
-        maps.push_back(std::pair<std::string, int>(option.name, option.color));
+        maps.push_back(SeekPartyMapEntry(option));
       }
     }
-    this->m_subTypes.insert(std::pair<const int, std::vector<std::pair<std::string, int>>>(region, maps));
+    this->m_subTypes.insert(std::pair<const int, std::vector<SeekPartyMapEntry>>(region, maps));
   }
 
   this->m_typeCombo->Select(0);

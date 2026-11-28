@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_PARTY_UISEEKPARTYMBWND_H
 
 #include "Contents/Party/PartyBookingInfo.h"
+#include "UI/Party/UISeekPartyListWnd.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <map>
@@ -49,7 +50,7 @@ protected:
   /* 00D0 */ UIComboBoxDefWnd* m_jobCategoryCombo;
   /* 00D4 */ unsigned char padding_00D4[0x30];
   /* 0104 */ std::map<unsigned short, UICheckBox*> m_jobChecks[9];
-  /* 014C */ std::map<int, std::vector<std::pair<std::string, int>>> m_subTypes;
+  /* 014C */ std::map<int, std::vector<SeekPartyMapEntry>> m_subTypes;
   /* 0154 */ UIBitmapButton* cancelButton;
   /* 0158 */ UIBitmapButton* confirmButton;
   /* 015C */ int m_jobCategory;
