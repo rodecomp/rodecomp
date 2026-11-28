@@ -743,8 +743,8 @@ CCreateLineInfo::CCreateLineInfo(
 )
     : m_align(align), m_newSegment(true), m_height(0) {
   if (parent && (this->m_parent = parent, text)) {
-    this->m_text = text;
     this->m_width = width;
+    this->m_text = text;
     this->m_lineSpacing = lineSpacing;
     this->m_defaultColor = style.color;
     this->m_color = style.color;
