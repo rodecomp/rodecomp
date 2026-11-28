@@ -758,23 +758,26 @@ int ShaTransform(const unsigned char* state, unsigned int word, unsigned int* di
 // OFFSET: 0x00B11B80
 // FUNCTION: fn_18411
 void BuildKeyedBoxes(unsigned char* boxes, const unsigned char* key, int keyLength, int count) {
-  if (count <= 0) {
-    return;
-  }
+  int box;
+  int pass;
+  int i;
+  int j;
+  int keyIndex;
+  unsigned char swap;
 
-  for (int box = 0; box < count; ++box) {
-    for (int i = 0; i < 256; ++i) {
+  for (box = 0; box < count; ++box) {
+    for (i = 0; i < 256; ++i) {
       boxes[box * 256 + i] = static_cast<unsigned char>(i);
     }
   }
 
-  int j = keyLength;
-  int keyIndex = 0;
-  for (int box = 0; box < count; ++box) {
-    for (int pass = 0; pass < 8; ++pass) {
-      for (int i = 0; i < 256; ++i) {
+  j = keyLength;
+  keyIndex = 0;
+  for (box = 0; box < count; ++box) {
+    for (pass = 0; pass < 8; ++pass) {
+      for (i = 0; i < 256; ++i) {
         j = (boxes[box * 256 + (pass * box + i) % 256] + j + key[keyIndex]) % 256;
-        unsigned char swap = boxes[box * 256 + i];
+        swap = boxes[box * 256 + i];
         boxes[box * 256 + i] = boxes[box * 256 + j];
         boxes[box * 256 + j] = swap;
         keyIndex = (keyIndex + 1) % keyLength;
