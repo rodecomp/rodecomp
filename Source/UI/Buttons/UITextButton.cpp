@@ -320,16 +320,16 @@ bool UIBmpRadioBtn::SetBitmap(const char* name, int state) {
 
   switch (state) {
   case BUTTON_STATE_NORMAL:
-    this->m_names[0] = name;
+    this->m_normalName = name;
     break;
   case BUTTON_STATE_HOVER:
-    this->m_names[1] = name;
+    this->m_hoverName = name;
     break;
   case BUTTON_STATE_PRESSED:
-    this->m_names[2] = name;
+    this->m_pressedName = name;
     break;
   case BUTTON_STATE_DISABLED:
-    this->m_names[3] = name;
+    this->m_disabledName = name;
     break;
   }
 
@@ -2394,13 +2394,13 @@ void UIBmpRadioBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
   CBitmapRes* bitmap;
   if (this->m_disabled == true) {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_disabledName.c_str())));
   } else if (this->geometry.state == 1) {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str())));
   } else if (this->m_hovered == true) {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str())));
   } else {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str())));
   }
 
   this->DrawBitmap(0, 0, bitmap, false);

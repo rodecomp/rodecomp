@@ -48,7 +48,10 @@ public:
   }
 
 protected:
-  /* 007C */ std::string m_names[4];
+  /* 007C */ std::string m_normalName;
+  /* 0094 */ std::string m_hoverName;
+  /* 00AC */ std::string m_pressedName;
+  /* 00C4 */ std::string m_disabledName;
   /* 00DC */ bool m_hovered;
   /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ std::string m_tooltip;
