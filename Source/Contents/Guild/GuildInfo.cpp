@@ -325,7 +325,7 @@ void GuildInfo::UpdatePosition(GuildPositionEntry entry) {
   for (auto it = this->positions.begin(); it != this->positions.end(); ++it) {
     if (it->positionId == entry.positionId) {
       *it = entry;
-      return;
+      break;
     }
   }
 }
