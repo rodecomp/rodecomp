@@ -183,9 +183,9 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
   }
 
   CNaviInfo* target = nullptr;
+  const int type = this->savedTarget.type;
   volatile int destX = cellX;
   volatile int destY = cellY;
-  const int type = this->savedTarget.type;
   if (type == 3) {
     if (info == static_cast<CNavi_Object*>(this->savedTarget.object)->GetInfo()) {
       return 2;
