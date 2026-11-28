@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <functional>
 
+extern float g_gageThreshold;
+
 class UIGage : public UIWindow {
 public:
   UIGage();

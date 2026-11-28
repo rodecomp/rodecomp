@@ -26,6 +26,7 @@
 #include "Client/Replay/Replay.h"
 #include "Contents/Skills/ClientSkills.h"
 #include "UI/Cooldowns/CooldownOwner.h"
+#include "UI/Gauges/UIPcGage.h"
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/SpriteQuad.h"
 #include "Resource/Sprites/ActionResource.h"
@@ -8034,7 +8035,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
     for (j = 0.0f; j <= temp; j += this->state.arcAngle) {
       radian[0] = GetRadian(static_cast<int>(j + this->state.longitude));
       radian[1] = GetRadian(static_cast<int>(i));
-      radian[2] = GetRadian(static_cast<int>(j + this->state.arcAngle + 0.25f + this->state.longitude));
+      radian[2] = GetRadian(static_cast<int>(j + this->state.arcAngle + g_gageThreshold + this->state.longitude));
       radian[3] = GetRadian(static_cast<int>(i + this->state.arcAngle));
 
       mat[2].MakeXRotation(radian[1]);
