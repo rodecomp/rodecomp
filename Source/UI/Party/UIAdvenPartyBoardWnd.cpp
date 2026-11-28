@@ -1039,7 +1039,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case ID_SELECT_PARTY_LISTING: {
       const auto& info = this->rows[static_cast<int>(b)]->info;
 
-      if (info.accountId == g_session.m_aid) {
+      if (g_session.m_aid == info.accountId) {
         g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
         auto* window = static_cast<UIRegisterPartyWnd*>(g_windowMgr.EnsureWindow(WID_REGISTERPARTYWND));
 
