@@ -191,8 +191,8 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
   if (actor == nullptr) {
     return true;
   } else {
-    int titleRow = 0;
     int titleColumn = 0;
+    int titleRow = 0;
     int actorColumn = 0;
     int actorRow = 0;
     C3dAttr*& terrain = g_modeMgr.GetGameMode()->scene->terrain;
@@ -205,7 +205,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
         }
 
         terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-        if (actorColumn == titleColumn && titleRow == actorRow) {
+        if (actorColumn == titleColumn && actorRow == titleRow) {
           return true;
         }
       } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
@@ -225,7 +225,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
         }
 
         terrain->SpatialCell(owner->render.position.x, owner->render.position.z, titleColumn, titleRow);
-        if (actorColumn == titleColumn && titleRow == actorRow) {
+        if (actorColumn == titleColumn && actorRow == titleRow) {
           return true;
         }
       }

@@ -50,8 +50,7 @@ BOOL CSession::LoadMapPosTable() {
   std::string name;
   std::vector<std::string> fields;
   std::string token;
-  int boundsValid = 0;
-  MapPosRect bounds = {};
+  MapPosEntry bounds = {};
   for (; cursor < end; ++cursor) {
     switch (*cursor) {
     case '@':
@@ -64,12 +63,9 @@ BOOL CSession::LoadMapPosTable() {
       if (token.size() == 0) {
         token.assign(start, cursor - start);
         const int id = std::atoi(std::string(start, cursor).c_str());
-        if (currentId != id && boundsValid != 0) {
-          MapPosEntry& entry = this->m_mapPosBounds[currentId];
-          entry.rect = bounds;
-          entry.valid = boundsValid;
+        if (currentId != id && bounds.valid != 0) {
+          this->m_mapPosBounds[currentId] = bounds;
           bounds = {};
-          boundsValid = 0;
           currentId = id;
         }
       } else if (name.size() == 0) {
@@ -85,16 +81,15 @@ BOOL CSession::LoadMapPosTable() {
         this->m_mapPosLists[currentId][name] = position;
         this->m_mapPositions[name] = position;
 
-        if (boundsValid != 0) {
-          bounds.right = right > bounds.right ? right : bounds.right;
-          bounds.bottom = bottom > bounds.bottom ? bottom : bounds.bottom;
-          bounds.left = position.rect.left < bounds.left ? position.rect.left : bounds.left;
-          if (top < bounds.top) {
-            bounds.top = top;
+        if (bounds.valid != 0) {
+          bounds.rect.right = right > bounds.rect.right ? right : bounds.rect.right;
+          bounds.rect.bottom = bottom > bounds.rect.bottom ? bottom : bounds.rect.bottom;
+          bounds.rect.left = position.rect.left < bounds.rect.left ? position.rect.left : bounds.rect.left;
+          if (top < bounds.rect.top) {
+            bounds.rect.top = top;
           }
         } else {
-          bounds = position.rect;
-          boundsValid = 1;
+          bounds = position;
         }
 
         token.clear();
@@ -110,10 +105,8 @@ BOOL CSession::LoadMapPosTable() {
     }
   }
 
-  if (boundsValid != 0) {
-    MapPosEntry& entry = this->m_mapPosBounds[currentId];
-    entry.rect = bounds;
-    entry.valid = boundsValid;
+  if (bounds.valid != 0) {
+    this->m_mapPosBounds[currentId] = bounds;
   }
 
   file.Close();
