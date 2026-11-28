@@ -219,11 +219,12 @@ void UIQuestDisplay::SelectQuestAt(int x, int y) {
 void UIQuestDisplay::OnRBtnUp(int x, int y) {
   const int previous = this->m_selectedIndex;
   this->m_selectedIndex = FindDisplayQuestAt(y);
-  if (previous != this->m_selectedIndex) {
+  auto& selectedIndex = this->m_selectedIndex;
+  if (previous != selectedIndex) {
     this->Invalidate();
   }
 
-  if (this->m_selectedIndex != -1) {
+  if (selectedIndex != -1) {
     this->SendMsg(nullptr, UM_MAKEMENU, 0, 0, 0, 0);
   }
 }
