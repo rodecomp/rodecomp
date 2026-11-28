@@ -16360,8 +16360,8 @@ void CGameMode::SpawnStandingActor(
   entry.honor = honor;
   entry.virtue = virtue;
   entry.robe = robe;
-  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
+  entry.shield = static_cast<int>(weapon >> 32);
   if (objectType == PC_TYPE) {
     entry.state = 0;
   } else {
