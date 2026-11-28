@@ -199,6 +199,8 @@ Value::CZString::~CZString()
       valueAllocator()->releaseMemberName( const_cast<char *>( cstr_ ) );
 }
 
+// OFFSET: 0x006E42F0
+// FUNCTION: fn_06756
 void 
 Value::CZString::swap( CZString &other )
 {
