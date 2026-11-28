@@ -107,10 +107,10 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       } else {
         const char* current = this->previousLineText;
         this->movingDown = 0;
-        int bytes = 0;
         int width = 0;
         const char* const end = current + std::strlen(current);
 
+        int bytes = 0;
         if (this->previousLineLength != 0) {
           while (current < end) {
             const int previousBytes = bytes;
