@@ -439,6 +439,8 @@ LUALIB_API void luaL_addlstring (luaL_Buffer *B, const char *s, size_t l) {
 }
 
 
+// OFFSET: 0x005241F0
+// FUNCTION: fn_47560
 LUALIB_API void luaL_addstring (luaL_Buffer *B, const char *s) {
   luaL_addlstring(B, s, strlen(s));
 }
