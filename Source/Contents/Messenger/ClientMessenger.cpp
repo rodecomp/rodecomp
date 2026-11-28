@@ -79,6 +79,18 @@ namespace EquipmentProperties {
 
 using EquipmentProperty = EquipmentProperties::CEquipmentProperties;
 
+using MessengerTreeNodeAllocator = std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>;
+using MessengerTreeVal = std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>;
+
+template <>
+// OFFSET: 0x006962D0
+// FUNCTION: fn_47477
+std::_Tree_head_scoped_ptr<MessengerTreeNodeAllocator, MessengerTreeVal>::~_Tree_head_scoped_ptr() {
+  if (this->_Mycont) {
+    this->_Mycont->_Erase_head(this->_Al);
+  }
+}
+
 namespace EquipmentProperties {
   class CEquipmentProperties {
   public:
