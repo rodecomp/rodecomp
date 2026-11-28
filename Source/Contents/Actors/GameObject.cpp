@@ -906,8 +906,8 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
     const float halfWidth = (quad.right - quad.left) * 0.5f;
     const float halfHeight = (quad.bottom - quad.top) * 0.5f;
     const float centerX = quad.left + halfWidth + offsetX;
-    const float centerY = quad.top + halfHeight + offsetY;
     const float minX = -halfWidth;
+    const float centerY = quad.top + halfHeight + offsetY;
     const float minY = -halfHeight;
 
     vertices[0].x = minX * cosine - minY * sine + centerX + 0.5f;
