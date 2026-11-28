@@ -234,8 +234,8 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
   input.Read(&this->alpha, 1);
   input.Read(&this->framesPerSecond, 4);
   int textureCount = 0;
-  input.Read(&textureCount, 4);
   std::vector<std::string> textureNames;
+  input.Read(&textureCount, 4);
 
   for (int index = 0; index < textureCount; ++index) {
     bytes = 0;
@@ -443,8 +443,8 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     for (int face = 0; face < faceCount; ++face) {
       ModelFace& target = faces[face];
       unsigned size = 0;
-      input.Read(&size, 4);
       std::vector<unsigned char> buffer;
+      input.Read(&size, 4);
       buffer.resize(size);
       input.Read(buffer.data(), size);
       ModelFaceHeader record;
