@@ -448,8 +448,7 @@ static void SetOffsetPosition(vector3d& position, const float* origin, const vec
 // OFFSET: 0x00B79780
 // FUNCTION: fn_19200
 void CSpriteEffect::OnProcess() {
-  for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    CSpriteParticle* particle = *it;
+  for (CSpriteParticle* particle : this->particles) {
     ++particle->elapsedFrames;
 
     switch (this->id) {
@@ -571,14 +570,19 @@ void CSpriteEffect::OnProcess() {
       particle->applyActorLift = 1;
       particle->screenOffsetY = -105.0f;
       particle->screenOffsetX = 0.0f;
-      particle->position = vector3d{this->position[0], this->position[1], this->position[2]};
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1];
+      particle->position.z = this->position[2];
       break;
     case EF_C_2025ROSFESTA:
       particle->applyActorExtent = 1;
       particle->applyActorLift = 1;
       particle->screenOffsetY = 0.0f;
       particle->screenOffsetX = 0.0f;
-      [[fallthrough]];
+      particle->position.x = this->position[0];
+      particle->position.y = this->position[1];
+      particle->position.z = this->position[2];
+      break;
     default:
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];
