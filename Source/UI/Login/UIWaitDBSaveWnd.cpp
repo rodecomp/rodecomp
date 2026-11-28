@@ -40,7 +40,8 @@ __forceinline const char* WaitActionName() {
 
 }
 
-// INLINED
+// OFFSET: 0x00AB4900
+// FUNCTION: fn_47510
 UIWaitDBSaveWnd::UIWaitDBSaveWnd(const char* sprite, const char* action)
     : UIWindow(0), m_closeTime(timeGetTime() + 60000) {
   this->m_animation = 0;
