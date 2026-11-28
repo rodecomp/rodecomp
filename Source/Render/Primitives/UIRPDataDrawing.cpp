@@ -210,9 +210,9 @@ void UIRPData::DrawNamedScaledRegion(float x, float y, std::string name, std::ui
   primitive->quad[0].u = static_cast<float>(sourceX) / textureWidth;
   primitive->quad[0].v = static_cast<float>(sourceY) / textureHeight;
   primitive->quad[1].x = static_cast<float>(width) + x;
+  primitive->quad[1].v = static_cast<float>(sourceY) / textureHeight;
   primitive->quad[1].y = y;
   primitive->quad[1].u = width > imageWidth ? static_cast<float>(sourceX + imageWidth) / textureWidth : static_cast<float>(sourceX + width) / textureWidth;
-  primitive->quad[1].v = static_cast<float>(sourceY) / textureHeight;
   primitive->quad[2].x = x;
   primitive->quad[2].y = static_cast<float>(height) + y;
   primitive->quad[2].u = static_cast<float>(sourceX) / textureWidth;
