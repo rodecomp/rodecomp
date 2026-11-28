@@ -291,8 +291,6 @@ public:
   void ClearSiegeNameWindow();
   void RefreshGuildEmblemWindow();
   void NotifyCellMove(const float* x, const float* z);
-  void ProcessViewCheck();
-  void ProcessActorEffects();
   void ProcessDamageMessages();
   void UpdateDamageMessages();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);

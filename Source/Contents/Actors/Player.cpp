@@ -2191,7 +2191,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
 // FUNCTION: fn_22586
 bool CGrannyPc::OnProcess() {
   this->UpdateStateEffects();
-  this->ProcessActorEffects();
+  this->ProcessDamageMessages();
   this->UpdateGaugePositions();
   this->UpdateGaugeWindow();
 
@@ -2262,7 +2262,7 @@ bool CGrannyPc::OnProcess() {
 // FUNCTION: fn_22587
 bool CPc::OnProcess() {
   this->UpdateStateEffects();
-  this->ProcessActorEffects();
+  this->ProcessDamageMessages();
   this->UpdateGaugePositions();
   this->UpdateGaugeWindow();
 

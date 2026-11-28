@@ -4697,62 +4697,12 @@ void CGameActor::ApplyNatureProtection() {
   this->RefreshBodyPaletteName();
 }
 
-__declspec(noinline) void CGameActor::ProcessViewCheck() {
-  if (g_updateTick > 0 && (this->render.effectPhaseState & 0xFFu) == 1) {
-    this->render.flags = 0;
-    this->render.effectPhaseState &= 0xFFFFFF00u;
-  }
-
-  if (StateFlagsClear(this->stateFlags)) {
-    this->effectLaunchCnt = 0x8ca0;
-    return;
-  }
-
-  timeGetTime();
-  if (IsSightActive(this->stateFlags)) {
-    if (static_cast<unsigned int>(EffectLifetime(EF_SIGHT)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
-      this->effectLaunchCnt = 0;
-      vector3d zero;
-      zero.x = 0.0f;
-      zero.y = 0.0f;
-      zero.z = 0.0f;
-      this->LaunchEffect(EF_SIGHT, zero, 0.0f);
-    }
-  }
-
-  if (IsRuwachActive(this->stateFlags)) {
-    if (static_cast<unsigned int>(EffectLifetime(EF_RUWACH)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
-      this->effectLaunchCnt = 0;
-      vector3d zero;
-      zero.x = 0.0f;
-      zero.y = 0.0f;
-      zero.z = 0.0f;
-      this->LaunchEffect(EF_RUWACH, zero, 0.0f);
-    }
-  }
-
-  ++this->effectLaunchCnt;
-}
-
-__declspec(noinline) void CGameActor::ProcessActorEffects() {
-  for (auto it = this->willBeAttackedList.begin(); it != this->willBeAttackedList.end();) {
-    if (timeGetTime() < it->time) {
-      ++it;
-      continue;
-    }
-
-    ActorDamageMessage& message = *it;
-    this->SendMsg(nullptr, message.action, reinterpret_cast<std::uint32_t>(&message.targetAid), 0, 0, 0, 0, 0);
-    it = this->willBeAttackedList.erase(it);
-  }
-}
-
 // OFFSET: 0x00CC59B0
 // FUNCTION: fn_21178
 bool C3dGrannyGameActor::OnProcess() {
   this->ProcessMotion();
-  this->ProcessViewCheck();
-  this->ProcessActorEffects();
+  this->UpdateStateEffects();
+  this->ProcessDamageMessages();
   this->UpdateHpGauge();
 
   const bool result = this->ProcessState();
