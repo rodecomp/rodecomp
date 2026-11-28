@@ -11,6 +11,7 @@ public:
   static bool Create();
   static void Destroy();
   bool Init();
+  bool Load();
   static int L_InsertNeedItem(lua_State* state);
   static int L_InsertEndableMap(lua_State* state);
   static int L_InsertStartableMap(lua_State* state);

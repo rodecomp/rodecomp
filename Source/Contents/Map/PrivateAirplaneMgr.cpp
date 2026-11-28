@@ -45,6 +45,12 @@ bool CPrivateAirplaneMgr::Create() {
   return true;
 }
 
+// OFFSET: 0x006D06B0
+// FUNCTION: fn_47500
+bool CPrivateAirplaneMgr::Load() {
+  return this->Init() != false;
+}
+
 // OFFSET: 0x006D0620
 // FUNCTION: fn_06505
 void CPrivateAirplaneMgr::Destroy() {
