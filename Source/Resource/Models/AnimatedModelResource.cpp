@@ -193,57 +193,57 @@ bool C3dAnimModelRes::Load(const char* name) {
     if (header != 0x12345678u) {
       ShowErrorDialog("data corrupt", 0);
       return false;
-    }
-
-    file.Read(field, sizeof(field));
-    node->name = std::string(field);
-    file.Read(field, sizeof(field));
-    node->parentName = std::string(field);
-    file.Read(&node->textureCount, 4);
-    node->textures = new CTexture*[node->textureCount];
-
-    for (int texture = 0; texture < node->textureCount; ++texture) {
-      int id;
-      file.Read(&id, 4);
-      const std::string textureName = names[id];
-      node->textures[texture] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);
-      node->textures[texture]->Retain();
-    }
-
-    file.Read(&node->vertexCount, 4);
-
-    for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
-      AnimatedModelFrame& frame = node->frames[frameIndex];
-      frame.AllocateVertices(node->vertexCount);
-      file.Read(node->frames[frameIndex].vertices, node->vertexCount * 12);
-    }
-
-    file.Read(&node->textureVertexCount, 4);
-    file.Read(&node->sharedTextureVertices, 4);
-
-    if (node->sharedTextureVertices) {
-      AnimatedModelFrame& frame = node->frames[0];
-      frame.AllocateTextureVertices(node->textureVertexCount);
-      file.Read(node->frames[0].textureVertices, node->textureVertexCount * 12);
     } else {
+      file.Read(field, sizeof(field));
+      node->name = std::string(field);
+      file.Read(field, sizeof(field));
+      node->parentName = std::string(field);
+      file.Read(&node->textureCount, 4);
+      node->textures = new CTexture*[node->textureCount];
+
+      for (int texture = 0; texture < node->textureCount; ++texture) {
+        int id;
+        file.Read(&id, 4);
+        const std::string textureName = names[id];
+        node->textures[texture] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);
+        node->textures[texture]->Retain();
+      }
+
+      file.Read(&node->vertexCount, 4);
+
       for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
         AnimatedModelFrame& frame = node->frames[frameIndex];
-        frame.AllocateTextureVertices(node->textureVertexCount);
-        file.Read(node->frames[frameIndex].textureVertices, node->textureVertexCount * 12);
+        frame.AllocateVertices(node->vertexCount);
+        file.Read(node->frames[frameIndex].vertices, node->vertexCount * 12);
       }
-    }
 
-    file.Read(&node->faceCount, 4);
-    node->faceColors = new std::array<std::uint32_t, 3>[node->faceCount];
-    node->faces = new AnimatedModelFace[node->faceCount];
-    file.Read(node->faces, node->faceCount * 24);
-    this->nodes.push_back(node);
-    std::uint32_t footer;
-    file.Read(&footer, 4);
+      file.Read(&node->textureVertexCount, 4);
+      file.Read(&node->sharedTextureVertices, 4);
 
-    if (footer != 0x12345678u) {
-      ShowErrorDialog("data corrupt", 0);
-      return false;
+      if (node->sharedTextureVertices) {
+        AnimatedModelFrame& frame = node->frames[0];
+        frame.AllocateTextureVertices(node->textureVertexCount);
+        file.Read(node->frames[0].textureVertices, node->textureVertexCount * 12);
+      } else {
+        for (int frameIndex = 0; frameIndex < this->frameCount; ++frameIndex) {
+          AnimatedModelFrame& frame = node->frames[frameIndex];
+          frame.AllocateTextureVertices(node->textureVertexCount);
+          file.Read(node->frames[frameIndex].textureVertices, node->textureVertexCount * 12);
+        }
+      }
+
+      file.Read(&node->faceCount, 4);
+      node->faceColors = new std::array<std::uint32_t, 3>[node->faceCount];
+      node->faces = new AnimatedModelFace[node->faceCount];
+      file.Read(node->faces, node->faceCount * 24);
+      this->nodes.push_back(node);
+      std::uint32_t footer;
+      file.Read(&footer, 4);
+
+      if (footer != 0x12345678u) {
+        ShowErrorDialog("data corrupt", 0);
+        return false;
+      }
     }
   }
 
