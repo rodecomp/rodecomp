@@ -288,6 +288,8 @@ namespace EquipmentProperties {
     // INLINED
     CEquipment() : m_info(nullptr), m_pretend(false) {
     }
+    // OFFSET: 0x00689F30
+    // FUNCTION: fn_47494
     explicit CEquipment(const int& id) : m_id(id), m_info(nullptr), m_pretend(false) {
     }
     virtual ~CEquipment();
@@ -509,6 +511,7 @@ __declspec(noinline) EquipmentProperties::CEquipmentExpansion::CEquipmentExpansi
   this->m_pretend = true;
 }
 
+// OFFSET: 0x0068B1F0
 // OFFSET: 0x0068B6C0
 // FUNCTION: fn_05612
 EquipmentProperties::CEquipment::~CEquipment() {
