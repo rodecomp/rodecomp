@@ -241,21 +241,22 @@ void CUIMacroReport::OnCreate(int width, int height) {
   this->AddChild(this->secondTypeText);
 
   this->cancelButton = new CUIImageButton();
-  this->cancelButton->SetSize(58, 20);
-  this->cancelButton->Move(117, 165);
-  this->cancelButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
+  auto& cancelButton = this->cancelButton;
+  cancelButton->SetSize(58, 20);
+  cancelButton->Move(117, 165);
+  cancelButton->SetOnClick([this]() { g_windowMgr.CloseWindow(WID_MACROREPORT); });
   {
-    auto* control = this->cancelButton;
+    auto* control = cancelButton;
     control->disabled = 0;
     control->Invalidate();
   }
-  this->cancelButton->SetImages(
+  cancelButton->SetImages(
     OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_normal.bmp", 0x2F8B0F37118D157FULL),
     OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_press.bmp", 0xAD075B8DB599F1CDULL),
     OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_over.bmp", 0x4941FD9F21BBB9FDULL),
     OBFUSCATE_TEXT("유저인터페이스\\btn_cancel2_disable.bmp", 0x35E5656B5DEDCD75ULL)
   );
-  this->AddChild(this->cancelButton);
+  this->AddChild(cancelButton);
 
   this->reportButton = new CUIImageButton();
   this->reportButton->SetSize(58, 20);
