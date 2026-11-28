@@ -4308,7 +4308,7 @@ std::list<int> UIWindow::WrapText(std::string text, std::list<std::string>* line
     width += characterWidth;
     line.append(current, next - current);
     current = next;
-    if (current == end) {
+    if (end == current) {
       lines->push_back(line);
     }
   }
