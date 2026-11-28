@@ -1548,17 +1548,16 @@ void UINewChatWnd::OnCreate(int width, int height) {
   const int buttonPositions[3][2] = {{0x61, base + 3}, {0x24A, base + 7}, {0x23C, base + 7}};
   const char* const tooltips[3] = {LookupMessage(MSI_CHATWND_RECEIVER_LIST), LookupMessage(MSI_CHATWND_CHANGE_SIZE), LookupMessage(MSI_CHATWND_RECEPTIVE_GROUP_LIST)};
   for (int index = 0; index < 3; ++index) {
-    UIWindow*& button = this->m_inputButtons[index];
-    button = new UIBitmapButton();
-    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][0] + ".bmp").c_str(), 0, 0);
-    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][1] + ".bmp").c_str(), 1, 0);
-    static_cast<UIBitmapButton*>(button)->SetBitmap((basePath + buttonNames[index][2] + ".bmp").c_str(), 2, 0);
-    UIBitmapButton* bitmap = static_cast<UIBitmapButton*>(button);
+    this->m_inputButtons[index] = new UIBitmapButton();
+    static_cast<UIBitmapButton*>(this->m_inputButtons[index])->SetBitmap((basePath + buttonNames[index][0] + ".bmp").c_str(), 0, 0);
+    static_cast<UIBitmapButton*>(this->m_inputButtons[index])->SetBitmap((basePath + buttonNames[index][1] + ".bmp").c_str(), 1, 0);
+    static_cast<UIBitmapButton*>(this->m_inputButtons[index])->SetBitmap((basePath + buttonNames[index][2] + ".bmp").c_str(), 2, 0);
+    UIBitmapButton* bitmap = static_cast<UIBitmapButton*>(this->m_inputButtons[index]);
     bitmap->SetSize(bitmap->BitmapWidth(), bitmap->BitmapHeight());
-    button->Move(buttonPositions[index][0], buttonPositions[index][1]);
-    button->SetId(buttonIds[index]);
-    static_cast<UIBitmapButton*>(button)->SetTooltip(tooltips[index]);
-    this->AddChild(button);
+    this->m_inputButtons[index]->Move(buttonPositions[index][0], buttonPositions[index][1]);
+    this->m_inputButtons[index]->SetId(buttonIds[index]);
+    static_cast<UIBitmapButton*>(this->m_inputButtons[index])->SetTooltip(tooltips[index]);
+    this->AddChild(this->m_inputButtons[index]);
   }
 
   UIResizer* splitter = new UIResizer();
