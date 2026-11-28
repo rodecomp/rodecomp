@@ -19,6 +19,8 @@
    memory, Z_BUF_ERROR if there was not enough room in the output buffer,
    Z_STREAM_ERROR if the level parameter is invalid.
 */
+// OFFSET: 0x00E64330
+// FUNCTION: fn_47528
 int ZEXPORT compress2(dest, destLen, source, sourceLen, level)
     Bytef *dest;
     uLongf *destLen;

@@ -1874,6 +1874,8 @@ local block_state deflate_stored(s, flush)
  * new strings in the dictionary only for unmatched strings or for short
  * matches. It is used only for the fast compression options.
  */
+// OFFSET: 0x00E64A70
+// FUNCTION: fn_47530
 local block_state deflate_fast(s, flush)
     deflate_state *s;
     int flush;
@@ -1976,6 +1978,8 @@ local block_state deflate_fast(s, flush)
  * evaluation for matches: a match is finally adopted only if there is
  * no better match at the next window position.
  */
+// OFFSET: 0x00E64E90
+// FUNCTION: fn_47531
 local block_state deflate_slow(s, flush)
     deflate_state *s;
     int flush;

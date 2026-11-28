@@ -24,6 +24,8 @@
    Z_DATA_ERROR if the input data was corrupted, including if the input data is
    an incomplete zlib stream.
 */
+// OFFSET: 0x00E64540
+// FUNCTION: fn_47529
 int ZEXPORT uncompress2(dest, destLen, source, sourceLen)
     Bytef *dest;
     uLongf *destLen;
