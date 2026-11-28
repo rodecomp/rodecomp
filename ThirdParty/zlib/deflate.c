@@ -409,6 +409,8 @@ local int deflateStateCheck(strm)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66AE0
+// FUNCTION: fn_47539
 int ZEXPORT deflateSetDictionary(strm, dictionary, dictLength)
     z_streamp strm;
     const Bytef *dictionary;
@@ -478,6 +480,8 @@ int ZEXPORT deflateSetDictionary(strm, dictionary, dictLength)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66250
+// FUNCTION: fn_47534
 int ZEXPORT deflateGetDictionary(strm, dictionary, dictLength)
     z_streamp strm;
     Bytef *dictionary;
@@ -500,6 +504,8 @@ int ZEXPORT deflateGetDictionary(strm, dictionary, dictLength)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E669F0
+// FUNCTION: fn_47538
 int ZEXPORT deflateResetKeep(strm)
     z_streamp strm;
 {
@@ -550,6 +556,8 @@ int ZEXPORT deflateReset(strm)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66CD0
+// FUNCTION: fn_47540
 int ZEXPORT deflateSetHeader(strm, head)
     z_streamp strm;
     gz_headerp head;
@@ -561,6 +569,8 @@ int ZEXPORT deflateSetHeader(strm, head)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E666F0
+// FUNCTION: fn_47536
 int ZEXPORT deflatePending(strm, pending, bits)
     unsigned *pending;
     int *bits;
@@ -575,6 +585,8 @@ int ZEXPORT deflatePending(strm, pending, bits)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66770
+// FUNCTION: fn_47537
 int ZEXPORT deflatePrime(strm, bits, value)
     z_streamp strm;
     int bits;
@@ -602,6 +614,8 @@ int ZEXPORT deflatePrime(strm, bits, value)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E66550
+// FUNCTION: fn_47535
 int ZEXPORT deflateParams(strm, level, strategy)
     z_streamp strm;
     int level;
@@ -693,6 +707,8 @@ int ZEXPORT deflateTune(strm, good_length, max_lazy, nice_length, max_chain)
  *
  * Shifts are used to approximate divisions, for speed.
  */
+// OFFSET: 0x00E65E10
+// FUNCTION: fn_47532
 uLong ZEXPORT deflateBound(strm, sourceLen)
     z_streamp strm;
     uLong sourceLen;
@@ -1153,6 +1169,8 @@ int ZEXPORT deflateEnd(strm)
  * To simplify the source, this is not supported for 16-bit MSDOS (which
  * doesn't have enough memory anyway to duplicate compression states).
  */
+// OFFSET: 0x00E65F80
+// FUNCTION: fn_47533
 int ZEXPORT deflateCopy(dest, source)
     z_streamp dest;
     z_streamp source;
