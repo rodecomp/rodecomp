@@ -219,8 +219,8 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
 
   this->m_bitmap.dirty = true;
   std::uint32_t* destination = pixels + (y * width + x);
-  const std::uint32_t sourceWidth = source.m_bitmap.width;
   const std::uint32_t* input = source.m_bitmap.pixels;
+  const std::uint32_t sourceWidth = source.m_bitmap.width;
 
   for (int row = 0; row < copyHeight; ++row) {
     if (!destination || !input) {
