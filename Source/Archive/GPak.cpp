@@ -516,8 +516,8 @@ namespace {
   }
 
   // INLINED
-  inline std::uint32_t IdeaAddInv(std::uint32_t x) {
-    return (0 - x) & 0xFFFF;
+  inline std::uint16_t IdeaAddInv(std::uint16_t x) {
+    return static_cast<std::uint16_t>(0 - x);
   }
 
   // INLINED
@@ -1105,7 +1105,7 @@ unsigned int GPakEx::GOST::Base::KeyLength() const {
 
 // OFFSET: 0x0065A760
 // FUNCTION: fn_46752
-void GPakEx::IDEA::Base::DeKey() {
+__declspec(noinline) void GPakEx::IDEA::Base::DeKey() {
   FixedSecureBlock<std::uint32_t, 6 * ROUNDS + 4> tempkey;
   unsigned int i;
   for (i = 0; i < ROUNDS; ++i) {
@@ -1125,7 +1125,7 @@ void GPakEx::IDEA::Base::DeKey() {
 
 // OFFSET: 0x0065A920
 // FUNCTION: fn_46753
-void GPakEx::IDEA::Base::EnKey(const std::uint8_t* userKey) {
+__declspec(noinline) void GPakEx::IDEA::Base::EnKey(const std::uint8_t* userKey) {
   unsigned int i;
   for (i = 0; i < 8; ++i) {
     this->m_key[i] = (static_cast<std::uint32_t>(userKey[2 * i]) << 8) | userKey[2 * i + 1];
