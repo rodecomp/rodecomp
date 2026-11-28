@@ -1159,12 +1159,13 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
     this->m_slotButtons[2]->SetTextFitted(FormatOwnedString("%lld", info->exp).c_str());
     this->m_slotButtons[3]->SetTextFitted(FormatOwnedString("%lld", info->hp).c_str());
     this->m_slotButtons[4]->SetTextFitted(FormatOwnedString("%lld", info->sp).c_str());
-    this->m_slotButtons[5]->SetTextFitted(FormatOwnedString("%d", info->stats[0]).c_str());
-    this->m_slotButtons[6]->SetTextFitted(FormatOwnedString("%d", info->stats[1]).c_str());
-    this->m_slotButtons[7]->SetTextFitted(FormatOwnedString("%d", info->stats[2]).c_str());
-    this->m_slotButtons[8]->SetTextFitted(FormatOwnedString("%d", info->stats[3]).c_str());
-    this->m_slotButtons[9]->SetTextFitted(FormatOwnedString("%d", info->stats[4]).c_str());
-    this->m_slotButtons[10]->SetTextFitted(FormatOwnedString("%d", info->stats[5]).c_str());
+    auto& stats = info->stats;
+    this->m_slotButtons[5]->SetTextFitted(FormatOwnedString("%d", stats[0]).c_str());
+    this->m_slotButtons[6]->SetTextFitted(FormatOwnedString("%d", stats[1]).c_str());
+    this->m_slotButtons[7]->SetTextFitted(FormatOwnedString("%d", stats[2]).c_str());
+    this->m_slotButtons[8]->SetTextFitted(FormatOwnedString("%d", stats[3]).c_str());
+    this->m_slotButtons[9]->SetTextFitted(FormatOwnedString("%d", stats[4]).c_str());
+    this->m_slotButtons[10]->SetTextFitted(FormatOwnedString("%d", stats[5]).c_str());
     this->m_slotButtons[11]->SetTextFitted(g_session.GetMapDisplayName(info->mapName));
   } else {
     for (int index = 0; index < 12; ++index) {
@@ -1173,13 +1174,12 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
   }
 
   const bool disabled = this->m_slotStatus[current] == 1;
-  auto* button = this->m_windowFC;
   if (disabled) {
-    button->SetDisabled(1);
+    this->m_windowFC->SetDisabled(1);
   } else {
-    button->SetDisabled(0);
+    this->m_windowFC->SetDisabled(0);
   }
-  button->Invalidate();
+  this->m_windowFC->Invalidate();
 
   this->UpdateSlotButtons();
   this->UpdateDeleteButtons();
