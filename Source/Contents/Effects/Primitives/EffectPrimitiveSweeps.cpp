@@ -56,9 +56,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquares(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vec1.x = slot.vecBNow.x + vec1.x;
-    vec1.y = slot.vecBNow.y + vec1.y;
     vec1.z = slot.vecBNow.z + vec1.z;
     vec2.x = slot.vecBNow.x + vec2.x;
+    vec1.y = slot.vecBNow.y + vec1.y;
     vec2.y = slot.vecBNow.y + vec2.y;
     vec2.z = slot.vecBNow.z + vec2.z;
     vec3.x = slot.vecBNow.x + vec3.x;
