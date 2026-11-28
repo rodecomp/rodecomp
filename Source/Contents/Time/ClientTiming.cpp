@@ -872,8 +872,8 @@ bool CSession::InitFogParameterTable() {
                  const std::pair<std::string, std::vector<std::string>>& right) {
                 return std::strcmp(left.first.c_str(), right.first.c_str()) < 0;
               });
-    file.Close();
     result = true;
+    file.Close();
   }
 
   return result;
