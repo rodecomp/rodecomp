@@ -32,6 +32,8 @@ C3dNodeV1::~C3dNodeV1() = default;
 // FUNCTION: fn_17466
 C3dNodeV2::C3dNodeV2() = default;
 
+// OFFSET: 0x00AB6860
+// FUNCTION: fn_47479
 C3dNodeV2::~C3dNodeV2() = default;
 
 // OFFSET: 0x00AB7040
