@@ -29,7 +29,7 @@ struct RagEffectSegment {
 class CTexture;
 
 struct RagEffectFaceVertex {
-  __declspec(noinline) RagEffectFaceVertex() {
+  RagEffectFaceVertex() {
     this->x = 0.0f;
     this->y = 0.0f;
     this->z = 0.0f;
