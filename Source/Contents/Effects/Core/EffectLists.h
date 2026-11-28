@@ -52,6 +52,7 @@ public:
   void ClearRetired();
   void Release();
   void SpawnLevel99(CGameActor* actor, unsigned char flag, int extra);
+  bool Init();
   bool RegisterAllocators();
   bool RegisterAllocator(int id, CAllocator* allocator);
   void Update();

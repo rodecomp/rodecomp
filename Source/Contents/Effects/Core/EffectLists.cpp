@@ -298,6 +298,12 @@ void EffectLists::Add(int actor, CEffect* effect) {
   IndexEffect(this, effect);
 }
 
+// OFFSET: 0x00B24A40
+// FUNCTION: fn_47501
+bool EffectLists::Init() {
+  return this->RegisterAllocators() != false;
+}
+
 // OFFSET: 0x00B24A50
 // FUNCTION: fn_18774
 CEffect* EffectLists::Spawn(int actor, int id, vector3d position, std::uint32_t sourceActor, int frame, unsigned char reuse, int instance) {
