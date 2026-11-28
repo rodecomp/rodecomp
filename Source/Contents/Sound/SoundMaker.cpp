@@ -1478,7 +1478,7 @@ bool CNpc::OnProcess() {
 
   this->UpdateBubblePositions();
 
-  if (g_session.homunAlive && g_session.homunEnemyGid == this->render.accountId) {
+  if (g_session.homunAlive && this->render.accountId == g_session.homunEnemyGid) {
     this->SendMsg(nullptr, AM_MAKE_CURSOR_EFFECT, 0, 0, 0, 0, 0, 0);
   } else if (g_session.mercenaryAlive && g_session.mercenaryEnemyGid == this->render.accountId) {
     this->SendMsg(nullptr, AM_MAKE_CURSOR_EFFECT, 0, 0, 0, 0, 0, 0);
