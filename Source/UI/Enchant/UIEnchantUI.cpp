@@ -1021,7 +1021,7 @@ void CUIUpgradePerfect::RequestEnchant() {
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
     auto it = list->data.begin();
     std::advance(it, static_cast<int>(list->selected));
-    EnchantManager()->RequestUpgradePerfectEnchant(
+    Singleton<CEnchantMgr>::GetInstance()->RequestUpgradePerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot), it->itemId
     );
   }
