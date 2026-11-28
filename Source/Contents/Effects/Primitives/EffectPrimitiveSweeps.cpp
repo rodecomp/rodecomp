@@ -259,8 +259,8 @@ void CEffectPrim::RenderBladeQuads(matrix& wtm) {
     const float height = slot.height[0];
     const float cosRot = g_cosTable[slot.rotStart];
     const float sinRot = g_sinTable[slot.rotStart];
-    const float baseX = slot.vecBNow.x;
     const float baseY = slot.vecBNow.y;
+    const float baseX = slot.vecBNow.x;
     const float baseZ = slot.vecBNow.z;
 
     vec1.x = distance * g_cosTable[angle1] * cosRot + baseX;
