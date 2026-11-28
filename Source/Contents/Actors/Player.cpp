@@ -1098,7 +1098,7 @@ void CPc::ApplyLayerEffects(
       this->render.wavePhase = 0;
     }
 
-    float wave = g_sinTable[this->render.wavePhase] + 3.0f;
+    float wave = g_sinTable[this->render.wavePhase] + g_masterReachDistance;
     CGameMode* mode = g_modeMgr.GetGameMode();
     float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
@@ -1125,7 +1125,7 @@ void CPc::ApplyLayerEffects(
 
     wave = g_sinTable[this->render.wavePhase];
     mode = g_modeMgr.GetGameMode();
-    spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
+    spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + g_fireflyModeFive);
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
     jitter.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(hover);
     left = static_cast<float>(box->left) + shiftX;
