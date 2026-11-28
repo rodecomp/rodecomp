@@ -4181,8 +4181,8 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
           frame = &(*accessoryFrames)[accessoryFrame0];
         }
         accessoryFrame0 = 0;
-        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
+        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         owner->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[2], frame, offsetX, offsetY, scale, nullptr);
       }
     }
@@ -4221,8 +4221,8 @@ void UINavigationV4Wnd::DrawTargetSprite(int x, int y, int width, int height, co
 
         accessoryFrame2 = 0;
         const ActionFrame* frame = &(*accessoryFrames)[accessoryFrame2];
-        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         const int accessoryY = body->anchors[0].y - frame->anchors[0].y;
+        const int accessoryX = body->anchors[0].x - frame->anchors[0].x;
         owner->geometry.surface->DrawScaledSprite(x + accessoryX, y + accessoryY, width, height, sprites[4], frame, offsetX, offsetY, scale, nullptr);
       }
     }
