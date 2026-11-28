@@ -299,8 +299,8 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
         angle = slotsRef[ec].rotStart;
       }
 
-      curB.x = slotsRef[ec].distance * g_cosTable[angle];
       curB.z = slotsRef[ec].distance * g_sinTable[angle];
+      curB.x = slotsRef[ec].distance * g_cosTable[angle];
       if (slotsRef[ec].maxHeight == 6.001f) {
         curB.y = -2.0f;
       } else if (slotsRef[ec].maxHeight == 24.001f) {
@@ -309,10 +309,10 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
         curB.y = 0.0f;
       }
 
-      const float riseX = slotsRef[ec].height[i] * g_cosTable[slotsRef[ec].riseAngle];
       const float riseY = slotsRef[ec].height[i] * g_sinTable[slotsRef[ec].riseAngle];
-      curT.x = riseX * g_cosTable[angle] + curB.x;
+      const float riseX = slotsRef[ec].height[i] * g_cosTable[slotsRef[ec].riseAngle];
       curT.z = riseX * g_sinTable[angle] + curB.z;
+      curT.x = riseX * g_cosTable[angle] + curB.x;
       if (slotsRef[ec].maxHeight == 6.001f) {
         curT.y = -(g_effectIconOuterRadius + riseY);
       } else if (slotsRef[ec].maxHeight == 24.001f) {
