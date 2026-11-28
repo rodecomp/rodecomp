@@ -281,8 +281,8 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       from.y = light->originY + this->position[1];
       from.z = light->originZ + this->position[2];
 
-      float fromReciprocalDepth = 0.0f;
       float toReciprocalDepth = 0.0f;
+      float fromReciprocalDepth = 0.0f;
       float fromX;
       float fromY;
       float toX;
