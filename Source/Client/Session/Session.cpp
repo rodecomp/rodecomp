@@ -1048,7 +1048,9 @@ int CSession::GetCommandId(const char* name) const {
 // INLINED
 template <std::array Command>
 static bool IsTalkCommand(const std::string& token) {
-  return token.size() == Command.size() && std::memcmp(token.data(), Command.data(), Command.size()) == 0;
+  const char* const text = token.data();
+  const std::size_t length = token.size();
+  return length == Command.size() && std::memcmp(text, Command.data(), Command.size()) == 0;
 }
 
 // OFFSET: 0x00DE1010
