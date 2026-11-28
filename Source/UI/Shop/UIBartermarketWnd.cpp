@@ -1415,10 +1415,12 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         return 0;
       }
       mode->SendMsg(MM_NPC_BARTER_MARKET_PURCHASE, 0, 0, 0, 0);
-    case ID_CANCEL:
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_barterMarketItemMgr->Clear();
       break;
+    case ID_CANCEL:
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+      g_barterMarketItemMgr->Clear();
     }
     break;
   }
