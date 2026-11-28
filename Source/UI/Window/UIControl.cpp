@@ -3467,8 +3467,8 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
 
     if (width > maxWidth) {
       const char* current = text;
-      int bytes = 0;
       int total = 0;
+      int bytes = 0;
       const char* end = text + std::strlen(text);
       if (current < end) {
         maxWidth -= ellipsisWidth;
