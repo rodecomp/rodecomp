@@ -155,6 +155,11 @@ namespace {
     records.insert(records.end(), record.begin(), record.end());
   }
 
+  // INLINED
+  unsigned char ReplayRecordOptionValue(int index) {
+    return Replay::Instance().header.options.values[index];
+  }
+
   struct HangameJoinUrl {
     EncryptedName<80, 0xF3CB6F7711A71B6DULL>& operator()() const;
   };
@@ -1917,7 +1922,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
     this->tabs[index]->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
     this->tabs[index]->SetSize(this->tabs[index]->geometry.width, this->tabs[index]->geometry.height);
     this->tabs[index]->Move(-100, -100);
-    this->tabs[index]->SetId(reinterpret_cast<int>(tooltips[index]));
+    this->tabs[index]->SetId(ids[index + 6]);
     this->AddChild(this->tabs[index]);
   }
 
@@ -1941,7 +1946,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
     this->options[index]->SetSize(70, 12);
     this->options[index]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
     this->options[index]->Move(-100, -100);
-    this->options[index]->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
+    this->options[index]->SetChecked(ReplayRecordOptionValue(index));
     this->AddChild(this->options[index]);
   }
 
@@ -1967,10 +1972,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   this->filenameEdit->maximum = 80;
   this->filenameEdit->Background(232, 232, 232);
   this->filenameEdit->SetText("");
-  std::string& tooltip = this->filenameEdit->tooltip;
-  if (const char* text = LookupMessage(MSI_REPLAY_ENTERTHEFILENAME)) {
-    tooltip = text;
-  }
+  this->filenameEdit->SetTooltip(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME));
   this->AddChild(this->filenameEdit);
   this->filenameEdit->SelectAll();
   this->ApplyMode();
