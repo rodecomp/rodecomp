@@ -166,20 +166,19 @@ void UIJobListWnd::RefreshJobs() {
   for (auto it = g_partyBookingJobs.begin(); it != end; ++it, ++index) {
     this->m_jobChecks[index] = new UICheckBox();
     this->m_jobChecks[index]->SetSize(120, 15);
-    const int job = it->first;
-    if (job == -1) {
+    if (it->first == -1) {
       continue;
     }
 
-    if (job - 1 < 4) {
+    if (it->first - 1 < 4) {
       this->m_jobChecks[index]->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job - 1 + MSI_JOB_ATTACKER)
+        LookupMessage(it->first - 1 + MSI_JOB_ATTACKER)
       );
     } else {
       this->m_jobChecks[index]->SetImages(
         (path + "basic_interface\\" + "grp_online" + ".bmp").c_str(), (path + "basic_interface\\" + "grp_offline" + ".bmp").c_str(),
-        LookupMessage(job - 5 + MSI_JOB_SWORDMAN)
+        LookupMessage(it->first - 5 + MSI_JOB_SWORDMAN)
       );
     }
 
