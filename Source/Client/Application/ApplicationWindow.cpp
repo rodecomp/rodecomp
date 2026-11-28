@@ -144,9 +144,9 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
       MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
       const RECT bounds = Rect;
       info->ptMinTrackSize.x = bounds.right - bounds.left;
-      info->ptMaxTrackSize.x = bounds.right - bounds.left;
       info->ptMinTrackSize.y = bounds.bottom - bounds.top;
       info->ptMaxTrackSize.y = bounds.bottom - bounds.top;
+      info->ptMaxTrackSize.x = bounds.right - bounds.left;
     }
     return 0;
   case WM_CLOSE:
