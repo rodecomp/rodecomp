@@ -4833,10 +4833,15 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
   float rx;
   const int angle = 0;
 
-  for (int ec = 0; ec < 1; ++ec) {
-    if (this->state.slots[ec].life == 1) {
-      const short alpha = this->state.slots[ec].alphaB;
-      if (alpha > 0) {
+  const int ec = 0;
+  if (this->state.slots[ec].life != 1) {
+    return;
+  }
+  const short alpha = this->state.slots[ec].alphaB;
+  if (alpha <= 0) {
+    return;
+  }
+  {
       if (this->state.slots[ec].flag1[0] == DRIFTING_ORB_STYLE_TWO_EXTRA_GLOWS) {
         rx = this->state.slots[ec].distance * g_masterReachDistance;
         rx += g_sinTable[static_cast<int>(this->state.slots[ec].height[8])] * this->state.slots[ec].distance * g_fireflyNormalDrift;
@@ -4997,8 +5002,6 @@ void CEffectPrim::RenderLayeredGlow(matrix& wtm) {
       } else {
         this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-      }
-    }
   }
 }
 
