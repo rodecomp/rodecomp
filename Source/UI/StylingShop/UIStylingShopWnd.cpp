@@ -593,7 +593,8 @@ __declspec(noinline) void UIStylingshopTabParentWnd::UpdateFavoriteButton(const 
   }
 
   bool full = false;
-  for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
+  std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin();
+  while (it != shop->m_tabs.end()) {
     if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       full = true;
@@ -605,6 +606,7 @@ __declspec(noinline) void UIStylingshopTabParentWnd::UpdateFavoriteButton(const 
       }
       break;
     }
+    ++it;
   }
 
   if (!full) {
