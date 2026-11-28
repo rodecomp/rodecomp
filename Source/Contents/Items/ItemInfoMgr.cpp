@@ -18,6 +18,12 @@ extern "C" {
 // GLOBAL: gl_24729
 CItemInfoMgr* g_itemInfoMgr;
 
+// OFFSET: 0x00ADF4E0
+// FUNCTION: fn_47491
+CItemInfoMgr::CItemInfoMgr() {
+  this->m_isValid = true;
+}
+
 // OFFSET: 0x00ADFDB0
 // FUNCTION: fn_17976
 bool CItemInfoMgr::Create() {

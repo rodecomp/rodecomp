@@ -34,10 +34,7 @@ public:
     /* 008C */ int packageId;
   };
 
-  // INLINED
-  CItemInfoMgr() {
-    this->m_isValid = true;
-  }
+  CItemInfoMgr();
   // INLINED
   virtual ~CItemInfoMgr() {
   }
