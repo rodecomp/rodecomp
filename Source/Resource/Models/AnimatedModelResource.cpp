@@ -367,12 +367,9 @@ bool C3dGrannyModelRes::Load(const char* name) {
   char number[10];
   int length = 0;
 
-  for (; *cursor != '.'; ++cursor) {
-    if (length >= 4) {
-      break;
-    }
-
-    number[length++] = *cursor;
+  while (*cursor != '.' && length < 4) {
+    number[length] = *cursor;
+    ++length, ++cursor;
   }
 
   number[length] = 0;
