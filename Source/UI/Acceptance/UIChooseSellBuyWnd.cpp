@@ -3626,7 +3626,11 @@ void UIEquipWnd::OnCreate(int width, int height) {
       } else {
         radio->Move(index * 60 + 28, this->m_contentTop + 20);
       }
-      radio->SendMsg(this, UM_SETSTATE, index == this->damageSkinMode, 0, 0, 0);
+      if (index == this->damageSkinMode) {
+        radio->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+      } else {
+        radio->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+      }
       static_cast<UIRadioBtn*>(radio)->SetText(labels[index]);
       {
         UIRadioBtn* button = static_cast<UIRadioBtn*>(radio);
