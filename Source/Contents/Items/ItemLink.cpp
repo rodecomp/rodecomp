@@ -84,7 +84,7 @@ void UIChatHisBox::DecodeOptions(std::vector<std::int32_t>& options, const char*
 
     if (byte >= '0') {
       value += byte;
-    } else if (byte == separator || byte == recordSeparator) {
+    } else if (separator == byte || recordSeparator == byte) {
       options.push_back(this->Number(value));
       value.clear();
     } else {
