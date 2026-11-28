@@ -127,10 +127,12 @@ int SetSubChatWndList(lua_State* state) {
   int index;
   if (type == "On") {
     index = static_cast<int>(g_session.m_noSubChatWnds.size());
-    g_session.m_noSubChatWnds[static_cast<int>(g_session.m_noSubChatWnds.size())] = info;
+    const int key = static_cast<int>(g_session.m_noSubChatWnds.size());
+    g_session.m_noSubChatWnds[key] = info;
   } else {
     index = static_cast<int>(g_session.m_subChatWnds.size());
-    g_session.m_subChatWnds[static_cast<int>(g_session.m_subChatWnds.size())] = info;
+    const int key = static_cast<int>(g_session.m_subChatWnds.size());
+    g_session.m_subChatWnds[key] = info;
   }
 
   lua_pushnumber(state, index);
