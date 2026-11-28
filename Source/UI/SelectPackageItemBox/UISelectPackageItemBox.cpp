@@ -711,9 +711,10 @@ void SelectPackageItemBox::CUIItemInfo::OnCreate(int width, int height) {
 // FUNCTION: fn_45491
 void CUISelectPackageItemBox::OnCreate(int width, int height) {
   this->title = new CUITitleBar();
-  this->title->SetSize(387, 17);
-  this->title->Move(0, 0);
-  this->title->SetImages(
+  auto& title = this->title;
+  title->SetSize(387, 17);
+  title->Move(0, 0);
+  title->SetImages(
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0xF14F79170939C7F1ULL),
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0xA5FD29D7AB6DC59FULL),
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0xDD3913D5D7F97BE1ULL)
@@ -732,7 +733,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
   titleText->SetColor(0);
   titleText->SetShadow(1, 0xFFFFFF);
   titleText->SetOutline(0, 0xFFFFFF);
-  CUITitleBar* titleBar = this->title;
+  CUITitleBar* titleBar = title;
   titleBar->titleText = titleText;
   titleBar->AddChild(titleText);
 
@@ -748,7 +749,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_on.bmp", 0x23BBD58F8B5FF5C9ULL),
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_base_off.bmp", 0xC517FB932D95BB6DULL)
   );
-  this->title->AddChild(systemButton);
+  title->AddChild(systemButton);
 
   CUIImageButton* closeButton = new CUIImageButton();
   closeButton->SetSize(11, 11);
@@ -762,7 +763,7 @@ void CUISelectPackageItemBox::OnCreate(int width, int height) {
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x13E33FA1A591AB67ULL),
     OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0x17A9E5BF39AD4737ULL)
   );
-  this->title->SetSecondButton(closeButton);
+  title->SetSecondButton(closeButton);
 
   CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>* tabList =
     new CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>();
