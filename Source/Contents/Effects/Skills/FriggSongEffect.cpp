@@ -152,7 +152,7 @@ void CFriggSongEffect::Open() {
     const float outerY = 0.0f - height;
     const float outerZ = innerZ + spread * sine;
 
-    if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
+    if (static_cast<unsigned int>(particle->columnIndex - 1) <= 19) {
       particle->vertices[1].x = outerX;
       particle->vertices[1].y = outerY;
       particle->vertices[1].z = outerZ;
