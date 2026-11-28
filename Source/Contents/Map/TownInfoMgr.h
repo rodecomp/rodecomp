@@ -34,7 +34,8 @@ struct TownInfo {
 // VTABLE: vt_01617
 class CTownInfoMgr {
 public:
-  // INLINED
+  // OFFSET: 0x00AE1870
+  // FUNCTION: fn_47493
   CTownInfoMgr() {
     this->m_isValid = true;
   }
