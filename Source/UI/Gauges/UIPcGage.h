@@ -10,6 +10,7 @@
 class UIGage : public UIWindow {
 public:
   UIGage();
+  __declspec(noinline) ~UIGage() override;
   bool CanHitTest() override;
   __declspec(noinline) void SetColor(std::uint32_t color);
 

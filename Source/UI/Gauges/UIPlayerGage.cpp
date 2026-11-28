@@ -20,6 +20,10 @@ UIGage::UIGage() : UIWindow(0) {
   this->colors[7] = 0x0060C0FF;
 }
 
+// OFFSET: 0x00870A80
+// FUNCTION: fn_47516
+UIGage::~UIGage() = default;
+
 // OFFSET: 0x0086E120
 // FUNCTION: fn_11065
 UIPcGage::UIPcGage() : current(0), maximum(0), secondaryValue(0), secondaryMaximum(0) {
