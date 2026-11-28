@@ -85,8 +85,9 @@ __forceinline CItemDBToIDMgr* ItemDbToIdMgr() {
   return g_itemDbToIdMgr;
 }
 
-// INLINED
-CEnchantMgr::~CEnchantMgr() {
+// OFFSET: 0x00681880
+// FUNCTION: fn_47480
+__declspec(noinline) CEnchantMgr::~CEnchantMgr() {
 }
 
 // OFFSET: 0x00682960
