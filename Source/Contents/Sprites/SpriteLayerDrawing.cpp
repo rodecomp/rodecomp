@@ -389,10 +389,10 @@ SpriteLayerCell SpriteLayerRenderer::ResolveCell(
 
       CActRes* body = static_cast<CActRes*>(this->pc->GetEquipAction(1));
       const ActionFrame* bodyFrame;
-      if (replaced == true) {
-        bodyFrame = &body->Frame(animation, frameIndex);
-      } else {
+      if (replaced != true) {
         bodyFrame = &body->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion);
+      } else {
+        bodyFrame = &body->Frame(animation, frameIndex);
       }
 
       if (frame->anchorCount > 0 && bodyFrame->anchorCount > 0) {
