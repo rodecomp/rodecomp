@@ -82,8 +82,8 @@ void CRenderObject::Reset() {
   this->render.accountId = 0;
   this->render.specialMotionLocked = 0;
   this->render.frameSequenceActive = 0;
-  this->render.animationSequenceActive = 0;
   this->render.timedSequenceActive = 0;
+  this->render.animationSequenceActive = 0;
   this->render.sequenceInterval = 10;
   this->render.effectPhaseState = 1;
   this->render.flags = 0;
