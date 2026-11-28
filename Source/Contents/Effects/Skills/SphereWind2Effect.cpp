@@ -191,9 +191,9 @@ __forceinline void CSphereWind2Effect::UpdateSegment(CParticle* particle) {
       const int angle = particle->phaseParameter;
       EffectPoint points[4];
       const float radius = particle->speedParameter;
+      points[0].y = scale * g_sinTable[angle] * g_cosTable[pitch];
       points[0].z = scale * g_sinTable[pitch];
       points[0].x = scale * g_cosTable[angle] * g_cosTable[pitch];
-      points[0].y = scale * g_sinTable[angle] * g_cosTable[pitch];
       points[1].x = -g_sinTable[angle] * radius;
       points[1].y = radius * g_cosTable[angle];
       points[1].z = 0.0f;
