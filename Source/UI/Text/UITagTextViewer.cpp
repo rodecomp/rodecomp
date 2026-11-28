@@ -204,8 +204,9 @@ int UITagTextViewer::SendMsg(
   case UM_SCROLLVERTPAGEDOWN: {
     if (this->parent && this->parent->geometry.id == WID_SAYDIALOGWND) {
       bool hasPageButton = false;
-      for (UIBitmapButton* button : static_cast<UISayDialogWnd*>(this->parent)->m_buttons) {
-        if (button->geometry.id == ID_NEXT || button->geometry.id == ID_CLOSE) {
+      UISayDialogWnd* sayDialog = static_cast<UISayDialogWnd*>(this->parent);
+      for (auto it = sayDialog->m_buttons.begin(); it != sayDialog->m_buttons.end(); ++it) {
+        if ((*it)->geometry.id == ID_NEXT || (*it)->geometry.id == ID_CLOSE) {
           hasPageButton = true;
           break;
         }
