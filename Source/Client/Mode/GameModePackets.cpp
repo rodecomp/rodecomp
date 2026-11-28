@@ -14395,9 +14395,12 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   }
 
   std::int64_t bossFlag = 0;
-  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
-    actor->hpGaugeFlags = packet->isBoss;
-    bossFlag = 1;
+  if (packet->isBoss) {
+    bossFlag = 0;
+    if (actor->hpGaugeFlags <= 0) {
+      actor->hpGaugeFlags = packet->isBoss;
+      bossFlag = 1;
+    }
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
@@ -17172,9 +17175,12 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   }
 
   std::int64_t bossFlag = 0;
-  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
-    actor->hpGaugeFlags = packet->isBoss;
-    bossFlag = 1;
+  if (packet->isBoss) {
+    bossFlag = 0;
+    if (actor->hpGaugeFlags <= 0) {
+      actor->hpGaugeFlags = packet->isBoss;
+      bossFlag = 1;
+    }
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
