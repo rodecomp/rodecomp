@@ -285,37 +285,38 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    auto& slotsRef = this->state.slots;
-    if (slotsRef[ec].life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slotsRef[ec].fullDisplayAngle / 20;
+    const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
-    for (int offset = 0; offset <= slotsRef[ec].fullDisplayAngle; offset += step) {
-      int angle = slotsRef[ec].rotStart + offset;
+    for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
+      int angle = this->state.slots[ec].rotStart + offset;
       angle -= angle / 360 * 360;
-      if (slotsRef[ec].fullDisplayAngle == 360 && i == 20) {
-        angle = slotsRef[ec].rotStart;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
+        angle = this->state.slots[ec].rotStart;
       }
 
-      curB.z = slotsRef[ec].distance * g_sinTable[angle];
-      curB.x = slotsRef[ec].distance * g_cosTable[angle];
-      if (slotsRef[ec].maxHeight == 6.001f) {
+      const float cosine = g_cosTable[angle];
+      const float sine = g_sinTable[angle];
+      curB.x = this->state.slots[ec].distance * cosine;
+      curB.z = this->state.slots[ec].distance * sine;
+      if (this->state.slots[ec].maxHeight == 6.001f) {
         curB.y = -2.0f;
-      } else if (slotsRef[ec].maxHeight == 24.001f) {
+      } else if (this->state.slots[ec].maxHeight == 24.001f) {
         curB.y = -1.0f;
       } else {
         curB.y = 0.0f;
       }
 
-      const float riseY = slotsRef[ec].height[i] * g_sinTable[slotsRef[ec].riseAngle];
-      const float riseX = slotsRef[ec].height[i] * g_cosTable[slotsRef[ec].riseAngle];
-      curT.z = riseX * g_sinTable[angle] + curB.z;
-      curT.x = riseX * g_cosTable[angle] + curB.x;
-      if (slotsRef[ec].maxHeight == 6.001f) {
+      const float riseX = this->state.slots[ec].height[i] * g_cosTable[this->state.slots[ec].riseAngle];
+      const float riseY = this->state.slots[ec].height[i] * g_sinTable[this->state.slots[ec].riseAngle];
+      curT.x = riseX * cosine + curB.x;
+      curT.z = riseX * sine + curB.z;
+      if (this->state.slots[ec].maxHeight == 6.001f) {
         curT.y = -(g_effectIconOuterRadius + riseY);
-      } else if (slotsRef[ec].maxHeight == 24.001f) {
+      } else if (this->state.slots[ec].maxHeight == 24.001f) {
         curT.y = -(g_projectionDepthNumerator + riseY);
       } else {
         curT.y = -riseY;
@@ -323,8 +324,8 @@ void CEffectPrim::RenderGroundArcStep(matrix& wtm) {
 
       if (i > 0) {
         this->RenderTeiRect(
-          &rpCnt, i - 1, slotsRef[ec].alphaB, slotsRef[ec].alphaB, prevB, curB, curT, prevT, wtm,
-          static_cast<char>(slotsRef[ec].process % static_cast<int>(this->state.totalTexture))
+          &rpCnt, i - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, prevB, curB, curT, prevT, wtm,
+          static_cast<char>(this->state.slots[ec].process % static_cast<int>(this->state.totalTexture))
         );
       }
 
