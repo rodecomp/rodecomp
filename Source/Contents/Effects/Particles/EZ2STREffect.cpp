@@ -5478,8 +5478,8 @@ void CEZ2STRScreenEffect::OnProcess() {
     const float* shift = actor->GetExtent(extent);
     float shiftX = factor * shift[0];
     float shiftY = factor * shift[1];
-    particle->m_shiftX = shiftX;
     particle->m_shiftY = shiftY;
+    particle->m_shiftX = shiftX;
   }
 
   this->particle->m_lift = actor->render.hoverOffset;
