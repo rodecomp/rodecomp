@@ -853,10 +853,12 @@ void UIBartermarketWnd::OnLBtnDown(int x, int y) {
   }
 
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
-  if (found.first) {
-    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
-      mode->BeginDragBarterItem(DRAG_BARTER_MARKET, found.second, 1, -1);
-    }
+  if (!found.first) {
+    return;
+  }
+
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
+    mode->BeginDragBarterItem(DRAG_BARTER_MARKET, found.second, 1, -1);
   }
 }
 
