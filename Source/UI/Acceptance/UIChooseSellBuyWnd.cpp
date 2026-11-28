@@ -4629,6 +4629,7 @@ void UIFrameWnd::SplitHighlightText(
     return;
   }
 
+  const bool inlineCharset = g_inlineCharset;
   std::vector<const char*> points = breaks;
   points.erase(std::unique(points.begin(), points.end()), points.end());
   auto it = std::find(points.begin(), points.end(), highlight);
@@ -4639,7 +4640,7 @@ void UIFrameWnd::SplitHighlightText(
   } else {
     std::string full(text);
     std::string word = full.substr(*it - text, *(it + 1) - *it);
-    if (g_inlineCharset) {
+    if (inlineCharset) {
       std::string::size_type marker = 0;
       while ((marker = full.find('|', marker)) != std::string::npos) {
         if (marker + 2 < full.size()) {
