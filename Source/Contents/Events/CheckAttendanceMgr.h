@@ -36,6 +36,7 @@ public:
   bool IsInAttendancePeriod(int date) const;
   void SetStartDate(int date);
   void SetEndDate(int date);
+  bool Init();
   bool Load();
   bool LoadLocal(std::string suffix);
 

@@ -75,6 +75,12 @@ std::pair<int, int> CCheckAttendanceMgr::GetReward(int day) {
   return std::pair<int, int>(0, 0);
 }
 
+// OFFSET: 0x006711D0
+// FUNCTION: fn_47498
+bool CCheckAttendanceMgr::Init() {
+  return this->Load() != false;
+}
+
 // OFFSET: 0x006711E0
 // FUNCTION: fn_46712
 bool CCheckAttendanceMgr::IsInAttendancePeriod(int date) const {
