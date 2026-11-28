@@ -745,6 +745,8 @@ local z_word_t crc_word_big(data)
 #endif
 
 /* ========================================================================= */
+// OFFSET: 0x00E6BD10
+// FUNCTION: fn_47527
 unsigned long ZEXPORT crc32_z(crc, buf, len)
     unsigned long crc;
     const unsigned char FAR *buf;
@@ -1078,6 +1080,8 @@ unsigned long ZEXPORT crc32(crc, buf, len)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E6BC80
+// FUNCTION: fn_47526
 uLong ZEXPORT crc32_combine64(crc1, crc2, len2)
     uLong crc1;
     uLong crc2;
@@ -1090,6 +1094,8 @@ uLong ZEXPORT crc32_combine64(crc1, crc2, len2)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E6BC50
+// FUNCTION: fn_47525
 uLong ZEXPORT crc32_combine(crc1, crc2, len2)
     uLong crc1;
     uLong crc2;
