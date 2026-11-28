@@ -43,10 +43,6 @@ CLanguageTC::CLanguageTC() : keys() {
   this->mappings['X'].bytes[1] = 0x7B;
 }
 
-// OFFSET: 0x00ACD260
-// FUNCTION: fn_17758
-CLanguageTC::~CLanguageTC() = default;
-
 // OFFSET: 0x00ACF330
 // FUNCTION: fn_17795
 void CLanguageBase::ProcessKey(unsigned char) {

@@ -22,7 +22,9 @@ struct CLanguageTC : CLanguageBase {
   /* 04C2 */ unsigned char padding_04C2[2];
 
   CLanguageTC();
-  ~CLanguageTC() override;
+  // OFFSET: 0x00ACD260
+  // FUNCTION: fn_17758
+  ~CLanguageTC() override = default;
   const char* DisplayText() const override;
   int DisplayLength() const override;
   void ProcessKey(unsigned char virtualKey) override;
