@@ -72,8 +72,8 @@ void CRainbowEffect::UpdateBandVertices(CParticle* particle) {
   ratio = 1.0f - static_cast<float>(band + 1) * 0.05f;
   flat = particle->scale * g_cosTable[angle] * ratio;
   rise = particle->scale * g_sinTable[angle] * ratio;
-  points[1].x = g_cosTable[particle->phaseParameter] * flat;
   points[1].y = rise * 2.0f;
+  points[1].x = g_cosTable[particle->phaseParameter] * flat;
   points[1].z = g_sinTable[particle->phaseParameter] * flat;
 
   if (particle->columnIndex != 0) {
