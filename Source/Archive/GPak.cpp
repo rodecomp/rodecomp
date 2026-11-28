@@ -1953,7 +1953,8 @@ bool GPakEx::Crypter_SUB_XOR_AES_A<ID, AES_MODE, KEY_OFFSET, IV_OFFSET, MASK_CIP
     XorWithKey16(mask, input, output);
   } else if (input.size() <= PLAIN_SIZE + encryptedSize) {
     XorWithKey16(mask, input.first(PLAIN_SIZE), output.first(PLAIN_SIZE));
-    if (aes.Decrypt(MutableBytes(input.subspan(PLAIN_SIZE)), output.subspan(PLAIN_SIZE), BCRYPT_BLOCK_PADDING) != output.size() - PLAIN_SIZE) {
+    const std::size_t expectedSize = output.size() - PLAIN_SIZE;
+    if (aes.Decrypt(MutableBytes(input.subspan(PLAIN_SIZE)), output.subspan(PLAIN_SIZE), BCRYPT_BLOCK_PADDING) != expectedSize) {
       return false;
     }
   } else {
