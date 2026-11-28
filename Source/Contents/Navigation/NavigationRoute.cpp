@@ -1703,9 +1703,9 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
     } else if (type == NAVIGATION_TARGET_MAP) {
       info = static_cast<CNaviInfo*>(this->savedTarget.object);
     } else if (type == NAVIGATION_TARGET_CELL) {
-      info = static_cast<CNaviInfo*>(this->savedTarget.object);
       x = cellX;
       y = cellY;
+      info = static_cast<CNaviInfo*>(this->savedTarget.object);
       std::string name(info->GetName());
       name = ResourceMgr::Instance().ResolveMapName(name.c_str());
       if (!this->pathFinder.LoadAttr(name) || !this->pathFinder.Walkable(cellX, cellY)) {
