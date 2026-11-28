@@ -1422,9 +1422,9 @@ CMsgEffect* CGameMode::SpawnMsgEffect(int effectId, const vector3d* position, st
     break;
   case MAKETYPE_MISFORTUNE_EFFECT:
     names.sprite = "이팩트\\emotion.spr";
-    names.action = "이팩트\\emotion.act";
     animation = 28;
     type = MET_MISFORTUNE_EFFECT;
+    names.action = "이팩트\\emotion.act";
     break;
   case MAKETYPE_WINDHAWK_HAWK_EFFECT:
     names.sprite = "이팩트\\WINDHAWK_HAWK.spr";
