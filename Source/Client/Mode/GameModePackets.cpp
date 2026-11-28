@@ -2744,7 +2744,8 @@ void CGameMode::ReceiveShopItemList(
   CSession* lists = &g_session;
   if (myShop == 1) {
     lists->ClearMerchantPurchaseItems();
-    for (ITEM_INFO item : items) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+      ITEM_INFO item = *it;
       lists->AddMerchantPurchaseItem(item);
     }
 
@@ -2757,7 +2758,8 @@ void CGameMode::ReceiveShopItemList(
   } else {
     lists->ClearMerchantMirrorItems();
     lists->ClearMerchantHopeToSellItems();
-    for (ITEM_INFO item : items) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+      ITEM_INFO item = *it;
       lists->AddMerchantMirrorItem(item);
     }
 
