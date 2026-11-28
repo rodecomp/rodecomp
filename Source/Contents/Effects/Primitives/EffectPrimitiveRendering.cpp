@@ -4001,8 +4001,8 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
     const float radius = slot.height[1];
     const int angle1 = slot.rotStart;
     const int tilt = static_cast<int>(slot.height[2]);
-    const float sn = g_sinTable[tilt];
     const float cs = g_cosTable[tilt];
+    const float sn = g_sinTable[tilt];
     const int angle2 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
     const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
     const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
