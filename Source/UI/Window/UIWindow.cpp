@@ -907,9 +907,9 @@ bool UIWindow::CalculateUIPosNearSide(UIWindow* anchor) {
   int anchorBounds[4];
   screenPosition(this, windowBounds);
   screenPosition(anchor, anchorBounds);
+  anchorBounds[2] = anchorBounds[0] + anchor->geometry.width;
   windowBounds[2] = windowBounds[0] + this->geometry.width;
   windowBounds[3] = windowBounds[1] + this->geometry.height;
-  anchorBounds[2] = anchorBounds[0] + anchor->geometry.width;
   anchorBounds[3] = anchorBounds[1] + anchor->geometry.height;
   if (!WindowBoundsOverlap(windowBounds, anchorBounds)) {
     return false;
