@@ -2849,8 +2849,8 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
-  this->state.speed += this->state.accel;
   this->state.sizeSpeed += this->state.sizeAccel;
+  this->state.speed += this->state.accel;
 
   if ((this->state.pattern & 0x400u) != 0) {
     this->state.speed3d.x += this->state.deltaPosAccel.x;
