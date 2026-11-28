@@ -13352,8 +13352,8 @@ void CGameMode::SpawnStandingPc2(
   entry.cellY = cellY;
   entry.direction = 4;
   entry.head = head;
-  entry.weapon = weapon;
   entry.shield = shield;
+  entry.weapon = weapon;
   entry.accessory = accessory;
   entry.accessory2 = accessory2;
   entry.accessory3 = accessory3;
