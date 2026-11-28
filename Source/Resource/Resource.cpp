@@ -12,10 +12,18 @@ ResourceName::ResourceName(const char* name) {
   this->Assign(name);
 }
 
-// INLINED
-ResourceName& ResourceName::Assign(const char* name) {
-  myGPack::AssignNameKey(this->hash, this->text, name);
-  return *this;
+// FOLDED: fn_18149
+void ResourceName::Assign(const char* name) {
+  std::strcpy(this->text, name);
+  _strlwr(this->text);
+  const std::size_t length = std::strlen(this->text);
+  std::uint32_t value = 5381;
+
+  for (std::size_t i = 0; i < length; ++i) {
+    value = 33 * value + static_cast<std::int8_t>(this->text[i]);
+  }
+
+  this->hash = value;
 }
 
 // FOLDED: fn_18148
