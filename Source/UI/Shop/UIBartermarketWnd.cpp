@@ -1831,8 +1831,8 @@ void UIBartermarketWnd::Paint() {
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(red, green, blue));
 
   int index = 0;
-  int visible = 0;
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
+  int visible = 0;
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
