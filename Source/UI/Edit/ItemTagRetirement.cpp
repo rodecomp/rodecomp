@@ -428,9 +428,9 @@ void UIItemTagCtrl::UpdateItemTags() {
         this->linkedText += g_itemLinkTagBegin;
         this->linkedText += current->link;
         this->linkedText += g_itemLinkTagEnd;
-        remaining = remaining.substr(found + display.size());
         prefix += display;
         entry = ++current;
+        remaining = remaining.substr(found + display.size());
         if (entry == this->tags.end()) {
           break;
         }

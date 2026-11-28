@@ -519,7 +519,7 @@ namespace myGPack {
             entry = this->m_entries.erase(entry);
             ++removed;
           } else {
-            ++entry;
+            entry++;
           }
         }
       }
