@@ -2079,6 +2079,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
   }
 }
 
+// INLINED
+static int ReadUnsigned(const CLuaInstance& script, unsigned int& value, int index) {
+  const int type = lua_type(script.GetState(), index);
+  if (type == LUA_TNUMBER) {
+    value = static_cast<unsigned int>(lua_tonumber(script.GetState(), index));
+    return 0;
+  }
+  return (type != LUA_TNIL) + 1;
+}
+
 // OFFSET: 0x006B05A0
 // FUNCTION: fn_06192
 void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
@@ -2091,14 +2101,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
   if (lua_type(state, -1) == LUA_TTABLE) {
     for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
       unsigned int key = 0;
-      int result;
-      const int type = lua_type(this->script.GetState(), -2);
-      if (type == LUA_TNUMBER) {
-        key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
-        result = 0;
-      } else {
-        result = (type != LUA_TNIL) + 1;
-      }
+      int result = ReadUnsigned(this->script, key, -2);
       this->loadValid &= result == 0;
       if (result != 0) {
         ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, static_cast<int>(result)), 0);
@@ -5238,16 +5241,6 @@ int CLuaInstance::GetFieldStringArray(std::vector<std::string>& values, const ch
   }
   lua_settop(this->m_state, -2);
   return result;
-}
-
-// INLINED
-static int ReadUnsigned(const CLuaInstance& script, unsigned int& value, int index) {
-  const int type = lua_type(script.GetState(), index);
-  if (type == LUA_TNUMBER) {
-    value = static_cast<unsigned int>(lua_tonumber(script.GetState(), index));
-    return 0;
-  }
-  return (type != LUA_TNIL) + 1;
 }
 
 // OFFSET: 0x0069CE90
