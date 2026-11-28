@@ -30,6 +30,9 @@
 #include <cstring>
 #include <list>
 
+// STRING: st_00939
+static const char g_messageTitle[] = "Message";
+
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_OPEN_RODEXBOX {
@@ -977,7 +980,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (selected.size() == 0) {
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_DELETE_SELECT_MAIL), 2, false, false, 0, "메시지", 280, 120, 0) != ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_DELETE_SELECT_MAIL), 2, false, false, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
           break;
         }
         for (int i = 0; i < 6; ++i) {
@@ -1007,7 +1010,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (selected.size() == 0) {
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_DELETE_SELECT_MAIL), 2, false, false, 0, "메시지", 280, 120, 0) != ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_DELETE_SELECT_MAIL), 2, false, false, 0, g_messageTitle, 280, 120, 0) != ID_YES) {
           break;
         }
         for (int i = 0; i < 6; ++i) {
@@ -1086,7 +1089,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
 
-      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), type.c_str()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), type.c_str()).c_str(), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
         this->RequestAllMailActions();
       }
       break;
@@ -1104,7 +1107,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_SELECTED), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+            g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_SELECTED), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
           for (std::vector<RodexMailEntry>::iterator entry = selected.begin(); entry != selected.end(); ++entry) {
             this->RequestMailAttachments(entry->first, entry->second);
           }
@@ -1126,7 +1129,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_SELECTED), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+            g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_SELECTED), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
           for (std::vector<int>::iterator id = selected.begin(); id != selected.end(); ++id) {
             this->RequestMailAttachments(g_rodexMailStore->inboxType, *id);
           }
@@ -1157,7 +1160,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
       }
 
-      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str()).c_str(), 2, false, false, 0, "메시지", 280, 120, 0) == ID_YES) {
+      if (g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_RODEX_MESSAGE_RECEIVE_ALL), type.c_str()).c_str(), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_YES) {
         if (this->searchActive == 1) {
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
@@ -1205,7 +1208,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       RodexMailMap::iterator mail = g_rodexMailStore->m_mails0.find(argument2);
       if (mail != g_rodexMailStore->m_mails0.end() && mail->second.isKnownSender == 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING)), 0xFF, 0, 0, 0);
-        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING), 2, false, false, 0, "메시지", 280, 120, 0) == ID_NO) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING), 2, false, false, 0, g_messageTitle, 280, 120, 0) == ID_NO) {
           break;
         }
       }
