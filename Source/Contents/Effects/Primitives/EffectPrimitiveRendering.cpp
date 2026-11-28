@@ -1376,10 +1376,9 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   vec3 += position;
   vec4 += position;
 
-  alignas(16) RenderVertex vertex;
+  alignas(16) RenderVertex vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   this->state.triangles[*rpCnt].sourceBlend = 5;
   this->state.triangles[*rpCnt].destinationBlend = destBlend;
-  vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->Project(&vec1.x, wtm.values, vertex);
   this->state.triangles[*rpCnt].vertices[0] = vertex;
   this->state.triangles[*rpCnt].vertices[0].diffuse = color;
