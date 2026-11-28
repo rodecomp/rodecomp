@@ -14456,8 +14456,8 @@ void CGameMode::SpawnMovingActor(
 
   ActorMoveEntry entry;
   entry.robe = robe;
-  entry.moveStartTime = moveStartTime;
   entry.job = job;
+  entry.moveStartTime = moveStartTime;
   entry.aid = aid;
   entry.appearanceVariant = this->SubD07740(entry.job, sex);
   entry.speed = speed;
