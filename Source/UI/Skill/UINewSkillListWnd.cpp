@@ -1197,7 +1197,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
             break;
           }
         }
-        skill.entries[i].requiredLevel = level;
+        skill.entries.data()[i].requiredLevel = level;
         this->m_values.emplace_front(reinterpret_cast<const NewSkillListValue&>(skill.entries[i]));
       }
       return;
