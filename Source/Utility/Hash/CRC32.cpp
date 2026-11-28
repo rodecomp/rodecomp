@@ -138,7 +138,8 @@ DWORD CRC32::CalculateLowercase(const WCHAR* text) {
 __declspec(noinline) bool CRC32::Calculate(const BYTE* data, int length, DWORD* checksum) {
   *checksum = 0xFFFFFFFF;
   Update(data, length, checksum);
-  *checksum = ~*checksum;
+  const DWORD value = *static_cast<volatile DWORD*>(checksum);
+  *checksum = ~value;
   return true;
 }
 
