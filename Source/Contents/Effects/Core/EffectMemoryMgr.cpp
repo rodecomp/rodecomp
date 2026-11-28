@@ -33,7 +33,8 @@ class CEffectMemoryPool : public IEffectMemoryPool {
 
 class CEffectMemoryMgr {
   public:
-  // INLINED
+  // OFFSET: 0x00B81160
+  // FUNCTION: fn_47489
   CEffectMemoryMgr() {
     this->m_initialized = false;
     if (this->Init()) {
