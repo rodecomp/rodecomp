@@ -275,60 +275,57 @@ int UIWindowMgr::Confirm(
   } else {
     this->modalResponse = 0;
     this->modalWindows.push_back(box);
-    if (g_modalImmediate == 0) {
-      CMode* pump = g_modeMgr.currentMode;
+    for (;;) {
+      if (g_modalImmediate != 0) {
+        response = ID_OK;
+        break;
+      }
 
-      do {
-        if (this->activeWindowId != 0) {
-          if (UIWindow* active = this->Top()) {
-            active->Show(WINDOW_HIDDEN);
-            this->Schedule(active);
-            this->modalWindows.pop_back();
-          }
-
-          const int result = this->activeWindowId;
-
-          if (this->modalWindows.empty()) {
-            this->activeWindowId = 0;
-          }
-
-          this->RestoreInput();
-          return result;
+      if (this->activeWindowId != 0) {
+        if (UIWindow* active = this->Top()) {
+          active->Show(WINDOW_HIDDEN);
+          this->Schedule(active);
+          this->modalWindows.pop_back();
         }
 
-        if (this->modalResponse != 0) {
-          if (UIWindow* active = this->Top()) {
-            active->Show(WINDOW_HIDDEN);
-            this->Schedule(active);
-            this->modalWindows.pop_back();
-          }
+        response = this->activeWindowId;
 
-          const int result = this->modalResponse;
-          this->modalResponse = 0;
-          this->RestoreInput();
-          return result;
-        }
-
-        if (pump) {
-          pump->Update();
-          pump = g_modeMgr.currentMode;
-        }
-
-        if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
+        if (this->modalWindows.empty()) {
           this->activeWindowId = 0;
-          this->modalResponse = 0;
-
-          while (!this->modalWindows.empty()) {
-            this->Schedule(this->modalWindows.back());
-            this->modalWindows.pop_back();
-          }
-
-          break;
         }
-      } while (g_modalImmediate == 0);
-    }
 
-    response = ID_OK;
+        break;
+      }
+
+      if (this->modalResponse != 0) {
+        if (UIWindow* active = this->Top()) {
+          active->Show(WINDOW_HIDDEN);
+          this->Schedule(active);
+          this->modalWindows.pop_back();
+        }
+
+        response = this->modalResponse;
+        this->modalResponse = 0;
+        break;
+      }
+
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->Update();
+      }
+
+      if (static_cast<int>(g_session.m_options.Get(20)) > 0) {
+        this->activeWindowId = 0;
+        this->modalResponse = 0;
+
+        while (!this->modalWindows.empty()) {
+          this->Schedule(this->modalWindows.back());
+          this->modalWindows.pop_back();
+        }
+
+        response = ID_OK;
+        break;
+      }
+    }
   }
 
   this->RestoreInput();
