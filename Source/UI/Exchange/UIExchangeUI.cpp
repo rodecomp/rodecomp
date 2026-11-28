@@ -479,7 +479,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         list->AddData(ExchangeUI::CItemData(ITEM_INFO(), 0), false);
         continue;
       }
-      list->AddData(ExchangeUI::CItemData(item, quantity), false);
+      list->AddData(ExchangeUI::CItemData(item, item.quantity), false);
     }
     this->secondList->UpdateScrollBar();
     break;
@@ -668,14 +668,15 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->AddChild(this->partnerText);
 
   this->backgroundImage = new CUIStaticImage();
-  this->backgroundImage->SetSize(560, 360);
-  this->backgroundImage->Move(0, 17);
+  auto& backgroundImage = this->backgroundImage;
+  backgroundImage->SetSize(560, 360);
+  backgroundImage->Move(0, 17);
   {
     CUIStaticImage* background = this->backgroundImage;
     // GLOBAL: gl_25399
     background->SetImage(std::string(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\exchange_bg2.bmp", 0x9949BFD527532943ULL)));
   }
-  this->AddChild(this->backgroundImage);
+  this->AddChild(backgroundImage);
 
   ExchangeUI::CItemListBox* firstList = new ExchangeUI::CItemListBox();
   this->firstList = firstList;
