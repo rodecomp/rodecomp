@@ -336,8 +336,11 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       int index = 0;
-      for (auto it = g_session.m_partyBooking.m_entries.begin(); it != g_session.m_partyBooking.m_entries.end(); ++it, ++index) {
+      auto it = g_session.m_partyBooking.m_entries.begin();
+      while (it != g_session.m_partyBooking.m_entries.end()) {
         if (index < this->m_firstRow * this->m_columnCount || index != this->m_hoverIndex) {
+          it++;
+          index++;
           continue;
         }
 
