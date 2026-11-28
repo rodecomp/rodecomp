@@ -97,7 +97,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       if (item.quantity == 0) {
         text = shortcut;
       } else {
-        text = FormatOwnedString(LookupMessage(MSI_EA3), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA3), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity));
       }
     }
   } else {
