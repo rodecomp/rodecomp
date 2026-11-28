@@ -2063,15 +2063,15 @@ void UIMyStyleWnd::LoadLikeList() {
         display->headPalette = style.headPaletteNum;
         display->robe = style.robe;
         display->head = style.headStyle;
-        display->slotNumber = style.slotNum;
         display->job = style.bodyStyle;
+        display->slotNumber = style.slotNum;
         display->bodyStyle = style.bodyPaletteNum;
         display->topAccessory = style.topAccNum;
         display->middleAccessory = style.midAccNum;
         display->bottomAccessory = style.bottomAccNum;
 
-        int goods = 0;
         int count = 0;
+        int goods = 0;
         if (style.topAccNum != 0) {
           g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "TopAccessory", &count);
           for (int index = 1; index < count + 1; ++index) {
