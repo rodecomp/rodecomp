@@ -832,7 +832,8 @@ bool C3dGrannyModelRes::ProjectBounds(float* rect, const matrix& view, const mat
   rect[4] = inverseDepth;
   rect[0] = (projected.x - halfWidth) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
   rect[1] = (projected.y - halfHeight) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
-  rect[2] = (halfWidth + projected.x) * g_renderer->viewport.scaleX * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterX);
+  CRenderer* renderer = g_renderer;
+  rect[2] = (halfWidth + projected.x) * renderer->viewport.scaleX * inverseDepth + static_cast<float>(renderer->viewport.clipCenterX);
   rect[3] = (halfHeight + projected.y) * g_renderer->viewport.scaleY * inverseDepth + static_cast<float>(g_renderer->viewport.clipCenterY);
 
   return !(static_cast<unsigned>(rect[0]) > g_renderer->viewport.width && static_cast<unsigned>(rect[2]) > g_renderer->viewport.width &&
