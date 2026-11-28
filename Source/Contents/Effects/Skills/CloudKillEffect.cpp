@@ -89,8 +89,8 @@ void CCloudKillEffect::AddSprites() {
       particle->acceleration = acceleration;
       particle->scale = scale;
       particle->spin = 3.0f;
-      particle->alpha = 0;
       particle->animationParameter = 25.4f;
+      particle->alpha = 0;
       particle->animationParameters[0] = 32.0f;
       particle->SetSprite("이팩트\\particle3.spr");
       particle->SetAction("이팩트\\particle3.act");
