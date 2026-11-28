@@ -35,7 +35,7 @@ inline void NormalizePoint(ScreenPoint& point) {
 
 void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture* texture, std::uint32_t color);
 void DrawDashedScreenLine(
-  float startX, float startY, float endX, float endY, int dashLength, int thickness, CTexture* texture, std::uint32_t color
+  ScreenPoint start, ScreenPoint end, int dashLength, int thickness, CTexture* texture, std::uint32_t color
 );
 void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color);
 
