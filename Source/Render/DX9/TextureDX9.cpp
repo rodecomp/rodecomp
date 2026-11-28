@@ -198,7 +198,7 @@ bool CTextureDX9::Create(int width, int height, int format) {
     levels = 0;
     this->m_dynamic = dynamic;
     if (dynamic) {
-      usage |= D3DUSAGE_AUTOGENMIPMAP;
+      usage = (renderTarget ? 0 : D3DUSAGE_DYNAMIC) | D3DUSAGE_AUTOGENMIPMAP;
     }
   } else {
     this->m_dynamic = false;
