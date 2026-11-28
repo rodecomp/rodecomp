@@ -124,8 +124,8 @@ __forceinline void CRedLineEffect::UpdateSegmentVertices(CParticle* particle) {
   particle->vertices[1].y = outerY;
   particle->vertices[1].z = outerZ;
   particle->vertices[3].x = innerX;
-  particle->vertices[3].y = innerY;
   particle->vertices[3].z = innerZ;
+  particle->vertices[3].y = innerY;
 
   if (segment != 0) {
     particle->vertices[0].x = this->previousPoints[1].x;
