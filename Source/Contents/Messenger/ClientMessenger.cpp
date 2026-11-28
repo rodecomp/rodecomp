@@ -2253,7 +2253,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
   const char* name = "IgnoreEquipmentProperties";
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
-    int index = 0;
+    unsigned int index = 0;
     for (lua_pushnil(state); lua_next(state, -2) != 0; lua_settop(state, -2)) {
       ++index;
       std::vector<std::string> functions;
