@@ -216,11 +216,11 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
 }
 
 // INLINED
-__forceinline static void MsgEffectDriftCached(CMsgEffect* effect, float elapsed) {
+__forceinline static void MsgEffectDriftStepped(CMsgEffect* effect, float elapsed) {
   const float dirX = MsgEffectDriftDirection(effect);
-  const float dirZ = effect->m_drift.z;
-  effect->render.position.x = dirX * (elapsed / 3.0f) + effect->m_velocity.x + dirX * 3.0f;
-  effect->render.position.z = dirZ * (elapsed / 3.0f) + effect->m_velocity.z + dirZ * 3.0f;
+  const float step = elapsed / 3.0f;
+  effect->render.position.x = dirX * step + effect->m_velocity.x + dirX * 3.0f;
+  effect->render.position.z = effect->m_drift.z * step + effect->m_velocity.z + effect->m_drift.z * 3.0f;
   MsgEffectDriftHeight(effect, elapsed);
 }
 
@@ -269,7 +269,7 @@ bool CMsgEffect::OnProcess() {
     case MET_NUMBER_CRITICAL:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
-      MsgEffectDriftCached(this, elapsed);
+      MsgEffectDrift(this, elapsed);
       if (this->render.scale > 1.3f) {
         this->render.scale = this->m_scale - elapsed * 0.24f;
       } else if (this->render.scale < 1.3f) {
@@ -308,7 +308,7 @@ bool CMsgEffect::OnProcess() {
     case MET_NUMBER_HALF:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
+      MsgEffectDriftStepped(this, elapsed);
       if (this->render.scale > 1.2f) {
         this->render.scale = this->m_scale - elapsed * 0.24f;
       } else if (this->render.scale < 1.2f) {
@@ -400,7 +400,7 @@ bool CMsgEffect::OnProcess() {
     case MET_CRITICAL_EFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
+      MsgEffectDriftStepped(this, elapsed);
       if (this->render.scale > 1.0f) {
         this->render.scale = this->m_scale - elapsed * 0.24f * 0.6f;
       } else if (this->render.scale < 1.0f) {
