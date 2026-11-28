@@ -185,6 +185,8 @@ png_malloc,(png_const_structrp png_ptr, png_alloc_size_t size),PNG_ALLOCATED)
 }
 
 #ifdef PNG_USER_MEM_SUPPORTED
+// OFFSET: 0x00E7E250
+// FUNCTION: fn_47628
 PNG_FUNCTION(png_voidp,PNGAPI
 png_malloc_default,(png_const_structrp png_ptr, png_alloc_size_t size),
     PNG_ALLOCATED PNG_DEPRECATED)
