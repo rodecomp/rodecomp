@@ -169,6 +169,8 @@ local uLong adler32_combine_(adler1, adler2, len2)
 }
 
 /* ========================================================================= */
+// OFFSET: 0x00E6B850
+// FUNCTION: fn_47554
 uLong ZEXPORT adler32_combine(adler1, adler2, len2)
     uLong adler1;
     uLong adler2;
@@ -177,6 +179,8 @@ uLong ZEXPORT adler32_combine(adler1, adler2, len2)
     return adler32_combine_(adler1, adler2, len2);
 }
 
+// OFFSET: 0x00E6B870
+// FUNCTION: fn_47555
 uLong ZEXPORT adler32_combine64(adler1, adler2, len2)
     uLong adler1;
     uLong adler2;
