@@ -394,8 +394,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         quad.bottom = bottom;
         quad.right = right;
         short alpha = static_cast<short>((cell.color >> 24) * 0.85f);
-        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
+        quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
         if ((this->state.pattern & 0x200) != 0) {
           if (this->state.slots[ec].flag1[0] == 0) {
             quad.color = (((((alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
@@ -405,8 +405,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         } else {
           quad.color = record.color;
         }
-        quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         quad.image = image;
+        quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
 
         quad.top -= 4.0f;
