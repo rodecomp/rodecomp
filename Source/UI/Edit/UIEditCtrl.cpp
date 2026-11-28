@@ -5905,8 +5905,8 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_LVLSELECTDN6:
     case ID_LVLSELECTDN7: {
       CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0xFD + a);
+      const int id = skill.id;
       if (skill.available != 0) {
-        const int id = skill.id;
         int current;
         if (this->skillTab == 0) {
           current = g_session.HomunSkillLevel(id);
@@ -5938,8 +5938,8 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_LVLSELECTUP6:
     case ID_LVLSELECTUP7: {
       CSkillInfo skill = this->GetSkillByIndex(this->scroll - 0x104 + a);
+      const int id = skill.id;
       if (skill.available != 0) {
-        const int id = skill.id;
         int current;
         if (this->skillTab == 0) {
           current = g_session.HomunSkillLevel(id);
