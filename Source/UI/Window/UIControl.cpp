@@ -1008,8 +1008,8 @@ void CUIBasicButton::LoadSkin(bool resolveSkin) {
   middleImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource("유저인터페이스\\basic_interface\\btn_out_mid.bmp", skin));
   {
     std::string name;
-    name = "유저인터페이스\\basic_interface\\btn_press_mid.bmp";
     index = 1;
+    name = "유저인터페이스\\basic_interface\\btn_press_mid.bmp";
     middleImagesRef[index] = CResPtr<CBitmapRes>(this->LoadBitmapResource(name, skin));
   }
   {
