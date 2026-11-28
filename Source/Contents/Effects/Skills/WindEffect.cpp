@@ -154,11 +154,11 @@ __forceinline void CWindEffect::UpdateParticle(CParticle* particle) {
   const EffectPoint bottom = TransformPoint(transform, points[0]);
   const EffectPoint top = TransformPoint(transform, points[1]);
   particle->vertices[1].x = top.x;
-  particle->vertices[1].y = top.y;
-  particle->vertices[1].z = top.z;
-  particle->vertices[3].x = bottom.x;
   particle->vertices[3].y = bottom.y;
+  particle->vertices[1].y = top.y;
+  particle->vertices[3].x = bottom.x;
   particle->vertices[3].z = bottom.z;
+  particle->vertices[1].z = top.z;
 
   if (particle->columnIndex != 0) {
     particle->vertices[0].x = this->lastPoints[1].x;
