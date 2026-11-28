@@ -3503,8 +3503,14 @@ int UICashEmotionPack_Search::SetResults(const char* title, const std::vector<st
     ++index;
   }
 
+  int height = y;
+  if (count > 0) {
+    height += 50;
+  } else {
+    height += 10;
+  }
   this->Invalidate();
-  return y + (count > 0 ? 50 : 10);
+  return height;
 }
 
 // OFFSET: 0x007CB160
