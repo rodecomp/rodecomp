@@ -36,7 +36,8 @@ C3dActor::~C3dActor() {
 C3dActorV1::C3dActorV1() : root(nullptr), frame(0), animationLength(0), lastTick(0) {
 }
 
-// INLINED
+// OFFSET: 0x00AB6520
+// FUNCTION: fn_47496
 C3dActorV1::~C3dActorV1() {
   if (this->root) {
     delete this->root;
