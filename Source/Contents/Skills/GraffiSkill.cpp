@@ -119,8 +119,8 @@ void CGraffiSkill::Render(int argument) {
 
     for (int column = 0; column < 18; ++column) {
       const int tileX = cellX - 9 + column;
-      const float column0 = static_cast<float>(column) - 9.0f;
       const float column1 = static_cast<float>(column + 1) - 9.0f;
+      const float column0 = static_cast<float>(column) - 9.0f;
       const float x0 = column0 * cosine;
       const float y0 = column0 * sine;
       const float x1 = column1 * cosine;
