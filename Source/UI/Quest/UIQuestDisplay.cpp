@@ -150,8 +150,8 @@ void UIQuestDisplay::Paint() {
 
 // INLINED
 static __forceinline int FindDisplayQuestAt(int y) {
-  int multiple = 0;
   int none = 0;
+  int multiple = 0;
   int single = 0;
   int index = 0;
   const auto end = g_renewQuestMgr->m_ongoingQuests.cend();
