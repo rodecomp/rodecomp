@@ -848,7 +848,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[column]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (info != nullptr) {
-          this->m_characterWindows[column]->SetTextFitted(info->name);
+          const char* characterName = info->name;
+          this->m_characterWindows[column]->SetTextFitted(characterName);
           UIStaticText* name = this->m_characterWindows[column];
           name->Move(
             (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
@@ -911,7 +912,8 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_slotButtons2[column]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (info != nullptr) {
-          this->m_characterWindows[column]->SetTextFitted(info->name);
+          const char* characterName = info->name;
+          this->m_characterWindows[column]->SetTextFitted(characterName);
           UIStaticText* name = this->m_characterWindows[column];
           name->Move(
             (column % 5) * 0x9D - this->TextWidth(name->GetText().c_str(), 0, 0, 0xC, 0, 0) / 2 + 0x58,
@@ -1011,7 +1013,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           break;
         }
         this->SendMsg(nullptr, UM_COMMAND, ID_PREV_PAGE, 0, 0, 0);
-        slot += this->m_slotsPerPage;
+        this->m_pageSlot += this->m_slotsPerPage;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
         if (index == slot) {
@@ -1033,10 +1035,9 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (g_windowMgr.HasModalWindow() != 1 && this->m_navigationBlocked != true) {
-      const int previous = this->m_pageSlot;
-      this->m_pageSlot = previous + 5;
+      this->m_pageSlot += 5;
       if (this->m_page * this->m_slotsPerPage + this->m_pageSlot >= this->m_maxCharacters) {
-        this->m_pageSlot = previous;
+        this->m_pageSlot -= 5;
         break;
       }
       if (this->m_pageSlot >= this->m_slotsPerPage) {
