@@ -163,9 +163,12 @@ void CRectUpEffect::Open() {
   for (int z = -5; z < 10; z += 5) {
     for (int x = -5; x < 10; x += 5) {
       int index = 0;
-      for (int angle = 45; angle <= 405; angle += 90, ++index) {
+      int angle = 45;
+      while (angle <= 405) {
         CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
+          angle += 90;
+          ++index;
           continue;
         }
 
@@ -190,6 +193,8 @@ void CRectUpEffect::Open() {
         this->InitParticle(particle);
         particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
+        angle += 90;
+        ++index;
       }
     }
   }
