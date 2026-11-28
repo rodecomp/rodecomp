@@ -469,8 +469,8 @@ void CUIProbabilityTable::Search() {
   if (found != list->data.end()) {
     HighlightKeyword(found->name, keyword, g_probabilityHighlightBegin, g_probabilityHighlightEnd);
 
-    CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* current = this->m_list;
     const int index = static_cast<int>(std::distance(list->data.begin(), found));
+    CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* current = this->m_list;
     current->SelectIndex(index);
     this->m_list->RebindIndex(this->m_list->selected);
   } else {
