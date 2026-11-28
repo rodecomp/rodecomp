@@ -108,8 +108,8 @@ bool CSprRes::Load(const char* name) {
         file.Read(&encodedBytes, sizeof(encodedBytes));
         auto* runs = new std::uint8_t[encodedBytes];
         file.Read(runs, encodedBytes);
-        const unsigned width = dimensions[0];
         const unsigned height = dimensions[1];
+        const unsigned width = dimensions[0];
         auto* pixels = new std::uint8_t[width * height];
         std::uint16_t zeroCount = 0;
         const std::uint8_t* source = runs;
