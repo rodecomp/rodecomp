@@ -818,10 +818,10 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
   int id = -1;
 
   if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3})\\](\\[\\d\\])*"))) {
-    const std::string number = match[1].str();
+    const std::string number = match[1];
     id = std::stoi(number);
   } else if (std::regex_search(text, match, std::regex("^\\^e\\[(\\d{1,3}\\s*,\\s*\\d{1,3})\\](\\[\\d\\])*"))) {
-    const std::string numbers = match[1].str();
+    const std::string numbers = match[1];
     const std::vector<std::string> parts = Split(numbers, ",");
     if (parts.size() == 2) {
       group = std::stoi(parts[0]);
@@ -834,10 +834,10 @@ int CCreateLineInfo::LayoutEmotion(int x, const std::string& text) {
   if (id >= 0) {
     int loops = 0;
     if (match[2].matched == true) {
-      const std::string tail = match[2].str();
+      const std::string tail = match[2];
       std::smatch loopMatch;
       if (std::regex_search(tail, loopMatch, std::regex("^\\[(\\d)\\]")) == true) {
-        loops = std::atoi(loopMatch[1].str().c_str());
+        loops = std::atoi(static_cast<std::string>(loopMatch[1]).c_str());
       }
     }
 
@@ -935,7 +935,7 @@ int CCreateLineInfo::LayoutItemImage(int x, const std::string& text) {
     return x;
   }
 
-  UIWindow* image = this->CreateItemImageWindow(match[1].str());
+  UIWindow* image = this->CreateItemImageWindow(match[1]);
   if (!image) {
     return x;
   }
@@ -1332,7 +1332,7 @@ int CCreateLineInfo::ParseEmotion(int index) {
 
   this->AddSegment(LINE_SEGMENT_EMOTION);
   {
-    const std::string matched = match[0].str();
+    const std::string matched = match[0];
     this->AppendText(matched);
   }
   this->m_newSegment = true;
@@ -1465,7 +1465,7 @@ int CCreateLineInfo::ParseItemImage(int index) {
 
   this->AddSegment(LINE_SEGMENT_ITEM_IMAGE);
   {
-    const std::string matched = match[0].str();
+    const std::string matched = match[0];
     this->AppendText(matched);
   }
 
