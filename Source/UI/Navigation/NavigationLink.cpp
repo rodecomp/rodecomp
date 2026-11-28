@@ -278,39 +278,39 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
     const std::size_t begin = FindParserTag(work, g_parserMessageTag);
     if (begin == std::string::npos) {
       break;
-    }
-
-    work = work.substr(begin + std::strlen(g_parserMessageTag.c_str()));
-    const std::size_t end = FindParserTag(work, g_parserMessageCloseTag);
-    if (end == std::string::npos) {
-      break;
-    }
-
-    work = work.substr(0, end);
-    int messageId;
-    if (FindParserTag(work, g_parserMessageIdPrefix) != std::string::npos) {
-      messageId = FindMessageId(work.c_str());
     } else {
-      messageId = std::atoi(work.c_str());
-    }
+      work = work.substr(begin + std::strlen(g_parserMessageTag.c_str()));
+      const std::size_t end = FindParserTag(work, g_parserMessageCloseTag);
+      if (end == std::string::npos) {
+        break;
+      } else {
+        work = work.substr(0, end);
+        int messageId;
+        if (FindParserTag(work, g_parserMessageIdPrefix) != std::string::npos) {
+          messageId = FindMessageId(work.c_str());
+        } else {
+          messageId = std::atoi(work.c_str());
+        }
 
-    const std::string message = this->FormatMessageArguments(work, messageId);
-    work.clear();
-    if (expanded.empty()) {
-      work = text;
-    } else {
-      work = expanded;
-    }
-    const std::string head = work.substr(0, begin);
-    const std::size_t close = FindParserTag(work, g_parserMessageCloseTag);
-    const std::string tail = work.substr(close + std::strlen(g_parserMessageCloseTag.c_str()));
-    expanded.clear();
-    expanded += head;
-    expanded += message;
-    expanded += tail;
+        const std::string message = this->FormatMessageArguments(work, messageId);
+        work.clear();
+        if (expanded.empty()) {
+          work = text;
+        } else {
+          work = expanded;
+        }
+        const std::string head = work.substr(0, begin);
+        const std::size_t close = FindParserTag(work, g_parserMessageCloseTag);
+        const std::string tail = work.substr(close + std::strlen(g_parserMessageCloseTag.c_str()));
+        expanded.clear();
+        expanded += head;
+        expanded += message;
+        expanded += tail;
 
-    if (FindParserTag(expanded, g_parserMessageTag) == std::string::npos) {
-      return expanded;
+        if (FindParserTag(expanded, g_parserMessageTag) == std::string::npos) {
+          return expanded;
+        }
+      }
     }
   }
 
