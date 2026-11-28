@@ -1426,14 +1426,14 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 // OFFSET: 0x009230A0
 // FUNCTION: fn_12644
 void UINewChatWnd::OnCreate(int width, int height) {
-  if (height > this->m_inputAreaHeight) {
+  if (height <= this->m_inputAreaHeight) {
+    this->geometry.state = 0;
+  } else {
     const int reserved = static_cast<int>(this->geometry.state) + (this->m_inputOffsetY + 74);
     this->geometry.state = (height - reserved) / 42 + 1;
-    if (this->geometry.state > 4) {
+    if (static_cast<int>(this->geometry.state) > 4) {
       this->geometry.state = 4;
     }
-  } else {
-    this->geometry.state = 0;
   }
 
   this->m_tabWidth = 0;
