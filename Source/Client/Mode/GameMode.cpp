@@ -7377,15 +7377,15 @@ void CGameMode::UpdateBalloons() {
       if (shownSkill == 10000) {
         text.assign(OBFUSCATE_TEXT("Capture Monster", 0x3FA3AFA7035DE3FFULL));
       } else if (shownSkill == 20000) {
-        text.assign(OBFUSCATE_TEXT("Please Marry Me", 0xDB27CB557D038759ULL));
+        text = OBFUSCATE_TEXT("Please Marry Me", 0xDB27CB557D038759ULL);
       } else if (shownSkill == 20001) {
-        text.assign(OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL));
+        text = OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL);
       } else if (shownSkill == 40000) {
-        text.assign(OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL));
+        text = OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL);
       } else if (g_session.IsAbracadabraSpecialSkill(shownSkill)) {
-        text.assign(OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL));
+        text = OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL);
       } else {
-        text = CSkillInfo::DisplayName(shownSkill);
+        text.assign(CSkillInfo::DisplayName(shownSkill));
       }
 
       UITransBalloonText* balloon = skillBalloon;
