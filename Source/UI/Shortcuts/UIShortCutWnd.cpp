@@ -852,9 +852,9 @@ void UIMemorialDunWnd::Paint() {
   const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
 
   if (g_session.memorialDungeonState != 3) {
-    char nameColor[12];
-    char endColor[12];
-    char name[80];
+    char nameColor[10];
+    char endColor[10];
+    char name[50];
     char title[100];
     sprintf(nameColor, "^%02X%02X%02X", 0x41, 0x69, 0xE1);
     sprintf(endColor, "^%02X%02X%02X", 0, 0, 0);
