@@ -270,6 +270,8 @@ LUA_API int lua_isstring (lua_State *L, int idx) {
 }
 
 
+// OFFSET: 0x00523170
+// FUNCTION: fn_47558
 LUA_API int lua_isuserdata (lua_State *L, int idx) {
   const TValue *o = index2adr(L, idx);
   return (ttisuserdata(o) || ttislightuserdata(o));
@@ -284,6 +286,8 @@ LUA_API int lua_rawequal (lua_State *L, int index1, int index2) {
 }
 
 
+// OFFSET: 0x00522CC0
+// FUNCTION: fn_47556
 LUA_API int lua_equal (lua_State *L, int index1, int index2) {
   StkId o1, o2;
   int i;
@@ -1004,6 +1008,8 @@ LUA_API void lua_concat (lua_State *L, int n) {
 }
 
 
+// OFFSET: 0x00522E40
+// FUNCTION: fn_47557
 LUA_API lua_Alloc lua_getallocf (lua_State *L, void **ud) {
   lua_Alloc f;
   lua_lock(L);
@@ -1014,6 +1020,8 @@ LUA_API lua_Alloc lua_getallocf (lua_State *L, void **ud) {
 }
 
 
+// OFFSET: 0x00523990
+// FUNCTION: fn_47559
 LUA_API void lua_setallocf (lua_State *L, lua_Alloc f, void *ud) {
   lua_lock(L);
   G(L)->ud = ud;
