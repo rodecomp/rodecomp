@@ -967,11 +967,26 @@ void CUIBasicButton::Create(int width, int height) {
 // FUNCTION: fn_14405
 void CUIBasicButton::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  CBitmapRes* left = this->disabled ? this->disabledLeft : this->leftImages[this->state];
-  CBitmapRes* middle = this->disabled ? this->disabledMiddle : this->middleImages[this->state];
-  CBitmapRes* right = this->disabled ? this->disabledRight : this->rightImages[this->state];
-  const int end = this->geometry.width - (right ? right->image.width : 0);
+  CBitmapRes* left;
+  if (this->disabled) {
+    left = this->disabledLeft;
+  } else {
+    left = this->leftImages[this->state];
+  }
+  CBitmapRes* middle;
+  if (this->disabled) {
+    middle = this->disabledMiddle;
+  } else {
+    middle = this->middleImages[this->state];
+  }
+  CBitmapRes* right;
+  if (this->disabled) {
+    right = this->disabledRight;
+  } else {
+    right = this->rightImages[this->state];
+  }
   int x = 0;
+  const int end = this->geometry.width - (right ? right->image.width : 0);
 
   if (left) {
     this->DrawBitmap(0, 0, left, false);
