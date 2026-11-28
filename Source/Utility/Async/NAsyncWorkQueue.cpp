@@ -13,7 +13,8 @@ NAsyncWorkRequestQueue::NAsyncWorkRequestQueue() : m_waiting(0), m_semaphore(nul
   }
 }
 
-// INLINED
+// OFFSET: 0x00732090
+// FUNCTION: fn_47511
 NAsyncWorkRequestQueue::~NAsyncWorkRequestQueue() {
   if (this->m_semaphore) {
     CloseHandle(this->m_semaphore);
@@ -102,7 +103,8 @@ NAsyncWorkResponseQueue::NAsyncWorkResponseQueue() : m_enabled(false) {
   this->m_enabled = true;
 }
 
-// INLINED
+// OFFSET: 0x00732660
+// FUNCTION: fn_47512
 NAsyncWorkResponseQueue::~NAsyncWorkResponseQueue() {
   DeleteCriticalSection(&this->m_criticalSection);
 }
