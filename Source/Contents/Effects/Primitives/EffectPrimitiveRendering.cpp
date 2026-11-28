@@ -8010,10 +8010,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
   float temp;
   float temp1;
   float radian[4];
-  matrix mat1;
-  matrix mat2;
-  matrix mat3;
-  matrix mat4;
+  matrix mat[4];
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
@@ -8037,21 +8034,21 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       radian[2] = GetRadian(static_cast<int>(j + this->state.arcAngle + 0.25f + this->state.longitude));
       radian[3] = GetRadian(static_cast<int>(i + this->state.arcAngle));
 
-      mat1.MakeXRotation(radian[1]);
-      mat1.AppendYRotation(radian[0]);
-      MatrixMult(vec1, vector3d{0.0f, 0.0f, this->state.radius}, mat1.values);
+      mat[2].MakeXRotation(radian[1]);
+      mat[2].AppendYRotation(radian[0]);
+      MatrixMult(vec1, vector3d{0.0f, 0.0f, this->state.radius}, mat[2].values);
 
-      mat2.MakeXRotation(radian[3]);
-      mat2.AppendYRotation(radian[0]);
-      MatrixMult(vec2, vector3d{0.0f, 0.0f, this->state.radius}, mat2.values);
+      mat[0].MakeXRotation(radian[3]);
+      mat[0].AppendYRotation(radian[0]);
+      MatrixMult(vec2, vector3d{0.0f, 0.0f, this->state.radius}, mat[0].values);
 
-      mat3.MakeXRotation(radian[1]);
-      mat3.AppendYRotation(radian[2]);
-      MatrixMult(vec3, vector3d{0.0f, 0.0f, this->state.radius}, mat3.values);
+      mat[1].MakeXRotation(radian[1]);
+      mat[1].AppendYRotation(radian[2]);
+      MatrixMult(vec3, vector3d{0.0f, 0.0f, this->state.radius}, mat[1].values);
 
-      mat4.MakeXRotation(radian[3]);
-      mat4.AppendYRotation(radian[2]);
-      MatrixMult(vec4, vector3d{0.0f, 0.0f, this->state.radius}, mat4.values);
+      mat[3].MakeXRotation(radian[3]);
+      mat[3].AppendYRotation(radian[2]);
+      MatrixMult(vec4, vector3d{0.0f, 0.0f, this->state.radius}, mat[3].values);
       vec1 += this->render.position;
       vec2 += this->render.position;
       vec3 += this->render.position;
