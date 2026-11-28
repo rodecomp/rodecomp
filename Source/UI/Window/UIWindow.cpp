@@ -2977,9 +2977,9 @@ void UINavigationV4Wnd::Paint() {
       5, 0x2e, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\bg_dot.bmp"))), false
     );
 
+    const NavigationTarget target = g_navigationManager.GetCurrentTarget();
     int mapY = 0x3c;
     int mapSize = 0x64;
-    const NavigationTarget target = g_navigationManager.GetCurrentTarget();
     int mapX = 0x9b;
     if (target.type == NAVIGATION_TARGET_NPC) {
       mapX = 0xe3;
@@ -3001,7 +3001,8 @@ void UINavigationV4Wnd::Paint() {
 
     const int active = g_navigationManager.previewType;
     const int count = static_cast<int>(g_navigationManager.routeLines.size());
-    for (int index = 0; index < count; ++index) {
+    int index = 0;
+    while (index < count) {
       if (g_navigationManager.routeLines[index].kind == active) {
         const int labelX = g_navigationManager.routeLines[index].x;
         const int labelY = g_navigationManager.routeLines[index].y;
@@ -3012,6 +3013,7 @@ void UINavigationV4Wnd::Paint() {
           g_navigationManager.routeLines[index].shadowColor, 0, 0
         );
       }
+      ++index;
     }
   }
 }
