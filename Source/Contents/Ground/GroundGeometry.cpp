@@ -205,14 +205,18 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
         GroundQuad& tile = this->tiles[topIndex];
         tile.color = tileRecord.color;
         tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-        SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[0],
-                 static_cast<float>(row - this->height / 2) * this->cellSize);
-        SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[1],
-                 static_cast<float>(row - this->height / 2) * this->cellSize);
-        SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[2],
-                 static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-        SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[3],
-                 static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+        const float rowPosition0 = static_cast<float>(row - this->height / 2) * this->cellSize;
+        const float columnPosition0 = static_cast<float>(column - this->width / 2) * this->cellSize;
+        SetPoint(tile.vertices[0].position, columnPosition0, cell.heights[0], rowPosition0);
+        const float rowPosition1 = static_cast<float>(row - this->height / 2) * this->cellSize;
+        const float columnPosition1 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+        SetPoint(tile.vertices[1].position, columnPosition1, cell.heights[1], rowPosition1);
+        const float rowPosition2 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+        const float columnPosition2 = static_cast<float>(column - this->width / 2) * this->cellSize;
+        SetPoint(tile.vertices[2].position, columnPosition2, cell.heights[2], rowPosition2);
+        const float rowPosition3 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+        const float columnPosition3 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+        SetPoint(tile.vertices[3].position, columnPosition3, cell.heights[3], rowPosition3);
         SetTileCoordinates(tile, tileRecord, this->lightmapSet);
 
         for (int channel = 0; channel < 3; ++channel) {
@@ -246,14 +250,18 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           GroundQuad& tile = this->tiles[sideIndex];
           tile.color = tileRecord.color;
           tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-          SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2) * this->cellSize, record.heights[2],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2) * this->cellSize, below.heights[0],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, below.heights[1],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
+          const float rowPosition4 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition4 = static_cast<float>(column - this->width / 2) * this->cellSize;
+          SetPoint(tile.vertices[0].position, columnPosition4, record.heights[2], rowPosition4);
+          const float rowPosition5 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition5 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[1].position, columnPosition5, record.heights[3], rowPosition5);
+          const float rowPosition6 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition6 = static_cast<float>(column - this->width / 2) * this->cellSize;
+          SetPoint(tile.vertices[2].position, columnPosition6, below.heights[0], rowPosition6);
+          const float rowPosition7 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition7 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[3].position, columnPosition7, below.heights[1], rowPosition7);
           SetTileCoordinates(tile, tileRecord, this->lightmapSet);
 
           cell.side2 = &tile;
@@ -270,14 +278,18 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           GroundQuad& tile = this->tiles[sideIndex];
           tile.color = tileRecord.color;
           tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-          SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[1],
-                   static_cast<float>(row - this->height / 2) * this->cellSize);
-          SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[2],
-                   static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[0],
-                   static_cast<float>(row - this->height / 2) * this->cellSize);
+          const float rowPosition8 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition8 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[0].position, columnPosition8, record.heights[3], rowPosition8);
+          const float rowPosition9 = static_cast<float>(row - this->height / 2) * this->cellSize;
+          const float columnPosition9 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[1].position, columnPosition9, record.heights[1], rowPosition9);
+          const float rowPosition10 = static_cast<float>(row - this->height / 2 + 1) * this->cellSize;
+          const float columnPosition10 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[2].position, columnPosition10, right.heights[2], rowPosition10);
+          const float rowPosition11 = static_cast<float>(row - this->height / 2) * this->cellSize;
+          const float columnPosition11 = static_cast<float>(column - this->width / 2 + 1) * this->cellSize;
+          SetPoint(tile.vertices[3].position, columnPosition11, right.heights[0], rowPosition11);
           SetTileCoordinates(tile, tileRecord, this->lightmapSet);
 
           cell.frame = 0xFFFFFFFFu;
