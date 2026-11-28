@@ -3653,28 +3653,25 @@ void CGameMode::ReceiveFeedConfig4(volatile unsigned char state, bool option, bo
 // FUNCTION: fn_22133
 void CGameMode::ReceiveLongParChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const LongParChangePacket*>(data);
-  std::int64_t& exp = g_session.m_exp;
-  std::int64_t& nextJobExp = g_session.m_nextJobExp;
-  std::int64_t& jobExp = g_session.m_jobExp;
   bool refresh = true;
   switch (packet->type) {
   case SP_BASEEXP:
     if (g_session.IsAdminSubMode(2)) {
+      const int gained = static_cast<int>(packet->value - g_session.m_exp);
       const std::int64_t value = packet->value;
-      const int gained = static_cast<int>(value) - static_cast<int>(exp);
       if (value != 0 && gained != 0) {
         char text[256];
         StringFormat(
-          text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %d", value - exp, value, g_session.m_nextExp,
-          static_cast<int>((g_session.m_nextExp - exp) / gained)
+          text, sizeof(text), static_cast<std::size_t>(-1), "%lld : %lld/%lld More : %d", value - g_session.m_exp, value, g_session.m_nextExp,
+          static_cast<int>((g_session.m_nextExp - g_session.m_exp) / gained)
         );
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xF51EF5, 0, 0, 0);
       }
     }
-    exp = packet->value;
+    g_session.m_exp = packet->value;
     break;
   case SP_JOBEXP:
-    jobExp = packet->value;
+    g_session.m_jobExp = packet->value;
     break;
   case SP_ZENY:
     if (this->isWaitingCancelExchangeItem) {
@@ -3688,7 +3685,7 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.m_nextExp = packet->value;
     break;
   case SP_NEXTJOBEXP:
-    nextJobExp = packet->value;
+    g_session.m_nextJobExp = packet->value;
     break;
   default:
     refresh = false;
@@ -3698,9 +3695,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.InvalidateWindowFrames();
   }
 
-  auto* const basicInfoWndRef = g_windowMgr.basicInfoWnd;
-  static_cast<UIINT64BarGraph*>(basicInfoWndRef->baseExpBar)->SetValues(exp, g_session.m_nextExp);
-  static_cast<UIINT64BarGraph*>(basicInfoWndRef->jobExpBar)->SetValues(jobExp, nextJobExp);
+  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->baseExpBar)->SetValues(g_session.m_exp, g_session.m_nextExp);
+  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->jobExpBar)->SetValues(g_session.m_jobExp, g_session.m_nextJobExp);
 }
 
 // OFFSET: 0x00D73A10
