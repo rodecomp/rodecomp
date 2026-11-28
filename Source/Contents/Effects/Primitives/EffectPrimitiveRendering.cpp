@@ -2700,8 +2700,8 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
 // OFFSET: 0x00BE0B40
 // FUNCTION: fn_19913
 void CEffectPrim::RenderRotatedRing(matrix& wtm) {
-  ZeroVector3d corners[4];
   int rpCnt = 0;
+  ZeroVector3d corners[4];
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
