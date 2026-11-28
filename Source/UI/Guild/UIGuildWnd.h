@@ -68,6 +68,7 @@ bool CompareWideText(const char* left, const char* right);
 class UIGuildWnd : public UIFrameWnd {
 public:
   UIGuildWnd();
+  ~UIGuildWnd() override;
   void StoreInfo() override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;

@@ -291,6 +291,11 @@ __declspec(noinline) UIGuildWnd::UIGuildWnd()
     this->m_tabs[index] = nullptr;
   }
 }
+
+// OFFSET: 0x00955220
+// FUNCTION: fn_47475
+UIGuildWnd::~UIGuildWnd() = default;
+
 // OFFSET: 0x00953900
 // FUNCTION: fn_12995
 UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd()
