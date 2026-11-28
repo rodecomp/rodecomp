@@ -97,6 +97,8 @@ png_get_filter_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
    return (0);
 }
 
+// OFFSET: 0x00E7B3F0
+// FUNCTION: fn_47594
 png_byte PNGAPI
 png_get_interlace_type(png_const_structrp png_ptr, png_const_inforp info_ptr)
 {
@@ -183,6 +185,8 @@ png_get_pixels_per_meter(png_const_structrp png_ptr, png_const_inforp info_ptr)
 }
 
 #ifdef PNG_FLOATING_POINT_SUPPORTED
+// OFFSET: 0x00E7B6B0
+// FUNCTION: fn_47600
 float PNGAPI
 png_get_pixel_aspect_ratio(png_const_structrp png_ptr, png_const_inforp
    info_ptr)
@@ -437,6 +441,8 @@ png_get_y_offset_inches(png_const_structrp png_ptr, png_const_inforp info_ptr)
 #endif
 
 #ifdef PNG_pHYs_SUPPORTED
+// OFFSET: 0x00E7B5A0
+// FUNCTION: fn_47598
 png_uint_32 PNGAPI
 png_get_pHYs_dpi(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_uint_32 *res_x, png_uint_32 *res_y, int *unit_type)
@@ -912,6 +918,8 @@ png_get_IHDR(png_const_structrp png_ptr, png_const_inforp info_ptr,
 }
 
 #ifdef PNG_oFFs_SUPPORTED
+// OFFSET: 0x00E7B430
+// FUNCTION: fn_47595
 png_uint_32 PNGAPI
 png_get_oFFs(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_int_32 *offset_x, png_int_32 *offset_y, int *unit_type)
@@ -933,6 +941,8 @@ png_get_oFFs(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #endif
 
 #ifdef PNG_pCAL_SUPPORTED
+// OFFSET: 0x00E7B490
+// FUNCTION: fn_47596
 png_uint_32 PNGAPI
 png_get_pCAL(png_const_structrp png_ptr, png_inforp info_ptr,
     png_charp *purpose, png_int_32 *X0, png_int_32 *X1, int *type, int *nparams,
@@ -1022,6 +1032,8 @@ png_get_sCAL_s(png_const_structrp png_ptr, png_const_inforp info_ptr,
 #endif /* sCAL */
 
 #ifdef PNG_pHYs_SUPPORTED
+// OFFSET: 0x00E7B540
+// FUNCTION: fn_47597
 png_uint_32 PNGAPI
 png_get_pHYs(png_const_structrp png_ptr, png_const_inforp info_ptr,
     png_uint_32 *res_x, png_uint_32 *res_y, int *unit_type)
@@ -1297,6 +1309,8 @@ png_get_io_chunk_type (png_const_structrp png_ptr)
 
 #ifdef PNG_CHECK_FOR_INVALID_INDEX_SUPPORTED
 #  ifdef PNG_GET_PALETTE_MAX_SUPPORTED
+// OFFSET: 0x00E7B690
+// FUNCTION: fn_47599
 int PNGAPI
 png_get_palette_max(png_const_structp png_ptr, png_const_infop info_ptr)
 {
