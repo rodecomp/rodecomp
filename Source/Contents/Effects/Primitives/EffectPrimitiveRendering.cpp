@@ -1535,8 +1535,8 @@ void CEffectPrim::RenderScrollColumn(matrix& wtm) {
     int cycle;
     float scroll;
     if (frames == 0) {
-      cycle = 0;
       scroll = 40.0f;
+      cycle = 0;
       frames = 1;
     } else {
       cycle = this->state.slots[ec].process % (frames * 3);
