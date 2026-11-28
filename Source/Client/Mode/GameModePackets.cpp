@@ -2491,8 +2491,8 @@ void CGameMode::ReceiveChangeZoneServerWithHost(const unsigned char* packet) {
 // OFFSET: 0x00D08110
 // FUNCTION: fn_21585
 void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, int field14, int field18) {
-  const int itemId = static_cast<short>(itemIdWord);
   const int quantity = static_cast<short>(quantityWord);
+  const int itemId = static_cast<short>(itemIdWord);
   ITEM_INFO item = g_session.FindMerchantPurchaseItem(static_cast<unsigned int>(itemId));
   item.identity[1] = static_cast<std::uint32_t>(itemId);
   item.quantity = quantity;
