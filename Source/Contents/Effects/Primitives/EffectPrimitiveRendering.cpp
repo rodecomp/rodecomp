@@ -2440,8 +2440,8 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
 
       const float dx = radius * g_cosTable[angle];
       const float dz = radius * g_sinTable[angle];
-      vec2.x += dx;
       vec2.z += dz;
+      vec2.x += dx;
       vec3.x += dx;
       vec3.z += dz;
 
@@ -2573,10 +2573,10 @@ void CEffectPrim::RenderCone(matrix& wtm) {
       vec2.x = cs2 * dist;
       vec2.z = sn2 * dist;
       vec2.y -= this->state.slots[ec].maxHeight;
+      dist = scale * baseDist * 0.1f + baseDist;
       vec2.x += this->state.slots[ec].vecTNow.x;
       vec2.z += this->state.slots[ec].vecTNow.z;
 
-      dist = scale * baseDist * 0.1f + baseDist;
       vec3.y = cs1 * dist;
       dist = sn1 * dist;
       vec3.x = cs2 * dist;
@@ -2593,8 +2593,8 @@ void CEffectPrim::RenderCone(matrix& wtm) {
         texPart = 20;
       }
 
-      vec1 = vec2;
       vec4 = vec3;
+      vec1 = vec2;
     }
   }
 }
