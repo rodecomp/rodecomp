@@ -394,9 +394,9 @@ __declspec(noinline) void CElectricEffect::UpdateParticleState(CParticle* partic
     particle->vertices[1].x = first.x;
     particle->vertices[1].y = first.y;
     particle->vertices[1].z = first.z;
-    particle->vertices[3].x = second.x;
     particle->vertices[3].y = second.y;
     particle->vertices[3].z = second.z;
+    particle->vertices[3].x = second.x;
 
     if (strand != 0) {
       particle->vertices[0].x = this->lastEdge[0].x;
