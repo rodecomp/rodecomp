@@ -462,6 +462,10 @@ void CUIVThumb::OnMouseMove(int, int y) {
 // FUNCTION: fn_14592
 CUIThumb::~CUIThumb() = default;
 
+// OFFSET: 0x009EDA80
+// FUNCTION: fn_47521
+CUIVThumb::~CUIVThumb() = default;
+
 // OFFSET: 0x009EE080
 // FUNCTION: fn_14598
 void CUIHThumb::Paint() {

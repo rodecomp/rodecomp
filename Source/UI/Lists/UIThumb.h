@@ -35,6 +35,7 @@ public:
 class CUIVThumb : public CUIThumb {
 public:
   CUIVThumb();
+  ~CUIVThumb() override;
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
   void OnMouseMove(int x, int y) override;
