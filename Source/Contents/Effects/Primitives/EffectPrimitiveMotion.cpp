@@ -6963,7 +6963,8 @@ void CEffectPrim::PrimBubbleSwirl() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position = master->render.position;
+  auto& render = this->render;
+  render.position = master->render.position;
 
   for (int ec = 0; ec < 1; ++ec) {
     if (this->state.slots[ec].life == 1) {
@@ -7030,7 +7031,7 @@ void CEffectPrim::PrimBubbleSwirl() {
           }
 
           this->state.slots[ec].vecBPre.y += this->state.slots[ec].height[1];
-          this->state.slots[ec].vecBNow = this->render.position + this->state.slots[ec].vecBPre;
+          this->state.slots[ec].vecBNow = render.position + this->state.slots[ec].vecBPre;
 
           if (this->state.slots[ec].vecBPre.y >= -60.0f && this->state.slots[ec].fullDisplayAngle >= 250 && this->state.slots[ec].fullDisplayAngle <= 280) {
             this->state.slots[ec].flag1[4] = 0;
@@ -7048,7 +7049,7 @@ void CEffectPrim::PrimBubbleSwirl() {
             this->state.slots[ec].vecBPre.y += this->state.slots[ec].height[1];
           }
 
-          this->state.slots[ec].vecBNow = this->render.position + this->state.slots[ec].vecBPre;
+          this->state.slots[ec].vecBNow = render.position + this->state.slots[ec].vecBPre;
         } else {
           if (this->state.slots[ec].flag1[4] == 0 && this->state.slots[ec].process == 33) {
             CGameMode* mode = g_modeMgr.GetGameMode();
