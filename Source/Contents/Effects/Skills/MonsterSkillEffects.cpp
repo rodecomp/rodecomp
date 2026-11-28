@@ -1605,6 +1605,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
     return;
   }
 
+  auto& particles = this->particles;
   if (level > this->level) {
     for (long long i = this->level; i < level; ++i) {
       auto it = this->particles.find(i);
@@ -1627,8 +1628,8 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
     }
   } else if (level < this->level) {
     for (long long i = this->level - 1; i > level - 1; --i) {
-      auto it = this->particles.find(i);
-      if (it != this->particles.end() && it->second.emitter) {
+      auto it = particles.find(i);
+      if (it != particles.end() && it->second.emitter) {
         CEZ2STRParticle* previous = it->second.emitter;
         const double scale = previous->m_scale;
         const vector3d offset = previous->offset;
